@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model package="tickets" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" phpdoc-package="tickets">
+	<object class="TicketsSection" extends="modResource">
+		<composite alias="Tickets" class="Ticket" local="id" foreign="parent" cardinality="many" owner="local" />
+	</object>
+	<object class="Ticket" extends="modResource">
+		<aggregate alias="Section" class="TicketsSection" local="parent" foreign="id" cardinality="one" owner="foreign" />
+	</object>
+</model>
