@@ -5,6 +5,7 @@ Tickets.grid.Section = function(config) {
 		,url: Tickets.connector_url
 		,baseParams: {
 			action: 'mgr/ticket/getlist'
+			,parent: config.resource
 		}
 		,fields: ['id','pagetitle','longtitle']
 		,autoHeight: true

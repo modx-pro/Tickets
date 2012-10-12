@@ -4,10 +4,6 @@
  *
  * @package tickets
  */
-require_once MODX_CORE_PATH.'model/modx/modprocessor.class.php';
-require_once MODX_CORE_PATH.'model/modx/processors/resource/create.class.php';
-require_once MODX_CORE_PATH.'model/modx/processors/resource/update.class.php';
-
 class Tickets {
 	function __construct(modX &$modx,array $config = array()) {
 		$this->modx =& $modx;
@@ -17,20 +13,23 @@ class Tickets {
 		$connectorUrl = $assetsUrl.'connector.php';
 
 		$this->config = array_merge(array(
-			'assetsUrl' => $assetsUrl,
-			'cssUrl' => $assetsUrl.'css/',
-			'jsUrl' => $assetsUrl.'js/',
-			'imagesUrl' => $assetsUrl.'images/',
+			'assetsUrl' => $assetsUrl
+			,'cssUrl' => $assetsUrl.'css/'
+			,'jsUrl' => $assetsUrl.'js/'
+			,'imagesUrl' => $assetsUrl.'images/'
 
-			'connectorUrl' => $connectorUrl,
+			,'connectorUrl' => $connectorUrl
 
-			'corePath' => $corePath,
-			'modelPath' => $corePath.'model/',
-			'chunksPath' => $corePath.'elements/chunks/',
-			'templatesPath' => $corePath.'elements/templates/',
-			'chunkSuffix' => '.chunk.tpl',
-			'snippetsPath' => $corePath.'elements/snippets/',
-			'processorsPath' => $corePath.'processors/',
+			,'corePath' => $corePath
+			,'modelPath' => $corePath.'model/'
+			,'chunksPath' => $corePath.'elements/chunks/'
+			,'templatesPath' => $corePath.'elements/templates/'
+			,'chunkSuffix' => '.chunk.tpl'
+			,'snippetsPath' => $corePath.'elements/snippets/'
+			,'processorsPath' => $corePath.'processors/'
+
+			,'tplFormCreate' => 'tpl.Tickets.form.create'
+			,'tplFormUpdate' => 'tpl.Tickets.form.update'
 		),$config);
 
 		$this->modx->addPackage('tickets',$this->config['modelPath']);
@@ -52,13 +51,6 @@ class Tickets {
 				$this->request = new TicketsControllerRequest($this);
 				return $this->request->handleRequest();
 			break;
-			case 'connector':
-				if (!$this->modx->loadClass('tickets.request.TicketsConnectorRequest',$this->config['modelPath'],true,true)) {
-					return 'Could not load connector request handler.';
-				}
-				$this->request = new TicketsConnectorRequest($this);
-				return $this->request->handle();
-			break;
 			default:
 				/* if you wanted to do any generic frontend stuff here.
 				 * For example, if you have a lot of snippets but common code
@@ -70,32 +62,48 @@ class Tickets {
 		}
 	}
 
+
+	/**
+	 * Shorthand for the call of processor
+	 *
+	 * @access public
+	 * @param string $action Path to processor
+	 * @param array $data Data to be transmitted to the processor
+	 */
+	public function runProcessor($action = '', $data = array()) {
+		if (empty($action)) {return false;}
+
+		return $this->modx->runProcessor($action, $data, array('processors_path' => $this->config['processorsPath']));
+
+	}
+
+
+	public function getTicketForm($id = 0) {
+		if (!empty($id)) {
+			$response = $this->modx->runProcessor('ticket/get', array('id' => 1));
+			if ($response->isError()) {
+				return $response->getMessage();
+			}
+			$tmp = json_decode($response->response, 1);
+			$arr = $tmp['ticket'];
+			//$arr['sections'] = $this->getSections();
+			return $this->modx->getChunk($this->config['tplFormUpdate'], $arr);
+		}
+		else {
+			$arr = array(
+				//'sections' => $this->getSections()
+			);
+			return $this->modx->getChunk($this->config['tplFormCreate'], $arr);
+		}
+	}
+
+
+	public function saveTicket($data = array()) {
+		return true;
+	}
+
+	public function previewTicket($data = array()) {
+		return true;
+	}
+
 }
-
-/**
- * Overrides the modResourceCreateProcessor to provide custom processor functionality for the TicketsSection type
- *
- * @package tickets
- */
-class TicketsSectionCreateProcessor extends modResourceCreateProcessor {}
-
-/**
- * Overrides the modResourceUpdateProcessor to provide custom processor functionality for the TicketsSection type
- *
- * @package tickets
- */
-class TicketsSectionUpdateProcessor extends modResourceUpdateProcessor {}
-
-/**
- * Overrides the modResourceCreateProcessor to provide custom processor functionality for the Ticket type
- *
- * @package tickets
- */
-class TicketCreateProcessor extends modResourceCreateProcessor {}
-
-/**
- * Overrides the modResourceUpdateProcessor to provide custom processor functionality for the Ticket type
- *
- * @package tickets
- */
-class TicketUpdateProcessor extends modResourceUpdateProcessor {}

@@ -1,4 +1,14 @@
 <?php
+/**
+ * The TicketsSection CRC for Tickets.
+ *
+ * @package tickets
+ */
+
+require_once MODX_CORE_PATH.'model/modx/modprocessor.class.php';
+require_once MODX_CORE_PATH.'model/modx/processors/resource/create.class.php';
+require_once MODX_CORE_PATH.'model/modx/processors/resource/update.class.php';
+
 class TicketsSection extends modResource {
 	public $showInContextMenu = true;
 
@@ -12,12 +22,12 @@ class TicketsSection extends modResource {
 	}
 
 	public function getContextMenuText() {
-		 $this->xpdo->lexicon->load('tickets:default');
-		 return array(
-			 'text_create' => $this->xpdo->lexicon('tickets_section'),
-			 'text_create_here' => $this->xpdo->lexicon('tickets_section_create_here'),
-		 );
-	 }
+		$this->xpdo->lexicon->load('tickets:default');
+		return array(
+			'text_create' => $this->xpdo->lexicon('tickets_section'),
+			'text_create_here' => $this->xpdo->lexicon('tickets_section_create_here'),
+		);
+	}
 
 	public function getResourceTypeName() {
 		$this->xpdo->lexicon->load('tickets:default');
@@ -26,8 +36,37 @@ class TicketsSection extends modResource {
 
 	public function getContent(array $options = array()) {
 		$content = parent::getContent($options);
-		$year = date('Y');
-		$content .= '<div class="copyright">&copy; '.$year.'. All Rights Reserved.</div>';
+
 		return $content;
 	}
+}
+
+
+
+/**
+ * Overrides the modResourceCreateProcessor to provide custom processor functionality for the TicketsSection type
+ *
+ * @package tickets
+ */
+class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
+
+	public function beforeSave() {
+		return true;
+	}
+
+}
+
+
+
+/**
+ * Overrides the modResourceUpdateProcessor to provide custom processor functionality for the TicketsSection type
+ *
+ * @package tickets
+ */
+class TicketsSectionUpdateProcessor extends modResourceUpdateProcessor {
+
+	public function beforeSave() {
+		return true;
+	}
+
 }

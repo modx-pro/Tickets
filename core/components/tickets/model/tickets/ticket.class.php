@@ -1,4 +1,13 @@
 <?php
+/**
+ * The Ticket CRC for Tickets.
+ *
+ * @package tickets
+ */
+
+require_once MODX_CORE_PATH.'model/modx/modprocessor.class.php';
+require_once MODX_CORE_PATH.'model/modx/processors/resource/create.class.php';
+require_once MODX_CORE_PATH.'model/modx/processors/resource/update.class.php';
 
 class Ticket extends modResource {
 	public $showInContextMenu = false;
@@ -24,4 +33,40 @@ class Ticket extends modResource {
 		$this->xpdo->lexicon->load('tickets:default');
 		return $this->xpdo->lexicon('ticket');
 	}
+
+	public function getContent(array $options = array()) {
+		$content = parent::getContent($options);
+
+		return $content;
+	}
+}
+
+
+
+/**
+ * Overrides the modResourceCreateProcessor to provide custom processor functionality for the Ticket type
+ *
+ * @package tickets
+ */
+class TicketCreateProcessor extends modResourceCreateProcessor {
+
+	public function beforeSave() {
+		return true;
+	}
+
+}
+
+
+
+/**
+ * Overrides the modResourceUpdateProcessor to provide custom processor functionality for the Ticket type
+ *
+ * @package tickets
+ */
+class TicketUpdateProcessor extends modResourceUpdateProcessor {
+
+	public function beforeSave() {
+		return true;
+	}
+
 }
