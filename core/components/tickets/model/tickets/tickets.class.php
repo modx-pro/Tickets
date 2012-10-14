@@ -30,6 +30,8 @@ class Tickets {
 
 			,'tplFormCreate' => 'tpl.Tickets.form.create'
 			,'tplFormUpdate' => 'tpl.Tickets.form.update'
+			,'tplSectionRow' => 'tpl.Tickets.form.section.row'
+			,'tplPreview' => 'tpl.Tickets.form.preview'
 		),$config);
 
 		$this->modx->addPackage('tickets',$this->config['modelPath']);
@@ -69,6 +71,7 @@ class Tickets {
 	 * @access public
 	 * @param string $action Path to processor
 	 * @param array $data Data to be transmitted to the processor
+	 * @return mixed The result of the processor
 	 */
 	public function runProcessor($action = '', $data = array()) {
 		if (empty($action)) {return false;}
@@ -77,33 +80,138 @@ class Tickets {
 
 	}
 
+	/**
+	 * Returns sections, available for user
+	 *
+	 * @access public
+	 * @param integer @id Id of current section for "selected" placeholder
+	 * @return mixed Templated sections for ticket form
+	 */
+	public function getSections($id = 0) {
+		$response = $this->runProcessor('web/section/getlist');
+		if ($response->isError()) {
+			//return $response->getMessage();
+			return false;
+		}
+		$response = json_decode($response->response, 1);
+		$res = '';
+		foreach ($response['results'] as $v) {
+			if ($id == $v['id']) {$v['selected'] = 'selected';} else {$v['selected'] = '';}
+			$res .= $this->modx->getChunk($this->config['tplSectionRow'], $v);
+		}
 
+		return $res;
+	}
+
+
+	/**
+	 * Returns form for create/update Ticket
+	 *
+	 * @access public
+	 * @param integer $id Id an existing Ticket
+	 * @return mixed Rendered form
+	 */
 	public function getTicketForm($id = 0) {
+		$enable_editor = $this->modx->getOption('tickets.enable_editor');
+		$htmlBlock = 'enable_editor:'.$enable_editor.'';
+		if ($enable_editor) {
+			$this->modx->regClientStartupScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
+			$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
+			$htmlBlock .= ',editor:{ticket:'.$this->modx->getOption('tickets.editor_config.ticket').'}';
+		}
+
+		$this->modx->regClientStartupHTMLBlock('<script type="text/javascript">
+			Tickets = new Object();
+			Tickets.config = {'.$htmlBlock.'};
+		</script>');
+
+		$arr = array(
+			'assetsUrl' => $this->config['assetsUrl']
+			,'sections' => $this->getSections()
+		);
+
 		if (!empty($id)) {
 			$response = $this->modx->runProcessor('ticket/get', array('id' => 1));
 			if ($response->isError()) {
 				return $response->getMessage();
 			}
 			$tmp = json_decode($response->response, 1);
-			$arr = $tmp['ticket'];
-			//$arr['sections'] = $this->getSections();
+			$arr = array_merge($arr,$tmp['ticket']);
 			return $this->modx->getChunk($this->config['tplFormUpdate'], $arr);
 		}
 		else {
-			$arr = array(
-				//'sections' => $this->getSections()
-			);
 			return $this->modx->getChunk($this->config['tplFormCreate'], $arr);
 		}
 	}
 
 
+	/**
+	 * Save ticket through processor and redirect to it
+	 *
+	 * @access public
+	 * @param array $data section, pagetitle,text, etc
+	 * @return
+	 */
 	public function saveTicket($data = array()) {
-		return true;
+		echo '<pre>';
+		print_r($data);
+		echo '</pre>';
+		//$this->modx->sendForward();
+		//return true;
 	}
 
+
+	/**
+	 * Returns sanitized preview of Ticket
+	 *
+	 * @access public
+	 * @param array $data section, pagetitle,text, etc
+	 * @return mixed rendered preview of Ticket for frontend
+	 */
 	public function previewTicket($data = array()) {
-		return true;
+		$error = 0;
+		$message = null;
+		foreach ($data as $k => $v) {
+			if ($k == 'content') {
+				if (!$data[$k] = $this->Jevix($v, 'Ticket')) {
+					$error = 1;
+					$message = $this->modx->lexicon('err_no_jevix');
+					$this->modx->log(modX::LOG_LEVEL_ERROR, $message);
+				}
+			}
+			else {
+				$data[$v] = str_replace(array('[[',']]'), array('&#091;&#091;','&#093;&#093;'), $this->modx->sanitizeString($v));
+			}
+		}
+		return array(
+			'error' => $error
+			,'message' => $message
+			,'data' => $this->modx->getChunk($this->config['tplPreview'], $data)
+		);
+	}
+
+
+	/**
+	 * Sanitize any text through Jevix snippet
+	 *
+	 * @access public
+	 * @param string $text Text for sanitization
+	 * @return array Array with status and sanitized text or error message
+	 */
+	public function Jevix($text = null, $setName = null) {
+		if (empty($text)) {return ' ';}
+		if (!$snippet = $this->modx->getObject('modSnippet', array('name' => 'Jevix'))) {
+			return false;
+		}
+		$params = array();
+		if ($setName) {
+			$params = $snippet->getPropertySet($setName);
+		}
+		$params['input'] = $text;
+		$filtered = $this->modx->runSnippet('Jevix', $params);
+
+		$filtered = str_replace(array('[[',']]'), array('&#091;&#091;','&#093;&#093;'), $filtered);
+		return $filtered;
 	}
 
 }

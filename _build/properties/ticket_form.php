@@ -32,6 +32,20 @@ $properties = array(
 		,'value' => 'tpl.Tickets.form.update'
 		,'lexicon' => 'tickets:properties'
 	),
+	array(
+		'name' => 'tplSectionRow'
+		,'desc' => 'tickets.tplSectionRow'
+		,'type' => 'textfield'
+		,'value' => 'tpl.Tickets.form.section.row'
+		,'lexicon' => 'tickets:properties'
+	),
+	array(
+		'name' => 'tplPreview'
+		,'desc' => 'tickets.tplPreview'
+		,'type' => 'textfield'
+		,'value' => 'tpl.Tickets.form.preview'
+		,'lexicon' => 'tickets:properties'
+	),
 );
 
 return $properties;

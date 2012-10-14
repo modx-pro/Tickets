@@ -1,0 +1,38 @@
+.markItUp * {margin:0px; padding:0px;outline:none;}
+.markItUp a:link,.markItUp a:visited {color:#000;text-decoration:none;}
+.markItUp  {margin:5px 0;}
+.markItUpContainer  {font:11px Verdana, Arial, Helvetica, sans-serif;}
+.markItUpFooter {width:100%;}
+.markItUpHeader {display: block; float:left; width:100%;}
+.markItUpHeader ul li {
+	list-style:none;
+	float:left;
+	position:relative;
+}
+.markItUpHeader ul .markItUpSeparator {
+	margin:0 10px;
+	width:1px;
+	height:18px;
+	overflow:hidden;
+	background-color:#CCC;
+}
+.markItUpHeader ul a {
+	display:block;
+	background-image:url(editor.png);
+	width:20px;
+	height:20px;
+	text-indent:-10000px;
+	background-repeat:no-repeat;
+	margin: 2px 3px;
+}
+
+.markItUp .btn-bold a {background-position: 0px 0px;}
+.markItUp .btn-italic a {background-position: -20px 0px;}
+.markItUp .btn-underline a {background-position: -40px 0px;}
+.markItUp .btn-stroke a {background-position: -60px 0px;}
+.markItUp .btn-bulleted a {background-position: -80px 0px;}
+.markItUp .btn-numeric a {background-position: -100px 0px;}
+.markItUp .btn-code a {background-position: -120px 0px;}
+.markItUp .btn-link a {background-position: -140px 0px;}
+.markItUp .btn-picture a {background-position: -160px 0px;}
+.markItUp .btn-cut a {background-position: -180px 0px;}

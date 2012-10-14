@@ -13,3 +13,5 @@ $_lang['tickets_section_create_here'] = 'Раздел с тикетами';
 $_lang['tickets_section_new'] = 'Новый раздел тикетов';
 
 $_lang['ticket_create_here'] = 'Создать тикет';
+
+$_lang['err_no_jevix'] = 'Для работы необходим сниппет Jevix. Вы должны установить его из репозитория MODX.';
