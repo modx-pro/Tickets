@@ -1,8 +1,7 @@
 <script type="text/javascript" src="[[+assetsUrl]]js/web/tickets.js"></script>
 <div id="preview"></div>
 <form class="well" method="post" action="[[~[[*id]]]]" id="ticketForm">
-	<select name="section" class="input-xxlarge">
-		<option value="0" disabled selected>Выберите раздел для тикета</option>
+	<select name="parent" class="input-xxlarge">
 		[[+sections]]
 	</select>
 	<span class="error">[[+error.section]]</span>
@@ -12,7 +11,7 @@
 	<span class="error">[[+error.pagetitle]]</span>
 
 	<br/>
-	<textarea class="input-xxlarge" placeholder="Текст вопроса" name="content" id="editor" rows="20">[[+content]]</textarea>
+	<textarea class="input-xxlarge" placeholder="Опишите вашу проблему" name="content" id="editor" rows="20">[[+content]]</textarea>
 	<span class="error">[[+error.content]]</span>
 
 	<br/>

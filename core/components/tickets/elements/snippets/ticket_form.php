@@ -3,11 +3,13 @@ $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_
 if (!($Tickets instanceof Tickets)) return '';
 
 if ((empty($action) || $action == 'getTicketForm') && !empty($_REQUEST['action'])) {$action = $_REQUEST['action'];}
+if (!empty($_REQUEST['tid'])) {$tid = $_REQUEST['tid'];} else {$tid = 0;}
 
 $output = null;
 switch ($action) {
-	case 'getTicketForm': $output = $Tickets->getTicketForm(); break;
+	case 'getTicketForm': $output = $Tickets->getTicketForm($tid); break;
 	case 'saveTicket': $output = $Tickets->saveTicket($_REQUEST); break;
+	case 'updateTicket': $output = $Tickets->saveTicket($_REQUEST); break;
 	case 'previewTicket': $output = $Tickets->previewTicket($_REQUEST['data']); break;
 }
 

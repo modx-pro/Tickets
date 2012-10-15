@@ -111,7 +111,7 @@ class Tickets {
 	 * @param integer $id Id an existing Ticket
 	 * @return mixed Rendered form
 	 */
-	public function getTicketForm($id = 0) {
+	public function getTicketForm($tid = 0) {
 		$enable_editor = $this->modx->getOption('tickets.enable_editor');
 		$htmlBlock = 'enable_editor:'.$enable_editor.'';
 		if ($enable_editor) {
@@ -130,13 +130,16 @@ class Tickets {
 			,'sections' => $this->getSections()
 		);
 
-		if (!empty($id)) {
-			$response = $this->modx->runProcessor('ticket/get', array('id' => 1));
+		if (!empty($tid)) {
+			$response = $this->modx->runProcessor('resource/get', array('id' => $tid));
 			if ($response->isError()) {
 				return $response->getMessage();
 			}
-			$tmp = json_decode($response->response, 1);
-			$arr = array_merge($arr,$tmp['ticket']);
+			$object = $response->response['object'];
+			if ($object['createdby'] != $this->modx->user->id) {
+				return $this->modx->lexicon('ticket_err_wrong_user');
+			}
+			$arr = array_merge($arr,$object);
 			return $this->modx->getChunk($this->config['tplFormUpdate'], $arr);
 		}
 		else {
@@ -153,11 +156,23 @@ class Tickets {
 	 * @return
 	 */
 	public function saveTicket($data = array()) {
-		echo '<pre>';
-		print_r($data);
-		echo '</pre>';
-		//$this->modx->sendForward();
-		//return true;
+		$data['class_key'] = 'Ticket';
+
+		if (!empty($data['tid'])) {
+			$data['id'] = $data['tid'];
+			$data['context_key'] = $this->modx->context->key;
+			$response = $this->modx->runProcessor('resource/update', $data);
+		}
+		else {
+			$response = $this->modx->runProcessor('resource/create', $data);
+		}
+
+		if ($response->isError()) {
+			$error = $response->getMessage();
+			return $error['message'];
+		}
+		$id = $response->response['object']['id'];
+		$this->modx->sendRedirect($this->modx->makeUrl($id,'','','full'));
 	}
 
 

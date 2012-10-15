@@ -6,7 +6,7 @@ $(document).ready(function() {
 		// Предпросмотр перед отправкой тикета
 		$(document).on('click', '#previewTicket', function(e) {
 			var data = new Object();
-			data.section = $('[name="section"]').val();
+			data.parent = $('[name="parent"]').val();
 			data.pagetitle = $('[name="pagetitle"]').val();
 			data.content = $('[name="content"]').val();
 

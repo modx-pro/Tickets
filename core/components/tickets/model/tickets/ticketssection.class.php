@@ -50,8 +50,13 @@ class TicketsSection extends modResource {
  */
 class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
 
-	public function beforeSave() {
-		return true;
+	public function beforeSet() {
+		$this->setProperties(array(
+			'class_key' => 'TicketsSection'
+			,'hide_children_in_tree' => 1
+			,'isfolder' => 1
+		));
+		return parent::beforeSet();
 	}
 
 }
@@ -65,8 +70,13 @@ class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
  */
 class TicketsSectionUpdateProcessor extends modResourceUpdateProcessor {
 
-	public function beforeSave() {
-		return true;
+	public function beforeSet() {
+		$this->setProperties(array(
+			'class_key' => 'TicketsSection'
+			,'hide_children_in_tree' => 1
+			,'isfolder' => 1
+		));
+		return parent::beforeSet();
 	}
 
 }

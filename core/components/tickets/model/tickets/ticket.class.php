@@ -49,9 +49,72 @@ class Ticket extends modResource {
  * @package tickets
  */
 class TicketCreateProcessor extends modResourceCreateProcessor {
+	public $permission = '';
+	public $languageTopics = array('resource','tickets:default');
 
+	/**
+	 * {@inheritDoc}
+	 * @return mixed
+	 */
 	public function beforeSave() {
+		$this->setProperties(array(
+			'class_key' => 'Ticket'
+			,'show_in_tree' => 0
+			,'published' => 0
+			,'hidemenu' => 1
+			,'syncsite' => 0
+			,'isfolder' => 1
+		));
+		return parent::beforeSave();
+	}
+
+	/**
+	 * Make sure parent exists and user can add_children to the parent
+	 * @return boolean|string
+	 */
+	public function checkParentPermissions() {
+		$parent = null;
+		$parentId = intval($this->getProperty('parent'));
+		if ($parentId > 0) {
+			$this->parentResource = $this->modx->getObject('TicketsSection',$parentId);
+			if ($this->parentResource) {
+				if (!$this->parentResource->checkPolicy('add_children')) {
+					return $this->modx->lexicon('resource_add_children_access_denied');
+				}
+			} else {
+				return $this->modx->lexicon('resource_err_nfs', array('id' => $parentId));
+			}
+		}
+		else {
+			return $this->modx->lexicon('resource_add_children_access_denied');
+		}
 		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @return mixed
+	 */
+	public function afterSave() {
+		$this->object->fromArray(array(
+				'alias' => $this->object->id
+				,'published' => 1
+				,'publishedon' => time()
+				,'publishedby' => $this->modx->user->id
+		));
+		$this->object->save();
+		return parent::afterSave();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @return mixed
+	 */
+	public function cleanup() {
+		$results = $this->modx->cacheManager->generateContext($this->modx->context->key);
+		$this->modx->context->resourceMap = $results['resourceMap'];
+		$this->modx->context->aliasMap = $results['aliasMap'];
+		return parent::cleanup();
 	}
 
 }
@@ -64,9 +127,63 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
  * @package tickets
  */
 class TicketUpdateProcessor extends modResourceUpdateProcessor {
+	public $permission = '';
+	public $languageTopics = array('resource','tickets:default');
 
-	public function beforeSave() {
-		return true;
+	/**
+	 * {@inheritDoc}
+	 * @return mixed
+	 */
+	public function beforeSet() {
+		if ($this->object->get('createdby') != $this->modx->user->id && !$this->modx->hasPermission('edit_document')) {
+			return $this->failure($this->modx->lexicon('ticket_err_wrong_user'));
+		}
+		return parent::beforeSet();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @return mixed
+	 */
+	public function beforeSave() {
+		$this->setProperties(array(
+			'class_key' => 'Ticket'
+			,'show_in_tree' => 0
+			//,'published' => 0
+			,'hidemenu' => 1
+			,'syncsite' => 0
+			,'isfolder' => 1
+		));
+		return parent::beforeSave();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @return mixed
+	 */
+	public function afterSave() {
+		$this->object->fromArray(array(
+			'alias' => $this->object->id
+			//,'published' => 1
+			//,'publishedon' => time()
+			//,'publishedby' => $this->modx->user->id
+		));
+		$this->object->save();
+		return parent::afterSave();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @return mixed
+	 */
+	public function cleanup() {
+		$results = $this->modx->cacheManager->generateContext($this->modx->context->key);
+		$this->modx->context->resourceMap = $results['resourceMap'];
+		$this->modx->context->aliasMap = $results['aliasMap'];
+
+		$cache = $this->modx->cacheManager->getCacheProvider($this->modx->getOption('cache_resource_key', null, 'resource'));
+		$cache->delete($this->object->getCacheKey());
+
+		return parent::cleanup();
+	}
 }

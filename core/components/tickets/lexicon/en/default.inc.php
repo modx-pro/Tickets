@@ -15,3 +15,4 @@ $_lang['tickets_section_new'] = 'New tickes ticket';
 $_lang['ticket_create_here'] = 'Create ticket';
 
 $_lang['err_no_jevix'] = 'Snippet Jevix is required for proper work. You need to install it from MODX repository.';
+$_lang['ticket_err_wrong_user'] = 'You trying to update ticket that is not yours.';
