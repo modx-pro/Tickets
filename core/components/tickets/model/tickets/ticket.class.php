@@ -17,10 +17,18 @@ class Ticket extends modResource {
 		$this->set('class_key','Ticket');
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @return mixed
+	 */
 	public static function getControllerPath(xPDO &$modx) {
 		return $modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'controllers/ticket/';
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @return mixed
+	 */
 	public function getContextMenuText() {
 		$this->xpdo->lexicon->load('tickets:default');
 		return array(
@@ -29,14 +37,40 @@ class Ticket extends modResource {
 		);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @return mixed
+	 */
 	public function getResourceTypeName() {
 		$this->xpdo->lexicon->load('tickets:default');
 		return $this->xpdo->lexicon('ticket');
 	}
 
-	public function getContent(array $options = array()) {
-		$content = parent::getContent($options);
+	/**
+	 * {@inheritDoc}
+	 * @return mixed
+	 */
+	public function get($k, $format = null, $formatTemplate= null) {
+		$value = parent::get($k, $format, $formatTemplate);
+		if (in_array($k, array('pagetitle','longtitle','introtext','description','content'))) {
+			$value = str_replace(array('[[',']]'),array('&#091;&#091;','&#093;&#093;'), $value);
+		}
+		return $value;
+	}
 
+	/**
+	 * {@inheritDoc}
+	 * @return mixed
+	 */
+	public function getContent(array $options = array()) {
+		$content = parent::get('content');
+		if (!in_array('Tickets', get_declared_classes())) {
+			require 'tickets.class.php';
+		}
+		if (!isset($this->xpdo->Tickets) || !is_object($this->xpdo->Tickets) || !($this->xpdo->Tickets instanceof Tickets)) {
+			$this->xpdo->Tickets = new Tickets($this->xpdo, array());
+		}
+		$content = $this->xpdo->Tickets->Jevix($content, 'Ticket');
 		return $content;
 	}
 }
@@ -136,7 +170,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	 */
 	public function beforeSet() {
 		if ($this->object->get('createdby') != $this->modx->user->id && !$this->modx->hasPermission('edit_document')) {
-			return $this->failure($this->modx->lexicon('ticket_err_wrong_user'));
+			$this->modx->lexicon('ticket_err_wrong_user');
 		}
 		return parent::beforeSet();
 	}

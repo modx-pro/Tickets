@@ -8,9 +8,9 @@ if (!empty($_REQUEST['tid'])) {$tid = $_REQUEST['tid'];} else {$tid = 0;}
 $output = null;
 switch ($action) {
 	case 'getTicketForm': $output = $Tickets->getTicketForm($tid); break;
-	case 'saveTicket': $output = $Tickets->saveTicket($_REQUEST); break;
-	case 'updateTicket': $output = $Tickets->saveTicket($_REQUEST); break;
-	case 'previewTicket': $output = $Tickets->previewTicket($_REQUEST['data']); break;
+	case 'saveTicket': $output = $Tickets->saveTicket($_POST); break;
+	case 'updateTicket': $output = $Tickets->saveTicket($_POST); break;
+	case 'previewTicket': $output = $Tickets->previewTicket($_POST['data']); break;
 }
 
 if (is_array($output)) {

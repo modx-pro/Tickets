@@ -151,12 +151,16 @@ class Tickets {
 	/**
 	 * Save ticket through processor and redirect to it
 	 *
+	 * @TODO Написать проверку необходимых полей ресурса и возврат формы с данными и ошибкой
+	 *
 	 * @access public
 	 * @param array $data section, pagetitle,text, etc
 	 * @return
 	 */
 	public function saveTicket($data = array()) {
 		$data['class_key'] = 'Ticket';
+
+		// Здесь будет проверка присланных данных
 
 		if (!empty($data['tid'])) {
 			$data['id'] = $data['tid'];
@@ -168,8 +172,7 @@ class Tickets {
 		}
 
 		if ($response->isError()) {
-			$error = $response->getMessage();
-			return $error['message'];
+			return $response->getMessage();
 		}
 		$id = $response->response['object']['id'];
 		$this->modx->sendRedirect($this->modx->makeUrl($id,'','','full'));
@@ -222,10 +225,12 @@ class Tickets {
 		if ($setName) {
 			$params = $snippet->getPropertySet($setName);
 		}
-		$params['input'] = $text;
+		$text = preg_replace('/\{\{\{\{\(*.?\)\}\}\}\}/','',$text);
+		$params['input'] =  str_replace(array('[[',']]'), array('{{{{{','}}}}}'), $text);
+
 		$filtered = $this->modx->runSnippet('Jevix', $params);
 
-		$filtered = str_replace(array('[[',']]'), array('&#091;&#091;','&#093;&#093;'), $filtered);
+		$filtered = str_replace(array('{{{{{','}}}}}'), array('&#091;&#091;','&#093;&#093;'), $filtered);
 		return $filtered;
 	}
 
