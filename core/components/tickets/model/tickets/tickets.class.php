@@ -230,7 +230,7 @@ class Tickets {
 
 		$filtered = $this->modx->runSnippet('Jevix', $params);
 
-		$filtered = str_replace(array('{{{{{','}}}}}'), array('&#091;&#091;','&#093;&#093;'), $filtered);
+		$filtered = str_replace(array('{{{{{','}}}}}','`'), array('&#91;&#91;','&#93;&#93;','&#96;'), $filtered);
 		return $filtered;
 	}
 

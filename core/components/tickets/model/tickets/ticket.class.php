@@ -53,7 +53,7 @@ class Ticket extends modResource {
 	public function get($k, $format = null, $formatTemplate= null) {
 		$value = parent::get($k, $format, $formatTemplate);
 		if (in_array($k, array('pagetitle','longtitle','introtext','description','content'))) {
-			$value = str_replace(array('[[',']]'),array('&#091;&#091;','&#093;&#093;'), $value);
+			$value = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $value);
 		}
 		return $value;
 	}
