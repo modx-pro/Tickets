@@ -1,4 +1,3 @@
-window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"><\/script>')
 if(!jQuery().ajaxForm) {
 	document.write('<script src="https://yandex.st/jquery/form/3.14/jquery.form.min.js"><\/script>')
 }
@@ -63,6 +62,9 @@ function sendComment(form, button) {
 			$('#comment-editor',form).val('');
 			$(form).hide();
 			$('.ticket-comment .comment-reply a').show();
+
+			var count = $('.ticket-comment').size();
+			$('#comment-total').text(count)
 
 		}
 	})

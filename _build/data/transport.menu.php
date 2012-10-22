@@ -5,6 +5,7 @@
  * @package tickets
  * @subpackage build
  */
+/*
 $action= $modx->newObject('modAction');
 $action->fromArray(array(
 	'id' => 1,
@@ -15,8 +16,9 @@ $action->fromArray(array(
 	'lang_topics' => 'tickets:default',
 	'assets' => '',
 ),'',true,true);
-
+*/
 /* load action into menu */
+/*
 $menu= $modx->newObject('modMenu');
 $menu->fromArray(array(
 	'text' => 'tickets',
@@ -31,3 +33,4 @@ $menu->addOne($action);
 unset($action);
 
 return $menu;
+*/

@@ -11,15 +11,11 @@ if ($object->xpdo) {
 		$modelPath = $modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/';
 
 		case xPDOTransport::ACTION_INSTALL:
-			$modx->addPackage('tickets',$modelPath);
-
-			$manager = $modx->getManager();
-
+		case xPDOTransport::ACTION_UPGRADE:
+			//$modx->addPackage('tickets',$modelPath);
+			//$manager = $modx->getManager();
 			//$manager->createObjectContainer('');
 			$modx->addExtensionPackage('tickets',$modelPath);
-
-			break;
-		case xPDOTransport::ACTION_UPGRADE:
 			break;
 
 		case xPDOTransport::ACTION_UNINSTALL:

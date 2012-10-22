@@ -144,6 +144,7 @@ if (!is_array($settings)) {
 unset($settings,$setting,$attributes);
 
 /* load menu */
+/*
 $menu = include $sources['data'].'transport.menu.php';
 if (empty($menu)) {
 	$modx->log(modX::LOG_LEVEL_ERROR,'Could not package in menu.');
@@ -172,7 +173,7 @@ if (empty($menu)) {
 	$modx->log(modX::LOG_LEVEL_INFO,'Packaged in menu.');
 }
 unset($vehicle,$menu);
-
+*/
 /* now pack in the license file, readme and setup options */
 $builder->setPackageAttributes(array(
 	'changelog' => file_get_contents($sources['docs'] . 'changelog.txt')

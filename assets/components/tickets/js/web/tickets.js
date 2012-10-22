@@ -1,4 +1,3 @@
-window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"><\/script>')
 if(!jQuery().ajaxForm) {
 	document.write('<script src="https://yandex.st/jquery/form/3.14/jquery.form.min.js"><\/script>')
 }
