@@ -117,6 +117,7 @@ class Tickets {
 		if ($enable_editor) {
 			$this->modx->regClientStartupScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
 			$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
+			$this->modx->regClientCSS($this->config['cssUrl'].'web/tickets.css');
 			$htmlBlock .= ',editor:{ticket:'.$this->modx->getOption('tickets.editor_config.ticket').'}';
 		}
 
@@ -161,7 +162,6 @@ class Tickets {
 		$data['class_key'] = 'Ticket';
 
 		// Здесь будет проверка присланных данных
-
 		if (!empty($data['tid'])) {
 			$data['id'] = $data['tid'];
 			$data['context_key'] = $this->modx->context->key;
@@ -216,7 +216,7 @@ class Tickets {
 	 * @param string $text Text for sanitization
 	 * @return array Array with status and sanitized text or error message
 	 */
-	public function Jevix($text = null, $setName = null) {
+	public function Jevix($text = null, $setName = 'Ticket') {
 		if (empty($text)) {return ' ';}
 		if (!$snippet = $this->modx->getObject('modSnippet', array('name' => 'Jevix'))) {
 			return false;
@@ -228,7 +228,8 @@ class Tickets {
 		$text = preg_replace('/\{\{\{\{\(*.?\)\}\}\}\}/','',$text);
 		$params['input'] =  str_replace(array('[[',']]'), array('{{{{{','}}}}}'), $text);
 
-		$filtered = $this->modx->runSnippet('Jevix', $params);
+		$snippet->setCacheable(false);
+		$filtered = $snippet->process($params);
 
 		$filtered = str_replace(array('{{{{{','}}}}}','`'), array('&#91;&#91;','&#93;&#93;','&#96;'), $filtered);
 		return $filtered;

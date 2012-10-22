@@ -1,3 +1,3 @@
-<div class="title">[[+pagetitle]]</div>
+<h3 class="title">[[+pagetitle]]</h3>
 <div class="content">[[+content]]</div>
-<div class="author">[[+modx.user.id:userinfo=`username`]]</div>
+<h5 class="author">[[+modx.user.id:userinfo=`username`]]</h5>

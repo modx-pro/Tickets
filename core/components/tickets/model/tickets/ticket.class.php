@@ -133,6 +133,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		$this->object->fromArray(array(
 				'alias' => $this->object->id
 				,'published' => 1
+				,'isfolder' => 1
 				,'publishedon' => time()
 				,'publishedby' => $this->modx->user->id
 		));
@@ -199,6 +200,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		$this->object->fromArray(array(
 			'alias' => $this->object->id
 			//,'published' => 1
+			,'isfolder' => 1
 			//,'publishedon' => time()
 			//,'publishedby' => $this->modx->user->id
 		));

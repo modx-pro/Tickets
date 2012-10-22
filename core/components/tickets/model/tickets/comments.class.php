@@ -11,8 +11,10 @@ class Comments extends Quip {
 		$ticketsPath = $this->modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/');
 
 		$this->config = array_merge($this->config, array(
-			'ticketsPath' => $ticketsPath,
-		));
+			'ticketsPath' => $ticketsPath
+			,'processorsPath' => $ticketsPath.'processors/'
+			,'allowedTags' => '<br><b><i>'
+		), $config);
 	}
 
 	public function loadController($controller) {
@@ -36,6 +38,34 @@ class Comments extends Quip {
 			$this->modx->log(modX::LOG_LEVEL_ERROR,'[Quip] Could not load quipController class.');
 		}
 		return $this->controller;
+	}
+
+	public function cleanse($text, array $scriptProperties = array()) {
+		if (empty($text)) {return ' ';}
+
+		if ($snippet = $this->modx->getObject('modSnippet', array('name' => 'Jevix'))) {
+			$params = $snippet->getPropertySet('Comment');
+
+			$text = preg_replace('/\{\{\{\{\(*.?\)\}\}\}\}/','',$text);
+			$params['input'] =  str_replace(array('[[',']]'), array('{{{{{','}}}}}'), $text);
+			$filtered = $snippet->process($params);
+
+			$filtered = str_replace(array('{{{{{','}}}}}','`'), array('&#91;&#91;','&#93;&#93;','&#96;'), $filtered);
+			return $filtered;
+		}
+		else {
+			$allowedTags = $this->config['allowedTags'];
+
+			$text = preg_replace("/<script(.*)<\/script>/i",'',$text);
+			$text = preg_replace("/<iframe(.*)<\/iframe>/i",'',$text);
+			$text = preg_replace("/<iframe(.*)\/>/i",'',$text);
+			$text = strip_tags($text,$allowedTags);
+			// this causes double quotes on a href tags; commenting out for now
+			//$body = str_replace(array('"',"'"),array('&quot;','&apos;'),$body);
+			$text = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'),$text);
+
+			return $text;
+		}
 	}
 
 }

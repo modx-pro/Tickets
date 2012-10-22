@@ -17,35 +17,35 @@ $properties = array(
 			,array('text' => 'previewTicket','value' => 'previewTicket')
 		)
 		,'lexicon' => 'tickets:properties'
-	),
-	array(
+	)
+	,array(
 		'name' => 'tplFormCreate'
 		,'desc' => 'tickets.tplFormCreate'
 		,'type' => 'textfield'
 		,'value' => 'tpl.Tickets.form.create'
 		,'lexicon' => 'tickets:properties'
-	),
-	array(
+	)
+	,array(
 		'name' => 'tplFormUpdate'
 		,'desc' => 'tickets.tplFormUpdate'
 		,'type' => 'textfield'
 		,'value' => 'tpl.Tickets.form.update'
 		,'lexicon' => 'tickets:properties'
-	),
-	array(
+	)
+	,array(
 		'name' => 'tplSectionRow'
 		,'desc' => 'tickets.tplSectionRow'
 		,'type' => 'textfield'
 		,'value' => 'tpl.Tickets.form.section.row'
 		,'lexicon' => 'tickets:properties'
-	),
-	array(
+	)
+	,array(
 		'name' => 'tplPreview'
 		,'desc' => 'tickets.tplPreview'
 		,'type' => 'textfield'
 		,'value' => 'tpl.Tickets.form.preview'
 		,'lexicon' => 'tickets:properties'
-	),
+	)
 );
 
 return $properties;

@@ -31,12 +31,45 @@ $chunks[2]->fromArray(array(
 	'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/form_section_row.chunk.tpl'),
 ),'',true,true);
 
-$chunks[2]= $modx->newObject('modChunk');
-$chunks[2]->fromArray(array(
+$chunks[3]= $modx->newObject('modChunk');
+$chunks[3]->fromArray(array(
 	'id' => 0,
 	'name' => 'tpl.Tickets.form.preview',
 	'description' => 'Chunk for preview ticket before publish',
 	'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/form_preview.chunk.tpl'),
 ),'',true,true);
+
+$chunks[4]= $modx->newObject('modChunk');
+$chunks[4]->fromArray(array(
+	'id' => 0,
+	'name' => 'tpl.Tickets.comment.form',
+	'description' => 'The add comment form. Can either be a chunk name or value. If set to a value, will override the chunk.',
+	'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/comment_form.chunk.tpl'),
+),'',true,true);
+
+$chunks[5]= $modx->newObject('modChunk');
+$chunks[5]->fromArray(array(
+	'id' => 0,
+	'name' => 'tpl.Tickets.comment.one',
+	'description' => 'A Chunk for the comment itself.',
+	'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/comment_one.chunk.tpl'),
+),'',true,true);
+
+$chunks[6]= $modx->newObject('modChunk');
+$chunks[6]->fromArray(array(
+	'id' => 0,
+	'name' => 'tpl.Tickets.comment.wrapper',
+	'description' => 'A Chunk for the outer wrapper for comments.',
+	'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/comment_wrapper.chunk.tpl'),
+),'',true,true);
+
+$chunks[7]= $modx->newObject('modChunk');
+$chunks[7]->fromArray(array(
+	'id' => 0,
+	'name' => 'tpl.Tickets.comment.login',
+	'description' => 'The portion to show when the user is not logged in. Can either be a chunk name or value. If set to a value, will override the chunk.',
+	'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/comment_login.chunk.tpl'),
+),'',true,true);
+
 
 return $chunks;

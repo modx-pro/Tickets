@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('error_reposting', -1);
+
 $defaultOptions = array(
 	'thread' => 'ticket_'.$modx->resource->id
 	,'threaded' => 1
@@ -9,41 +12,58 @@ $defaultOptions = array(
 	,'start' => 0
 	,'requireAuth' => 1
 	,'disableRecaptchaWhenLoggedIn' => 1
-	,'postAction' => 'addComment'
+	,'postAction' => 'sendComment'
 	,'previewAction' => 'previewComment'
 	,'replyResourceId' => 1
+	,'autoConvertLinks' => 0
+	,'allowReportAsSpam' => 0
 );
 $scriptProperties = array_merge($scriptProperties, $defaultOptions);
-//$processorsPath = $modx->getOption('quip.core_path',null,$modx->getOption('core_path').'components/quip/').'processors/';
+$quip = $modx->getService('quip','Comments',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
+if (!($quip instanceof Comments)) return '';
 
 if (!empty($_POST)) {
-
-	$quip = $modx->getService('quip','Comments',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
-	if (!($quip instanceof Comments)) return '';
 	$controller = $quip->loadController('ThreadReply');
 	$output = $controller->run($scriptProperties);
 
-
 	if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
-		var_dump($output);die;
+		if (is_array($output)) {$output = json_encode($output);}
+		echo $output;
 		die;
 	}
 	else {
-		var_dump($output);die;
 		$modx->sendRedirect($modx->makeUrl($modx->resource->id,'','','full'));
 	}
 }
 
+$assets_url = $modx->getOption('tickets.assets_url',null,$modx->getOption('assets_url').'components/tickets/');
+
 if ($scriptProperties['useCss']) {
 	$scriptProperties['useCss'] = 0;
-	$modx->regClientCSS($modx->getOption('tickets.assets_url',null,$modx->getOption('assets_url').'components/tickets/').'css/web/comments.css');
+	$modx->regClientCSS($assets_url .'css/web/comments.css');
 }
 if ($scriptProperties['useJs']) {
-	$modx->regClientScript($modx->getOption('tickets.assets_url',null,$modx->getOption('assets_url').'components/tickets/').'js/web/comments.js');
+	$modx->regClientScript($assets_url.'js/web/comments.js');
 }
 
-$output = $modx->runSnippet('Quip', $scriptProperties);
+$enable_editor = $modx->getOption('tickets.enable_editor');
+$htmlBlock = 'enable_editor:'.$enable_editor.'';
+if ($enable_editor) {
+	$modx->regClientStartupScript($assets_url.'js/web/editor/jquery.markitup.js');
+	$modx->regClientCSS($assets_url.'js/web/editor/editor.css');
+	$htmlBlock .= ',editor:{comment:'.$modx->getOption('tickets.editor_config.comment').'}';
+}
+$modx->regClientStartupHTMLBlock('<script type="text/javascript">
+		Comments = new Object();
+		Comments.config = {'.$htmlBlock.'};
+	</script>');
 
-$output .= $modx->runSnippet('QuipReply', $scriptProperties);
+$quip->initialize($modx->context->get('key'));
+
+$controller = $quip->loadController('Thread');
+$output = $controller->run($scriptProperties);
+
+$controller = $quip->loadController('ThreadReply');
+$output .= $controller->run($scriptProperties);
 
 return $output;
