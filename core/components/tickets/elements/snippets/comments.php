@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('error_reposting', -1);
-
 $defaultOptions = array(
 	'thread' => 'ticket_'.$modx->resource->id
 	,'threaded' => 1

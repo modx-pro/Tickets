@@ -29,4 +29,15 @@ $properties = include $sources['build'].'properties/comments.php';
 $snippets[1]->setProperties($properties);
 unset($properties);
 
+$snippets[2]= $modx->newObject('modSnippet');
+$snippets[2]->fromArray(array(
+	'id' => 0,
+	'name' => 'TicketLatest',
+	'description' => 'Snippet for retrieving last tickets and comments',
+	'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/ticket_latest.php'),
+),'',true,true);
+$properties = include $sources['build'].'properties/ticket_latest.php';
+$snippets[2]->setProperties($properties);
+unset($properties);
+
 return $snippets;

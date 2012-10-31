@@ -5,6 +5,8 @@
  * @package tickets
  */
 class Tickets {
+	private $quipLoaded = false;
+
 	function __construct(modX &$modx,array $config = array()) {
 		$this->modx =& $modx;
 
@@ -44,7 +46,7 @@ class Tickets {
 	 * @access public
 	 * @param string $ctx The context to load. Defaults to web.
 	 */
-	public function initialize($ctx = 'web') {
+	public function initialize($ctx = 'mgr') {
 		switch ($ctx) {
 			case 'mgr':
 				if (!$this->modx->loadClass('tickets.request.TicketsControllerRequest',$this->config['modelPath'],true,true)) {
@@ -52,14 +54,6 @@ class Tickets {
 				}
 				$this->request = new TicketsControllerRequest($this);
 				return $this->request->handleRequest();
-			break;
-			default:
-				/* if you wanted to do any generic frontend stuff here.
-				 * For example, if you have a lot of snippets but common code
-				 * in them all at the beginning, you could put it here and just
-				 * call $tickets->initialize($modx->context->get('key'));
-				 * which would run this.
-				 */
 			break;
 		}
 	}
@@ -128,7 +122,6 @@ class Tickets {
 
 		$arr = array(
 			'assetsUrl' => $this->config['assetsUrl']
-			,'sections' => $this->getSections()
 		);
 
 		if (!empty($tid)) {
@@ -140,10 +133,12 @@ class Tickets {
 			if ($object['createdby'] != $this->modx->user->id) {
 				return $this->modx->lexicon('ticket_err_wrong_user');
 			}
+			$arr['sections'] = $this->getSections($object['parent']);
 			$arr = array_merge($arr,$object);
 			return $this->modx->getChunk($this->config['tplFormUpdate'], $arr);
 		}
 		else {
+			$arr['sections'] = $this->getSections();
 			return $this->modx->getChunk($this->config['tplFormCreate'], $arr);
 		}
 	}
@@ -233,6 +228,47 @@ class Tickets {
 
 		$filtered = str_replace(array('{{{{{','}}}}}','`'), array('&#91;&#91;','&#93;&#93;','&#96;'), $filtered);
 		return $filtered;
+	}
+
+
+	function getTicketComments($id = 0) {
+		if (!$this->quipLoaded) {
+			$path = $this->modx->getOption('quip.core_path','',$this->modx->getOption('core_path').'components/quip/model/');
+			$this->modx->addPackage('quip',$path);
+			$this->quipLoaded = true;
+		}
+
+		return $this->modx->getCount('quipComment', array('resource' => $id, 'deleted' => 0, 'approved' => 1));
+
+		//return rand(1,50);
+	}
+
+	function getLatestTickets($data) {
+		if (!empty($data['parents'])) {$data['parents'] = explode(',', $data['parents']);}
+		$response = $this->runProcessor('web/ticket/getlist', $data);
+		$result = json_decode($response->response, true);
+		$output = '';
+		$sections = array();
+		if ($result['total']) {
+			foreach ($result['results'] as $v) {
+				$v['comments'] = $this->getTicketComments($v['id']);
+				if (!array_key_exists($v['parent'], $sections)) {
+					$q = $this->modx->newQuery('TicketsSection', array('id' => $v['parent']));
+					$q->select('pagetitle');
+					if ($q->prepare() && $q->stmt->execute()) {
+						$sections[$v['parent']] = $q->stmt->fetch(PDO::FETCH_COLUMN);
+					}
+				}
+				$v['sectiontitle'] = $sections[$v['parent']];
+				if (empty($data['tpl'])) {
+					$output .= '<pre>'.print_r($v,true).'</pre>';
+				}
+				else {
+					$output .= $this->modx->getChunk($data['tpl'], $v);
+				}
+			}
+		}
+		return $output;
 	}
 
 }

@@ -71,5 +71,21 @@ $chunks[7]->fromArray(array(
 	'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/comment_login.chunk.tpl'),
 ),'',true,true);
 
+$chunks[8]= $modx->newObject('modChunk');
+$chunks[8]->fromArray(array(
+	'id' => 0,
+	'name' => 'tpl.Tickets.ticket.latest',
+	'description' => 'The chunk for templating latest tickets',
+	'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/ticket_latest.chunk.tpl'),
+),'',true,true);
+
+$chunks[9]= $modx->newObject('modChunk');
+$chunks[9]->fromArray(array(
+	'id' => 0,
+	'name' => 'tpl.Tickets.comment.latest',
+	'description' => 'The chunk for templating latest comments',
+	'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/comment_latest.chunk.tpl'),
+),'',true,true);
+
 
 return $chunks;

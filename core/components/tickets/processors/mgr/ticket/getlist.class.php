@@ -13,7 +13,8 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 	
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 		$c->where(array(
-			'parent' => $this->getProperty('parent')
+			'class_key' => 'Ticket'
+			,'parent' => $this->getProperty('parent')
 		));
 		return $c;
 	}

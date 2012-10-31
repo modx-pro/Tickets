@@ -61,6 +61,13 @@ $settings[2]->fromArray(array(
 	,'namespace' => 'tickets'
 	,'area' => 'Editor'
 ),'',true,true);
-
+$settings[2]= $modx->newObject('modSystemSetting');
+$settings[2]->fromArray(array(
+	'key' => 'tickets.default_template'
+	,'value' => ''
+	,'xtype' => 'numberfield'
+	,'namespace' => 'tickets'
+	,'area' => 'Ticket'
+),'',true,true);
 
 return $settings;

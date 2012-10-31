@@ -6,6 +6,11 @@
  * @subpackage lexicon
  */
 $_lang['tickets.action'] = 'Mode of snippet';
+$_lang['tickets.limit'] = 'The number of results to limit.';
+$_lang['tickets.start'] = 'The start index of results to pull from.';
+$_lang['tickets.sortBy'] = 'The field to sort by.';
+$_lang['tickets.sortDir'] = 'The direction to sort by';
+$_lang['tickets.tpl'] = 'The chunk tpl to use for each row.';
 $_lang['tickets.tplFormCreate'] = 'Chunk for creation of new ticket';
 $_lang['tickets.tplFormUpdate'] = 'Chunk for update existing ticket';
 $_lang['tickets.tplSectionRow'] = 'Chunk for template one section of form select';

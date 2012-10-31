@@ -136,7 +136,9 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 				,'isfolder' => 1
 				,'publishedon' => time()
 				,'publishedby' => $this->modx->user->id
+				,'template' => $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true)
 		));
+
 		$this->object->save();
 		return parent::afterSave();
 	}

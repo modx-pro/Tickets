@@ -6,6 +6,11 @@
  * @subpackage lexicon
  */
 $_lang['tickets.action'] = 'Режим работы сниппета';
+$_lang['tickets.limit'] = 'Лимит выборки результатов';
+$_lang['tickets.start'] = 'Начало выборки';
+$_lang['tickets.sortBy'] = 'Сортировка выборки';
+$_lang['tickets.sortDir'] = 'Направление сортировки';
+$_lang['tickets.tpl'] = 'Чанк оформления для каждого результата';
 $_lang['tickets.tplFormCreate'] = 'Чанк для создания нового тикета';
 $_lang['tickets.tplFormUpdate'] = 'Чанк для обновления существующего тикета';
 $_lang['tickets.tplSectionRow'] = 'Чанк для оформления раздела вопросов в форме';
