@@ -215,13 +215,13 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	 * @return mixed
 	 */
 	public function cleanup() {
-		$results = $this->modx->cacheManager->generateContext($this->modx->context->key);
-		$this->modx->context->resourceMap = $results['resourceMap'];
-		$this->modx->context->aliasMap = $results['aliasMap'];
-
+		//$results = $this->modx->cacheManager->generateContext($this->modx->context->key);
+		//$this->modx->context->resourceMap = $results['resourceMap'];
+		//$this->modx->context->aliasMap = $results['aliasMap'];
 		$cache = $this->modx->cacheManager->getCacheProvider($this->modx->getOption('cache_resource_key', null, 'resource'));
-		$cache->delete($this->object->getCacheKey());
-
+		$key = $this->object->getCacheKey();
+		$cache->delete($key, array('deleteTop' => true));
+		$cache->delete($key);
 		return parent::cleanup();
 	}
 }
