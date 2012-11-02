@@ -1,10 +1,9 @@
 <?php
-$key = md5(json_encode($scriptProperties));
-/*
-if ($output = $modx->cacheManager->get('tickets/latest.'.$key)) {
+$cacheKey = $modx->getOption('cacheKey', $scriptProperties);
+
+if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.'.$cacheKey)) {
 	return $output;
 }
-*/
 
 $action = $modx->getOption('action', $scriptProperties, 'comments');
 switch($action) {
@@ -25,5 +24,7 @@ switch($action) {
 	default: $output = '';
 }
 
-//$modx->cacheManager->set('tickets/latest.'.$key, $output, 1800);
+if (!empty($cacheKey)) {
+	$modx->cacheManager->set('tickets/latest.'.$cacheKey, $output, 1800);
+}
 return $output;

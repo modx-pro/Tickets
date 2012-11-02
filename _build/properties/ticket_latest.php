@@ -57,6 +57,13 @@ $properties = array(
 		'value' => 'DESC',
 		'lexicon' => 'tickets:properties',
 	)
+	,array(
+		'name' => 'cacheKey',
+		'desc' => 'tickets.cacheKey',
+		'type' => 'textfield',
+		'value' => '',
+		'lexicon' => 'tickets:properties',
+	)
 );
 
 return $properties;

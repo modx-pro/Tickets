@@ -1,9 +1,9 @@
 <script type="text/javascript" src="[[+assetsUrl]]js/web/tickets.js"></script>
-<form class="well" method="post" action="[[~[[*id]]]]" id="ticketForm">
+<form class="well" method="post" action="[[~[[*id]]]]?tid=[[+id]]" id="ticketForm">
     <div id="ticket-preview-placeholder"></div>
     
     <select name="parent" class="input-xxlarge">[[+sections]]</select>
-	<span class="error">[[+error.section]]</span>
+	<span class="error">[[+error.parent]]</span>
 	<br/>
 	<input type="text" class="input-xxlarge" placeholder="Заголовок" name="pagetitle" value="[[+pagetitle]]" maxlength="50"/>
 	<span class="error">[[+error.pagetitle]]</span>

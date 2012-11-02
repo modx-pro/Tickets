@@ -102,10 +102,11 @@ class Tickets {
 	 * Returns form for create/update Ticket
 	 *
 	 * @access public
-	 * @param integer $id Id an existing Ticket
+	 * @param integer $id Id of an existing Ticket
+	 * @param mixed $mode What form is need to load, for create or update?
 	 * @return mixed Rendered form
 	 */
-	public function getTicketForm($tid = 0) {
+	public function getTicketForm($data = array()) {
 		$enable_editor = $this->modx->getOption('tickets.enable_editor');
 		$htmlBlock = 'enable_editor:'.$enable_editor.'';
 		if ($enable_editor) {
@@ -123,31 +124,33 @@ class Tickets {
 		$arr = array(
 			'assetsUrl' => $this->config['assetsUrl']
 		);
+		$tpl = $this->config['tplFormCreate'];
 
-		if (!empty($tid)) {
-			$response = $this->modx->runProcessor('resource/get', array('id' => $tid));
-			if ($response->isError()) {
-				return $response->getMessage();
+		if (!empty($data)) {
+			if (!empty($data['tid'])) {
+				$response = $this->modx->runProcessor('resource/get', array('id' => $data['tid']));
+				if ($response->isError()) {
+					return $response->getMessage();
+				}
+				$object = $response->response['object'];
+				if ($object['createdby'] != $this->modx->user->id) {
+					return $this->modx->lexicon('ticket_err_wrong_user');
+				}
+				unset($data['parent']);
+				$data = array_merge($object,$data);
+
+				$tpl = $this->config['tplFormUpdate'];
 			}
-			$object = $response->response['object'];
-			if ($object['createdby'] != $this->modx->user->id) {
-				return $this->modx->lexicon('ticket_err_wrong_user');
-			}
-			$arr['sections'] = $this->getSections($object['parent']);
-			$arr = array_merge($arr,$object);
-			return $this->modx->getChunk($this->config['tplFormUpdate'], $arr);
 		}
-		else {
-			$arr['sections'] = $this->getSections();
-			return $this->modx->getChunk($this->config['tplFormCreate'], $arr);
-		}
+		$parent = !empty($data['parent']) ? $data['parent'] : 0;
+		$arr['sections'] = $this->getSections($parent);
+		$arr = array_merge($arr,$data);
+		return $this->modx->getChunk($tpl, $arr);
 	}
 
 
 	/**
 	 * Save ticket through processor and redirect to it
-	 *
-	 * @TODO Написать проверку необходимых полей ресурса и возврат формы с данными и ошибкой
 	 *
 	 * @access public
 	 * @param array $data section, pagetitle,text, etc
@@ -155,8 +158,6 @@ class Tickets {
 	 */
 	public function saveTicket($data = array()) {
 		$data['class_key'] = 'Ticket';
-
-		// Здесь будет проверка присланных данных
 		if (!empty($data['tid'])) {
 			$data['id'] = $data['tid'];
 			$data['context_key'] = $this->modx->context->key;
@@ -165,9 +166,17 @@ class Tickets {
 		else {
 			$response = $this->modx->runProcessor('resource/create', $data);
 		}
-
 		if ($response->isError()) {
-			return $response->getMessage();
+			if (count($response->errors)) {
+				foreach ($response->errors as $v) {
+					$data['error.'.$v->field] = $v->message;
+				}
+				$data['error'] = $this->modx->lexicon('ticket_err_form');
+			}
+			else {
+				$data['error'] = $response->getMessage();
+			}
+			return $this->getTicketForm($data);
 		}
 		$id = $response->response['object']['id'];
 		$this->modx->sendRedirect($this->modx->makeUrl($id,'','','full'));
@@ -239,8 +248,6 @@ class Tickets {
 		}
 
 		return $this->modx->getCount('quipComment', array('resource' => $id, 'deleted' => 0, 'approved' => 1));
-
-		//return rand(1,50);
 	}
 
 	function getLatestTickets($data) {

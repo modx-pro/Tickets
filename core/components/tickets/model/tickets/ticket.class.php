@@ -73,6 +73,17 @@ class Ticket extends modResource {
 		$content = $this->xpdo->Tickets->Jevix($content, 'Ticket');
 		return $content;
 	}
+
+	/*
+	 * Delete cache of resource
+	 * @return void
+	 */
+	public function deleteCache() {
+		$cache = $this->modx->cacheManager->getCacheProvider($this->modx->getOption('cache_resource_key', null, 'resource'));
+		$key = $this->object->getCacheKey();
+		$cache->delete($key, array('deleteTop' => true));
+		$cache->delete($key);
+	}
 }
 
 
@@ -83,14 +94,21 @@ class Ticket extends modResource {
  * @package tickets
  */
 class TicketCreateProcessor extends modResourceCreateProcessor {
-	public $permission = '';
-	public $languageTopics = array('resource','tickets:default');
+	public $permission = 'ticket_save';
+	public $languageTopics = array('access','resource','tickets:default');
 
 	/**
 	 * {@inheritDoc}
 	 * @return mixed
 	 */
-	public function beforeSave() {
+	public function beforeSet() {
+		if (!$this->getProperty('content')) {
+			$this->addFieldError('content', $this->modx->lexicon('field_required'));
+		}
+		if (!$this->getProperty('pagetitle')) {
+			$this->addFieldError('pagetitle', $this->modx->lexicon('field_required'));
+		}
+		if ($this->hasErrors()) {return false;}
 		$this->setProperties(array(
 			'class_key' => 'Ticket'
 			,'show_in_tree' => 0
@@ -99,7 +117,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			,'syncsite' => 0
 			,'isfolder' => 1
 		));
-		return parent::beforeSave();
+		return parent::beforeSet();
 	}
 
 	/**
@@ -111,16 +129,19 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		$parentId = intval($this->getProperty('parent'));
 		if ($parentId > 0) {
 			$this->parentResource = $this->modx->getObject('TicketsSection',$parentId);
+			if ($this->parentResource->get('class_key') != 'TicketsSection') {
+				return $this->modx->lexicon('ticket_err_wrong_parent');
+			}
 			if ($this->parentResource) {
-				if (!$this->parentResource->checkPolicy('add_children')) {
-					return $this->modx->lexicon('resource_add_children_access_denied');
+				if (!$this->parentResource->checkPolicy('ticketsection_add_children')) {
+					return $this->modx->lexicon('ticket_err_access_denied');
 				}
 			} else {
 				return $this->modx->lexicon('resource_err_nfs', array('id' => $parentId));
 			}
 		}
 		else {
-			return $this->modx->lexicon('resource_add_children_access_denied');
+			return $this->modx->lexicon('ticket_err_access_denied');
 		}
 		return true;
 	}
@@ -164,7 +185,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
  * @package tickets
  */
 class TicketUpdateProcessor extends modResourceUpdateProcessor {
-	public $permission = '';
+	public $permission = 'ticket_save';
 	public $languageTopics = array('resource','tickets:default');
 
 	/**
@@ -172,26 +193,25 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	 * @return mixed
 	 */
 	public function beforeSet() {
-		if ($this->object->get('createdby') != $this->modx->user->id && !$this->modx->hasPermission('edit_document')) {
-			$this->modx->lexicon('ticket_err_wrong_user');
+		if (!$this->getProperty('pagetitle')) {
+			$this->addFieldError('pagetitle', $this->modx->lexicon('field_required'));
 		}
-		return parent::beforeSet();
-	}
+		if (!$this->getProperty('content')) {
+			$this->addFieldError('content', $this->modx->lexicon('field_required'));
+		}
+		if ($this->hasErrors()) {return false;}
+		if ($this->object->get('createdby') != $this->modx->user->id && !$this->modx->hasPermission('edit_document')) {
+			return $this->modx->lexicon('ticket_err_wrong_user');
+		}
 
-	/**
-	 * {@inheritDoc}
-	 * @return mixed
-	 */
-	public function beforeSave() {
 		$this->setProperties(array(
 			'class_key' => 'Ticket'
 			,'show_in_tree' => 0
-			//,'published' => 0
 			,'hidemenu' => 1
 			,'syncsite' => 0
 			,'isfolder' => 1
 		));
-		return parent::beforeSave();
+		return parent::beforeSet();
 	}
 
 	/**
@@ -215,9 +235,6 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	 * @return mixed
 	 */
 	public function cleanup() {
-		//$results = $this->modx->cacheManager->generateContext($this->modx->context->key);
-		//$this->modx->context->resourceMap = $results['resourceMap'];
-		//$this->modx->context->aliasMap = $results['aliasMap'];
 		$cache = $this->modx->cacheManager->getCacheProvider($this->modx->getOption('cache_resource_key', null, 'resource'));
 		$key = $this->object->getCacheKey();
 		$cache->delete($key, array('deleteTop' => true));

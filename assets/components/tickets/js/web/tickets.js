@@ -14,6 +14,7 @@ $(document).ready(function() {
 		data.parent = $('[name="parent"]').val();
 		data.pagetitle = $('[name="pagetitle"]').val();
 		data.content = $('[name="content"]').val();
+		if (data.content == '' && data.pagetitle == '') {return false;}
 
 		$.post(document.location.href, {action: 'previewTicket', data: data}, function(response) {
 			response = $.parseJSON(response);

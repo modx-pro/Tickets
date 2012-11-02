@@ -15,6 +15,7 @@ $_lang['tickets.tplFormCreate'] = 'Chunk for creation of new ticket';
 $_lang['tickets.tplFormUpdate'] = 'Chunk for update existing ticket';
 $_lang['tickets.tplSectionRow'] = 'Chunk for template one section of form select';
 $_lang['tickets.tplPreview'] = 'Chunk for preview ticket before publish';
+$_lang['tickets.cacheKey'] = 'Name of snippet cache. If empty - caching will be disabled.';
 
 $_lang['tickets.useCss'] = 'If true, Quip will provide a basic CSS template for the presentation.';
 $_lang['tickets.useJs'] = 'If true, Quip will provide a basic JS template for the presentation.';
