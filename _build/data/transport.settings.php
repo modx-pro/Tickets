@@ -49,20 +49,16 @@ $settings[2]->fromArray(array(
 		,{name:"Underline", className: "btn-underline", key:"U", openWith:"<u>", closeWith:"</u>" }
 		,{name:"Stroke through", className: "btn-stroke", key:"S", openWith:"<s>", closeWith:"</s>" }
 		,{separator:"---------------" }
-		,{name:"Bulleted List", className: "btn-bulleted", openWith:"	<li>", closeWith:"</li>", multiline:true, openBlockWith:"<ul>\n", closeBlockWith:"\n</ul>"}
-		,{name:"Numeric List", className: "btn-numeric", openWith:"	<li>", closeWith:"</li>", multiline:true, openBlockWith:"<ol>\n", closeBlockWith:"\n</ol>"}
-		,{separator:"---------------" }
 		,{name:"Code", className: "btn-code", openWith:"<code>", closeWith:"</code>"}
 		,{name:"Link", className: "btn-link", openWith:"<a href=\"[![Link:!:http://]!]\">", closeWith:"</a>" }
 		,{name:"Picture", className: "btn-picture", replaceWith:"<img src=\"[![Source:!:http://]!]\" />" }
-		,{name:"Cut", className: "btn-cut", openWith:"<cut/>" }
 	]}'
 	,'xtype' => 'textarea'
 	,'namespace' => 'tickets'
 	,'area' => 'Editor'
 ),'',true,true);
-$settings[2]= $modx->newObject('modSystemSetting');
-$settings[2]->fromArray(array(
+$settings[3]= $modx->newObject('modSystemSetting');
+$settings[3]->fromArray(array(
 	'key' => 'tickets.default_template'
 	,'value' => ''
 	,'xtype' => 'numberfield'

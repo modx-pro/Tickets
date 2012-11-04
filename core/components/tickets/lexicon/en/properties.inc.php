@@ -29,3 +29,5 @@ $_lang['tickets.tplAddComment'] = 'The add comment form. Can either be a chunk n
 $_lang['tickets.tplComment'] = 'A Chunk for the comment itself.';
 $_lang['tickets.tplComments'] = 'A Chunk for the outer wrapper for comments.';
 $_lang['tickets.tplLoginToComment'] = 'The portion to show when the user is not logged in. Can either be a chunk name or value. If set to a value, will override the chunk.';
+$_lang['tickets.closeAfter'] = 'The number of days at which the thread will automatically close after it was created. Set to 0 to leave open indefinitely.';
+$_lang['tickets.maxDepth'] = 'The maximum depth that replies can be made in a threaded comment thread.';

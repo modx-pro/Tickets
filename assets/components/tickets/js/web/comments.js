@@ -10,21 +10,23 @@ $(document).ready(function() {
 function previewComment(form, button) {
 	$(form).ajaxSubmit({
 		data: {action: 'previewComment' }
-		,form: $(form)
+		,form: form
+		,button: button
 		,beforeSubmit: function() {
 			//$(button).addClass('loading');
 			var text = $('textarea[name="comment"]',form).val();
 			var allSpacesRe = /\s+/g;
 			text = text.replace(allSpacesRe, "")
 			if(text == ''){
-				alert('Вы забыли ввести текст комментария');
 				return false;
 			}
+			$(button).attr('disabled','disabled');
 		}
 		,success: function(data) {
 			data = $.parseJSON(data);
 			if (data.errors.length == 0) {
 				$('#comment-preview-placeholder').html(data.text).show();
+				$(button).removeAttr('disabled')
 			}
 		}
 	})
@@ -36,17 +38,17 @@ function previewComment(form, button) {
 function sendComment(form, button) {
 	$(form).ajaxSubmit({
 		data: {action: 'sendComment' }
-		,form: $(form)
+		,form: form
+		,button: button
 		,beforeSubmit: function() {
 			//$(button).addClass('loading');
 			var text = $('textarea[name="comment"]',form).val();
 			var allSpacesRe = /\s+/g;
 			text = text.replace(allSpacesRe, "")
 			if(text == ''){
-				alert('Вы забыли ввести текст комментария');
-				//$(button).removeClass('loading');
 				return false;
 			}
+			$(button).attr('disabled','disabled');
 		}
 		,success: function(data) {
 			data = $.parseJSON(data);
@@ -66,6 +68,7 @@ function sendComment(form, button) {
 			var count = $('.ticket-comment').size();
 			$('#comment-total').text(count)
 
+			$(button).removeAttr('disabled')
 		}
 	})
 	return false;

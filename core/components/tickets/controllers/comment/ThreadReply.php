@@ -83,6 +83,8 @@ class CommentThreadReplyController extends QuipThreadReplyController {
 			if (is_object($comment) && $comment instanceof quipComment) {
 				if ($this->hasAuth) {$comment->hasAuth = true;}
 				$text = $this->modx->getChunk($this->config['tplComment'], $comment->prepare($this->getProperties(),1));
+				// Delete cache for latest comments
+				$this->modx->cacheManager->delete('tickets/latest.comments');
 			} else if (is_array($comment)) {
 				$errors = array_merge($errors,$comment);
 			}

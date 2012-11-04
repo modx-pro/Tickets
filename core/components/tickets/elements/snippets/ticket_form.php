@@ -5,10 +5,8 @@ if (!($Tickets instanceof Tickets)) return '';
 if ((empty($action) || $action == 'getTicketForm') && !empty($_REQUEST['action'])) {$action = $_REQUEST['action'];}
 $tid = $modx->getOption('tid', $_REQUEST, 0);
 
-//echo '<pre>';print_r($modx->user->getAttributes());echo'</pre>';
-
 if (!$modx->user->isAuthenticated()) {
-	//return $modx->lexicon('ticket_err_no_auth');
+	return $modx->lexicon('ticket_err_no_auth');
 }
 
 $output = null;

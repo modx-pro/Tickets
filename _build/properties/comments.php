@@ -90,6 +90,20 @@ $properties = array(
 		,'value' => 'tpl.Tickets.comment.login'
 		,'lexicon' => 'tickets:properties'
 	)
+	,array(
+		'name' => 'maxDepth'
+		,'desc' => 'tickets.maxDepth'
+		,'type' => 'numberfield'
+		,'value' => 10
+		,'lexicon' => 'tickets:properties'
+	)
+	,array(
+		'name' => 'closeAfter'
+		,'desc' => 'tickets.closeAfter'
+		,'type' => 'numberfield'
+		,'value' => 0
+		,'lexicon' => 'tickets:properties'
+	)
 
 );
 

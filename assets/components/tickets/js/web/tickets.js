@@ -16,14 +16,18 @@ $(document).ready(function() {
 		data.content = $('[name="content"]').val();
 		if (data.content == '' && data.pagetitle == '') {return false;}
 
+		var button = this;
+		$(button).attr('disabled','disabled');
 		$.post(document.location.href, {action: 'previewTicket', data: data}, function(response) {
 			response = $.parseJSON(response);
 			if (response.error == 1) {
 				$('#ticket-preview-placeholder').html('').hide();
 				alert(response.message);
+				$(button).removeAttr('disabled');
 			}
 			else {
 				$('#ticket-preview-placeholder').html(response.data).show();
+				$(button).removeAttr('disabled');
 				//prettyPrint();
 			}
 

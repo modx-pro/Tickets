@@ -29,3 +29,5 @@ $_lang['tickets.tplAddComment'] = 'Чанк для формы добавлени
 $_lang['tickets.tplComment'] = 'Чанк оформления одного комментария';
 $_lang['tickets.tplComments'] = 'Обертка для всех комментариев страницы';
 $_lang['tickets.tplLoginToComment'] = 'Чанк для показа неавторизованным пользователям';
+$_lang['tickets.closeAfter'] = 'Количество дней, через которое тикет будет закрыт для комментирования.';
+$_lang['tickets.maxDepth'] = 'Максимальная глубина ветки комментариев.';

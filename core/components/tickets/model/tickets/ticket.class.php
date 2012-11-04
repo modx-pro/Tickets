@@ -73,17 +73,6 @@ class Ticket extends modResource {
 		$content = $this->xpdo->Tickets->Jevix($content, 'Ticket');
 		return $content;
 	}
-
-	/*
-	 * Delete cache of resource
-	 * @return void
-	 */
-	public function deleteCache() {
-		$cache = $this->modx->cacheManager->getCacheProvider($this->modx->getOption('cache_resource_key', null, 'resource'));
-		$key = $this->object->getCacheKey();
-		$cache->delete($key, array('deleteTop' => true));
-		$cache->delete($key);
-	}
 }
 
 
@@ -133,8 +122,8 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 				return $this->modx->lexicon('ticket_err_wrong_parent');
 			}
 			if ($this->parentResource) {
-				if (!$this->parentResource->checkPolicy('ticketsection_add_children')) {
-					return $this->modx->lexicon('ticket_err_access_denied');
+				if (!$this->parentResource->checkPolicy('section_add_children')) {
+					return $this->modx->lexicon('ticket_err_wrong_parent') . $this->modx->lexicon('ticket_err_access_denied');
 				}
 			} else {
 				return $this->modx->lexicon('resource_err_nfs', array('id' => $parentId));
