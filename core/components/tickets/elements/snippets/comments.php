@@ -72,4 +72,3 @@ else if ($action == 'getComments') {
 
 	return $output;
 }
-

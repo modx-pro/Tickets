@@ -2,7 +2,6 @@
 require MODX_CORE_PATH . 'components/quip/controllers/web/ThreadReply.php';
 
 class CommentThreadReplyController extends QuipThreadReplyController {
-
 	/**
 	 * {@inheritDoc}
 	 * @return mixed
@@ -82,9 +81,13 @@ class CommentThreadReplyController extends QuipThreadReplyController {
 
 			if (is_object($comment) && $comment instanceof quipComment) {
 				if ($this->hasAuth) {$comment->hasAuth = true;}
-				$text = $this->modx->getChunk($this->config['tplComment'], $comment->prepare($this->getProperties(),1));
+				$resource = $comment->get('resource');
+				$comment = $comment->prepare($this->getProperties(),1);
+				$text = $this->modx->getChunk($this->config['tplComment'], $comment);
 				// Delete cache for latest comments
 				$this->modx->cacheManager->delete('tickets/latest.comments');
+				$this->updateCache($resource, $comment);
+
 			} else if (is_array($comment)) {
 				$errors = array_merge($errors,$comment);
 			}
@@ -101,6 +104,45 @@ class CommentThreadReplyController extends QuipThreadReplyController {
 
 	}
 
+
+	/**
+	 * Gets thread cache (if exists) and insert given comment to its place
+	 * @return void
+	 */
+	function updateCache($resource, $comment) {
+		$cacheKey = 'tickets/thread/'.$resource;
+		if (!$cache = $this->modx->cacheManager->get($cacheKey)) {return;}
+
+		$q = $this->modx->newQuery('quipCommentClosure', array('descendant' => $comment['id'], 'ancestor' => 0));
+		$q->select('depth');
+		if ($q->prepare() && $q->stmt->execute()) {
+			$comment['depth'] = $q->stmt->fetch(PDO::FETCH_COLUMN);
+		}
+		$comment['username'] = $this->modx->user->username;
+		if ($comment['parent'] == 0) {
+			$cache[] = $comment;
+		}
+		else {
+			$root = $added = 0;
+			$comments = array();
+			foreach ($cache as $v) {
+				if ($root == $comment['parent'] && $root > $v['parent'] && !$added) {
+					$comments[] = $comment;
+					$added = 1;
+				}
+				if ($v['id'] != $comment['id']) {
+					$comments[] = $v;
+				}
+				if ($v['depth'] == $comment['depth'] - 1) {
+					$root = $v['id'];
+				}
+			}
+			if (!$added) {$comments[] = $comment;}
+			$cache = $comments;
+		}
+
+		$this->modx->cacheManager->set($cacheKey, $cache);
+	}
 
 }
 
