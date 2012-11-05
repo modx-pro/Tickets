@@ -29,9 +29,11 @@ $settings[1]->fromArray(array(
 		,{name:"Bulleted List", className: "btn-bulleted", openWith:"	<li>", closeWith:"</li>", multiline:true, openBlockWith:"<ul>\n", closeBlockWith:"\n</ul>"}
 		,{name:"Numeric List", className: "btn-numeric", openWith:"	<li>", closeWith:"</li>", multiline:true, openBlockWith:"<ol>\n", closeBlockWith:"\n</ol>"}
 		,{separator:"---------------" }
+		,{name:"Quote", className: "btn-quote", openWith:"<blockquote>", closeWith:"</blockquote>"}
 		,{name:"Code", className: "btn-code", openWith:"<code>", closeWith:"</code>"}
 		,{name:"Link", className: "btn-link", openWith:"<a href=\"[![Link:!:http://]!]\">", closeWith:"</a>" }
 		,{name:"Picture", className: "btn-picture", replaceWith:"<img src=\"[![Source:!:http://]!]\" />" }
+		,{separator:"---------------" }
 		,{name:"Cut", className: "btn-cut", openWith:"<cut/>" }
 	]}'
 	,'xtype' => 'textarea'
@@ -49,6 +51,7 @@ $settings[2]->fromArray(array(
 		,{name:"Underline", className: "btn-underline", key:"U", openWith:"<u>", closeWith:"</u>" }
 		,{name:"Stroke through", className: "btn-stroke", key:"S", openWith:"<s>", closeWith:"</s>" }
 		,{separator:"---------------" }
+		,{name:"Quote", className: "btn-quote", openWith:"<blockquote>", closeWith:"</blockquote>"}
 		,{name:"Code", className: "btn-code", openWith:"<code>", closeWith:"</code>"}
 		,{name:"Link", className: "btn-link", openWith:"<a href=\"[![Link:!:http://]!]\">", closeWith:"</a>" }
 		,{name:"Picture", className: "btn-picture", replaceWith:"<img src=\"[![Source:!:http://]!]\" />" }
