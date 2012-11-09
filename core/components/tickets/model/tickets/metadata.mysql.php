@@ -6,4 +6,9 @@ $xpdo_meta_map = array (
     0 => 'TicketsSection',
     1 => 'Ticket',
   ),
+  'xPDOSimpleObject' => 
+  array (
+    0 => 'TicketComment',
+    1 => 'TicketThread',
+  ),
 );

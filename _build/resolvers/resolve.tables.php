@@ -13,11 +13,15 @@ if ($object->xpdo) {
 	switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 		case xPDOTransport::ACTION_INSTALL:
 		case xPDOTransport::ACTION_UPGRADE:
-			//$modx->addPackage('tickets',$modelPath);
-			//$manager = $modx->getManager();
-			//$manager->createObjectContainer('');
+			$modx->addPackage('tickets',$modelPath);
+			$modx->setLogLevel(modX::LOG_LEVEL_ERROR);
+
+			$manager = $modx->getManager();
+			$manager->createObjectContainer('TicketComment');
+			$manager->createObjectContainer('TicketThread');
+
 			if ($modx instanceof modX) {
-				$modx->addExtensionPackage('tickets',$modelPath);
+				$modx->addExtensionPackage('tickets', '[[++core_path]]components/tickets/model/');
 			}
 			break;
 

@@ -1,9 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model package="tickets" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" phpdoc-package="tickets">
+<model package="tickets" version="0.1.0" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" phpdoc-package="tickets">
 	<object class="TicketsSection" extends="modResource">
 		<composite alias="Tickets" class="Ticket" local="id" foreign="parent" cardinality="many" owner="local" />
 	</object>
+
 	<object class="Ticket" extends="modResource">
 		<aggregate alias="Section" class="TicketsSection" local="parent" foreign="id" cardinality="one" owner="foreign" />
 	</object>
+
+	<object class="TicketComment" table="tickets_comments" extends="xPDOSimpleObject">
+		<field key="thread" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="index" />
+		<field key="parent" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="index" />
+
+		<field key="text" dbtype="text" phptype="text" null="false" default="" />
+		<field key="name" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
+		<field key="email" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
+		<field key="ip" dbtype="varchar" precision="16" phptype="string" null="false" default="0.0.0.0" />
+
+		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" />
+		<field key="createdby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="index" />
+
+		<field key="editedon" dbtype="datetime" phptype="datetime" null="true" />
+		<field key="editedby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="index" />
+
+		<field key="deleted" dbtype="tinyint" precision="1" phptype="boolean" attributes="unsigned" null="false" default="0" index="index" />
+		<field key="deletedon" dbtype="datetime" phptype="datetime" null="true" />
+		<field key="deletedby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="index" />
+
+		<index alias="thread" name="thread" primary="false" unique="true" type="BTREE">
+			<column key="thread" length="" collation="A" null="false" />
+		</index>
+		<index alias="parent" name="parent" primary="false" unique="true" type="BTREE">
+			<column key="parent" length="" collation="A" null="false" />
+		</index>
+		<index alias="uid" name="uid" primary="false" unique="true" type="BTREE">
+			<column key="uid" length="" collation="A" null="false" />
+		</index>
+		<index alias="deleted" name="deleted" primary="false" unique="true" type="BTREE">
+			<column key="deleted" length="" collation="A" null="false" />
+		</index>
+		<index alias="deletedby" name="deletedby" primary="false" unique="true" type="BTREE">
+			<column key="deletedby" length="" collation="A" null="false" />
+		</index>
+
+		<aggregate alias="User" class="modUser" local="author" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Thread" class="TicketComments" local="thread" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Parent" class="TicketComment" local="parent" foreign="id" cardinality="one" owner="foreign" />
+		<composite alias="Children" class="TicketComment" local="id" foreign="parent" cardinality="many" owner="local" />
+	</object>
+
+	<object class="TicketThread" table="tickets_threads" extends="xPDOSimpleObject">
+		<field key="resource" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="unique" />
+
+		<field key="name" dbtype="varchar" precision="255" phptype="string" null="false" default="" index="unique" />
+		<field key="subscribers" dbtype="text" phptype="text" null="false" default="" />
+
+		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" />
+		<field key="createdby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
+
+		<field key="deleted" dbtype="tinyint" precision="1" phptype="boolean" attributes="unsigned" null="false" default="0" />
+		<field key="deletedon" dbtype="datetime" phptype="datetime" null="true" />
+		<field key="deletedby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
+
+		<index alias="resource" name="resource" primary="false" unique="true" type="BTREE">
+			<column key="resource" length="" collation="A" null="false" />
+		</index>
+		<index alias="name" name="name" primary="false" unique="true" type="BTREE">
+			<column key="name" length="" collation="A" null="false" />
+		</index>
+
+		<aggregate alias="Resource" class="modResource" local="resource" foreign="id" cardinality="one" owner="foreign" />
+		<composite alias="Children" class="TicketComment" local="id" foreign="thread" cardinality="many" owner="local" />
+	</object>
+
 </model>

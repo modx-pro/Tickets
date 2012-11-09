@@ -14,7 +14,7 @@
     <br/>
     <input type="hidden" name="tid" value="[[+id]]" />
 	<input type="hidden" name="action" value="updateTicket" />
-	<input type="button" class="btn" value="Предпросмотр" id="previewTicket" />
+	<input type="button" class="btn" value="Предпросмотр" onclick="previewTicket(this.form, this)"/>
 	<input type="submit" class="btn btn-primary" value="Отправить" />
 </form>
 [[+error:notempty=`<div class="alert alert-block alert-error">[[+error]]</div>`]]

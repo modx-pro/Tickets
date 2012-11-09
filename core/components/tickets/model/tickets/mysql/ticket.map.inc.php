@@ -1,7 +1,7 @@
 <?php
 $xpdo_meta_map['Ticket']= array (
   'package' => 'tickets',
-  'version' => NULL,
+  'version' => '0.1.0',
   'extends' => 'modResource',
   'fields' => 
   array (

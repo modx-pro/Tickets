@@ -1,5 +1,5 @@
 <?php
-class ModTicketGetListProcessor extends modObjectGetListProcessor {
+class TicketGetListProcessor extends modObjectGetListProcessor {
 	public $classKey = 'Ticket';
 	public $languageTopics = array('tickets:default');
 	public $defaultSortField = 'createdon';
@@ -25,4 +25,4 @@ class ModTicketGetListProcessor extends modObjectGetListProcessor {
 	}
 
 }
-return 'ModTicketGetListProcessor';
+return 'TicketGetListProcessor';

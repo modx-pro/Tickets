@@ -14,7 +14,7 @@ set_time_limit(0);
 /* define package */
 define('PKG_NAME','Tickets');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
-define('PKG_VERSION','0.1.1');
+define('PKG_VERSION','0.2.0');
 define('PKG_RELEASE','beta');
 
 /* define sources */
@@ -131,21 +131,6 @@ $attr = array(
 		),
 	),
 );
-$vehicle = $builder->createVehicle($category,$attr);
-
-$modx->log(modX::LOG_LEVEL_INFO,'Adding file resolvers to category...');
-$vehicle->resolve('file',array(
-	'source' => $sources['source_assets'],
-	'target' => "return MODX_ASSETS_PATH . 'components/';",
-));
-$vehicle->resolve('file',array(
-	'source' => $sources['source_core'],
-	'target' => "return MODX_CORE_PATH . 'components/';",
-));
-$vehicle->resolve('php',array(
-	'source' => $sources['resolvers'] . 'resolve.tables.php',
-));
-$builder->putVehicle($vehicle);
 
 /* load system settings */
 $settings = include $sources['data'].'transport.settings.php';
@@ -238,6 +223,25 @@ if (empty($menu)) {
 unset($vehicle,$menu);
 */
 /* now pack in the license file, readme and setup options */
+$vehicle = $builder->createVehicle($category,$attr);
+$modx->log(modX::LOG_LEVEL_INFO,'Adding resolvers to category...');
+$vehicle->resolve('file',array(
+	'source' => $sources['source_assets'],
+	'target' => "return MODX_ASSETS_PATH . 'components/';",
+));
+$vehicle->resolve('file',array(
+	'source' => $sources['source_core'],
+	'target' => "return MODX_CORE_PATH . 'components/';",
+));
+$vehicle->resolve('php',array(
+	'source' => $sources['resolvers'] . 'resolve.tables.php',
+));
+$vehicle->resolve('php',array(
+	'source' => $sources['resolvers'] . 'resolve.policy.php',
+));
+$modx->log(modX::LOG_LEVEL_INFO,'Packaged in resolvers.'); flush();
+$builder->putVehicle($vehicle);
+
 $builder->setPackageAttributes(array(
 	'changelog' => file_get_contents($sources['docs'] . 'changelog.txt')
 	,'license' => file_get_contents($sources['docs'] . 'license.txt')

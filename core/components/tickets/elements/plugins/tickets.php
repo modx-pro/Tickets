@@ -13,5 +13,4 @@ switch($modx->event->name) {
 				$modx->cacheManager->delete('tickets/latest.tickets');
 			}
 		}
-		break;
 }

@@ -14,7 +14,7 @@ function previewComment(form, button) {
 		,button: button
 		,beforeSubmit: function() {
 			//$(button).addClass('loading');
-			var text = $('textarea[name="comment"]',form).val();
+			var text = $('textarea[name="text"]',form).val();
 			var allSpacesRe = /\s+/g;
 			text = text.replace(allSpacesRe, "")
 			if(text == ''){
@@ -23,11 +23,8 @@ function previewComment(form, button) {
 			$(button).attr('disabled','disabled');
 		}
 		,success: function(data) {
-			data = $.parseJSON(data);
-			if (data.errors.length == 0) {
-				$('#comment-preview-placeholder').html(data.text).show();
-				$(button).removeAttr('disabled')
-			}
+			$('#comment-preview-placeholder').html(data).show();
+			$(button).removeAttr('disabled')
 		}
 	})
 	return false;
@@ -35,29 +32,33 @@ function previewComment(form, button) {
 
 
 
-function sendComment(form, button) {
+function saveComment(form, button) {
 	$(form).ajaxSubmit({
-		data: {action: 'sendComment' }
+		data: {action: 'saveComment' }
 		,form: form
 		,button: button
 		,beforeSubmit: function() {
 			//$(button).addClass('loading');
-			var text = $('textarea[name="comment"]',form).val();
-			var allSpacesRe = /\s+/g;
-			text = text.replace(allSpacesRe, "")
+			var text = $('textarea[name="text"]',form).val();
+			text = text.replace(/\s+/g, "")
 			if(text == ''){
 				return false;
 			}
 			$(button).attr('disabled','disabled');
 		}
-		,success: function(data) {
-			data = $.parseJSON(data);
-			var parent = $(data.text).attr('data-parent');
+		,success: function(response) {
+			response = $.parseJSON(response);
+			if (response.error == 1) {
+				$(button).removeAttr('disabled')
+				alert(response.message)
+				return;
+			}
+			var parent = $(response.data).attr('data-parent');
 			if (parent == 0) {
-				$('#comments').append(data.text)
+				$('#comments').append(response.data)
 			}
 			else {
-				$('#comment-'+parent+' > .comments-list').append(data.text)
+				$('#comment-'+parent+' > .comments-list').append(response.data)
 			}
 			$('#comment-preview-placeholder').html('').hide();
 

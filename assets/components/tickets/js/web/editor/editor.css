@@ -21,11 +21,19 @@
 	background-image:url(editor.png);
 	width:20px;
 	height:20px;
+	background-size: 220px 20px;
 	text-indent:-10000px;
 	background-repeat:no-repeat;
 	margin: 2px 3px;
 }
-
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+only screen and (-moz-min-device-pixel-ratio: 1.5),
+only screen and (-o-min-device-pixel-ratio: 3/2),
+only screen and (min-device-pixel-ratio: 1.5) {
+	.markItUpHeader ul a {
+		background-image: url(editor2x.png);
+	}
+}
 .markItUp .btn-bold a {background-position: 0px 0px;}
 .markItUp .btn-italic a {background-position: -20px 0px;}
 .markItUp .btn-underline a {background-position: -40px 0px;}

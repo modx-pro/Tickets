@@ -8,7 +8,7 @@ $(document).ready(function() {
 		$('#ticket-editor').markItUp(Tickets.config.editor.ticket);
 	}
 
-	// Предпросмотр перед отправкой тикета
+/*
 	$(document).on('click', '#previewTicket', function(e) {
 		var data = new Object();
 		data.parent = $('[name="parent"]').val();
@@ -34,33 +34,35 @@ $(document).ready(function() {
 		})
 		e.preventDefault();
 	})
+*/
 })
-/*
+// Предпросмотр перед отправкой тикета
 function previewTicket(form, button) {
 	$(form).ajaxSubmit({
 		data: {action: 'previewTicket' }
-		//,form: $(form)
+		,form: form
+		,button: button
 		,beforeSubmit: function() {
 			//$(button).addClass('loading');
-			var text = $('textarea[name="content"]',form).val();
-			var allSpacesRe = /\s+/g;
-			text = text.replace(allSpacesRe, "")
-			if(text == ''){
-				alert('Вы забыли ввести текст тикета');
+			var content = $('textarea[name="content"]',form).val();
+			content = content.replace(/\s+/g, "")
+			if(content == ''){
 				return false;
 			}
+			$(button).attr('disabled','disabled');
 		}
-		,success: function(data) {
-			data = $.parseJSON(data);
-			if (data.error == 1) {
-				$('#ticket-preview-placeholder').html('').addClass('hidden');
-				alert(data.message);
+		,success: function(response) {
+			response = $.parseJSON(response);
+			if (response.error == 1) {
+				$('#ticket-preview-placeholder').html('').hide();
+				alert(response.message);
+				$(button).removeAttr('disabled');
 			}
 			else {
-				$('#ticket-preview-placeholder').html(data.data).removeClass('hidden');
+				$('#ticket-preview-placeholder').html(response.data).show();
+				$(button).removeAttr('disabled');
+				//prettyPrint();
 			}
-			return false;
 		}
 	})
 }
-	*/

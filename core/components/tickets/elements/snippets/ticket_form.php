@@ -12,11 +12,12 @@ if (!$modx->user->isAuthenticated()) {
 $output = null;
 switch ($action) {
 	case 'getTicketForm': $output = $Tickets->getTicketForm(array('tid' => $tid)); break;
+	case 'previewTicket': $output = $Tickets->previewTicket($_POST); break;
 	case 'saveTicket': $output = $Tickets->saveTicket($_POST); break;
 	case 'updateTicket': $output = $Tickets->saveTicket($_POST); break;
-	case 'previewTicket': $output = $Tickets->previewTicket($_POST['data']); break;
 	case 'previewComment': $output = null; break;
-	case 'sendComment': $output = null; break;
+	case 'saveComment': $output = null; break;
+	case 'updateComment': $output = null; break;
 }
 
 if (is_array($output)) {

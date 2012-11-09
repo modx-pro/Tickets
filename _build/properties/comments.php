@@ -7,6 +7,13 @@
  */
 $properties = array(
 	array(
+		'name' => 'fastMode'
+		,'desc' => 'tickets.fastMode'
+		,'type' => 'combo-boolean'
+		,'value' => true
+		,'lexicon' => 'tickets:properties'
+	)
+	,array(
 		'name' => 'useCss'
 		,'desc' => 'tickets.useCss'
 		,'type' => 'combo-boolean'
@@ -16,13 +23,6 @@ $properties = array(
 	,array(
 		'name' => 'useJs'
 		,'desc' => 'tickets.useJs'
-		,'type' => 'combo-boolean'
-		,'value' => true
-		,'lexicon' => 'tickets:properties'
-	)
-	,array(
-		'name' => 'useGravatar'
-		,'desc' => 'tickets.useGravatar'
 		,'type' => 'combo-boolean'
 		,'value' => true
 		,'lexicon' => 'tickets:properties'
@@ -38,7 +38,7 @@ $properties = array(
 		'name' => 'gravatarIcon'
 		,'desc' => 'tickets.gravatarIcon'
 		,'type' => 'textfield'
-		,'value' => 'identicon'
+		,'value' => 'mm'
 		,'lexicon' => 'tickets:properties'
 	)
 	,array(
@@ -56,24 +56,24 @@ $properties = array(
 		,'lexicon' => 'tickets:properties'
 	)
 	,array(
-		'name' => 'nameField'
-		,'desc' => 'tickets.useGravatar'
-		,'type' => 'textfield'
-		,'value' => 'fullname'
-		,'lexicon' => 'tickets:properties'
-	)
-	,array(
-		'name' => 'tplAddComment'
-		,'desc' => 'tickets.tplAddComment'
+		'name' => 'tplCommentForm'
+		,'desc' => 'tickets.tplCommentForm'
 		,'type' => 'textfield'
 		,'value' => 'tpl.Tickets.comment.form'
 		,'lexicon' => 'tickets:properties'
 	)
 	,array(
-		'name' => 'tplComment'
-		,'desc' => 'tickets.tplComment'
+		'name' => 'tplCommentAuth'
+		,'desc' => 'tickets.tplCommentAuth'
 		,'type' => 'textfield'
-		,'value' => 'tpl.Tickets.comment.one'
+		,'value' => 'tpl.Tickets.comment.one.auth'
+		,'lexicon' => 'tickets:properties'
+	)
+	,array(
+		'name' => 'tplCommentGuest'
+		,'desc' => 'tickets.tplCommentGuest'
+		,'type' => 'textfield'
+		,'value' => 'tpl.Tickets.comment.one.guest'
 		,'lexicon' => 'tickets:properties'
 	)
 	,array(
@@ -91,17 +91,17 @@ $properties = array(
 		,'lexicon' => 'tickets:properties'
 	)
 	,array(
-		'name' => 'maxDepth'
-		,'desc' => 'tickets.maxDepth'
-		,'type' => 'numberfield'
-		,'value' => 10
+		'name' => 'tplCommentEmailOwner'
+		,'desc' => 'tickets.tplCommentEmailOwner'
+		,'type' => 'textfield'
+		,'value' => 'tpl.Tickets.comment.email.owner'
 		,'lexicon' => 'tickets:properties'
 	)
 	,array(
-		'name' => 'closeAfter'
-		,'desc' => 'tickets.closeAfter'
-		,'type' => 'numberfield'
-		,'value' => 0
+		'name' => 'tplCommentEmailReply'
+		,'desc' => 'tickets.tplCommentEmailReply'
+		,'type' => 'textfield'
+		,'value' => 'tpl.Tickets.comment.email.reply'
 		,'lexicon' => 'tickets:properties'
 	)
 
