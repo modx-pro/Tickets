@@ -23,6 +23,7 @@ $_lang['ticket_err_wrong_resource'] = 'Указан неверный тикет.
 $_lang['ticket_err_wrong_thread'] = 'Указана неверная ветвь комментариев.';
 $_lang['ticket_err_access_denied'] = 'Доступ запрещен.';
 $_lang['ticket_err_form'] = 'В форме содержатся ошибки. Пожалуйста, исправьте их.';
+$_lang['ticket_err_empty_comment'] = 'Комментарий не может быть пустым.';
 $_lang['permission_denied'] = 'У вас недостаточно прав для этого действия.';
 $_lang['field_required'] = 'Это поле обязательно.';
 

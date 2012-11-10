@@ -13,7 +13,10 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 		if (!$this->thread = $this->modx->getObject('TicketThread', array('name' => $this->getProperty('thread')))) {
 			return $this->modx->lexicon('ticket_err_wrong_thread');
 		}
-
+		$text = trim($this->getProperty('text'));
+		if (empty($text)) {
+			return $this->modx->lexicon('ticket_err_empty_comment');
+		}
 		$this->setProperties(array(
 			'thread' => $this->thread->id
 			,'createdby' => $this->modx->user->id

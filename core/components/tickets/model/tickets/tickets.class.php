@@ -268,7 +268,17 @@ class Tickets {
 	 * @return mixed rendered preview of Comment for frontend
 	 */
 	public function previewComment($data = array()) {
-		return $this->Jevix($data['text'], 'Comment');
+		$comment = $this->modx->newObject('TicketComment', array(
+			'id' => '0'
+			,'text' => $this->Jevix($data['text'], 'Comment')
+			,'name' => $this->modx->user->Profile->fullname
+			,'email' => $this->modx->user->Profile->email
+			,'createdby' => $this->modx->user->id
+			,'createdon' => date('Y-m-d H:i:s')
+		));
+		$comment->set('id', '0');
+		$comment = $this->prepareComment($comment->toArray());
+		return $this->modx->getChunk($this->config['tplCommentGuest'], $comment);
 	}
 
 

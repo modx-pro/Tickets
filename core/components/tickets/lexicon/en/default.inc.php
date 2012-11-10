@@ -23,6 +23,7 @@ $_lang['ticket_err_wrong_resource'] = 'Wrong ticket specified.';
 $_lang['ticket_err_wrong_thread'] = 'Wrong comments thread specified.';
 $_lang['ticket_err_access_denied'] = 'Access denied';
 $_lang['ticket_err_form'] = 'Form contains errors. Please, fix it.';
+$_lang['ticket_err_empty_comment'] = 'Comment can not be empty.';
 $_lang['permission_denied'] = 'You do not have permissions for this action.';
 $_lang['field_required'] = 'This field is required.';
 

@@ -4,7 +4,7 @@
 			<img src="[[+avatar]]" class="ticket-avatar" alt="" />
 			<span class="ticket-comment-author">[[+name]]</span>
 			<span class="ticket-comment-createdon">[[+createdon]]</span>
-			<span class="ticket-comment-link"><a href="[[~[[+resource]]]]#comment-[[+id]]">#</a></span>
+			<span class="ticket-comment-link"><a href="[[+url]]#comment-[[+id]]">#</a></span>
 		</div>
 
 		<div class="ticket-comment-text">
