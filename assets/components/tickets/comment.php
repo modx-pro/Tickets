@@ -9,4 +9,7 @@ $modx->setLogLevel(modX::LOG_LEVEL_ERROR);
 $modx->setLogTarget('FILE');
 $modx->error->message = null;
 
+if (!$modx->user->isAuthenticated()) {
+	exit('Access denied');
+}
 return $modx->runSnippet('TicketComments', $_POST);

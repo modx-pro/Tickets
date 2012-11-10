@@ -24,6 +24,12 @@ $permissions[0][] = $modx->newObject('modAccessPermission',array(
 	'value' => true,
 ));
 
+$permissions[0][] = $modx->newObject('modAccessPermission',array(
+	'name' => 'comment_save',
+	'description' => 'comment_save',
+	'value' => true,
+));
+
 $permissions[1][] = $modx->newObject('modAccessPermission',array(
 	'name' => 'section_add_children',
 	'description' => 'section_add_children',

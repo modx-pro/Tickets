@@ -295,6 +295,7 @@ class Tickets {
 				,'data' => $this->modx->getChunk($this->config['tplCommentAuth'], $this->prepareComment($comment))
 				,'count' => $this->getTicketComments($this->config['thread'])
 			);
+			$this->modx->cacheManager->delete('tickets/latest.comments');
 			$this->sendCommentMails($comment);
 		}
 		return $arr;
