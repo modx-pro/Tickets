@@ -5,3 +5,5 @@
 	display: none;
 	margin: 10px 0;
 }
+
+.form-actions .checkbox {display:inline-block;}

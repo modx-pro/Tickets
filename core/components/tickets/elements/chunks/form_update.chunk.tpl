@@ -10,11 +10,13 @@
 	<br/>
 	<textarea class="input-xxlarge" placeholder="Опишите вашу проблему" name="content" id="ticket-editor" rows="20">[[+content]]</textarea>
 	<span class="error">[[+error.content]]</span>
-	
-    <br/>
-    <input type="hidden" name="tid" value="[[+id]]" />
-	<input type="hidden" name="action" value="updateTicket" />
-	<input type="button" class="btn" value="Предпросмотр" onclick="previewTicket(this.form, this)"/>
-	<input type="submit" class="btn btn-primary" value="Отправить" />
+
+	<div class="form-actions">
+		<input type="hidden" name="tid" value="[[+id]]" />
+		<input type="hidden" name="action" value="updateTicket" />
+		<input type="button" class="btn" value="Предпросмотр" onclick="previewTicket(this.form, this)"/>
+		<input type="submit" class="btn btn-primary" value="Отправить" />&nbsp;&nbsp;
+		<label class="checkbox"><input type="checkbox" name="published" value="1" [[+published:is=`1`:then=`checked`]] /> Опубликовать?</label>
+	</div>
 </form>
 [[+error:notempty=`<div class="alert alert-block alert-error">[[+error]]</div>`]]

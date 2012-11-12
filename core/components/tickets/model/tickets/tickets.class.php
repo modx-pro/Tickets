@@ -141,7 +141,7 @@ class Tickets {
 					return $response->getMessage();
 				}
 				$object = $response->response['object'];
-				if ($object['createdby'] != $this->modx->user->id) {
+				if ($object['createdby'] != $this->modx->user->id  && !$this->modx->hasPermission('edit_document')) {
 					return $this->modx->lexicon('ticket_err_wrong_user');
 				}
 				unset($data['parent']);
@@ -213,19 +213,24 @@ class Tickets {
 			$response = $this->modx->runProcessor('resource/create', $data);
 		}
 		if ($response->isError()) {
-			if (count($response->errors)) {
+			$message = $response->getMessage();
+			if (is_array($message) && !empty($message['message'])) {
+				$data['error'] = $message['message'];
+			}
+			else if (count($response->errors)) {
 				foreach ($response->errors as $v) {
 					$data['error.'.$v->field] = $v->message;
 				}
 				$data['error'] = $this->modx->lexicon('ticket_err_form');
 			}
 			else {
-				$data['error'] = $response->getMessage();
+				$data['error'] = $message;
 			}
 			return $this->getTicketForm($data);
 		}
 		$id = $response->response['object']['id'];
 
+		if ($data['published'] != 1) {$id = $data['parent'];}
 		$this->modx->sendRedirect($this->modx->makeUrl($id,'','','full'));
 	}
 
@@ -619,8 +624,8 @@ class Tickets {
 		$this->modx->mail->set(modMail::MAIL_SUBJECT, $data['subject']);
 		$this->modx->mail->set(modMail::MAIL_BODY, $data['message']);
 		$this->modx->mail->set(modMail::MAIL_FROM, $this->modx->getOption('emailsender', $this->config, $this->modx->getOption('emailsender')));
-		$this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->modx->getOption('mailfrom', $this->config, $this->modx->getOption('sitename')));
-		$this->modx->mail->set(modMail::MAIL_SENDER, $this->modx->getOption('mailfrom', $this->config, $this->modx->getOption('sitename')));
+		$this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->modx->getOption('mailfrom', $this->config, $this->modx->getOption('site_name')));
+		$this->modx->mail->set(modMail::MAIL_SENDER, $this->modx->getOption('mailfrom', $this->config, $this->modx->getOption('site_name')));
 		$this->modx->mail->address('to', $data['to']);
 		$this->modx->mail->setHTML(true);
 		if (!$this->modx->mail->send()) {
