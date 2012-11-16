@@ -11,6 +11,7 @@ require_once MODX_CORE_PATH.'model/modx/processors/resource/update.class.php';
 
 class TicketsSection extends modResource {
 	public $showInContextMenu = true;
+	public $allowChildrenResources = false;
 
 	function __construct(xPDO & $xpdo) {
 		parent :: __construct($xpdo);

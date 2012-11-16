@@ -30,3 +30,10 @@ $_lang['field_required'] = 'Это поле обязательно.';
 $_lang['ticket_comment_email_owner'] = 'Новый комментарий к вашему тикету "[[+pagetitle]]"';
 $_lang['ticket_comment_email_reply'] = 'Ответ на ваш комментарий к тикету "[[+pagetitle]]"';
 $_lang['ticket_comment_deleted_text'] = 'Комментарий был удален.';
+
+$_lang['ticket_publishedon'] = 'Опубликован';
+$_lang['ticket_pagetitle'] = 'Заголовок';
+$_lang['ticket_author'] = 'Автор';
+$_lang['ticket_delete'] = 'Удалить тикет';
+$_lang['ticket_delete_text'] = 'Вы уверены, что хотите удалить этот тикет?';
+$_lang['ticket_create'] = 'Создать тикет';

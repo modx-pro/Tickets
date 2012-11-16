@@ -30,3 +30,12 @@ $_lang['field_required'] = 'This field is required.';
 $_lang['ticket_comment_email_owner'] = 'New comment for your ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_email_reply'] = 'Reply to your comment for ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_deleted_text'] = 'This comment was deleted.';
+
+$_lang['ticket_publishedon'] = 'Published On';
+$_lang['ticket_pagetitle'] = 'Title';
+$_lang['ticket_author'] = 'Author';
+$_lang['ticket_delete'] = 'Delete ticket';
+$_lang['ticket_delete_text'] = 'Are you sure you want to delete this ticket?';
+$_lang['ticket_create'] = 'Create ticket?';
+
+
