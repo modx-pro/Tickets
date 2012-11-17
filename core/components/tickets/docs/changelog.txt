@@ -1,9 +1,14 @@
 Changelog for Tickets.
 
+0.3.1
+==========
+- Security fixes
+- comment_save permission is enabled in TicketsUserPolicy by default
+- Snippet tagCut
+
 0.3.0
 ==========
 - Custom manager page for TicketsSection
-
 
 0.2.0
 ==========

@@ -41,6 +41,7 @@ class Tickets {
 
 			,'fastMode' => true
 			,'dateFormat' => '%d %b %Y %H:%M'
+			,'charset' => $this->modx->getOption('modx_charset')
 		),$config);
 
 		$this->modx->addPackage('tickets',$this->config['modelPath']);
@@ -141,12 +142,14 @@ class Tickets {
 					return $response->getMessage();
 				}
 				$object = $response->response['object'];
-				if ($object['createdby'] != $this->modx->user->id  && !$this->modx->hasPermission('edit_document')) {
+				if ($object['class_key'] != 'Ticket' || ($object['createdby'] != $this->modx->user->id  && !$this->modx->hasPermission('edit_document'))) {
 					return $this->modx->lexicon('ticket_err_wrong_user');
 				}
 				unset($data['parent']);
 				$data = array_merge($object,$data);
-
+				foreach ($data as $k => $v) {
+					$data[$k] = htmlentities($v, ENT_QUOTES, $this->config['charset']);
+				}
 				$tpl = $this->config['tplFormUpdate'];
 			}
 		}

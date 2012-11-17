@@ -22,7 +22,7 @@ $snippets[1]= $modx->newObject('modSnippet');
 $snippets[1]->fromArray(array(
 	'id' => 0,
 	'name' => 'TicketComments',
-	'description' => 'Modification of Quip with Ajax support. Made for Tickets',
+	'description' => 'Native comments for tickets',
 	'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/comments.php'),
 ),'',true,true);
 $properties = include $sources['build'].'properties/comments.php';
@@ -35,6 +35,17 @@ $snippets[2]->fromArray(array(
 	'name' => 'TicketLatest',
 	'description' => 'Snippet for retrieving last tickets and comments',
 	'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/ticket_latest.php'),
+),'',true,true);
+$properties = include $sources['build'].'properties/ticket_latest.php';
+$snippets[2]->setProperties($properties);
+unset($properties);
+
+$snippets[3]= $modx->newObject('modSnippet');
+$snippets[3]->fromArray(array(
+	'id' => 0,
+	'name' => 'tagCut',
+	'description' => 'Output filter for displaying content of ticket with various snippets, like getResources',
+	'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/tag_cut.php'),
 ),'',true,true);
 $properties = include $sources['build'].'properties/ticket_latest.php';
 $snippets[2]->setProperties($properties);

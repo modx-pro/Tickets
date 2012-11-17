@@ -15,7 +15,7 @@ $policies[0]->fromArray(array (
 	'parent' => 0,
 	'class' => '',
 	'lexicon' => 'tickets:permissions',
-	'data' => '{"ticket_delete":true,"ticket_publish":true,"ticket_save":true}',
+	'data' => '{"ticket_delete":true,"ticket_publish":true,"ticket_save":true,"comment_save":true}',
 ), '', true, true);
 
 $policies[1]= $modx->newObject('modAccessPolicy');
