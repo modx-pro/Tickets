@@ -24,7 +24,7 @@ Tickets.grid.Section = function(config) {
 		,cls: 'tickets-grid'
 		,plugins: [this.exp]
 		,columns: [this.exp
-			,{header: _('ticket_publishedon'),dataIndex: 'publishedon',width: 80,sortable: true,renderer: {fn:this._renderPublished,scope:this}}
+			,{header: _('ticket_publishedon'),dataIndex: 'publishedon',width: 50,sortable: true,renderer: {fn:this._renderPublished,scope:this}}
 			,{header: _('ticket_pagetitle'),dataIndex: 'pagetitle',id: 'main',width: 200,sortable: true,renderer: {fn:this._renderPageTitle,scope:this}}
 			,{header: _('ticket_author'),dataIndex: 'createdby_username',width: 150,sortable: true,renderer: {fn:this._renderAuthor,scope:this}}
 			,{header: '<img src="'+Tickets.assets_url+'img/comments-icon-w.png" alt="" class="tickets-comments-col-header" />',dataIndex: 'comments',width: 50,sortable: true,renderer: {fn:this._renderComments,scope:this}}
@@ -38,13 +38,14 @@ Tickets.grid.Section = function(config) {
 		,{
 			xtype: 'textfield'
 			,name: 'query'
+			,width: 200
 			,id: 'tickets-ticket-search'
 			,emptyText: _('search')
 			,listeners: {render: {fn: function(tf) {tf.getEl().addKeyListener(Ext.EventObject.ENTER, function() {this.search(tf);}, this);},scope: this}}
 		},{
 			xtype: 'button'
-			,id: 'modx-filter-clear'
-			,text: _('filter_clear')
+			,id: 'modx-filter-tickets-clear'
+			,text: _('ticket_clear')
 			,listeners: {
 				'click': {fn: this.clearFilter, scope: this}
 			}

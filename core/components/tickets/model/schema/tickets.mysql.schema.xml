@@ -69,7 +69,6 @@
 			<column key="name" length="" collation="A" null="false" />
 		</index>
 
-		<aggregate alias="Resource" class="modResource" local="resource" foreign="id" cardinality="one" owner="foreign" />
 		<composite alias="Children" class="TicketComment" local="id" foreign="thread" cardinality="many" owner="local" />
 	</object>
 

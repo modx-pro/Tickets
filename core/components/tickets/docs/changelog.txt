@@ -1,5 +1,10 @@
 Changelog for Tickets.
 
+0.3.0
+==========
+- Custom manager page for TicketsSection
+
+
 0.2.0
 ==========
 - Removed dependency on Quip. Now comments are very fast and handy.

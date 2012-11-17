@@ -24,9 +24,9 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 		if ($query = $this->getProperty('query',null)) {
 			$queryWhere = array(
-				'pagetitle:LIKE' => '%'.$query.'%',
-				'OR:description:LIKE' => '%'.$query.'%',
-				'OR:introtext:LIKE' => '%'.$query.'%',
+				'pagetitle:LIKE' => '%'.$query.'%'
+				,'OR:description:LIKE' => '%'.$query.'%'
+				,'OR:introtext:LIKE' => '%'.$query.'%'
 			);
 			$c->where($queryWhere);
 		}
@@ -93,7 +93,7 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 			);
 		} else {
 			$resourceArray['actions'][] = array(
-				'className' => 'delete red',
+				'className' => 'delete',
 				'text' => $this->modx->lexicon('delete'),
 			);
 		}

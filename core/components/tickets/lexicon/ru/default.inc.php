@@ -6,6 +6,7 @@
  * @subpackage lexicon
  */
 $_lang['tickets'] = 'Тикеты';
+$_lang['comments'] = 'Комментарии';
 $_lang['tickets_section'] = 'Раздел тикетов';
 $_lang['ticket'] = 'Тикет';
 
@@ -26,10 +27,25 @@ $_lang['ticket_err_form'] = 'В форме содержатся ошибки. П
 $_lang['ticket_err_empty_comment'] = 'Комментарий не может быть пустым.';
 $_lang['permission_denied'] = 'У вас недостаточно прав для этого действия.';
 $_lang['field_required'] = 'Это поле обязательно.';
+$_lang['ticket_clear'] = 'Очистить';
 
 $_lang['ticket_comment_email_owner'] = 'Новый комментарий к вашему тикету "[[+pagetitle]]"';
 $_lang['ticket_comment_email_reply'] = 'Ответ на ваш комментарий к тикету "[[+pagetitle]]"';
 $_lang['ticket_comment_deleted_text'] = 'Комментарий был удален.';
+$_lang['ticket_comment_update'] = 'Изменить комментарий';
+$_lang['ticket_comment_remove'] = 'Уничтожить вместе с потомками';
+$_lang['ticket_comment_remove_confirm'] = 'Вы уверены, что хотите окончательно удалить <b>ветвь комментариев</b>, начиная с этого? Эта операция необратима!';
+$_lang['ticket_comment_delete'] = 'Удалить комментарий';
+$_lang['ticket_comment_undelete'] = 'Восстановить комментарий';
+$_lang['ticket_comment_viewauthor'] = 'Открыть страницу автора';
+
+$_lang['ticket_comment_name'] = 'Автор';
+$_lang['ticket_comment_text'] = 'Комментарий';
+$_lang['ticket_comment_createdon'] = 'Написан';
+$_lang['ticket_comment_editedon'] = 'Изменен';
+$_lang['ticket_comment_deletedon'] = 'Удалён';
+$_lang['ticket_comment_email'] = 'Email';
+$_lang['ticket_comment_view'] = 'Открыть комментарий на сайте';
 
 $_lang['ticket_publishedon'] = 'Опубликован';
 $_lang['ticket_pagetitle'] = 'Заголовок';

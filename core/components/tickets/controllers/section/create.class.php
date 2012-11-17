@@ -41,7 +41,6 @@ class TicketsSectionCreateManagerController extends ResourceCreateManagerControl
 		$this->addJavascript($mgrUrl.'assets/modext/sections/resource/create.js');
 		$this->addJavascript($ticketsJsUrl.'tickets.js');
 		$this->addJavascript($ticketsJsUrl.'section/section.common.js');
-		//$this->addJavascript($ticketsJsUrl.'section/section.grid.js');
 		$this->addLastJavascript($ticketsJsUrl.'section/create.js');
 		$this->addHtml('
 		<script type="text/javascript">

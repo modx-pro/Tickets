@@ -329,11 +329,17 @@ class Tickets {
 		if (!$snippet = $this->modx->getObject('modSnippet', array('name' => 'Jevix'))) {
 			return false;
 		}
+		// Loading parser if needed - it is for mgr context
+		if (!is_object($this->modx->parser)) {
+			$this->modx->getParser();
+		}
+
 		$params = array();
 		if ($setName) {
 			$params = $snippet->getPropertySet($setName);
 		}
 		$text = preg_replace('/\{\{\{\{\(*.?\)\}\}\}\}/','',$text);
+		$text = html_entity_decode($text);
 		$params['input'] =  str_replace(array('[',']'), array('{{{{{','}}}}}'), $text);
 
 		$snippet->setCacheable(false);

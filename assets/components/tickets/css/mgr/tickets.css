@@ -1,6 +1,19 @@
 .icon-ticketssection .x-tree-node-icon {
 	background-image: url(../../img/tickets_section.png) !important;
 }
+
+.tickets-comment-row.comment-deleted {
+	color: #AAA;
+}
+
+.tickets-comment-row .resource-link {
+	color: #005580;
+	text-decoration: none;
+}
+.tickets-comment-row .resource-link:hover {
+	text-decoration: underline;
+}
+
 .tickets-grid-date {
 	color:#a0a0a0;
 	font-family:arial, Helvetica, sans-serif;

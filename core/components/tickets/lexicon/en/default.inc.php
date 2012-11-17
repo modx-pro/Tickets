@@ -6,6 +6,7 @@
  * @subpackage lexicon
  */
 $_lang['tickets'] = 'Tickets';
+$_lang['comments'] = 'Comments';
 $_lang['tickets_section'] = 'Tickets ticket';
 $_lang['ticket'] = 'Ticket';
 
@@ -26,10 +27,26 @@ $_lang['ticket_err_form'] = 'Form contains errors. Please, fix it.';
 $_lang['ticket_err_empty_comment'] = 'Comment can not be empty.';
 $_lang['permission_denied'] = 'You do not have permissions for this action.';
 $_lang['field_required'] = 'This field is required.';
+$_lang['ticket_clear'] = 'Clear';
+
 
 $_lang['ticket_comment_email_owner'] = 'New comment for your ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_email_reply'] = 'Reply to your comment for ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_deleted_text'] = 'This comment was deleted.';
+$_lang['ticket_comment_update'] = 'Update this comment';
+$_lang['ticket_comment_remove'] = 'Remove with children';
+$_lang['ticket_comment_remove_confirm'] = 'Are you sure you want to permanently remove <b>comments thread</b>, starting with this? This operation is irreversible!';
+$_lang['ticket_comment_delete'] = 'Delete this comment';
+$_lang['ticket_comment_undelete'] = 'Undelete this comment';
+$_lang['ticket_comment_viewauthor'] = 'Open authors page';
+
+$_lang['ticket_comment_name'] = 'Author';
+$_lang['ticket_comment_text'] = 'Comment';
+$_lang['ticket_comment_createdon'] = 'Created on';
+$_lang['ticket_comment_editedon'] = 'Edited on';
+$_lang['ticket_comment_deletedon'] = 'Deleted on';
+$_lang['ticket_comment_email'] = 'Email';
+$_lang['ticket_comment_view'] = 'View comment on site';
 
 $_lang['ticket_publishedon'] = 'Published On';
 $_lang['ticket_pagetitle'] = 'Title';
