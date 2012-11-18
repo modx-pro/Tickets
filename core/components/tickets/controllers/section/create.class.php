@@ -67,12 +67,4 @@ class TicketsSectionCreateManagerController extends ResourceCreateManagerControl
 		$this->loadRichTextEditor();
 	}
 
-	/**
-	 * Return the pagetitle
-	 *
-	 * @return string
-	 */
-	public function getPageTitle() {
-		return $this->modx->lexicon('articlessection_new');
-	}
 }

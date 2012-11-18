@@ -9,6 +9,7 @@ $_lang['tickets'] = 'Тикеты';
 $_lang['comments'] = 'Комментарии';
 $_lang['tickets_section'] = 'Раздел тикетов';
 $_lang['ticket'] = 'Тикет';
+$_lang['ticket_all'] = 'Все';
 
 $_lang['tickets_section_create_here'] = 'Раздел с тикетами';
 $_lang['tickets_section_new'] = 'Новый раздел тикетов';

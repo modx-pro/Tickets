@@ -9,6 +9,7 @@ $_lang['tickets'] = 'Tickets';
 $_lang['comments'] = 'Comments';
 $_lang['tickets_section'] = 'Tickets ticket';
 $_lang['ticket'] = 'Ticket';
+$_lang['ticket_all'] = 'Все';
 
 $_lang['tickets_section_create_here'] = 'Section with tickets';
 $_lang['tickets_section_new'] = 'New tickes ticket';

@@ -27,15 +27,26 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 		}
 
 		if ($query = $this->getProperty('query',null)) {
-			$c->where(array(
-				'TicketComment.text:LIKE' => '%'.$query.'%'
-			,'OR:name:LIKE' => '%'.$query.'%'
-			,'OR:email:LIKE' => '%'.$query.'%'
-			));
+			if (is_numeric($query)) {
+				$c->where(array(
+					'TicketComment.id:=' => $query
+					,'OR:TicketComment.parent:=' => $query
+				));
+
+			}
+			else {
+				$c->where(array(
+					'TicketComment.text:LIKE' => '%'.$query.'%'
+					,'OR:TicketComment.name:LIKE' => '%'.$query.'%'
+					,'OR:TicketComment.email:LIKE' => '%'.$query.'%'
+				));
+			}
 		}
 
 		$c->limit($this->getProperty('limit',10),$this->getProperty('start',0));
-		$c->sortby('TicketComment.createdon', 'DESC');
+		if (!$this->getProperty('sort')) {
+			$c->sortby('TicketComment.createdon', 'DESC');
+		}
 
 
 		$c->select($this->modx->getSelectColumns('TicketComment','TicketComment'));

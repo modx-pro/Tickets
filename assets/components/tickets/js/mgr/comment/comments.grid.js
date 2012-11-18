@@ -6,6 +6,7 @@ Tickets.grid.Comments = function(config) {
 		,baseParams: {
 			action: 'mgr/comment/getlist'
 			,section: config.section
+			,parents: config.parents
 		}
 		,fields: ['id','text','name','createdby','parent','pagetitle'
 			,'createdon','createdby'
@@ -16,12 +17,12 @@ Tickets.grid.Comments = function(config) {
 		,paging: true
 		,remoteSort: true
 		,columns: [
-			{header: _('id'),dataIndex: 'id',width: 50}
-			,{header: _('parent'),dataIndex: 'parent',width: 50}
-			,{header: _('text'),dataIndex: 'text',width: 250}
-			,{header: _('name'),dataIndex: 'name',width: 150, renderer: this.renderUserLink}
-			,{header: _('createdon'),dataIndex: 'createdon',width: 100}
-			,{header: _('ticket'),dataIndex: 'pagetitle', width: 100, renderer: this.renderResourceLink}
+			{header: _('id'),dataIndex: 'id',width: 50, sortable: true}
+			,{header: _('parent'),dataIndex: 'parent',width: 50, sortable: true}
+			,{header: _('text'),dataIndex: 'text',width: 300}
+			,{header: _('name'),dataIndex: 'name',width: 100, renderer: this.renderUserLink}
+			,{header: _('createdon'),dataIndex: 'createdon',width: 100, sortable: true}
+			,{header: _('ticket'),dataIndex: 'pagetitle', width: 100, renderer: this.renderResourceLink, hidden: config.hide_tickets}
 		]
 		,tbar: ['->'
 		,{

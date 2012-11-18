@@ -93,11 +93,11 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	 */
 	public function beforeSet() {
 		$this->published = $this->getProperty('published', 0);
-		if (!$this->getProperty('content')) {
-			$this->addFieldError('content', $this->modx->lexicon('field_required'));
-		}
 		if (!$this->getProperty('pagetitle')) {
 			$this->addFieldError('pagetitle', $this->modx->lexicon('field_required'));
+		}
+		if (!$this->getProperty('content') && $this->modx->context->key != 'mgr') {
+			$this->addFieldError('content', $this->modx->lexicon('field_required'));
 		}
 		if ($this->hasErrors()) {return false;}
 		$this->setProperties(array(
@@ -189,7 +189,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		if (!$this->getProperty('pagetitle')) {
 			$this->addFieldError('pagetitle', $this->modx->lexicon('field_required'));
 		}
-		if (!$this->getProperty('content')) {
+		if (!$this->getProperty('content') && $this->modx->context->key != 'mgr') {
 			$this->addFieldError('content', $this->modx->lexicon('field_required'));
 		}
 		if ($this->hasErrors()) {return false;}

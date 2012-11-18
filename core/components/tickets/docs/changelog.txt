@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+0.3.2
+==========
+- Custom manager page for Ticket
+
 0.3.1
 ==========
 - Security fixes

@@ -12,7 +12,7 @@ class LatestCommentsGetListProcessor extends modObjectGetListProcessor {
 		$q->select('DISTINCT(`TicketThread`.`id`)');
 		$q->sortby('TicketComment.createdon', 'DESC');
 		$parents = $this->getProperty('parents');
-		$q->where(array('TicketThread.resource' != 0));
+		$q->where(array('TicketThread.resource:!=' => 0));
 		if ($parents && is_array($parents)) {
 			$q->where(array('TicketThread.resource:IN' => $parents));
 		}
