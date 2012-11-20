@@ -1,6 +1,6 @@
 <?php
 /**
- * The create manager controller for TicketsSection.
+ * The create manager controller for Ticket.
  *
  * @package tickets
  */

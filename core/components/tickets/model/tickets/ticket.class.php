@@ -85,14 +85,21 @@ class Ticket extends modResource {
 class TicketCreateProcessor extends modResourceCreateProcessor {
 	public $permission = 'ticket_save';
 	public $languageTopics = array('access','resource','tickets:default');
-	public $published = 0;
+	private $published = 0;
+	private $publishedon = 0;
+	private $publishedby = 0;
 
 	/**
 	 * {@inheritDoc}
 	 * @return mixed
 	 */
 	public function beforeSet() {
-		$this->published = $this->getProperty('published', 0);
+		$published = $this->getProperty('published');
+		$this->published = empty($published) || $published === 'false' ? 0 : 1;
+		if (!$this->publishedon = $this->getProperty('publishedon')) {$this->publishedon = time();}
+		if (!$this->publishedby = $this->getProperty('publishedby')) {$this->publishedby = $this->modx->user->id;}
+
+		parent::beforeSet();
 		if (!$this->getProperty('pagetitle')) {
 			$this->addFieldError('pagetitle', $this->modx->lexicon('field_required'));
 		}
@@ -108,7 +115,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			,'syncsite' => 0
 			,'isfolder' => 1
 		));
-		return parent::beforeSet();
+		return true;
 	}
 
 	/**
@@ -143,14 +150,13 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	 */
 	public function afterSave() {
 		$this->object->fromArray(array(
-				'alias' => $this->object->id
-				,'published' => $this->published
-				,'isfolder' => 1
-				,'publishedon' => time()
-				,'publishedby' => $this->modx->user->id
-				,'template' => $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true)
+			'alias' => $this->object->id
+			,'published' => $this->published
+			,'publishedon' => $this->published ? $this->publishedon : 0
+			,'publishedby' => $this->published ? $this->publishedby : 0
+			,'isfolder' => 1
+			,'template' => $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true)
 		));
-
 		$this->object->save();
 		return parent::afterSave();
 	}
@@ -160,7 +166,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	 * @return mixed
 	 */
 	public function cleanup() {
-		$results = $this->modx->cacheManager->generateContext($this->modx->context->key);
+		$results = $this->modx->cacheManager->generateContext($this->object->get('context_key'));
 		$this->modx->context->resourceMap = $results['resourceMap'];
 		$this->modx->context->aliasMap = $results['aliasMap'];
 		return parent::cleanup();
@@ -178,14 +184,25 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	public $permission = 'ticket_save';
 	public $languageTopics = array('resource','tickets:default');
-	public $published = 0;
+	private $published = 0;
+	private $publishedon = 0;
+	private $publishedby = 0;
+	private $updatepubdate = 0;
 
 	/**
 	 * {@inheritDoc}
 	 * @return mixed
 	 */
 	public function beforeSet() {
-		$this->published = $this->getProperty('published', 0);
+		$published = $this->getProperty('published');
+		$this->published = empty($published) || $published === 'false' ? 0 : 1;
+		if ($this->object->published != $this->published) {
+			$this->updatepubdate = 1;
+		}
+		if (!$this->publishedon = $this->getProperty('publishedon')) {$this->publishedon = time();}
+		if (!$this->publishedby = $this->getProperty('publishedby')) {$this->publishedby = $this->modx->user->id;}
+
+		parent::beforeSet();
 		if (!$this->getProperty('pagetitle')) {
 			$this->addFieldError('pagetitle', $this->modx->lexicon('field_required'));
 		}
@@ -204,7 +221,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			,'syncsite' => 0
 			,'isfolder' => 1
 		));
-		return parent::beforeSet();
+		return true;
 	}
 
 	/**
@@ -215,12 +232,14 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		$this->object->fromArray(array(
 			'alias' => $this->object->id
 			,'published' => $this->published
-			,'publishedon' => $this->published ? time() : 0
-			,'publishedby' => $this->published ? $this->modx->user->id : 0
 			,'isfolder' => 1
 			,'editedon' => time()
 			,'editedby' => $this->modx->user->id
 		));
+		if ($this->updatepubdate) {
+			$this->object->set('publishedon', $this->published ? $this->publishedon : 0);
+			$this->object->set('publishedby', $this->published ? $this->publishedby : 0);
+		}
 		$this->object->save();
 		return parent::afterSave();
 	}
@@ -230,14 +249,25 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	 * @return mixed
 	 */
 	public function cleanup() {
-		$results = $this->modx->cacheManager->generateContext($this->modx->context->key);
+		$results = $this->modx->cacheManager->generateContext($this->object->get('context_key'));
 		$this->modx->context->resourceMap = $results['resourceMap'];
 		$this->modx->context->aliasMap = $results['aliasMap'];
 
+		/** @var xPDOFileCache $cache */
 		$cache = $this->modx->cacheManager->getCacheProvider($this->modx->getOption('cache_resource_key', null, 'resource'));
+		/* Cleaning cache of Ticket */
+		$this->object->_contextKey = $this->object->context_key;
 		$key = $this->object->getCacheKey();
 		$cache->delete($key, array('deleteTop' => true));
 		$cache->delete($key);
+		/* Cleaning cache of Section for this Ticket */
+		if ($section = $this->modx->getObject('TicketsSection', $this->object->parent)) {
+			$section->_contextKey = $section->context_key;
+			$key = $section->getCacheKey();
+			$cache->delete($key, array('deleteTop' => true));
+			$cache->delete($key);
+		}
+
 		return parent::cleanup();
 	}
 }

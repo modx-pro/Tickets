@@ -4,7 +4,7 @@
 	</span>
 
 	<span class="ticket">
-		<i class="icon-comment"></i> <a href="[[~[[+resource]]]]">[[+pagetitle]]</a>
+		<i class="icon-comment"></i> <a href="[[~[[+resource]]]]#comment-[[+id]]">[[+pagetitle]]</a>
 	</span>
 
 	<span class="comments">

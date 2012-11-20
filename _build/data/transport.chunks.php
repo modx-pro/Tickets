@@ -111,5 +111,13 @@ $chunks[12]->fromArray(array(
 	'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/comment_email_reply.chunk.tpl'),
 ),'',true,true);
 
+$chunks[13]= $modx->newObject('modChunk');
+$chunks[13]->fromArray(array(
+	'id' => 0,
+	'name' => 'tpl.Tickets.list.row',
+	'description' => 'The chunk for list tickets in getResources',
+	'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/ticket_list_row.chunk.tpl'),
+),'',true,true);
+
 
 return $chunks;

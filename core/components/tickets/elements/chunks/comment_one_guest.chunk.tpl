@@ -1,4 +1,4 @@
-<li class="ticket-comment">
+<li class="ticket-comment" id="comment-[[+id]]">
 	<div class="ticket-comment-body [[+alt]]">
 		<div class="ticket-header">
 			<img src="[[+avatar]]" class="ticket-avatar" alt="" />
