@@ -73,6 +73,24 @@ class Ticket extends modResource {
 		$content = $this->xpdo->Tickets->Jevix($content, 'Ticket');
 		return $content;
 	}
+
+	/**
+	 * Clearing cache of this resource
+	 * @param string $context Key of context for clearing
+	 * @return void
+	 */
+	public function clearCache($context = null) {
+		if (empty($context)) {
+			$context = $this->context_key;
+		}
+		$this->_contextKey = $context;
+
+		/** @var xPDOFileCache $cache */
+		$cache = $this->xpdo->cacheManager->getCacheProvider($this->xpdo->getOption('cache_resource_key', null, 'resource'));
+		$key = $this->getCacheKey();
+		$cache->delete($key, array('deleteTop' => true));
+		$cache->delete($key);
+	}
 }
 
 
@@ -83,6 +101,9 @@ class Ticket extends modResource {
  * @package tickets
  */
 class TicketCreateProcessor extends modResourceCreateProcessor {
+	/** @var Ticket $object */
+	public $object;
+	public $classKey = 'Ticket';
 	public $permission = 'ticket_save';
 	public $languageTopics = array('access','resource','tickets:default');
 	private $published = 0;
@@ -163,13 +184,17 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 
 	/**
 	 * {@inheritDoc}
-	 * @return mixed
+	 * @return void
 	 */
-	public function cleanup() {
-		$results = $this->modx->cacheManager->generateContext($this->object->get('context_key'));
+	public function clearCache() {
+		$results = $this->modx->cacheManager->generateContext($this->object->context_key);
 		$this->modx->context->resourceMap = $results['resourceMap'];
 		$this->modx->context->aliasMap = $results['aliasMap'];
-		return parent::cleanup();
+
+		/** @var TicketsSection $section */
+		if ($section = $this->modx->getObject('TicketsSection', $this->object->parent)) {
+			$section->clearCache();
+		}
 	}
 
 }
@@ -182,6 +207,9 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
  * @package tickets
  */
 class TicketUpdateProcessor extends modResourceUpdateProcessor {
+	/** @var Ticket $object */
+	public $object;
+	public $classKey = 'Ticket';
 	public $permission = 'ticket_save';
 	public $languageTopics = array('resource','tickets:default');
 	private $published = 0;
@@ -210,7 +238,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			$this->addFieldError('content', $this->modx->lexicon('field_required'));
 		}
 		if ($this->hasErrors()) {return false;}
-		if ($this->object->get('createdby') != $this->modx->user->id && !$this->modx->hasPermission('edit_document')) {
+		if ($this->object->createdby != $this->modx->user->id && !$this->modx->hasPermission('edit_document')) {
 			return $this->modx->lexicon('ticket_err_wrong_user');
 		}
 		$this->setProperties(array(
@@ -233,8 +261,6 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			'alias' => $this->object->id
 			,'published' => $this->published
 			,'isfolder' => 1
-			,'editedon' => time()
-			,'editedby' => $this->modx->user->id
 		));
 		if ($this->updatepubdate) {
 			$this->object->set('publishedon', $this->published ? $this->publishedon : 0);
@@ -246,28 +272,17 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 
 	/**
 	 * {@inheritDoc}
-	 * @return mixed
+	 * @return void
 	 */
-	public function cleanup() {
-		$results = $this->modx->cacheManager->generateContext($this->object->get('context_key'));
+	public function clearCache() {
+		$results = $this->modx->cacheManager->generateContext($this->object->context_key);
 		$this->modx->context->resourceMap = $results['resourceMap'];
 		$this->modx->context->aliasMap = $results['aliasMap'];
 
-		/** @var xPDOFileCache $cache */
-		$cache = $this->modx->cacheManager->getCacheProvider($this->modx->getOption('cache_resource_key', null, 'resource'));
-		/* Cleaning cache of Ticket */
-		$this->object->_contextKey = $this->object->context_key;
-		$key = $this->object->getCacheKey();
-		$cache->delete($key, array('deleteTop' => true));
-		$cache->delete($key);
-		/* Cleaning cache of Section for this Ticket */
+		$this->object->clearCache();
+		/** @var TicketsSection $section */
 		if ($section = $this->modx->getObject('TicketsSection', $this->object->parent)) {
-			$section->_contextKey = $section->context_key;
-			$key = $section->getCacheKey();
-			$cache->delete($key, array('deleteTop' => true));
-			$cache->delete($key);
+			$section->clearCache();
 		}
-
-		return parent::cleanup();
 	}
 }

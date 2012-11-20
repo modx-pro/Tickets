@@ -40,6 +40,24 @@ class TicketsSection extends modResource {
 
 		return $content;
 	}
+
+	/**
+	 * Clearing cache of this resource
+	 * @param string $context Key of context for clearing
+	 * @return void
+	 */
+	public function clearCache($context = null) {
+		if (empty($context)) {
+			$context = $this->context_key;
+		}
+		$this->_contextKey = $context;
+
+		/** @var xPDOFileCache $cache */
+		$cache = $this->xpdo->cacheManager->getCacheProvider($this->xpdo->getOption('cache_resource_key', null, 'resource'));
+		$key = $this->getCacheKey();
+		$cache->delete($key, array('deleteTop' => true));
+		$cache->delete($key);
+	}
 }
 
 
@@ -50,11 +68,13 @@ class TicketsSection extends modResource {
  * @package tickets
  */
 class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
+	/** @var TicketsSection $object */
+	public $object;
+	public $classKey = 'TicketsSection';
 
 	public function beforeSet() {
 		$this->setProperties(array(
-			'class_key' => 'TicketsSection'
-			,'hide_children_in_tree' => 1
+			'hide_children_in_tree' => 1
 			,'isfolder' => 1
 		));
 		return parent::beforeSet();
@@ -70,11 +90,13 @@ class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
  * @package tickets
  */
 class TicketsSectionUpdateProcessor extends modResourceUpdateProcessor {
+	/** @var TicketsSection $object */
+	public $object;
+	public $classKey = 'TicketsSection';
 
 	public function beforeSet() {
 		$this->setProperties(array(
-			'class_key' => 'TicketsSection'
-			,'hide_children_in_tree' => 1
+			'hide_children_in_tree' => 1
 			,'isfolder' => 1
 		));
 		return parent::beforeSet();

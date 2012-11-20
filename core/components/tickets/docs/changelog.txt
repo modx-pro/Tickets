@@ -1,5 +1,10 @@
 Changelog for Tickets.
 
+0.3.3
+==========
+- Improved Ticket class, for better work with its cache
+- Fixed work with dates on Ticket update
+
 0.3.2
 ==========
 - Custom manager page for Ticket
