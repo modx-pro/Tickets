@@ -55,7 +55,7 @@ $snippets[4]->fromArray(array(
 	'id' => 0,
 	'name' => 'getCommentsCount',
 	'description' => 'Simple snippet for retrieving number of ticket comments',
-	'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/comment_count.php'),
+	'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/comments_count.php'),
 ),'',true,true);
 //$properties = include $sources['build'].'properties/comment_count.php';
 //$snippets[4]->setProperties($properties);

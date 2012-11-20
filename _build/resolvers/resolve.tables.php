@@ -14,7 +14,6 @@ if ($object->xpdo) {
 		case xPDOTransport::ACTION_INSTALL:
 		case xPDOTransport::ACTION_UPGRADE:
 			$modx->addPackage('tickets',$modelPath);
-			$modx->setLogLevel(modX::LOG_LEVEL_ERROR);
 
 			$manager = $modx->getManager();
 			$manager->createObjectContainer('TicketComment');
