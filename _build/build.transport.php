@@ -14,7 +14,7 @@ set_time_limit(0);
 /* define package */
 define('PKG_NAME','Tickets');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
-define('PKG_VERSION','0.3.3');
+define('PKG_VERSION','0.4.0');
 define('PKG_RELEASE','beta');
 
 /* define sources */
@@ -239,16 +239,19 @@ $vehicle->resolve('php',array(
 $vehicle->resolve('php',array(
 	'source' => $sources['resolvers'] . 'resolve.policy.php',
 ));
+$vehicle->resolve('php',array(
+	'source' => $sources['resolvers'] . 'resolve.setup.php',
+));
 $modx->log(modX::LOG_LEVEL_INFO,'Packaged in resolvers.'); flush();
 $builder->putVehicle($vehicle);
 
 $builder->setPackageAttributes(array(
 	'changelog' => file_get_contents($sources['docs'] . 'changelog.txt')
-,'license' => file_get_contents($sources['docs'] . 'license.txt')
-,'readme' => file_get_contents($sources['docs'] . 'readme.txt')
-	//'setup-options' => array(
-	//'source' => $sources['build'].'setup.options.php',
-	//),
+	,'license' => file_get_contents($sources['docs'] . 'license.txt')
+	,'readme' => file_get_contents($sources['docs'] . 'readme.txt')
+	,'setup-options' => array(
+		'source' => $sources['build'].'setup.options.php',
+	),
 ));
 $modx->log(modX::LOG_LEVEL_INFO,'Added package attributes and setup options.');
 

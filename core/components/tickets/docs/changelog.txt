@@ -1,5 +1,10 @@
 Changelog for Tickets.
 
+0.4.0
+==========
+- Fixed installer
+- Automatic installation of Jevix and creation of property sets for filter comments and tickets
+
 0.3.3
 ==========
 - Improved Ticket class, for better work with its cache
