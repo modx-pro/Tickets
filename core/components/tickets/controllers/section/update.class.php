@@ -50,7 +50,6 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
 		// <![CDATA[
 		Tickets.assets_url = "'.$ticketsAssetsUrl.'";
 		Tickets.connector_url = "'.$connectorUrl.'";
-		Tickets.template_ticket_default = '.$this->modx->getOption('tickets.default_template',1).';
 		MODx.config.publish_document = "'.$this->canPublish.'";
 		MODx.onDocFormRender = "'.$this->onDocFormRender.'";
 		MODx.ctx = "'.$this->ctx.'";

@@ -36,7 +36,8 @@ Ext.extend(Tickets.panel.SectionTemplateSettings,MODx.Panel,{
 			,anchor: '100%'
 			,height: 300
 			,grow: false
-			,value: (config.record.content || config.record.ta) || ''
+			,value: config.record && config.record.content ? config.record.content : "[[!getPage?\n    &element=`getResources`\n    &tpl=`tpl.Ticket.list.row`\n    &limit=`10`\n    &showHidden=`1`\n    &includeContent=`1`\n]]\n\n<div class=\"pagination\">\n    <ul>\n        [[!+page.nav]]\n    </ul>\n</div>"
+
 		},{
 			id: 'modx-content-below'
 			,border: false

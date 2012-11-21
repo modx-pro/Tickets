@@ -1,21 +1,33 @@
 <?php
+
 switch($modx->event->name) {
 	case 'OnManagerPageInit':
 		$cssFile = $modx->getOption('tickets.assets_url',null,$modx->getOption('assets_url').'components/tickets/').'css/mgr/tickets.css';
 		$modx->regClientCSS($cssFile);
-		break;
+	break;
 
 	case 'OnSiteRefresh':
 		if ($modx->cacheManager->refresh(array('default/tickets' => array()))) {
 			$modx->log(modX::LOG_LEVEL_INFO, $modx->lexicon('refresh_default').': Tickets');
 		}
-		break;
+	break;
+
+	case 'OnDocFormRender':
+		if ($resource->class_key == "TicketsSection") {
+			/* @var TicketsSection $resource */
+			$resource->set('syncsite', 0);
+		}
+	break;
 
 	case 'OnDocFormSave':
-		if ($modx->event->params['mode'] == 'new') {
-			$resource = $modx->event->params['resource'];
-			if ($resource->get('class_key') == 'Ticket') {
-				$modx->cacheManager->delete('tickets/latest.tickets');
-			}
+		/* @var Ticket $resource */
+		if ($mode == 'new' && $resource->class_key == "Ticket") {
+			$modx->cacheManager->delete('tickets/latest.tickets');
 		}
+		/* @var TicketsSection $resource */
+		if ($mode == 'upd' && $resource->class_key == 'TicketsSection') {
+			$resource->clearCache();
+		}
+	break;
+
 }

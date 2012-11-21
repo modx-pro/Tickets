@@ -39,23 +39,19 @@ $events[2]->fromArray(array(
 	'propertyset' => 0,
 ),'',true,true);
 
+$events[3]= $modx->newObject('modPluginEvent');
+$events[3]->fromArray(array(
+	'event' => 'OnDocFormRender',
+	'priority' => 0,
+	'propertyset' => 0,
+),'',true,true);
+
 if (is_array($events) && !empty($events)) {
 	$plugins[0]->addMany($events);
 	$modx->log(xPDO::LOG_LEVEL_INFO,'Packaged in '.count($events).' plugin events.'); flush();
 } else {
 	$modx->log(xPDO::LOG_LEVEL_ERROR,'Could not find plugin events!');
 }
+
 unset($events);
-
-/*
-$properties = array();
-if (is_array($properties)) {
-	$modx->log(xPDO::LOG_LEVEL_INFO,'Set '.count($properties).' plugin properties.'); flush();
-	$plugins[0]->setProperties($properties);
-} else {
-	$modx->log(xPDO::LOG_LEVEL_ERROR,'Could not set plugin properties.');
-}
-unset($properties);
-*/
-
 return $plugins;
