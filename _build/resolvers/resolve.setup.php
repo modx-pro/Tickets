@@ -41,7 +41,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 							curl_setopt($curl, CURLOPT_AUTOREFERER, TRUE);
 							curl_setopt($curl, CURLOPT_URL, $url);
 							curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
-							curl_setopt ($curl, CURLOPT_TIMEOUT, 60);
+							curl_setopt($curl, CURLOPT_TIMEOUT, 60);
 							$file = curl_exec($curl);
 							if ($file === false) {
 								$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not download package '.$packageName.': '.curl_error($curl));

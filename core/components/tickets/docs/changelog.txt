@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+0.4.1
+==========
+- Added default content for TicketsSection in manager
+
 0.4.0
 ==========
 - Fixed installer
