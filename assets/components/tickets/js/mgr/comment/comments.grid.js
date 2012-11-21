@@ -22,7 +22,7 @@ Tickets.grid.Comments = function(config) {
 			,{header: _('text'),dataIndex: 'text',width: 300}
 			,{header: _('name'),dataIndex: 'name',width: 100, renderer: this.renderUserLink}
 			,{header: _('createdon'),dataIndex: 'createdon',width: 100, sortable: true}
-			,{header: _('ticket'),dataIndex: 'pagetitle', width: 100, renderer: this.renderResourceLink, hidden: config.hide_tickets}
+			,{header: _('ticket'),dataIndex: 'pagetitle', width: 100, renderer: this.renderResourceLink, hidden: config.parents ? 1 : 0}
 		]
 		,tbar: ['->'
 		,{
@@ -42,6 +42,7 @@ Tickets.grid.Comments = function(config) {
 		}]
 		,listeners: {
 			rowDblClick: function(grid, rowIndex, e) {
+				console.log(111)
 				var row = grid.store.getAt(rowIndex);
 				this.updateComment(grid, e, row);
 			}

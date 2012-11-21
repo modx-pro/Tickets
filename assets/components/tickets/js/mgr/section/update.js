@@ -67,11 +67,6 @@ Ext.extend(Tickets.panel.Section,MODx.panel.Resource,{
 			 ,labelSeparator: ''
 			 ,bodyCssClass: 'tab-panel-wrapper main-wrapper'
 			 ,autoHeight: true
-			 ,defaults: {
-				 border: false
-				 ,msgTarget: 'side'
-				 ,width: 400
-		 	}
 		 	,items: this.getComments(config)
 		 });
 
@@ -129,6 +124,7 @@ Ext.extend(Tickets.panel.Section,MODx.panel.Resource,{
 		 return [{
 		 	xtype: 'tickets-tab-comments'
 		 	,record: config.record
+			,section: config.record.id
 			,layout: 'form'
 		 }];
 	 }

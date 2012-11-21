@@ -175,23 +175,13 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 		it.push({
 			title: _('comments')
 			,id: 'modx-tickets-comments'
+			,cls: 'modx-resource-tab'
+			,layout: 'form'
+			,labelAlign: 'top'
+			,labelSeparator: ''
+			,bodyCssClass: 'tab-panel-wrapper main-wrapper'
 			,autoHeight: true
-			,items: [{
-				html: _('ticket_comments_intro_msg')
-				,border: false
-				,bodyCssClass: 'panel-desc'
-			},{
-				xtype: 'panel'
-				,bodyCssClass: 'main-wrapper'
-				,autoHeight: true
-				,border: false
-				,items: [{
-					xtype: 'tickets-grid-comments'
-					,parents: config.record.id
-					,preventRender: true
-					,hide_tickets: true
-				}]
-			}]
+			,items: this.getComments(config)
 		});
 		/*
 		 it.push({
@@ -447,6 +437,14 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 		}]
 	}
 
+	,getComments: function(config) {
+		return [{
+			xtype: 'tickets-tab-comments'
+			,record: config.record
+			,parents: config.record.id
+			,layout: 'form'
+		}];
+	}
 
 });
 Ext.reg('modx-panel-ticket',Tickets.panel.Ticket);

@@ -121,6 +121,9 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		if (!$this->publishedby = $this->getProperty('publishedby')) {$this->publishedby = $this->modx->user->id;}
 
 		parent::beforeSet();
+		if (!$this->getProperty('parent')) {
+			$this->addFieldError('parent', $this->modx->lexicon('field_required'));
+		}
 		if (!$this->getProperty('pagetitle')) {
 			$this->addFieldError('pagetitle', $this->modx->lexicon('field_required'));
 		}

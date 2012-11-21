@@ -15,7 +15,8 @@ Tickets.panel.SectionTemplateSettings = function(config) {
 		,items: {
 			xtype: 'tickets-grid-comments'
 			,preventRender: true
-			,section: config.record.id
+			,section: config.section || 0
+			,parents: config.parents || 0
 		}
 	});
 	Tickets.panel.SectionTemplateSettings.superclass.constructor.call(this,config);
