@@ -60,11 +60,30 @@ $settings[2]->fromArray(array(
 	,'namespace' => 'tickets'
 	,'area' => 'Editor'
 ),'',true,true);
+
 $settings[3]= $modx->newObject('modSystemSetting');
 $settings[3]->fromArray(array(
 	'key' => 'tickets.default_template'
 	,'value' => ''
 	,'xtype' => 'numberfield'
+	,'namespace' => 'tickets'
+	,'area' => 'Ticket'
+),'',true,true);
+
+$settings[4]= $modx->newObject('modSystemSetting');
+$settings[4]->fromArray(array(
+	'key' => 'tickets.disable_jevix_default'
+	,'value' => 'false'
+	,'xtype' => 'combo-boolean'
+	,'namespace' => 'tickets'
+	,'area' => 'Ticket'
+),'',true,true);
+
+$settings[5]= $modx->newObject('modSystemSetting');
+$settings[5]->fromArray(array(
+	'key' => 'process_tags_default'
+	,'value' => 'false'
+	,'xtype' => 'combo-boolean'
 	,'namespace' => 'tickets'
 	,'area' => 'Ticket'
 ),'',true,true);

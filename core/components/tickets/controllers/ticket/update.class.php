@@ -43,6 +43,9 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 		$this->addLastJavascript($ticketsJsUrl.'ticket/update.js');
 		$this->addJavascript($ticketsJsUrl.'comment/comments.common.js');
 		$this->addJavascript($ticketsJsUrl.'comment/comments.grid.js');
+		if (is_null($this->resourceArray['properties'])) {
+			$this->resourceArray['properties'] = array();
+		}
 		$this->addHtml('
 		<script type="text/javascript">
 		// <![CDATA[

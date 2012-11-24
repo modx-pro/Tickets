@@ -1,5 +1,12 @@
 Changelog for Tickets.
 
+0.4.2
+==========
+- New ticket option "disable Jevix". If true - all content of the page will be displayed without filtration.
+- New ticket option "process MODX tags". If true - all tags on ticket page will be processed by MODX parser.
+- New system parameter "disable_jevix_default". Sets default value for new ticket.
+- New system parameter "process_tags_default". Sets default value for new ticket.
+
 0.4.1
 ==========
 - Added default content for TicketsSection in manager

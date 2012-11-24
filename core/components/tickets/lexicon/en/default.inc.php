@@ -55,5 +55,10 @@ $_lang['ticket_author'] = 'Author';
 $_lang['ticket_delete'] = 'Delete ticket';
 $_lang['ticket_delete_text'] = 'Are you sure you want to delete this ticket?';
 $_lang['ticket_create'] = 'Create ticket?';
+$_lang['ticket_disable_jevix'] = 'Disable Jevix';
+$_lang['ticket_disable_jevix_help'] = 'Display content of this page without Jevix sanitization. It is dangerous, any user, that creates the page can attack your site (XSS, LFI etc.).';
+$_lang['ticket_process_tags'] = 'Process MODX tags';
+$_lang['ticket_process_tags_help'] = 'By default tags in bracket displaying as is, without processing by parser. If you enable it - on this page can be run various snippets, chunks, etc.';
+
 
 

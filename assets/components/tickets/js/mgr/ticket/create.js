@@ -225,6 +225,22 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 					action: 'getList'
 					,combo: '1'
 				}
+			},{
+				xtype: 'xcheckbox'
+				,name: 'properties[disable_jevix]'
+				,boxLabel: _('ticket_disable_jevix')
+				,description: _('ticket_disable_jevix_help')
+				,id: 'modx-resource-disablejevix'
+				,value: 1
+				,checked: MODx.config.disable_jevix_default == 1 ? 1 : 0
+			},{
+				xtype: 'xcheckbox'
+				,name: 'properties[process_tags]'
+				,boxLabel: _('ticket_process_tags')
+				,description: _('ticket_process_tags_help')
+				,id: 'modx-resource-disabletags'
+				,checked: MODx.config.process_tags_default == 1 ? 1 : 0
+				,value: 1
 			}
 			/*
 			,{

@@ -373,8 +373,12 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 			xtype: 'fieldset'
 			,title: _('ticket_ticket_options')
 			,id: 'tickets-box-options'
+			,anchor: '100%'
 			,defaults: {
-				msgTarget: 'under'
+				labelSeparator: ''
+				,labelAlign: 'right'
+				,layout: 'form'
+				,msgTarget: 'under'
 			}
 			,items: [{
 				xtype: 'modx-combo-template'
@@ -388,7 +392,24 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 					action: 'getList'
 					,combo: '1'
 				}
+			},{
+				xtype: 'xcheckbox'
+				,name: 'properties[disable_jevix]'
+				,boxLabel: _('ticket_disable_jevix')
+				,description: _('ticket_disable_jevix_help')
+				,id: 'modx-resource-disablejevix'
+				,value: 1
+				,checked: config.record.properties.disable_jevix == 1 ? 1 : 0
+			},{
+				xtype: 'xcheckbox'
+				,name: 'properties[process_tags]'
+				,boxLabel: _('ticket_process_tags')
+				,description: _('ticket_process_tags_help')
+				,id: 'modx-resource-process_tags'
+				,checked: config.record.properties.process_tags == 1 ? 1 : 0
+				,value: 1
 			}
+
 			/*
 			,{
 				xtype: 'textfield'
