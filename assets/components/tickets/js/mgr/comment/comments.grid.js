@@ -42,7 +42,6 @@ Tickets.grid.Comments = function(config) {
 		}]
 		,listeners: {
 			rowDblClick: function(grid, rowIndex, e) {
-				console.log(111)
 				var row = grid.store.getAt(rowIndex);
 				this.updateComment(grid, e, row);
 			}
