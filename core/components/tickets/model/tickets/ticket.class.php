@@ -74,17 +74,12 @@ class Ticket extends modResource {
 	public function getContent(array $options = array()) {
 		$content = parent::get('content');
 		if (!$this->disableJevix) {
-			if (!in_array('Tickets', get_declared_classes())) {
-				require 'tickets.class.php';
-			}
-			if (!isset($this->xpdo->Tickets) || !is_object($this->xpdo->Tickets) || !($this->xpdo->Tickets instanceof Tickets)) {
-				$this->xpdo->Tickets = new Tickets($this->xpdo, array());
-			}
-			$content = $this->xpdo->Tickets->Jevix($content, 'Ticket');
+			$content = $this->Jevix($content);
 		}
 		else if (!$this->processTags) {
 			$content = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $content);
 		}
+		$content = preg_replace('/<cut(.*?)>/i', '<a name="cut"></a>', $content);
 		return $content;
 	}
 
@@ -104,6 +99,38 @@ class Ticket extends modResource {
 		$key = $this->getCacheKey();
 		$cache->delete($key, array('deleteTop' => true));
 		$cache->delete($key);
+	}
+
+	function Jevix($text) {
+		if (!in_array('Tickets', get_declared_classes())) {
+			require 'tickets.class.php';
+		}
+		if (!isset($this->xpdo->Tickets) || !is_object($this->xpdo->Tickets) || !($this->xpdo->Tickets instanceof Tickets)) {
+			$this->xpdo->Tickets = new Tickets($this->xpdo, array());
+		}
+		return $this->xpdo->Tickets->Jevix($text, 'Ticket');
+	}
+
+	/**
+	 * Generate intro text from content buy cutting text before tag <cut/>
+	 * @param string $content Any text for processing, with tag <cut/>
+	 * @return mixed $introtext
+	 */
+	function getIntroText($content = null) {
+		if (empty($content)) {
+			$content = parent::get('content');
+		}
+		$content = preg_replace('/<cut(.*?)>/i', '<cut/>', $content);
+
+		if (!preg_match('/<cut\/>/', $content)) {
+			$introtext = '';
+		}
+		else {
+			$tmp = explode("<cut/>", $content);
+			$introtext = reset($tmp);
+			$introtext = $this->Jevix($introtext);
+		}
+		return $introtext;
 	}
 }
 
@@ -145,6 +172,14 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$this->addFieldError('content', $this->modx->lexicon('field_required'));
 		}
 		if ($this->hasErrors()) {return false;}
+
+		if ($introtext = $this->getProperty('introtext')) {
+			$introtext = $this->object->Jevix($introtext);
+		}
+		else {
+			$introtext = $this->object->getIntroText($this->getProperty('content'));
+		}
+
 		$this->setProperties(array(
 			'class_key' => 'Ticket'
 			,'show_in_tree' => 0
@@ -152,6 +187,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			,'hidemenu' => 1
 			,'syncsite' => 0
 			,'isfolder' => 1
+			,'introtext' => $introtext
 		));
 		/* Tickets properties */
 		if ($this->modx->context->key != 'mgr') {
@@ -266,6 +302,13 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			return $this->modx->lexicon('ticket_err_wrong_user');
 		}
 
+		if ($introtext = $this->getProperty('introtext')) {
+			$introtext = $this->object->Jevix($introtext);
+		}
+		else {
+			$introtext = $this->object->getIntroText($this->getProperty('content'));
+		}
+
 		$this->setProperties(array(
 			'class_key' => 'Ticket'
 			,'show_in_tree' => 0
@@ -273,7 +316,9 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			,'hidemenu' => 1
 			,'syncsite' => 0
 			,'isfolder' => 1
+			,'introtext' => $introtext
 		));
+
 		/* Tickets properties */
 		if ($this->modx->context->key == 'mgr') {
 			$prop1 = $this->object->get('properties');

@@ -1,7 +1,8 @@
 <div class="question">
 	<h3 class="title"><a href="[[~[[+id]]]]">[[+pagetitle]]</a></h3>
 	<div class="content">
-		[[+content:tagCut=`[[~[[+id]]]]`]]
+		[[+introtext]]
+		[[+introtext:notempty=`<a href="</a>[[~[[+id]]]]#cut" class="btn read-more">Читать дальше &rarr;</a>`]]
 	</div>
 	<div class="row">
 		<div class="span2 gray">[[+createdon:strtotime:date=`%d %b %Y, %H:%M`]]</div>

@@ -1,11 +1,13 @@
 Changelog for Tickets.
 
-0.4.2
+0.5.0
 ==========
 - New ticket option "disable Jevix". If true - all content of the page will be displayed without filtration.
 - New ticket option "process MODX tags". If true - all tags on ticket page will be processed by MODX parser.
 - New system parameter "disable_jevix_default". Sets default value for new ticket.
 - New system parameter "process_tags_default". Sets default value for new ticket.
+- Auto generation of introtext field by cutting text before tag <cut/> in ticket.
+- When displaying tickets, tag <cut/> transformed into anchor <a name="cut"></a>
 
 0.4.1
 ==========

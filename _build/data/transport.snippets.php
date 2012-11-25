@@ -43,16 +43,6 @@ unset($properties);
 $snippets[3]= $modx->newObject('modSnippet');
 $snippets[3]->fromArray(array(
 	'id' => 0,
-	'name' => 'tagCut',
-	'description' => 'Output filter for displaying content of ticket with various snippets, like getResources',
-	'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/tag_cut.php'),
-),'',true,true);
-//$properties = include $sources['build'].'properties/tag_cut.php';
-//$snippets[3]->setProperties($properties);
-
-$snippets[4]= $modx->newObject('modSnippet');
-$snippets[4]->fromArray(array(
-	'id' => 0,
 	'name' => 'getCommentsCount',
 	'description' => 'Simple snippet for retrieving number of ticket comments',
 	'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/comments_count.php'),
