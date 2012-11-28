@@ -53,7 +53,6 @@ class TicketsSectionCreateManagerController extends ResourceCreateManagerControl
 		Ext.onReady(function() {
 			MODx.load({
 				xtype: "tickets-page-section-create"
-				,resource: "'.$this->resource->get('id').'"
 				,record: '.$this->modx->toJSON($this->resourceArray).'
 				,publish_document: "'.$this->canPublish.'"
 				,canSave: "'.($this->modx->hasPermission('save_document') ? 1 : 0).'"

@@ -220,73 +220,54 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,id: 'modx-resource-template'
 				,anchor: '100%'
 				,editable: false
-				,value: MODx.config.default_template
 				,baseParams: {
 					action: 'getList'
 					,combo: '1'
 				}
 			},{
 				xtype: 'xcheckbox'
+				,name: 'richtext'
+				,boxLabel: _('resource_richtext')
+				,description: '<b>[[*richtext]]</b><br />'+_('resource_richtext_help')
+				,id: 'modx-resource-richtext'
+				,inputValue: 1
+				,checked: parseInt(config.record.richtext)
+			},{
+				xtype: 'xcheckbox'
 				,name: 'properties[disable_jevix]'
 				,boxLabel: _('ticket_disable_jevix')
 				,description: _('ticket_disable_jevix_help')
 				,id: 'modx-resource-disablejevix'
-				,value: 1
-				,checked: MODx.config.disable_jevix_default == 1 ? 1 : 0
+				,inputValue: 1
+				,checked: parseInt(MODx.config.disable_jevix)
 			},{
 				xtype: 'xcheckbox'
 				,name: 'properties[process_tags]'
 				,boxLabel: _('ticket_process_tags')
 				,description: _('ticket_process_tags_help')
-				,id: 'modx-resource-disabletags'
-				,checked: MODx.config.process_tags_default == 1 ? 1 : 0
-				,value: 1
-			}
-			/*
-			,{
-				xtype: 'textfield'
-				,fieldLabel: _('ticket_ticket_alias')
-				,description: '<b>[[*alias]]</b><br />'+_('ticket_ticket_alias_help')
+				,id: 'modx-resource-process_tags'
+				,inputValue: 1
+				,checked: parseInt(MODx.config.process_tags)
+			},{
+				xtype: 'hidden'
 				,name: 'alias'
 				,id: 'modx-resource-alias'
-				,maxLength: 100
-				,anchor: '100%'
 				,value: config.record.alias || ''
-
 			},{
-				xtype: 'textfield'
-				,fieldLabel: _('ticket_ticket_tags')
-				,description: _('ticket_ticket_tags_help')
-				,name: 'tags'
-				,id: 'modx-resource-tags'
-				,anchor: '100%'
-				,value: config.record.tags || ''
-			}
-			*/
-			,{
 				xtype: 'hidden'
 				,name: 'menutitle'
 				,id: 'modx-resource-menutitle'
 				,value: config.record.menutitle || ''
-
 			},{
 				xtype: 'hidden'
 				,name: 'link_attributes'
 				,id: 'modx-resource-link-attributes'
 				,value: config.record.link_attributes || ''
-
-			},{
-				xtype: 'hidden'
-				,name: 'richtext'
-				,id: 'modx-resource-richtext'
-				,value: config.record.richtext !== undefined ? parseInt(config.record.richtext) : true
-
 			},{
 				xtype: 'hidden'
 				,name: 'hidemenu'
 				,id: 'modx-resource-hidemenu'
 				,value: config.record.hidemenu
-
 			},{
 				xtype: 'hidden'
 				,name: 'class_key'

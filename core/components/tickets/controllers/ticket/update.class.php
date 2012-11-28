@@ -40,9 +40,9 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 		$this->addJavascript($mgrUrl.'assets/modext/widgets/resource/modx.panel.resource.js');
 		$this->addJavascript($mgrUrl.'assets/modext/sections/resource/update.js');
 		$this->addJavascript($ticketsJsUrl.'tickets.js');
-		$this->addLastJavascript($ticketsJsUrl.'ticket/update.js');
 		$this->addJavascript($ticketsJsUrl.'comment/comments.common.js');
 		$this->addJavascript($ticketsJsUrl.'comment/comments.grid.js');
+		$this->addLastJavascript($ticketsJsUrl.'ticket/update.js');
 		if (is_null($this->resourceArray['properties'])) {
 			$this->resourceArray['properties'] = array();
 		}
@@ -61,9 +61,15 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 				,record: '.$this->modx->toJSON($this->resourceArray).'
 				,publish_document: "'.$this->canPublish.'"
 				,preview_url: "'.$this->previewUrl.'"
-				,canSave: "'.($this->modx->hasPermission('save_document') ? 1 : 0).'"
+				,locked: '.($this->locked ? 1 : 0).'
+				,lockedText: "'.$this->lockedText.'"
+				,canSave: '.($this->canSave ? 1 : 0).'
+				,canEdit: '.($this->canEdit ? 1 : 0).'
+				,canCreate: '.($this->canCreate ? 1 : 0).'
+				,canDuplicate: '.($this->canDuplicate ? 1 : 0).'
+				,canDelete: '.($this->canDelete ? 1 : 0).'
 				,show_tvs: '.(!empty($this->tvCounts) ? 1 : 0).'
-				,mode: "create"
+				,mode: "update"
 			});
 		});
 		// ]]>
@@ -71,4 +77,5 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 
 		$this->loadRichTextEditor();
 	}
+
 }
