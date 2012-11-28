@@ -424,7 +424,7 @@ class Tickets {
 
 
 	/**
-	 * Returns latest not deleted comments
+	 * Returns latest comments
 	 *
 	 * @access public
 	 * @param array $data Various params for processor

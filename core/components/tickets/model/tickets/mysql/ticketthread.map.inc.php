@@ -14,6 +14,8 @@ $xpdo_meta_map['TicketThread']= array (
     'deleted' => 0,
     'deletedon' => NULL,
     'deletedby' => 0,
+    'comment_last' => 0,
+    'comment_time' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -82,6 +84,23 @@ $xpdo_meta_map['TicketThread']= array (
       'null' => false,
       'default' => 0,
     ),
+    'comment_last' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'attributes' => 'unsigned',
+      'null' => false,
+      'default' => 0,
+      'index' => 'index',
+    ),
+    'comment_time' => 
+    array (
+      'dbtype' => 'datetime',
+      'phptype' => 'datetime',
+      'null' => true,
+      'index' => 'index',
+    ),
   ),
   'indexes' => 
   array (
@@ -120,24 +139,13 @@ $xpdo_meta_map['TicketThread']= array (
   ),
   'composites' => 
   array (
-    'Children' => 
+    'Comments' => 
     array (
       'class' => 'TicketComment',
       'local' => 'id',
       'foreign' => 'thread',
       'cardinality' => 'many',
       'owner' => 'local',
-    ),
-  ),
-  'aggregates' => 
-  array (
-    'Resource' => 
-    array (
-      'class' => 'modResource',
-      'local' => 'resource',
-      'foreign' => 'id',
-      'cardinality' => 'one',
-      'owner' => 'foreign',
     ),
   ),
 );

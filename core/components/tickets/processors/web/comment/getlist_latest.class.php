@@ -6,7 +6,31 @@ class LatestCommentsGetListProcessor extends modObjectGetListProcessor {
 	public $defaultSortDirection = 'DESC';
 	public $objectType = 'comment';
 
+
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
+		$c->innerJoin('TicketThread', 'TicketThread','`TicketComment`.`id` = `TicketThread`.`comment_last`');
+		$c->leftJoin('modResource','modResource', '`TicketThread`.`resource` = `modResource`.`id`');
+
+		$c->sortby('TicketThread.comment_last', 'DESC');
+		$c->where(array('TicketThread.resource:!=' => 0));
+
+		if ($parents = $this->getProperty('parents')) {
+			if (!is_array($parents)) {
+				$parents = explode(',', $parents);
+			}
+			$c->where(array('TicketThread.resource:IN' => $parents));
+		}
+
+		$c->select($this->modx->getSelectColumns('TicketComment','TicketComment'));
+		$c->select('`TicketThread`.`resource`, `modResource`.`pagetitle`,`modResource`.`parent` AS `section`');
+
+		return $c;
+	}
+
+	/*
+	//Deprecated old function for getting list of last comments
+
+	public function prepareQueryBeforeCountDeprecated(xPDOQuery $c) {
 		$q = $this->modx->newQuery('TicketComment');
 		$q->leftJoin('TicketThread', 'TicketThread','`TicketThread`.`id` = `TicketComment`.`thread`');
 		$q->select('DISTINCT(`TicketThread`.`id`)');
@@ -39,6 +63,7 @@ class LatestCommentsGetListProcessor extends modObjectGetListProcessor {
 		$c->leftJoin('modResource','modResource', '`TicketThread`.`resource` = `modResource`.`id`');
 		return $c;
 	}
+	*/
 
 }
 return 'LatestCommentsGetListProcessor';

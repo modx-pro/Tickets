@@ -238,7 +238,7 @@ $xpdo_meta_map['TicketComment']= array (
     ),
     'Thread' => 
     array (
-      'class' => 'TicketComments',
+      'class' => 'TicketThread',
       'local' => 'thread',
       'foreign' => 'id',
       'cardinality' => 'one',

@@ -180,20 +180,19 @@ Tickets.window.UpdateComment = function(config) {
 	Ext.applyIf(config,{
 		title: _('tickets_comment_update')
 		,id: this.ident
-		,width: 600
-		,height: 400
+		,width: 700
+		,height: 500
 		,url: Tickets.connector_url
 		,action: 'mgr/comment/update'
 		,layout: 'anchor'
 		,autoHeight: false
 		,fields: [
 			{xtype: 'hidden',name: 'id',id: 'tickets-'+this.ident+'-id'}
-			,{xtype: 'textarea',fieldLabel: _('comment'),name: 'text',id: 'tickets-'+this.ident+'-text',anchor: '99% -100', height: 250}
+			,{xtype: 'textarea',fieldLabel: _('comment'),name: 'text',id: 'tickets-'+this.ident+'-text',anchor: '99% -150', height: 250}
 			,{
 			items: [{
 				layout: 'form'
 				,cls: 'modx-panel'
-				,bodyStyle: { background: 'transparent', padding: '10px' }
 				,items: [{
 					layout: 'column'
 					,border: false
@@ -201,20 +200,26 @@ Tickets.window.UpdateComment = function(config) {
 						columnWidth: .5
 						,border: false
 						,layout: 'form'
-						,items: [
-							{xtype:'displayfield', fieldLabel: _('ticket_comment_name'), name: 'name', id:'tickets-'+this.ident+'-name',anchor: '99%'}
-							,{xtype:'displayfield', fieldLabel: _('ticket_comment_email'), name: 'email', id:'tickets-'+this.ident+'-email',anchor: '99%'}
-							,{xtype:'displayfield', fieldLabel: 'IP', name: 'ip', id:'tickets-'+this.ident+'-ip',anchor: '99%'}
-						]
+						,items: this.getMainFields(config)
 					},{
 						columnWidth: .5
 						,border: false
 						,layout: 'form'
-						,items: [
-							{xtype:'displayfield', fieldLabel: _('ticket_comment_createdon'), name: 'createdon', id:'tickets-'+this.ident+'-createdon',anchor: '99%'}
-							,{xtype:'displayfield', fieldLabel: _('ticket_comment_editedon'), name: 'editedon', id:'tickets-'+this.ident+'-editedon',anchor: '99%'}
-							,{xtype:'displayfield', fieldLabel: _('ticket_comment_deletedon'), name: 'deletedon', id:'tickets-'+this.ident+'-deletedon',anchor: '99%', hidden: config.record.deleted ? 0 : 1}
-						]
+						,items: [{
+							layout: 'column'
+							,border: false
+							,items: [{
+								columnWidth: .5
+								,border: false
+								,layout: 'form'
+								,items: this.getCommentDates(config)
+							},{
+								columnWidth: .5
+								,border: false
+								,layout: 'form'
+								,items: this.getCommentMisc(config)
+							}]
+						}]
 					}]
 				}]
 			}]
@@ -223,5 +228,27 @@ Tickets.window.UpdateComment = function(config) {
 	});
 	Tickets.window.UpdateComment.superclass.constructor.call(this,config);
 };
-Ext.extend(Tickets.window.UpdateComment,MODx.Window);
+Ext.extend(Tickets.window.UpdateComment,MODx.Window,{
+
+	getMainFields: function(config) {
+		return [
+			{xtype:'textfield', fieldLabel: _('ticket_comment_name'), name: 'name', id:'tickets-'+this.ident+'-name',anchor: '99%'}
+			,{xtype:'textfield', fieldLabel: _('ticket_comment_email'), name: 'email', id:'tickets-'+this.ident+'-email',anchor: '99%'}
+		];
+	}
+
+	,getCommentDates: function(config) {
+		return [
+			{xtype:'displayfield', fieldLabel: _('ticket_comment_createdon'), name: 'createdon', id:'tickets-'+this.ident+'-createdon',anchor: '99%'}
+			,{xtype:'displayfield', fieldLabel: _('ticket_comment_editedon'), name: 'editedon', id:'tickets-'+this.ident+'-editedon',anchor: '99%'}
+			,{xtype:'displayfield', fieldLabel: _('ticket_comment_deletedon'), name: 'deletedon', id:'tickets-'+this.ident+'-deletedon',anchor: '99%', hidden: config.record.deleted ? 0 : 1}
+		];
+	}
+
+	,getCommentMisc: function(config) {
+		return [
+			{xtype:'displayfield', fieldLabel: 'IP', name: 'ip', id:'tickets-'+this.ident+'-ip',anchor: '99%'}
+		];
+	}
+});
 Ext.reg('tickets-window-comment-update',Tickets.window.UpdateComment);

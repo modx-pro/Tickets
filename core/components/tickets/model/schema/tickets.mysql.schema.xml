@@ -44,7 +44,7 @@
 		</index>
 
 		<aggregate alias="User" class="modUser" local="author" foreign="id" cardinality="one" owner="foreign" />
-		<aggregate alias="Thread" class="TicketComments" local="thread" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Thread" class="TicketThread" local="thread" foreign="id" cardinality="one" owner="foreign" />
 		<aggregate alias="Parent" class="TicketComment" local="parent" foreign="id" cardinality="one" owner="foreign" />
 		<composite alias="Children" class="TicketComment" local="id" foreign="parent" cardinality="many" owner="local" />
 	</object>
@@ -62,6 +62,9 @@
 		<field key="deletedon" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="deletedby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
 
+		<field key="comment_last" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="index" />
+		<field key="comment_time" dbtype="datetime" phptype="datetime" null="true" index="index" />
+
 		<index alias="resource" name="resource" primary="false" unique="true" type="BTREE">
 			<column key="resource" length="" collation="A" null="false" />
 		</index>
@@ -69,7 +72,7 @@
 			<column key="name" length="" collation="A" null="false" />
 		</index>
 
-		<composite alias="Children" class="TicketComment" local="id" foreign="thread" cardinality="many" owner="local" />
+		<composite alias="Comments" class="TicketComment" local="id" foreign="thread" cardinality="many" owner="local" />
 	</object>
 
 </model>

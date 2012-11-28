@@ -22,6 +22,14 @@ if ($object->xpdo) {
 			if ($modx instanceof modX) {
 				$modx->addExtensionPackage('tickets', '[[++core_path]]components/tickets/model/');
 			}
+
+			// Alter table TicketThread for last comments feature
+			$sql = "ALTER TABLE  {$modx->getTableName('TicketThread')}
+					ADD `comment_last` INT(10) UNSIGNED NOT NULL DEFAULT  '0',
+					ADD `comment_time` DATETIME NULL ,
+					ADD INDEX (`comment_last`, `comment_time`)";
+			if ($stmt = $modx->prepare($sql)) {$stmt->execute();}
+
 			break;
 
 		case xPDOTransport::ACTION_UNINSTALL:

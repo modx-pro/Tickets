@@ -2,6 +2,7 @@
 class GetThreadProcessor extends modProcessor {
 	public $classKey = 'TicketThread';
 	public $languageTopics = array('tickets:default');
+	/* @var TicketThread $object */
 	private $object;
 	private $comments;
 	private $total = 0;
@@ -32,6 +33,7 @@ class GetThreadProcessor extends modProcessor {
 	 */
 	public function process() {
 		$this->getComments();
+		$this->checkCommentLast();
 		$this->buildTree();
 		return $this->cleanup();
 	}
@@ -77,6 +79,18 @@ class GetThreadProcessor extends modProcessor {
 			else{
 				$data[$row['parent']]['children'][$id] = &$row;
 			}
+		}
+	}
+
+
+	public function checkCommentLast() {
+		if (empty($this->object->comment_last) && $key = key(array_slice($this->comments, -1, 1, true))) {
+			$comment = $this->comments[$key];
+			$this->object->fromArray(array(
+				'comment_last' => $key
+				,'comment_time' => $comment['createdon']
+			));
+			$this->object->save();
 		}
 	}
 

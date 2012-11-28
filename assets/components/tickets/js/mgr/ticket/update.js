@@ -404,7 +404,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				xtype: 'xcheckbox'
 				,name: 'properties[disable_jevix]'
 				,boxLabel: _('ticket_disable_jevix')
-				,description: _('ticket_disable_jevix_help')
+				,description: _('ticket_dialiassable_jevix_help')
 				,id: 'modx-resource-disablejevix'
 				,inputValue: 1
 				,checked: parseInt(config.record.properties.disable_jevix)

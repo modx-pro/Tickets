@@ -104,11 +104,15 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 						),
 						'cfgAllowTags' => array (
 							'name' => 'cfgAllowTags','desc' => 'cfgAllowTags','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
-							'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,pre,acronym,h1,h2,h3,h4,h5,h6,cut,br,code,s,blockquote',
+							'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,pre,acronym,h1,h2,h3,h4,h5,h6,cut,br,code,s,blockquote,table,tr,th,td',
+						),
+						'cfgSetTagChilds' => array(
+							'name' => 'cfgSetTagChilds','desc' => 'cfgSetTagChilds','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
+							'value' => '[["ul",["li"],false,true],["ol",["li"],false,true],["table",["tr"],false,true],["tr",["td","th"],false,true]]'
 						),
 						'cfgSetAutoReplace' => array (
 							'name' => 'cfgSetAutoReplace','desc' => 'cfgSetAutoReplace','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
-							'value' => '[["+/-","(c)","(r)","<code","code>"],["±","©","®","<pre class=\\"prettyprint\\"","pre>"]]',
+							'value' => '[["+/-","(c)","(с)","(r)","(C)","(С)","(R)","<code","code>"],["±","©","©","®","©","©","®","<pre class=\\"prettyprint\\"","pre>"]]',
 						),
 						'cfgSetTagShort' => array(
 							'name' => 'cfgSetTagShort','desc' => 'cfgSetTagShort','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
@@ -137,13 +141,17 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 							'name' => 'cfgAllowTags','desc' => 'cfgAllowTags','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
 							'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,pre,acronym,br,code,s,blockquote',
 						),
+						'cfgSetTagChilds' => array(
+							'name' => 'cfgSetTagChilds','desc' => 'cfgSetTagChilds','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
+							'value' => '[["ul",["li"],false,true],["ol",["li"],false,true]]'
+						),
 						'cfgSetAutoReplace' => array (
 							'name' => 'cfgSetAutoReplace','desc' => 'cfgSetAutoReplace','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
-							'value' => '[["+/-","(c)","(r)","<code","code>"],["±","©","®","<pre class=\\"prettyprint\\"","pre>"]]',
+							'value' => '[["+/-","(c)","(с)","(r)","(C)","(С)","(R)","<code","code>"],["±","©","©","®","©","©","®","<pre class=\\"prettyprint\\"","pre>"]]',
 						),
 						'cfgSetTagShort' => array(
 							'name' => 'cfgSetTagShort','desc' => 'cfgSetTagShort','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
-							'value' => 'br,img,cut',
+							'value' => 'br,img',
 						)
 					)
 				));

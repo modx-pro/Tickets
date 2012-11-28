@@ -11,6 +11,7 @@ require_once MODX_CORE_PATH.'model/modx/processors/resource/update.class.php';
 
 class Ticket extends modResource {
 	public $showInContextMenu = false;
+	private $paramsLoaded = 0;
 	private $disableJevix = 0;
 	private $processTags = 0;
 
@@ -19,11 +20,14 @@ class Ticket extends modResource {
 		$this->set('class_key','Ticket');
 	}
 
-	function process() {
-		$properties = $this->get('properties');
+	/* Loads ticket params
+	 * @return void
+	 * */
+	private function loadParams() {
+		$properties = parent::get('properties');
 		$this->disableJevix = !empty($properties['disable_jevix']) ? 1 : 0;
-		$this->processTags = !empty($properties['process_tags']) ? 1 : 0;
-		return parent::process();
+		$this->processTags = !empty($properties['process_tags']) || $this->xpdo->context->key == 'mgr' ? 1 : 0;
+		$this->paramsLoaded = true;
 	}
 
 	/**
@@ -61,7 +65,9 @@ class Ticket extends modResource {
 	 */
 	public function get($k, $format = null, $formatTemplate= null) {
 		$value = parent::get($k, $format, $formatTemplate);
-		if (!$this->processTags && in_array($k, array('pagetitle','longtitle','introtext','description','content'))) {
+		if (!$this->paramsLoaded) {$this->loadParams();}
+
+		if (!$this->processTags && is_string($k) && $this->_getPHPType($k) == 'string') {
 			$value = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $value);
 		}
 		return $value;
@@ -73,6 +79,9 @@ class Ticket extends modResource {
 	 */
 	public function getContent(array $options = array()) {
 		$content = parent::get('content');
+
+		if (!$this->paramsLoaded) {$this->loadParams();}
+
 		if (!$this->disableJevix) {
 			$content = $this->Jevix($content);
 		}
@@ -197,6 +206,14 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$this->setProperty('properties', array());
 		}
 		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @return string
+	 */
+	public function prepareAlias() {
+		return '';
 	}
 
 	/**
@@ -333,6 +350,14 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		}
 
 		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @return string
+	 */
+	public function prepareAlias() {
+		return '';
 	}
 
 	/**

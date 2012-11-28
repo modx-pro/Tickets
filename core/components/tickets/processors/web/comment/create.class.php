@@ -27,7 +27,18 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 			,'resource' => $this->thread->resource
 		));
 
-		return !$this->hasErrors();
+		return parent::beforeSet();
+	}
+
+	public function afterSave() {
+		$thread = $this->object->getOne('Thread');
+		$thread->fromArray(array(
+			'comment_last' => $this->object->get('id')
+			,'comment_time' => $this->object->get('createdon')
+		));
+		$thread->save();
+
+		return parent::afterSave();
 	}
 }
 
