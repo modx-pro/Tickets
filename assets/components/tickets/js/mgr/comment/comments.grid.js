@@ -181,11 +181,14 @@ Tickets.window.UpdateComment = function(config) {
 		title: _('tickets_comment_update')
 		,id: this.ident
 		,width: 600
+		,height: 400
 		,url: Tickets.connector_url
 		,action: 'mgr/comment/update'
+		,layout: 'anchor'
+		,autoHeight: false
 		,fields: [
 			{xtype: 'hidden',name: 'id',id: 'tickets-'+this.ident+'-id'}
-			,{xtype: 'textarea',fieldLabel: _('comment'),name: 'text',id: 'tickets-'+this.ident+'-text',anchor: '99%', height: 250}
+			,{xtype: 'textarea',fieldLabel: _('comment'),name: 'text',id: 'tickets-'+this.ident+'-text',anchor: '99% -100', height: 250}
 			,{
 			items: [{
 				layout: 'form'
