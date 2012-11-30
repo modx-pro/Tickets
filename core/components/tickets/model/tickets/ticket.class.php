@@ -110,6 +110,11 @@ class Ticket extends modResource {
 		$cache->delete($key);
 	}
 
+	/**
+	 * Html filter and typograf
+	 * @var mixed Text for processing
+	 * @returns mixed Filtered text
+	 * */
 	function Jevix($text) {
 		if (!in_array('Tickets', get_declared_classes())) {
 			require 'tickets.class.php';
@@ -141,6 +146,36 @@ class Ticket extends modResource {
 		}
 		return $introtext;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function & getMany($alias, $criteria= null, $cacheFlag= true) {
+		if ($alias == 'Attachments' || $alias == 'Votes') {
+			$criteria = array('class' => $this->class_key);
+		}
+		return parent::getMany($alias, $criteria, $cacheFlag);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function addMany(& $obj, $alias= '') {
+		$added= false;
+		if (is_array($obj)) {
+			foreach ($obj as $o) {
+				if (is_object($o)) {
+					$o->set('class', $this->class_key);
+					$added = parent::addMany($obj, $alias);
+				}
+			}
+			return $added;
+		}
+		else {
+			return parent::addMany($obj, $alias);
+		}
+	}
+
 }
 
 

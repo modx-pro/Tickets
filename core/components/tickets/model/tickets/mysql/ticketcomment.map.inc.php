@@ -225,6 +225,22 @@ $xpdo_meta_map['TicketComment']= array (
       'cardinality' => 'many',
       'owner' => 'local',
     ),
+    'Attachments' => 
+    array (
+      'class' => 'TicketAttachment',
+      'local' => 'id',
+      'foreign' => 'parent',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
+    'Votes' => 
+    array (
+      'class' => 'TicketVote',
+      'local' => 'id',
+      'foreign' => 'parent',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
   ),
   'aggregates' => 
   array (

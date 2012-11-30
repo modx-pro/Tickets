@@ -2,9 +2,9 @@
 /**
  * The script for generation schema and model from database tables.
  *
- * @package tickets
+ * @package worders
  */
- 
+
 define('MODX_API_MODE', true);
 require_once dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/index.php';
 /*******************************************************/
@@ -30,14 +30,25 @@ $modx->setLogTarget(XPDO_CLI_MODE ? 'ECHO' : 'HTML');
 $modx->error->message = null;
 $modx->loadClass('transport.modPackageBuilder', '', false, true);
 $manager = $modx->getManager();
+
 $generator = $manager->getGenerator();
-
 //$generator->writeSchema($xml, $package, 'xPDOObject', $prefix.$suffix, true);
-
 //$tmp = str_replace('table="', 'table="'.$suffix, file_get_contents($xml));
 //file_put_contents($xml, $tmp);
-
 $generator->parseSchema($xml, $Model);
+$modx->addPackage($package, $Model);
+
+//$manager->removeObjectContainer('TicketComment');
+//$manager->removeObjectContainer('TicketThread');
+//$manager->removeObjectContainer('TicketAttachment');
+//$manager->removeObjectContainer('TicketVote');
+
+//$manager->createObjectContainer('TicketComment');
+//$manager->createObjectContainer('TicketThread');
+//$manager->createObjectContainer('TicketAttachment');
+//$manager->createObjectContainer('TicketVote');
+
+
 
 print "\nDone\n";
 
@@ -46,19 +57,19 @@ print "\nDone\n";
 /**
  * Recursive directory remove
  *
- * @package tickets
+ * @package worders
  */
-function rrmdir($dir) { 
-	if (is_dir($dir)) { 
-		$objects = scandir($dir); 
-		
-		foreach ($objects as $object) { 
-			if ($object != "." && $object != "..") { 
-				if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object); 
-			} 
+function rrmdir($dir) {
+	if (is_dir($dir)) {
+		$objects = scandir($dir);
+
+		foreach ($objects as $object) {
+			if ($object != "." && $object != "..") {
+				if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object);
+			}
 		}
-		
-		reset($objects); 
+
+		reset($objects);
 		rmdir($dir);
 	}
-}
+} 

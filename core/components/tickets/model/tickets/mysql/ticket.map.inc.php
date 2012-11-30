@@ -9,6 +9,25 @@ $xpdo_meta_map['Ticket']= array (
   'fieldMeta' => 
   array (
   ),
+  'composites' => 
+  array (
+    'Attachments' => 
+    array (
+      'class' => 'TicketAttachment',
+      'local' => 'id',
+      'foreign' => 'parent',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
+    'Votes' => 
+    array (
+      'class' => 'TicketVote',
+      'local' => 'id',
+      'foreign' => 'parent',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
+  ),
   'aggregates' => 
   array (
     'Section' => 

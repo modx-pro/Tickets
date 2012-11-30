@@ -10,5 +10,10 @@ $xpdo_meta_map = array (
   array (
     0 => 'TicketComment',
     1 => 'TicketThread',
+    2 => 'TicketAttachment',
+  ),
+  'xPDOObject' => 
+  array (
+    0 => 'TicketVote',
   ),
 );
