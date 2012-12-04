@@ -1,10 +1,4 @@
 <?php
-/**
- * The script for generation schema and model from database tables.
- *
- * @package worders
- */
-
 define('MODX_API_MODE', true);
 require_once dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/index.php';
 /*******************************************************/
@@ -54,11 +48,6 @@ print "\nDone\n";
 
 
 /********************************************************/
-/**
- * Recursive directory remove
- *
- * @package worders
- */
 function rrmdir($dir) {
 	if (is_dir($dir)) {
 		$objects = scandir($dir);

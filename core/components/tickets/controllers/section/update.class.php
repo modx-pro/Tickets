@@ -19,7 +19,7 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
 	 * @return bool
 	 */
 	public function checkPermissions() {
-		return $this->modx->hasPermission('update_document');
+		return $this->modx->hasPermission('edit_document');
 	}
 
 	/**
