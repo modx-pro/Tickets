@@ -379,7 +379,7 @@ class Tickets {
 	 * @return string String with html entities
 	 */
 	function sanitizeString($string = '') {
-		$string = htmlentities($string, ENT_QUOTES, "UTF-8");
+		$string = htmlentities(trim($string), ENT_QUOTES, "UTF-8");
 		$arr1 = array('[',']','`');
 		$arr2 = array('&#091;','&#093;','&#096;');
 

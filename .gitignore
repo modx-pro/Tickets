@@ -1,5 +1,3 @@
 .idea
 config.core.php
-assets/components/tickets/action.php
 core/components/tickets/model/tickets/ticketsext.class.php
-
