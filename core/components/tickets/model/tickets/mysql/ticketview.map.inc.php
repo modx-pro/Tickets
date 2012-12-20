@@ -1,17 +1,14 @@
 <?php
-$xpdo_meta_map['TicketVote']= array (
+$xpdo_meta_map['TicketView']= array (
   'package' => 'tickets',
   'version' => '0.1.0',
-  'table' => 'tickets_votes',
+  'table' => 'tickets_views',
   'extends' => 'xPDOObject',
   'fields' => 
   array (
     'parent' => 0,
-    'ip' => '0.0.0.0',
-    'value' => NULL,
-    'createdon' => NULL,
-    'createdby' => 0,
-    'class' => NULL,
+    'uid' => 0,
+    'timestamp' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -25,29 +22,7 @@ $xpdo_meta_map['TicketVote']= array (
       'default' => 0,
       'index' => 'pk',
     ),
-    'ip' => 
-    array (
-      'dbtype' => 'varchar',
-      'precision' => '16',
-      'phptype' => 'string',
-      'null' => false,
-      'default' => '0.0.0.0',
-    ),
-    'value' => 
-    array (
-      'dbtype' => 'tinyint',
-      'precision' => '1',
-      'attributes' => 'unsigned',
-      'phptype' => 'integer',
-      'null' => false,
-    ),
-    'createdon' => 
-    array (
-      'dbtype' => 'datetime',
-      'phptype' => 'datetime',
-      'null' => true,
-    ),
-    'createdby' => 
+    'uid' => 
     array (
       'dbtype' => 'int',
       'precision' => '10',
@@ -57,12 +32,11 @@ $xpdo_meta_map['TicketVote']= array (
       'default' => 0,
       'index' => 'pk',
     ),
-    'class' => 
+    'timestamp' => 
     array (
-      'dbtype' => 'varchar',
-      'precision' => '100',
-      'phptype' => 'string',
-      'index' => 'pk',
+      'dbtype' => 'datetime',
+      'phptype' => 'datetime',
+      'null' => false,
     ),
   ),
   'aggregates' => 

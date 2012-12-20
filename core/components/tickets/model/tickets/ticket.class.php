@@ -74,6 +74,17 @@ class Ticket extends modResource {
 	}
 
 	/**
+	 * Process a resource, transforming source content to output.
+	 *
+	 * @return string The processed cacheable content of a resource.
+	 */
+	public function process() {
+		$this->logView();
+		return parent::process();
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 * @return mixed
 	 */
@@ -173,6 +184,39 @@ class Ticket extends modResource {
 		}
 		else {
 			return parent::addMany($obj, $alias);
+		}
+	}
+
+	/*
+	 * Logs user views of a Ticket
+	 *
+	 * @return void
+	 * */
+	public function logView() {
+		$id = $this->id;
+
+		// Log total views
+		if (!$this->donthit) {
+			$table = $this->xpdo->getTableName('Ticket');
+			$sql = "SELECT `properties` FROM {$table} WHERE `id` = {$id}";
+			/* @var PDOStatement $stmt */
+			if ($stmt = $this->xpdo->prepare($sql)) {
+				$stmt->execute();
+				$properties = json_decode($stmt->fetchColumn(0), true);
+				@$properties['views'] += 1;
+				$properties = json_encode($properties);
+
+				$sql = "UPDATE {$table} SET `properties` = '{$properties}' WHERE `id` = {$id}";
+				if ($stmt = $this->xpdo->prepare($sql)) {$stmt->execute();}
+			}
+		}
+
+		// Log unique views of authenticated users
+		if ($this->xpdo->user->isAuthenticated() && $uid = $this->xpdo->user->id) {
+			$table = $this->xpdo->getTableName('TicketView');
+			$timestamp = date('Y-m-d H:i:s');
+			$sql = "INSERT INTO {$table} (`uid`,`parent`,`timestamp`) VALUES ({$uid},{$id},'{$timestamp}') ON DUPLICATE KEY UPDATE `timestamp` = '{$timestamp}'";
+			if ($stmt = $this->xpdo->prepare($sql)) {$stmt->execute();}
 		}
 	}
 

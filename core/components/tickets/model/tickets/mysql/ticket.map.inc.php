@@ -11,17 +11,17 @@ $xpdo_meta_map['Ticket']= array (
   ),
   'composites' => 
   array (
-    'Attachments' => 
+    'Votes' => 
     array (
-      'class' => 'TicketAttachment',
+      'class' => 'TicketVote',
       'local' => 'id',
       'foreign' => 'parent',
       'cardinality' => 'many',
       'owner' => 'local',
     ),
-    'Votes' => 
+    'Views' => 
     array (
-      'class' => 'TicketVote',
+      'class' => 'TicketView',
       'local' => 'id',
       'foreign' => 'parent',
       'cardinality' => 'many',

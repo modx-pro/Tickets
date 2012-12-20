@@ -36,11 +36,13 @@ $modx->addPackage($package, $Model);
 //$manager->removeObjectContainer('TicketThread');
 //$manager->removeObjectContainer('TicketAttachment');
 //$manager->removeObjectContainer('TicketVote');
+//$manager->removeObjectContainer('TicketView');
 
 //$manager->createObjectContainer('TicketComment');
 //$manager->createObjectContainer('TicketThread');
 //$manager->createObjectContainer('TicketAttachment');
 //$manager->createObjectContainer('TicketVote');
+//$manager->createObjectContainer('TicketView');
 
 
 
