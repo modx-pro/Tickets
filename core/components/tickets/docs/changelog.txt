@@ -6,6 +6,7 @@ Changelog for Tickets.
 - [mgr] Fixed selecting default template on ticket create.
 - Improved frontend javascript files for tickets and comments.
 - Removed parameters &useJs=`` and &useCss=`` from snippet TicketComments.
+- Added counting of ticket views by users and total.
 
 0.5.0
 ==========

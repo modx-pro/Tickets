@@ -1,4 +1,4 @@
-<h4 id="comment-new-link"><a href="#reply" onclick="return Comments.form.comment()">Написать комментарий</a></h4>
+<h4 id="comment-new-link"><a href="#reply" onclick="return Comments.forms.comment()">Написать комментарий</a></h4>
 <div id="comment-form-placeholder">
 	<form id="comment-form" action="[[+assetsUrl]]comment.php" method="post">
 		<div id="comment-preview-placeholder"></div>
