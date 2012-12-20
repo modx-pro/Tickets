@@ -83,9 +83,9 @@ class Ticket extends modResource {
 		if (!$this->paramsLoaded) {$this->loadParams();}
 
 		if (!$this->disableJevix) {
-			$content = $this->Jevix($content);
+			$content = $this->Jevix($content, false);
 		}
-		else if (!$this->processTags) {
+		if (!$this->processTags) {
 			$content = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $content);
 		}
 		$content = preg_replace('/<cut(.*?)>/i', '<a name="cut"></a>', $content);
@@ -115,14 +115,14 @@ class Ticket extends modResource {
 	 * @var mixed Text for processing
 	 * @returns mixed Filtered text
 	 * */
-	function Jevix($text) {
+	function Jevix($text, $replaceTags = true) {
 		if (!in_array('Tickets', get_declared_classes())) {
 			require 'tickets.class.php';
 		}
 		if (!isset($this->xpdo->Tickets) || !is_object($this->xpdo->Tickets) || !($this->xpdo->Tickets instanceof Tickets)) {
 			$this->xpdo->Tickets = new Tickets($this->xpdo, array());
 		}
-		return $this->xpdo->Tickets->Jevix($text, 'Ticket');
+		return $this->xpdo->Tickets->Jevix($text, 'Ticket', $replaceTags);
 	}
 
 	/**

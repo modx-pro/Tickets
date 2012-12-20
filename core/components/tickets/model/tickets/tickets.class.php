@@ -327,7 +327,7 @@ class Tickets {
 	 * @param string $text Text for sanitization
 	 * @return array Array with status and sanitized text or error message
 	 */
-	public function Jevix($text = null, $setName = 'Ticket') {
+	public function Jevix($text = null, $setName = 'Ticket', $replaceTags = true) {
 		if (empty($text)) {return ' ';}
 		if (!$snippet = $this->modx->getObject('modSnippet', array('name' => 'Jevix'))) {
 			return false;
@@ -348,7 +348,13 @@ class Tickets {
 		$snippet->setCacheable(false);
 		$filtered = $snippet->process($params);
 
-		$filtered = str_replace(array('{{{{{','}}}}}','`'), array('&#91;','&#93;','&#96;'), $filtered);
+		if ($replaceTags) {
+			$filtered = str_replace(array('{{{{{','}}}}}','`'), array('&#91;','&#93;','&#96;'), $filtered);
+		}
+		else {
+			$filtered = str_replace(array('{{{{{','}}}}}'), array('[',']'), $filtered);
+		}
+
 		return $filtered;
 	}
 

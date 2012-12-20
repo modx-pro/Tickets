@@ -78,7 +78,7 @@
 
 		<composite alias="Comments" class="TicketComment" local="id" foreign="thread" cardinality="many" owner="local" />
 	</object>
-
+<!--
 	<object class="TicketAttachment" table="tickets_attachments" extends="xPDOSimpleObject">
 		<field key="parent" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="index" />
 		<field key="file" dbtype="varchar" precision="255" phptype="string" index="index" />
@@ -87,7 +87,7 @@
 		<field key="type" dbtype="varchar" null="true" precision="100" phptype="string" index="index" />
 		<field key="class" dbtype="varchar" precision="100" phptype="string" index="index" />
 	</object>
-
+-->
 	<object class="TicketVote" table="tickets_votes" extends="xPDOObject">
 		<field key="parent" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
 		<field key="ip" dbtype="varchar" precision="16" phptype="string" null="false" default="0.0.0.0" />
