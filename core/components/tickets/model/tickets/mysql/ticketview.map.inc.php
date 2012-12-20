@@ -41,6 +41,14 @@ $xpdo_meta_map['TicketView']= array (
   ),
   'aggregates' => 
   array (
+    'User' => 
+    array (
+      'class' => 'modUser',
+      'local' => 'uid',
+      'foreign' => 'id',
+      'cardinality' => 'one',
+      'owner' => 'foreign',
+    ),
     'Ticket' => 
     array (
       'class' => 'Ticket',
