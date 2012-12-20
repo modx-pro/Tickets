@@ -14,20 +14,6 @@ $properties = array(
 		,'lexicon' => 'tickets:properties'
 	)
 	,array(
-		'name' => 'useCss'
-		,'desc' => 'tickets.useCss'
-		,'type' => 'combo-boolean'
-		,'value' => true
-		,'lexicon' => 'tickets:properties'
-	)
-	,array(
-		'name' => 'useJs'
-		,'desc' => 'tickets.useJs'
-		,'type' => 'combo-boolean'
-		,'value' => true
-		,'lexicon' => 'tickets:properties'
-	)
-	,array(
 		'name' => 'dateFormat'
 		,'desc' => 'tickets.dateFormat'
 		,'type' => 'textfield'

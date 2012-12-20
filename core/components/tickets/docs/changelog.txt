@@ -3,6 +3,9 @@ Changelog for Tickets.
 0.6.0
 ==========
 - Improved handling of MODX tags in Ticket::getContent.
+- [mgr] Fixed selecting default template on ticket create.
+- Improved frontend javascript files for tickets and comments.
+- Removed parameters &useJs=`` and &useCss=`` from snippet TicketComments.
 
 0.5.0
 ==========

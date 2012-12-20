@@ -1,4 +1,3 @@
-<script type="text/javascript" src="[[+assetsUrl]]js/web/tickets.js"></script>
 <form class="well" method="post" action="[[~[[*id]]]]" id="ticketForm">
 	<div id="ticket-preview-placeholder"></div>
 
@@ -13,7 +12,7 @@
 
 	<div class="form-actions">
 		<input type="hidden" name="action" value="saveTicket" />
-		<input type="button" class="btn" value="Предпросмотр" onclick="previewTicket(this.form, this)"/>
+		<input type="button" class="btn" value="Предпросмотр" onclick="Tickets.ticket.preview(this.form, this)"/>
 		<input type="submit" class="btn btn-primary" value="Отправить" />&nbsp;&nbsp;
 		<label class="checkbox"><input type="checkbox" name="published" value="1" [[+published:is=`1`:then=`checked`]] /> Опубликовать?</label>
 	</div>

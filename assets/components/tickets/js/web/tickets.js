@@ -1,68 +1,52 @@
-if(!jQuery().ajaxForm) {
-	document.write('<script src="https://yandex.st/jquery/form/3.14/jquery.form.min.js"><\/script>')
-}
+Tickets = {
+	initialize: function() {
+		if (typeof window['prettyPrint'] != 'function') {
+			document.write('<script src="'+TicketsConfig.jsUrl+'lib/prettify/prettify.js"><\/script>');
+			document.write('<link href="'+TicketsConfig.jsUrl+'lib/prettify/prettify.css" rel="stylesheet">');
+		}
+		if(!jQuery().ajaxForm) {
+			document.write('<script src="'+TicketsConfig.jsUrl+'lib/jquery.form.min.js"><\/script>');
+		}
 
-$(document).ready(function() {
-
-	if (Tickets.config.enable_editor == true) {
-		$('#ticket-editor').markItUp(Tickets.config.editor.ticket);
-	}
-
-/*
-	$(document).on('click', '#previewTicket', function(e) {
-		var data = new Object();
-		data.parent = $('[name="parent"]').val();
-		data.pagetitle = $('[name="pagetitle"]').val();
-		data.content = $('[name="content"]').val();
-		if (data.content == '' && data.pagetitle == '') {return false;}
-
-		var button = this;
-		$(button).attr('disabled','disabled');
-		$.post(document.location.href, {action: 'previewTicket', data: data}, function(response) {
-			response = $.parseJSON(response);
-			if (response.error == 1) {
-				$('#ticket-preview-placeholder').html('').hide();
-				alert(response.message);
-				$(button).removeAttr('disabled');
+		$(document).ready(function() {
+			if (TicketsConfig.enable_editor == true) {
+				$('#ticket-editor').markItUp(TicketsConfig.editor.ticket);
 			}
-			else {
-				$('#ticket-preview-placeholder').html(response.data).show();
-				$(button).removeAttr('disabled');
-				//prettyPrint();
-			}
-
 		})
-		e.preventDefault();
-	})
-*/
-})
-// Предпросмотр перед отправкой тикета
-function previewTicket(form, button) {
-	$(form).ajaxSubmit({
-		data: {action: 'previewTicket' }
-		,form: form
-		,button: button
-		,beforeSubmit: function() {
-			//$(button).addClass('loading');
-			var content = $('textarea[name="content"]',form).val();
-			content = content.replace(/\s+/g, "")
-			if(content == ''){
-				return false;
-			}
-			$(button).attr('disabled','disabled');
+	}
+	,ticket: {
+		preview: function(form,button) {
+			$(form).ajaxSubmit({
+				data: {action: 'previewTicket' }
+				,form: form
+				,button: button
+				,beforeSubmit: function() {
+					var content = $('textarea[name="content"]',form).val();
+					content = content.replace(/\s+/g, "");
+					if(content == ''){
+						return false;
+					}
+					$(button).attr('disabled','disabled');
+				}
+				,success: function(response) {
+					$(button).removeClass('loading');
+					response = $.parseJSON(response);
+					var element = $('#ticket-preview-placeholder');
+					if (response.error == 1) {
+						element.html('').hide();
+						alert(response.message);
+						$(button).removeAttr('disabled');
+					}
+					else {
+						element.html(response.data).show();
+						$(button).removeAttr('disabled');
+						prettyPrint();
+					}
+				}
+			});
 		}
-		,success: function(response) {
-			response = $.parseJSON(response);
-			if (response.error == 1) {
-				$('#ticket-preview-placeholder').html('').hide();
-				alert(response.message);
-				$(button).removeAttr('disabled');
-			}
-			else {
-				$('#ticket-preview-placeholder').html(response.data).show();
-				$(button).removeAttr('disabled');
-				//prettyPrint();
-			}
-		}
-	})
-}
+	}
+};
+
+
+Tickets.initialize();

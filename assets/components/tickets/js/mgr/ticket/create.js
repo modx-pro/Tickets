@@ -220,6 +220,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,id: 'modx-resource-template'
 				,anchor: '100%'
 				,editable: false
+				,value: MODx.config.default_template
 				,baseParams: {
 					action: 'getList'
 					,combo: '1'

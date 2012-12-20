@@ -117,22 +117,23 @@ class Tickets {
 	 */
 	public function getTicketForm($data = array()) {
 		$enable_editor = $this->modx->getOption('tickets.enable_editor');
-		$htmlBlock = 'enable_editor:'.$enable_editor.'';
+		$editorConfig = 'enable_editor:'.$enable_editor;
 		if ($enable_editor) {
 			$this->modx->regClientStartupScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
 			$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
 			$this->modx->regClientCSS($this->config['cssUrl'].'web/tickets.css');
-			$htmlBlock .= ',editor:{ticket:'.$this->modx->getOption('tickets.editor_config.ticket').'}';
+			$editorConfig .= "\n".',editor:{ticket:'.$this->modx->getOption('tickets.editor_config.ticket').'}';
 		}
 
-		$this->modx->regClientStartupHTMLBlock('<script type="text/javascript">
-			Tickets = new Object();
-			Tickets.config = {'.$htmlBlock.'};
+		$this->modx->regClientStartupScript('<script type="text/javascript">
+			TicketsConfig = {
+				jsUrl: "'.$this->config['jsUrl'].'web/"
+				,cssUrl: "'.$this->config['cssUrl'].'web/"
+				,'.$editorConfig.'
+			};
 		</script>');
+		$this->modx->regClientScript($this->config['jsUrl'].'web/tickets.js');
 
-		$arr = array(
-			'assetsUrl' => $this->config['assetsUrl']
-		);
 		$tpl = $this->config['tplFormCreate'];
 
 		if (!empty($data)) {
@@ -154,8 +155,12 @@ class Tickets {
 			}
 		}
 		$parent = !empty($data['parent']) ? $data['parent'] : 0;
-		$arr['sections'] = $this->getSections($parent);
-		$arr = array_merge($arr,$data);
+		$arr = array_merge(array(
+				'assetsUrl' => $this->config['assetsUrl']
+				,'sections' => $this->getSections($parent)
+			)
+			,$data
+		);
 
 		return $this->modx->getChunk($tpl, $arr);
 	}
@@ -168,28 +173,32 @@ class Tickets {
 	 * @return mixed Rendered form
 	 */
 	public function getCommentForm() {
-		if (!$this->modx->user->isAuthenticated()) {
-			return $this->modx->getChunk($this->config['tplLoginToComment']);
-		}
 		$enable_editor = $this->modx->getOption('tickets.enable_editor');
-		$htmlBlock = 'enable_editor:'.$enable_editor.'';
+		$editorConfig = 'enable_editor:'.$enable_editor.'';
 		if ($enable_editor) {
 			$this->modx->regClientStartupScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
 			$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
-			$this->modx->regClientCSS($this->config['cssUrl'].'web/tickets.css');
-			$htmlBlock .= ',editor:{comment:'.$this->modx->getOption('tickets.editor_config.comment').'}';
+			$editorConfig .= "\n".',editor:{comment:'.$this->modx->getOption('tickets.editor_config.comment').'}';
 		}
 
-		$this->modx->regClientStartupHTMLBlock('<script type="text/javascript">
-			Comments = new Object();
-			Comments.config = {'.$htmlBlock.'};
+		$this->modx->regClientStartupScript('<script type="text/javascript">
+			CommentsConfig = {
+				jsUrl: "'.$this->config['jsUrl'].'web/"
+				,cssUrl: "'.$this->config['cssUrl'].'web/"
+				,'.$editorConfig.'
+			};
 		</script>');
 
-		$arr = array(
-			'assetsUrl' => $this->config['assetsUrl']
-			,'thread' => $this->config['thread']
-		);
-		return $this->modx->getChunk($this->config['tplCommentForm'], $arr);
+		if (!$this->modx->user->isAuthenticated()) {
+			return $this->modx->getChunk($this->config['tplLoginToComment']);
+		}
+		else {
+			$arr = array(
+				'assetsUrl' => $this->config['assetsUrl']
+				,'thread' => $this->config['thread']
+			);
+			return $this->modx->getChunk($this->config['tplCommentForm'], $arr);
+		}
 	}
 
 
@@ -487,11 +496,9 @@ class Tickets {
 				$comments .= $this->templateNode($node, $tpl);
 			}
 		}
-		if ($this->config['useCss']) {
-			$scriptProperties['useCss'] = 0;
-			$this->modx->regClientCSS($this->config['assetsUrl'] . 'css/web/comments.css');
-		}
-		if ($this->config['useJs'] && $this->modx->user->isAuthenticated()) {
+
+		$this->modx->regClientCSS($this->config['assetsUrl'] . 'css/web/comments.css');
+		if ($this->modx->user->isAuthenticated()) {
 			$this->modx->regClientScript($this->config['assetsUrl'] . 'js/web/comments.js');
 		}
 		$arr = array(

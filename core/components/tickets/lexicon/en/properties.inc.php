@@ -18,8 +18,6 @@ $_lang['tickets.tplPreview'] = 'Chunk for preview ticket before publish';
 $_lang['tickets.cacheKey'] = 'Name of snippet cache. If empty - caching will be disabled.';
 
 $_lang['tickets.fastMode'] = 'If true - chunk of the comment will not be fully processed, the script only replace placeholders for values. All filters, chunks, snippets and etc will be cut.';
-$_lang['tickets.useCss'] = 'If true, Quip will provide a basic CSS template for the presentation.';
-$_lang['tickets.useJs'] = 'If true, Quip will provide a basic JS template for the presentation.';
 $_lang['tickets.dateFormat'] = 'The format of the dates displayed for a comment.';
 $_lang['tickets.gravatarIcon'] = 'The default Gravatar icon to load if none is found for a user.';
 $_lang['tickets.gravatarSize'] = 'The size, in pixels, of the Gravatar.';
