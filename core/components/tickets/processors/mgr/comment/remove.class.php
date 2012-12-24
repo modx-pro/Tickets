@@ -3,8 +3,8 @@ class TicketCommentRemoveProcessor extends modObjectRemoveProcessor  {
 	public $checkRemovePermission = true;
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets');
-	public $beforeRemoveEvent = '';
-	public $afterRemoveEvent = '';
+	public $beforeRemoveEvent = 'OnBeforeTicketCommentRemove';
+	public $afterRemoveEvent = 'OnTicketCommentRemove';
 	private $children;
 
 	public function beforeRemove() {

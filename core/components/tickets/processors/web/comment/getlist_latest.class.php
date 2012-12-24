@@ -12,7 +12,7 @@ class LatestCommentsGetListProcessor extends modObjectGetListProcessor {
 		$c->leftJoin('modResource','modResource', '`TicketThread`.`resource` = `modResource`.`id`');
 
 		$c->sortby('TicketThread.comment_last', 'DESC');
-		$c->where(array('TicketThread.resource:!=' => 0));
+		$c->where(array('TicketThread.resource:!=' => 0, 'modResource.published' => 1, 'modResource.deleted' => 0));
 
 		if ($parents = $this->getProperty('parents')) {
 			if (!is_array($parents)) {

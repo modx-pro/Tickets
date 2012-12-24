@@ -104,7 +104,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 						),
 						'cfgAllowTags' => array (
 							'name' => 'cfgAllowTags','desc' => 'cfgAllowTags','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
-							'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,pre,acronym,h1,h2,h3,h4,h5,h6,cut,br,code,s,blockquote,table,tr,th,td',
+							'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,pre,acronym,h1,h2,h3,h4,h5,h6,cut,br,code,s,blockquote,table,tr,th,td,video',
 						),
 						'cfgSetTagChilds' => array(
 							'name' => 'cfgSetTagChilds','desc' => 'cfgSetTagChilds','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',

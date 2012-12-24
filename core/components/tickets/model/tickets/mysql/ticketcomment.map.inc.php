@@ -1,7 +1,7 @@
 <?php
 $xpdo_meta_map['TicketComment']= array (
   'package' => 'tickets',
-  'version' => '0.1.0',
+  'version' => '1.1',
   'table' => 'tickets_comments',
   'extends' => 'xPDOSimpleObject',
   'fields' => 
@@ -30,7 +30,6 @@ $xpdo_meta_map['TicketComment']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'index',
     ),
     'parent' => 
     array (
@@ -40,7 +39,6 @@ $xpdo_meta_map['TicketComment']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'index',
     ),
     'text' => 
     array (
@@ -87,7 +85,6 @@ $xpdo_meta_map['TicketComment']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'index',
     ),
     'editedon' => 
     array (
@@ -103,7 +100,6 @@ $xpdo_meta_map['TicketComment']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'index',
     ),
     'deleted' => 
     array (
@@ -113,7 +109,6 @@ $xpdo_meta_map['TicketComment']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'index',
     ),
     'deletedon' => 
     array (
@@ -129,7 +124,6 @@ $xpdo_meta_map['TicketComment']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'index',
     ),
   ),
   'indexes' => 
@@ -138,7 +132,7 @@ $xpdo_meta_map['TicketComment']= array (
     array (
       'alias' => 'thread',
       'primary' => false,
-      'unique' => true,
+      'unique' => false,
       'type' => 'BTREE',
       'columns' => 
       array (
@@ -154,7 +148,7 @@ $xpdo_meta_map['TicketComment']= array (
     array (
       'alias' => 'parent',
       'primary' => false,
-      'unique' => true,
+      'unique' => false,
       'type' => 'BTREE',
       'columns' => 
       array (
@@ -166,47 +160,15 @@ $xpdo_meta_map['TicketComment']= array (
         ),
       ),
     ),
-    'uid' => 
-    array (
-      'alias' => 'uid',
-      'primary' => false,
-      'unique' => true,
-      'type' => 'BTREE',
-      'columns' => 
-      array (
-        'uid' => 
-        array (
-          'length' => '',
-          'collation' => 'A',
-          'null' => false,
-        ),
-      ),
-    ),
     'deleted' => 
     array (
       'alias' => 'deleted',
       'primary' => false,
-      'unique' => true,
+      'unique' => false,
       'type' => 'BTREE',
       'columns' => 
       array (
         'deleted' => 
-        array (
-          'length' => '',
-          'collation' => 'A',
-          'null' => false,
-        ),
-      ),
-    ),
-    'deletedby' => 
-    array (
-      'alias' => 'deletedby',
-      'primary' => false,
-      'unique' => true,
-      'type' => 'BTREE',
-      'columns' => 
-      array (
-        'deletedby' => 
         array (
           'length' => '',
           'collation' => 'A',

@@ -27,6 +27,7 @@ Tickets = {
 						return false;
 					}
 					$(button).attr('disabled','disabled');
+					return true;
 				}
 				,success: function(response) {
 					$(button).removeClass('loading');
@@ -34,7 +35,7 @@ Tickets = {
 					var element = $('#ticket-preview-placeholder');
 					if (response.error == 1) {
 						element.html('').hide();
-						alert(response.message);
+						Tickets.error(response.message);
 						$(button).removeAttr('disabled');
 					}
 					else {
@@ -46,7 +47,15 @@ Tickets = {
 			});
 		}
 	}
+	,error: function(message) {
+		alert(message);
+	}
 };
 
 
 Tickets.initialize();
+
+/* For compatibility with old chunks */
+function previewTicket(form, button) {
+	return Tickets.comment.preview(form, button);
+}

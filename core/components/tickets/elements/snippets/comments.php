@@ -11,10 +11,7 @@ $output = null;
 switch ($action) {
 	case 'previewComment': $output = $Tickets->previewComment($scriptProperties); break;
 	case 'saveComment': $output = $Tickets->saveComment($scriptProperties); break;
-	case 'getComments':
-		$output = $Tickets->getCommentThread($scriptProperties['thread']);
-		$output .= $Tickets->getCommentForm($scriptProperties);
-	break;
+	case 'getComments': $output = $Tickets->getCommentThread($scriptProperties['thread']); break;
 }
 
 if (is_array($output)) {

@@ -323,6 +323,7 @@ class Tickets {
 				,'count' => $this->getTicketComments($this->config['thread'])
 			);
 			$this->modx->cacheManager->delete('tickets/latest.comments');
+			$this->modx->cacheManager->delete('tickets/latest.tickets');
 			$this->sendCommentMails($comment);
 		}
 		return $arr;
@@ -478,8 +479,16 @@ class Tickets {
 	 * Returns all comments of the resource with given id
 	 * */
 	function getCommentThread($thread = '') {
+		$thread = trim((string) $thread);
+		if (empty($thread)) {
+			$thread = 'resource-' . $this->modx->resource->id;
+		}
+		else if (is_numeric($thread)) {
+			$thread = 'resource-'.$thread;
+		}
+
 		$data = array_merge($this->config, array(
-			'thread' => is_numeric($thread) ? 'resource-'.$thread : $thread
+			'thread' => $thread
 		));
 		$response = $this->runProcessor('web/thread/get', $data);
 		if ($response->isError()) {
@@ -505,7 +514,11 @@ class Tickets {
 			'total' => $data['total']
 			,'comments' => $comments
 		);
-		return $this->modx->getChunk($this->config['tplComments'], $arr);
+
+		$commentsThread = $this->modx->getChunk($this->config['tplComments'], $arr);
+		$commentForm = $this->getCommentForm();
+
+		return $commentsThread . $commentForm;
 	}
 
 	/*

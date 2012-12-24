@@ -17,8 +17,13 @@ class Ticket extends modResource {
 
 	function __construct(xPDO & $xpdo) {
 		parent :: __construct($xpdo);
+
 		$this->set('class_key','Ticket');
+		$this->set('comments',0);
+		$this->set('views',0);
+		$this->set('votes',0);
 	}
+
 
 	/* Loads ticket params
 	 * @return void
@@ -61,22 +66,44 @@ class Ticket extends modResource {
 
 	/**
 	 * {@inheritDoc}
-	 * @return mixed
 	 */
 	public function get($k, $format = null, $formatTemplate= null) {
-		$value = parent::get($k, $format, $formatTemplate);
-		if (!$this->paramsLoaded) {$this->loadParams();}
+		$fields = array('comments','views','votes');
 
-		if (!$this->processTags && is_string($k) && $this->_getPHPType($k) == 'string') {
-			$value = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $value);
+		if (is_array($k)) {
+			$k = array_merge($k, $fields);
+			$value = parent::get($k, $format, $formatTemplate);
 		}
+		else {
+			switch ($k) {
+				case 'comments': $value = $this->getCommentsCount(); break;
+				case 'views': $value = $this->getViewsCount(); break;
+				case 'votes': $value = $this->getVotesSum(); break;
+				default: $value = parent::get($k, $format, $formatTemplate);
+			}
+
+			if (!$this->paramsLoaded) {$this->loadParams();}
+
+			if (!$this->processTags && is_string($k) && !in_array($k, $fields) && $this->_getPHPType($k) == 'string') {
+				$value = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $value);
+			}
+		}
+
 		return $value;
 	}
 
+
 	/**
-	 * Process a resource, transforming source content to output.
-	 *
-	 * @return string The processed cacheable content of a resource.
+	 * {@inheritDoc}
+	 */
+	public function toArray() {
+		$array = array_merge(parent::toArray(), $this->getVirtualFields());
+
+		return $array;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 */
 	public function process() {
 		$this->logView();
@@ -86,7 +113,6 @@ class Ticket extends modResource {
 
 	/**
 	 * {@inheritDoc}
-	 * @return mixed
 	 */
 	public function getContent(array $options = array()) {
 		$content = parent::get('content');
@@ -100,8 +126,12 @@ class Ticket extends modResource {
 			$content = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $content);
 		}
 		$content = preg_replace('/<cut(.*?)>/i', '<a name="cut"></a>', $content);
+
+		$this->xpdo->setPlaceholders($this->getVirtualFields());
+
 		return $content;
 	}
+
 
 	/**
 	 * Clearing cache of this resource
@@ -121,6 +151,7 @@ class Ticket extends modResource {
 		$cache->delete($key);
 	}
 
+
 	/**
 	 * Html filter and typograf
 	 * @var mixed Text for processing
@@ -135,6 +166,7 @@ class Ticket extends modResource {
 		}
 		return $this->xpdo->Tickets->Jevix($text, 'Ticket', $replaceTags);
 	}
+
 
 	/**
 	 * Generate intro text from content buy cutting text before tag <cut/>
@@ -158,6 +190,7 @@ class Ticket extends modResource {
 		return $introtext;
 	}
 
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -167,6 +200,7 @@ class Ticket extends modResource {
 		}
 		return parent::getMany($alias, $criteria, $cacheFlag);
 	}
+
 
 	/**
 	 * {@inheritDoc}
@@ -187,6 +221,7 @@ class Ticket extends modResource {
 		}
 	}
 
+
 	/*
 	 * Logs user views of a Ticket
 	 *
@@ -195,24 +230,17 @@ class Ticket extends modResource {
 	public function logView() {
 		$id = $this->id;
 
-		// Log total views
-		if (!$this->donthit) {
-			$table = $this->xpdo->getTableName('Ticket');
-			$sql = "SELECT `properties` FROM {$table} WHERE `id` = {$id}";
-			/* @var PDOStatement $stmt */
-			if ($stmt = $this->xpdo->prepare($sql)) {
-				$stmt->execute();
-				$properties = json_decode($stmt->fetchColumn(0), true);
-				@$properties['views'] += 1;
-				$properties = json_encode($properties);
-
-				$sql = "UPDATE {$table} SET `properties` = '{$properties}' WHERE `id` = {$id}";
-				if ($stmt = $this->xpdo->prepare($sql)) {$stmt->execute();}
-			}
-		}
-
-		// Log unique views of authenticated users
+		/* @var PDOStatement $stmt */
 		if ($this->xpdo->user->isAuthenticated() && $uid = $this->xpdo->user->id) {
+			/*
+			if (!$res = $this->xpdo->getObject('TicketView', array('parent' => $this->id, 'uid' => $uid))) {
+				$res = $this->xpdo->newObject('TicketView');
+				$res->set('parent', $this->id);
+				$res->set('uid', $uid);
+			}
+			$res->set('timestamp', time());
+			$res->save();
+			*/
 			$table = $this->xpdo->getTableName('TicketView');
 			$timestamp = date('Y-m-d H:i:s');
 			$sql = "INSERT INTO {$table} (`uid`,`parent`,`timestamp`) VALUES ({$uid},{$id},'{$timestamp}') ON DUPLICATE KEY UPDATE `timestamp` = '{$timestamp}'";
@@ -220,6 +248,76 @@ class Ticket extends modResource {
 		}
 	}
 
+
+	/*
+	 * Shorthand for getting virtual Ticket fields
+	 *
+	 * @return array $array Array with virtual fields
+	 * */
+	function getVirtualFields() {
+		$array = array(
+			'comments' => $this->getCommentsCount()
+			,'views' => $this->getViewsCount()
+			,'votes' => $this->getVotesSum()
+		);
+
+		return $array;
+	}
+
+
+	/*
+	 * Returns count of views of Ticket by users
+	 *
+	 * @return integer $count Total count of views
+	 * */
+	public function getViewsCount() {
+		$q = $this->xpdo->newQuery('Ticket', $this->id);
+		$q->leftJoin('TicketView','TicketView', "`TicketView`.`parent` = `Ticket`.`id`");
+		$q->select('COUNT(`TicketView`.`parent`) as `views`');
+
+		$count = 0;
+		if ($q->prepare() && $q->stmt->execute()) {
+			$count = (integer) $q->stmt->fetch(PDO::FETCH_COLUMN);
+		}
+		return $count;
+	}
+
+
+	/*
+	 * Returns count of comments to Ticket
+	 *
+	 * @return integer $count Total count of comment
+	 * */
+	public function getCommentsCount() {
+		$q = $this->xpdo->newQuery('Ticket', $this->id);
+		$q->leftJoin('TicketThread','TicketThread', "`TicketThread`.`name` = 'resource-{$this->id}'");
+		$q->leftJoin('TicketComment','TicketComment', "`TicketThread`.`id` = `TicketComment`.`thread`");
+		$q->select('COUNT(`TicketComment`.`id`) as `comments`');
+
+		$count = 0;
+		if ($q->prepare() && $q->stmt->execute()) {
+			$count = (integer) $q->stmt->fetch(PDO::FETCH_COLUMN);
+		}
+		return $count;
+	}
+
+
+	/*
+	 * Returns sum of votes to Ticket by users
+	 *
+	 * @return integer $count Total sum of votes
+	 * */
+	public function getVotesSum() {
+		$q = $this->xpdo->newQuery('Ticket', $this->id);
+		$q->leftJoin('TicketVote','TicketVote', "`TicketVote`.`parent` = `Ticket`.`id` AND `TicketVote`.`class` = 'Ticket'");
+		$q->select('SUM(`TicketVote`.`value`) as `votes`');
+
+		$sum = 0;
+		if ($q->prepare() && $q->stmt->execute()) {
+			$sum = (integer) $q->stmt->fetch(PDO::FETCH_COLUMN);
+		}
+		return $sum;
+	}
 }
 
 

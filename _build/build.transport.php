@@ -14,7 +14,7 @@ set_time_limit(0);
 /* define package */
 define('PKG_NAME','Tickets');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
-define('PKG_VERSION','0.5.1');
+define('PKG_VERSION','0.6.0');
 define('PKG_RELEASE','beta');
 
 /* define sources */
@@ -192,7 +192,6 @@ if (is_array($templates)) {
 unset ($templates,$template,$idx,$ct,$attributes);
 
 /* load menu */
-/*
 $menu = include $sources['data'].'transport.menu.php';
 if (empty($menu)) {
 	$modx->log(modX::LOG_LEVEL_ERROR,'Could not package in menu.');
@@ -210,18 +209,11 @@ if (empty($menu)) {
 			),
 		),
 	));
-	$modx->log(modX::LOG_LEVEL_INFO,'Adding in PHP resolvers...');
-	$vehicle->resolve('php',array(
-		'source' => $sources['resolvers'] . 'resolve.tables.php',
-	));
-	$vehicle->resolve('php',array(
-		'source' => $sources['resolvers'] . 'resolve.paths.php',
-	));
 	$builder->putVehicle($vehicle);
 	$modx->log(modX::LOG_LEVEL_INFO,'Packaged in menu.');
 }
 unset($vehicle,$menu);
-*/
+
 /* now pack in the license file, readme and setup options */
 $vehicle = $builder->createVehicle($category,$attr);
 $modx->log(modX::LOG_LEVEL_INFO,'Adding resolvers to category...');

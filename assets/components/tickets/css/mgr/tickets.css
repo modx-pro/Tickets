@@ -2,17 +2,20 @@
 	background-image: url(../../img/tickets_section.png) !important;
 }
 
-.tickets-comment-row.comment-deleted {
+.tickets-comment-row.comment-deleted, .tickets-thread-row.thread-deleted {
 	color: #AAA;
 }
 
-.tickets-comment-row .resource-link {
+.tickets-comment-row .resource-link, .tickets-thread-row .resource-link {
 	color: #005580;
 	text-decoration: none;
 }
-.tickets-comment-row .resource-link:hover {
+.tickets-comment-row .resource-link:hover, .tickets-thread-row .resource-link:hover {
 	text-decoration: underline;
 }
+
+
+
 
 .tickets-grid-date {
 	color:#a0a0a0;
@@ -132,13 +135,6 @@
 	background:-ms-linear-gradient(center bottom,#fec95b 0%,#fee1a0 100%);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#fee1a0,endColorstr=#fec95b,GradientType=0);
 	background:linear-gradient(center bottom,#fec95b 0%,#fee1a0 100%);
-}
-
-.tickets-import-intro {
-	font-size: 11px;
-	color: #777;
-	background-color: #fafafa !important;
-	padding: 0 5px;
 }
 
 .tickets-grid .ticket-id {

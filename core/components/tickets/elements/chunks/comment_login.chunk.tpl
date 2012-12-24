@@ -1,3 +1,3 @@
 <div class="ticket-comments alert">
-    <p>Вы должны авторизоваться, чтобы оставлять комментарии.</p>
+    <p>[[%ticket_comment_err_no_auth]]</p>
 </div>

@@ -2,11 +2,19 @@ Changelog for Tickets.
 
 0.6.0
 ==========
-- Improved handling of MODX tags in Ticket::getContent.
+- [mgr] Added Custom Manager Page for manage comments. Now you can use TicketComments without Tickets.
 - [mgr] Fixed selecting default template on ticket create.
+- Improved handling of MODX tags in Ticket::getContent.
 - Improved frontend javascript files for tickets and comments.
 - Removed parameters &useJs=`` and &useCss=`` from snippet TicketComments.
-- Added counting of ticket views by users and total.
+- Added counting of ticket views by users.
+- Latest comments now respects status of resource. It must be published and not deleted.
+- Added disabling comments to ticket by setting flag "deleted" to comments thread.
+- Added virtual fields "comments" and "views" to class Ticket. Now you can get it as they were natural with Ticket::get() or Ticket::toArray().
+- Removed snippet getCommentsCount. Just use placeholder [[+comments]] or [[+views]] in chunks.
+- Added placeholders [[+comments]] and [[+views]] to ticket page.
+- Localized chunks.
+- Chunks and snippets now are static by default.
 
 0.5.0
 ==========

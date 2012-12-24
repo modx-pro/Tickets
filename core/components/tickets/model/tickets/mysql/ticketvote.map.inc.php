@@ -1,7 +1,7 @@
 <?php
 $xpdo_meta_map['TicketVote']= array (
   'package' => 'tickets',
-  'version' => '0.1.0',
+  'version' => '1.1',
   'table' => 'tickets_votes',
   'extends' => 'xPDOObject',
   'fields' => 
@@ -23,7 +23,6 @@ $xpdo_meta_map['TicketVote']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'pk',
     ),
     'ip' => 
     array (
@@ -46,6 +45,7 @@ $xpdo_meta_map['TicketVote']= array (
       'dbtype' => 'datetime',
       'phptype' => 'datetime',
       'null' => true,
+      'index' => 'index',
     ),
     'createdby' => 
     array (
@@ -55,7 +55,6 @@ $xpdo_meta_map['TicketVote']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'pk',
     ),
     'class' => 
     array (
@@ -63,6 +62,47 @@ $xpdo_meta_map['TicketVote']= array (
       'precision' => '100',
       'phptype' => 'string',
       'index' => 'pk',
+    ),
+  ),
+  'indexes' => 
+  array (
+    'unique_key' => 
+    array (
+      'alias' => 'unique_key',
+      'primary' => true,
+      'unique' => true,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'parent' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+        'createdby' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
+    'createdon' => 
+    array (
+      'alias' => 'createdon',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'createdon' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
     ),
   ),
   'aggregates' => 

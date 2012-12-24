@@ -7,7 +7,7 @@ Tickets.grid.Section = function(config) {
 	});
 	Ext.applyIf(config,{
 		id: 'tickets-grid-section'
-		,url: Tickets.connector_url
+		,url: Tickets.config.connector_url
 		,baseParams: {
 			action: 'mgr/ticket/getlist'
 			,parent: config.resource
@@ -27,7 +27,7 @@ Tickets.grid.Section = function(config) {
 			,{header: _('ticket_publishedon'),dataIndex: 'publishedon',width: 50,sortable: true,renderer: {fn:this._renderPublished,scope:this}}
 			,{header: _('ticket_pagetitle'),dataIndex: 'pagetitle',id: 'main',width: 200,sortable: true,renderer: {fn:this._renderPageTitle,scope:this}}
 			,{header: _('ticket_author'),dataIndex: 'createdby_username',width: 150,sortable: true,renderer: {fn:this._renderAuthor,scope:this}}
-			,{header: '<img src="'+Tickets.assets_url+'img/comments-icon-w.png" alt="" class="tickets-comments-col-header" />',dataIndex: 'comments',width: 50,sortable: true,renderer: {fn:this._renderComments,scope:this}}
+			,{header: '<img src="'+Tickets.config.assets_url+'img/comments-icon-w.png" alt="" class="tickets-comments-col-header" />',dataIndex: 'comments',width: 50,sortable: true,renderer: {fn:this._renderComments,scope:this}}
 		]
 		,tbar: [{
 			text: _('ticket_create')

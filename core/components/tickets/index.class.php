@@ -9,12 +9,12 @@ require_once dirname(__FILE__) . '/model/tickets/tickets.class.php';
 
 abstract class TicketsMainController extends modExtraManagerController {
 	/** @var Tickets $tickets */
-	public $tickets;
+	public $Tickets;
 
 	public function initialize() {
 		$this->Tickets = new Tickets($this->modx);
 
-		$this->modx->regClientCSS($this->Tickets->config['cssUrl'].'mgr.css');
+		$this->modx->regClientCSS($this->Tickets->config['cssUrl'].'mgr/tickets.css');
 		$this->modx->regClientStartupScript($this->Tickets->config['jsUrl'].'mgr/tickets.js');
 		$this->modx->regClientStartupHTMLBlock('<script type="text/javascript">
 		Ext.onReady(function() {
@@ -23,7 +23,7 @@ abstract class TicketsMainController extends modExtraManagerController {
 		});
 		</script>');
 		
-		return parent::initialize();
+		parent::initialize();
 	}
 
 	public function getLanguageTopics() {

@@ -2,11 +2,12 @@ Tickets.grid.Comments = function(config) {
 	config = config || {};
 	Ext.applyIf(config,{
 		id: 'tickets-grid-comments'
-		,url: Tickets.connector_url
+		,url: Tickets.config.connector_url
 		,baseParams: {
 			action: 'mgr/comment/getlist'
 			,section: config.section
 			,parents: config.parents
+			,threads: config.threads
 		}
 		,fields: ['id','text','name','createdby','parent','pagetitle'
 			,'createdon','createdby'
@@ -22,7 +23,7 @@ Tickets.grid.Comments = function(config) {
 			,{header: _('text'),dataIndex: 'text',width: 300}
 			,{header: _('name'),dataIndex: 'name',width: 100, renderer: this.renderUserLink}
 			,{header: _('createdon'),dataIndex: 'createdon',width: 100, sortable: true}
-			,{header: _('ticket'),dataIndex: 'pagetitle', width: 100, renderer: this.renderResourceLink, hidden: config.parents ? 1 : 0}
+			,{header: _('ticket'),dataIndex: 'pagetitle', width: 100, renderer: this.renderResourceLink, hidden: config.parents || config.threads ? 1 : 0}
 		]
 		,tbar: ['->'
 		,{
@@ -62,11 +63,15 @@ Tickets.grid.Comments = function(config) {
 Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 	windows: {}
 
-	,getMenu: function(grid, rowIndex, event, row) {
+	,remove: function() {}	// Grid onremove fix
+
+	,getMenu: function(grid, rowIndex, event) {
 		var row = grid.store.data.items[rowIndex].data;
 		var m = [];
 		m.push({text: _('ticket_comment_update'),handler: this.updateComment});
-		m.push({text: _('ticket_comment_view'),handler: this.viewComment});
+		if (row.comment_url) {
+			m.push({text: _('ticket_comment_view'),handler: this.viewComment});
+		}
 		//m.push({text: _('ticket_comment_viewauthor'),handler: this.viewAuthor});
 		m.push('-');
 		m.push({text: row.deleted ? _('ticket_comment_undelete') : _('ticket_comment_delete'),handler: this.deleteComment});
@@ -93,7 +98,7 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 		if (typeof(row) != 'undefined') {var record = row.data;}
 		else {var record = this.menu.record;}
 		MODx.Ajax.request({
-			url: Tickets.connector_url
+			url: Tickets.config.connector_url
 			,params: {
 				action: 'mgr/comment/get'
 				,id: record.id
@@ -121,7 +126,7 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 		if (!this.menu.record) return false;
 
 		MODx.Ajax.request({
-			url: Tickets.connector_url
+			url: Tickets.config.connector_url
 			,params: {
 				action: 'mgr/comment/delete'
 				,id: this.menu.record.id
@@ -133,7 +138,7 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 	}
 	,removeComment: function() {
 		MODx.msg.confirm({
-			url: Tickets.connector_url
+			url: Tickets.config.connector_url
 			,title: _('ticket_comment_remove')
 			,text: _('ticket_comment_remove_confirm')
 			,params: {
@@ -148,19 +153,20 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 
 	,viewComment: function(btn,e) {
 		if (!this.menu.record) return false;
-		var url = this.menu.record.comment_url
-		window.open(url);
+		if (this.menu.record.comment_url) {
+			var url = this.menu.record.comment_url
+			window.open(url);
+		}
+
 	}
-/*
-	,viewAuthor: function(btn,e) {
-		if (!this.menu.record) return false;
-		var updateUser = MODx.action ? MODx.action['security/user/update'] : 'security/user/update';
-		var url = 'index.php?a='+updateUser+'&id='+this.menu.record.createdby;
-		window.open(url);
-	}
-*/
+
 	,renderResourceLink: function(val,cell,row) {
-		return '<a href="' + row.data.resource_url+ '" target="_blank" class="resource-link">' + val + '</a>'
+		if (row.data.resource_url) {
+			return '<a href="' + row.data.resource_url+ '" target="_blank" class="resource-link">' + val + '</a>'
+		}
+		else {
+			return '';
+		}
 	}
 
 	,renderUserLink: function(val,cell,row) {
@@ -182,7 +188,7 @@ Tickets.window.UpdateComment = function(config) {
 		,id: this.ident
 		,width: 700
 		,height: 500
-		,url: Tickets.connector_url
+		,url: Tickets.config.connector_url
 		,action: 'mgr/comment/update'
 		,layout: 'anchor'
 		,autoHeight: false

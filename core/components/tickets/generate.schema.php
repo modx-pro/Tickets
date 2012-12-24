@@ -26,9 +26,6 @@ $modx->loadClass('transport.modPackageBuilder', '', false, true);
 $manager = $modx->getManager();
 
 $generator = $manager->getGenerator();
-//$generator->writeSchema($xml, $package, 'xPDOObject', $prefix.$suffix, true);
-//$tmp = str_replace('table="', 'table="'.$suffix, file_get_contents($xml));
-//file_put_contents($xml, $tmp);
 $generator->parseSchema($xml, $Model);
 $modx->addPackage($package, $Model);
 
@@ -43,8 +40,6 @@ $modx->addPackage($package, $Model);
 //$manager->createObjectContainer('TicketAttachment');
 //$manager->createObjectContainer('TicketVote');
 //$manager->createObjectContainer('TicketView');
-
-
 
 print "\nDone\n";
 

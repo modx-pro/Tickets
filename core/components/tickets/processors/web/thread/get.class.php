@@ -24,6 +24,11 @@ class GetThreadProcessor extends modProcessor {
 			));
 			$this->object->save();
 		}
+		else {
+			if ($this->object->deleted == 1) {
+				return $this->modx->lexicon('ticket_thread_err_deleted');
+			}
+		}
 		return true;
 	}
 

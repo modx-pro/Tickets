@@ -7,6 +7,13 @@
  */
 $properties = array(
 	array(
+		'name' => 'thread'
+		,'desc' => 'tickets.thread'
+		,'type' => 'textfield'
+		,'value' => ''
+		,'lexicon' => 'tickets:properties'
+	)
+	,array(
 		'name' => 'fastMode'
 		,'desc' => 'tickets.fastMode'
 		,'type' => 'combo-boolean'

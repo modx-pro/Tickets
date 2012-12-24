@@ -5,7 +5,7 @@
  * @package tickets
  * @subpackage build
  */
-/*
+
 $action= $modx->newObject('modAction');
 $action->fromArray(array(
 	'id' => 1,
@@ -16,15 +16,14 @@ $action->fromArray(array(
 	'lang_topics' => 'tickets:default',
 	'assets' => '',
 ),'',true,true);
-*/
+
 /* load action into menu */
-/*
 $menu= $modx->newObject('modMenu');
 $menu->fromArray(array(
 	'text' => 'tickets',
 	'parent' => 'components',
-	'description' => 'tickets.menu_desc',
-	'icon' => 'images/icons/plugin.gif',
+	'description' => 'ticket_menu_desc',
+	'icon' => '',
 	'menuindex' => 0,
 	'params' => '',
 	'handler' => '',
@@ -33,4 +32,3 @@ $menu->addOne($action);
 unset($action);
 
 return $menu;
-*/

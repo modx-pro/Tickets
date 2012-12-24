@@ -33,10 +33,11 @@ Comments = {
 						return false;
 					}
 					$(button).attr('disabled','disabled');
+					return true;
 				}
 				,success: function(data) {
 					$('#comment-preview-placeholder').html(data).show();
-					$(button).removeAttr('disabled')
+					$(button).removeAttr('disabled');
 					prettyPrint();
 				}
 			});
@@ -55,12 +56,13 @@ Comments = {
 						return false;
 					}
 					$(button).attr('disabled','disabled');
+					return true;
 				}
 				,success: function(response) {
 					response = $.parseJSON(response);
 					if (response.error == 1) {
 						$(button).removeAttr('disabled');
-						alert(response.message)
+						Comments.error(response.message);
 						return;
 					}
 					var parent = $(response.data).attr('data-parent');
@@ -115,6 +117,23 @@ Comments = {
 			return false;
 		}
 	}
+	,error: function(message) {
+		alert(message);
+	}
 };
 
 Comments.initialize();
+
+/* For compatibility with old chunks */
+function previewComment(form, button) {
+	return Comments.comment.preview(form, button);
+}
+function saveComment(form, button) {
+	return Comments.comment.save(form, button);
+}
+function showReplyForm(comment_id) {
+	return Comments.forms.reply(comment_id);
+}
+function showCommentForm() {
+	return Comments.forms.comment();
+}

@@ -7,9 +7,11 @@
  */
 $_lang['tickets'] = 'Tickets';
 $_lang['comments'] = 'Comments';
+$_lang['threads'] = 'Comments threads';
 $_lang['tickets_section'] = 'Tickets ticket';
 $_lang['ticket'] = 'Ticket';
 $_lang['ticket_all'] = 'Все';
+$_lang['ticket_menu_desc'] = 'Comments management and more.';
 
 $_lang['tickets_section_create_here'] = 'Section with tickets';
 $_lang['tickets_section_new'] = 'New tickes ticket';
@@ -31,6 +33,7 @@ $_lang['field_required'] = 'This field is required.';
 $_lang['ticket_clear'] = 'Clear';
 
 
+$_lang['ticket_comment_intro'] = '';
 $_lang['ticket_comment_email_owner'] = 'New comment for your ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_email_reply'] = 'Reply to your comment for ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_deleted_text'] = 'This comment was deleted.';
@@ -48,6 +51,12 @@ $_lang['ticket_comment_editedon'] = 'Edited on';
 $_lang['ticket_comment_deletedon'] = 'Deleted on';
 $_lang['ticket_comment_email'] = 'Email';
 $_lang['ticket_comment_view'] = 'View comment on site';
+$_lang['ticket_comment_reply'] = 'reply';
+$_lang['ticket_comment_create'] = 'Write comment';
+$_lang['ticket_comment_preview'] = 'Preview';
+$_lang['ticket_comment_save'] = 'Write';
+$_lang['ticket_comment_err_no_auth'] = 'You need to authenticate for create of comments.';
+
 
 $_lang['ticket_publishedon'] = 'Published On';
 $_lang['ticket_pagetitle'] = 'Title';
@@ -59,6 +68,24 @@ $_lang['ticket_disable_jevix'] = 'Disable Jevix';
 $_lang['ticket_disable_jevix_help'] = 'Display content of this page without Jevix sanitization. It is dangerous, any user, that creates the page can attack your site (XSS, LFI etc.).';
 $_lang['ticket_process_tags'] = 'Process MODX tags';
 $_lang['ticket_process_tags_help'] = 'By default tags in bracket displaying as is, without processing by parser. If you enable it - on this page can be run various snippets, chunks, etc.';
+$_lang['ticket_pagetitle'] = 'Title';
+$_lang['ticket_content'] = 'Describe your problem';
+$_lang['ticket_publish'] = 'Publish';
+$_lang['ticket_preview'] = 'Preview';
+$_lang['ticket_save'] = 'Submit';
+$_lang['ticket_read_more'] = 'Read more';
 
-
+$_lang['ticket_thread_intro'] = 'Here you see all the comments threads of the site and can manage it.';
+$_lang['ticket_thread_createdon'] = 'Created on';
+$_lang['ticket_thread_editedon'] = 'Edited on';
+$_lang['ticket_thread_deletedon'] = 'Deleted on';
+$_lang['ticket_thread_comments'] = 'Comments';
+$_lang['ticket_thread_resource'] = 'Ticket id';
+$_lang['ticket_thread_delete'] = 'Disable thread';
+$_lang['ticket_thread_undelete'] = 'Enable thread';
+$_lang['ticket_thread_remove'] = 'Remove with comments';
+$_lang['ticket_thread_remove_confirm'] = 'Are you sure you want to totally remove <b>all</b> this thread? This operation is irreversible!';
+$_lang['ticket_thread_view'] = 'View on site';
+$_lang['ticket_thread_err_deleted'] = 'Comments to this ticket was disabled';
+$_lang['ticket_thread_manage_comments'] = 'Manage comments';
 

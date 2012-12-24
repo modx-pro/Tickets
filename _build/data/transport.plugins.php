@@ -6,18 +6,19 @@
  * @subpackage build
  */
 $plugins = array();
-
-/* create the plugin object */
 $plugins[0] = $modx->newObject('modPlugin');
-$plugins[0]->set('id',1);
 $plugins[0]->set('name','Tickets');
-$plugins[0]->set('description','Main plugin for Tickets');
-$plugins[0]->set('plugincode', getSnippetContent($sources['plugins'] . 'tickets.php'));
-$plugins[0]->set('category',0);
-
+$plugins[0]->fromArray(array(
+	'id' => 0
+	,'category' => 0
+	,'description' =>'Main plugin for Tickets'
+	,'plugincode' => getSnippetContent($sources['plugins'] . 'tickets.php')
+	,'source' => 1
+	,'static' => 1
+	,'static_file' => 'core/components/tickets/elements/plugins/tickets.php'
+));
 
 $events = array();
-
 $events[0]= $modx->newObject('modPluginEvent');
 $events[0]->fromArray(array(
 	'event' => 'OnDocFormSave',

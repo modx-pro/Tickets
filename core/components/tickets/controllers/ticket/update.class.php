@@ -49,8 +49,10 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 		$this->addHtml('
 		<script type="text/javascript">
 		// <![CDATA[
-		Tickets.assets_url = "'.$ticketsAssetsUrl.'";
-		Tickets.connector_url = "'.$connectorUrl.'";
+		Tickets.config = {
+			assets_url: "'.$ticketsAssetsUrl.'"
+			,connector_url: "'.$connectorUrl.'"
+		}
 		MODx.config.publish_document = "'.$this->canPublish.'";
 		MODx.onDocFormRender = "'.$this->onDocFormRender.'";
 		MODx.ctx = "'.$this->ctx.'";

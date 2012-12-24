@@ -1,7 +1,7 @@
 <?php
 $xpdo_meta_map['Ticket']= array (
   'package' => 'tickets',
-  'version' => '0.1.0',
+  'version' => '1.1',
   'extends' => 'modResource',
   'fields' => 
   array (
@@ -25,6 +25,14 @@ $xpdo_meta_map['Ticket']= array (
       'local' => 'id',
       'foreign' => 'parent',
       'cardinality' => 'many',
+      'owner' => 'local',
+    ),
+    'Threads' => 
+    array (
+      'class' => 'TicketThread',
+      'local' => 'id',
+      'foreign' => 'resource',
+      'cardinality' => 'one',
       'owner' => 'local',
     ),
   ),

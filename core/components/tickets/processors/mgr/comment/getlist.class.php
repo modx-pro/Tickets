@@ -16,6 +16,11 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 				$c->where(array('TicketThread.resource:IN' => $parents));
 			}
 		}
+		/* OR get all comments by threads list */
+		else if ($threads = $this->getProperty('threads')) {
+			if (!is_array($threads)) {$threads = explode(',',$threads);}
+			$c->where(array('TicketComment.thread:IN' => $threads));
+		}
 		/* OR get all comments by tickets list */
 		else if ($parents = $this->getProperty('parents')) {
 			if (!is_array($parents)) {$parents = explode(',',$parents);}
@@ -27,6 +32,7 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 		}
 
 		if ($query = $this->getProperty('query',null)) {
+			$query = trim($query);
 			if (is_numeric($query)) {
 				$c->where(array(
 					'TicketComment.id:=' => $query
@@ -70,17 +76,21 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 			if ($resource = $this->modx->getObject('Ticket', $comment['resource'])) {
 				$resources[$comment['resource']] = array(
 					'resource_url' => $this->modx->makeUrl($comment['resource'],'','','full')
-				,'pagetitle' => $resource->get('pagetitle')
+					,'pagetitle' => $resource->get('pagetitle')
 				);
 			}
 		}
-		$comment = array_merge($comment, $resources[$comment['resource']]);
 
-		$comment['comment_url'] = $comment['resource_url'].'#comment-'.$comment['id'];
+		if (!empty($resources[$comment['resource']])) {
+			$comment = array_merge($comment, $resources[$comment['resource']]);
+			$comment['comment_url'] = $comment['resource_url'].'#comment-'.$comment['id'];
+		}
+
 		$comment['text'] = strip_tags(html_entity_decode($comment['text']));
 		$comment['createdon'] = $this->formatDate($comment['createdon']);
 		$comment['editedon'] = $this->formatDate($comment['editedon']);
 		$comment['deletedon'] = $this->formatDate($comment['deletedon']);
+
 		return $comment;
 	}
 

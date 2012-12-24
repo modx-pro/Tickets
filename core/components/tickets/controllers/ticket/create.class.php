@@ -44,8 +44,10 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 		$this->addHtml('
 		<script type="text/javascript">
 		// <![CDATA[
-		Tickets.assets_url = "'.$ticketsAssetsUrl.'";
-		Tickets.connector_url = "'.$connectorUrl.'";
+		Tickets.config = {
+			assets_url: "'.$ticketsAssetsUrl.'"
+			,connector_url: "'.$connectorUrl.'"
+		}
 		MODx.config.publish_document = "'.$this->canPublish.'";
 		MODx.config.default_template = '.$this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true).';
 		MODx.onDocFormRender = "'.$this->onDocFormRender.'";

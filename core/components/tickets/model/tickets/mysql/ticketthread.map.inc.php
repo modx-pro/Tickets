@@ -1,7 +1,7 @@
 <?php
 $xpdo_meta_map['TicketThread']= array (
   'package' => 'tickets',
-  'version' => '0.1.0',
+  'version' => '1.1',
   'table' => 'tickets_threads',
   'extends' => 'xPDOSimpleObject',
   'fields' => 
@@ -27,7 +27,6 @@ $xpdo_meta_map['TicketThread']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'unique',
     ),
     'name' => 
     array (
@@ -36,7 +35,6 @@ $xpdo_meta_map['TicketThread']= array (
       'phptype' => 'string',
       'null' => false,
       'default' => '',
-      'index' => 'unique',
     ),
     'subscribers' => 
     array (
@@ -92,7 +90,6 @@ $xpdo_meta_map['TicketThread']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'index',
     ),
     'comment_time' => 
     array (
@@ -104,11 +101,27 @@ $xpdo_meta_map['TicketThread']= array (
   ),
   'indexes' => 
   array (
+    'unique_key' => 
+    array (
+      'alias' => 'unique_key',
+      'primary' => false,
+      'unique' => true,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'name' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
     'resource' => 
     array (
       'alias' => 'resource',
       'primary' => false,
-      'unique' => true,
+      'unique' => false,
       'type' => 'BTREE',
       'columns' => 
       array (
@@ -120,15 +133,15 @@ $xpdo_meta_map['TicketThread']= array (
         ),
       ),
     ),
-    'name' => 
+    'comment_last' => 
     array (
-      'alias' => 'name',
+      'alias' => 'comment_last',
       'primary' => false,
-      'unique' => true,
+      'unique' => false,
       'type' => 'BTREE',
       'columns' => 
       array (
-        'name' => 
+        'comment_last' => 
         array (
           'length' => '',
           'collation' => 'A',

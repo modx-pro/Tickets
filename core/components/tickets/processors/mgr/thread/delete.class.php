@@ -1,10 +1,10 @@
 <?php
-class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
+class TicketThreadDeleteProcessor extends modObjectRemoveProcessor  {
 	public $checkRemovePermission = true;
-	public $classKey = 'TicketComment';
+	public $classKey = 'TicketThread';
 	public $languageTopics = array('tickets');
-	public $beforeRemoveEvent = 'OnBeforeTicketCommentRemove';
-	public $afterRemoveEvent = 'OnTicketCommentRemove';
+	public $beforeRemoveEvent = 'OnBeforeTicketThreadRemove';
+	public $afterRemoveEvent = 'OnTicketThreadRemove';
 
 	public function process() {
 		$canRemove = $this->beforeRemove();
@@ -43,4 +43,4 @@ class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
 	}
 }
 
-return 'TicketCommentDeleteProcessor';
+return 'TicketThreadDeleteProcessor';

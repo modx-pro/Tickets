@@ -1,7 +1,7 @@
 <?php
 $xpdo_meta_map['TicketView']= array (
   'package' => 'tickets',
-  'version' => '0.1.0',
+  'version' => '1.1',
   'table' => 'tickets_views',
   'extends' => 'xPDOObject',
   'fields' => 
@@ -20,7 +20,6 @@ $xpdo_meta_map['TicketView']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'pk',
     ),
     'uid' => 
     array (
@@ -30,7 +29,6 @@ $xpdo_meta_map['TicketView']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'pk',
     ),
     'timestamp' => 
     array (
@@ -39,16 +37,33 @@ $xpdo_meta_map['TicketView']= array (
       'null' => false,
     ),
   ),
+  'indexes' => 
+  array (
+    'unique_key' => 
+    array (
+      'alias' => 'unique_key',
+      'primary' => true,
+      'unique' => true,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'parent' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+        'uid' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
+  ),
   'aggregates' => 
   array (
-    'User' => 
-    array (
-      'class' => 'modUser',
-      'local' => 'uid',
-      'foreign' => 'id',
-      'cardinality' => 'one',
-      'owner' => 'foreign',
-    ),
     'Ticket' => 
     array (
       'class' => 'Ticket',

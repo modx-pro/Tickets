@@ -11,6 +11,6 @@
 			[[+text]]
 		</div>
 	</div>
-	<div class="comment-reply"><a href="#reply" onclick="return Comments.forms.reply([[+id]])">ответить</a></div>
+	<div class="comment-reply"><a href="#reply" onclick="return Comments.forms.reply([[+id]])">[[%ticket_comment_reply]]</a></div>
 	<ol class="comments-list">[[+children]]</ol>
 </li>
