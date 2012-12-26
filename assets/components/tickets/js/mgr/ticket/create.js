@@ -240,7 +240,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,description: _('ticket_disable_jevix_help')
 				,id: 'modx-resource-disablejevix'
 				,inputValue: 1
-				,checked: parseInt(MODx.config.disable_jevix)
+				,checked: parseInt(config.record.disable_jevix)
 			},{
 				xtype: 'xcheckbox'
 				,name: 'properties[process_tags]'
@@ -248,7 +248,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,description: _('ticket_process_tags_help')
 				,id: 'modx-resource-process_tags'
 				,inputValue: 1
-				,checked: parseInt(MODx.config.process_tags)
+				,checked: parseInt(config.record.process_tags)
 			},{
 				xtype: 'hidden'
 				,name: 'alias'

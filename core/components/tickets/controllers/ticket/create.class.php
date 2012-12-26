@@ -33,6 +33,9 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 		$connectorUrl = $ticketsAssetsUrl.'connector.php';
 		$ticketsJsUrl = $ticketsAssetsUrl.'js/mgr/';
 
+		$this->resourceArray['disable_jevix'] = $this->modx->getOption('tickets.disable_jevix_default', null, "false");
+		$this->resourceArray['process_tags'] = $this->modx->getOption('tickets.process_tags_default', null, "false");
+
 		$this->addJavascript($mgrUrl.'assets/modext/util/datetime.js');
 		$this->addJavascript($mgrUrl.'assets/modext/widgets/element/modx.panel.tv.renders.js');
 		$this->addJavascript($mgrUrl.'assets/modext/widgets/resource/modx.grid.resource.security.local.js');
@@ -50,8 +53,6 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 		}
 		MODx.config.publish_document = "'.$this->canPublish.'";
 		MODx.config.default_template = '.$this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true).';
-        MODx.config.disable_jevix = '.$this->modx->getOption('tickets.disable_jevix_default', null, "false").';
-        MODx.config.process_tags = '.$this->modx->getOption('tickets.process_tags_default', null, "false").';
 		MODx.onDocFormRender = "'.$this->onDocFormRender.'";
 		MODx.ctx = "'.$this->ctx.'";
 		Ext.onReady(function() {

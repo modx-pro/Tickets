@@ -96,7 +96,7 @@ class Ticket extends modResource {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray() {
+	public function toArray($keyPrefix= '', $rawValues= false, $excludeLazy= false, $includeRelated= false) {
 		$array = array_merge(parent::toArray(), $this->getVirtualFields());
 
 		return $array;

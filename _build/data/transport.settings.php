@@ -81,7 +81,7 @@ $settings[4]->fromArray(array(
 
 $settings[5]= $modx->newObject('modSystemSetting');
 $settings[5]->fromArray(array(
-	'key' => 'process_tags_default'
+	'key' => 'tickets.process_tags_default'
 	,'value' => 'false'
 	,'xtype' => 'combo-boolean'
 	,'namespace' => 'tickets'
