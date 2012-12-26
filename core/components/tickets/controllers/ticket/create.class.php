@@ -50,6 +50,8 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 		}
 		MODx.config.publish_document = "'.$this->canPublish.'";
 		MODx.config.default_template = '.$this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true).';
+        MODx.config.disable_jevix = '.$this->modx->getOption('tickets.disable_jevix_default', null, "false").';
+        MODx.config.process_tags = '.$this->modx->getOption('tickets.process_tags_default', null, "false").';
 		MODx.onDocFormRender = "'.$this->onDocFormRender.'";
 		MODx.ctx = "'.$this->ctx.'";
 		Ext.onReady(function() {

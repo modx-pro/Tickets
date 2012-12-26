@@ -537,8 +537,6 @@ class Tickets {
 
 		if ($this->config['fastMode']) {
 			$pl = $this->makePlaceholders($node);
-			$pl['pl'][] = '[[%ticket_comment_reply]]';
-			$pl['vl'][] = $this->modx->lexicon('ticket_comment_reply');
 			$row = str_replace($pl['pl'], $pl['vl'], $tpl);
 		}
 		else {

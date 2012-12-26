@@ -9,6 +9,7 @@
 
 		<div class="ticket-comment-text">
 			[[+text]]
+			[[+id:Test]]
 		</div>
 	</div>
 	<div class="comment-reply"><a href="#reply" onclick="return Comments.forms.reply([[+id]])">[[%ticket_comment_reply]]</a></div>
