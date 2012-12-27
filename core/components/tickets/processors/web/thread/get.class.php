@@ -18,9 +18,9 @@ class GetThreadProcessor extends modProcessor {
 			$this->object = $this->modx->newObject($this->classKey);
 			$this->object->fromArray(array(
 				'name' => $thread
-			,'createdby' => $this->modx->user->id
-			,'createdon' => date('Y-m-d H:i:s')
-			,'resource' => $this->modx->resource->id
+				,'createdby' => $this->modx->user->id
+				,'createdon' => date('Y-m-d H:i:s')
+				,'resource' => $this->modx->resource->id
 			));
 			$this->object->save();
 		}
@@ -94,7 +94,7 @@ class GetThreadProcessor extends modProcessor {
 			$comment = $this->comments[$key];
 			$this->object->fromArray(array(
 				'comment_last' => $key
-			,'comment_time' => $comment['createdon']
+				,'comment_time' => $comment['createdon']
 			));
 			$this->object->save();
 		}

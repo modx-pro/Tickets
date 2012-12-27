@@ -380,7 +380,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$this->unsetProperty('properties');
 		}
 		else {
-			$this->setProperty('properties', array());
+			//$this->setProperty('properties', array());
 		}
 		return true;
 	}
