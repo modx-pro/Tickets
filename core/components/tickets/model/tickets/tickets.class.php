@@ -317,6 +317,10 @@ class Tickets {
 		}
 		else {
 			$comment = $response->response['object'];
+			if ($profile = $this->modx->getObject('modUserProfile', array('internalKey' => $comment['createdby']))) {
+				$profile = $profile->toArray();
+				$comment = array_merge($profile, $comment);
+			}
 			$arr = array(
 				'error' => 0
 				,'data' => $this->modx->getChunk($this->config['tplCommentAuth'], $this->prepareComment($comment))
@@ -537,15 +541,17 @@ class Tickets {
 
 		if ($this->config['fastMode']) {
 			$pl = $this->makePlaceholders($node);
+			$pl['pl'][] = '[[%ticket_comment_reply]]';
+			$pl['vl'][] = $this->modx->lexicon('ticket_comment_reply');
 			$row = str_replace($pl['pl'], $pl['vl'], $tpl);
+			return preg_replace('/\[\[(.*?)\]\]/', '', $row);
 		}
 		else {
 			$chunk = $this->modx->newObject('modChunk');
 			$chunk->setCacheable(false);
 			$row = $chunk->process($node, $tpl);
+			return $row;
 		}
-
-		return preg_replace('/\[\[(.*?)\]\]/', '', $row);
 	}
 
 

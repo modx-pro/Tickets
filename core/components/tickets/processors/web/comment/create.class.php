@@ -38,6 +38,8 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 		));
 		$thread->save();
 
+
+
 		return parent::afterSave();
 	}
 }

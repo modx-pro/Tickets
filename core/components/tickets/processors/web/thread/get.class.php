@@ -18,9 +18,9 @@ class GetThreadProcessor extends modProcessor {
 			$this->object = $this->modx->newObject($this->classKey);
 			$this->object->fromArray(array(
 				'name' => $thread
-				,'createdby' => $this->modx->user->id
-				,'createdon' => date('Y-m-d H:i:s')
-				,'resource' => $this->modx->resource->id
+			,'createdby' => $this->modx->user->id
+			,'createdon' => date('Y-m-d H:i:s')
+			,'resource' => $this->modx->resource->id
 			));
 			$this->object->save();
 		}
@@ -59,11 +59,12 @@ class GetThreadProcessor extends modProcessor {
 		$result = null;
 		$q = $this->modx->newQuery('TicketComment');
 		$q->select($this->modx->getSelectColumns('TicketComment','TicketComment'));
+		$q->select($this->modx->getSelectColumns('modUserProfile','modUserProfile','',array('id'),true));
 		$q->select('`TicketThread`.`resource`');
+		$q->leftJoin('modUserProfile','modUserProfile','`TicketComment`.`createdby` = `modUserProfile`.`internalKey`');
 		$q->leftJoin('TicketThread','TicketThread','`TicketThread`.`id` = `TicketComment`.`thread`');
 		$q->where(array('thread' => $this->object->id));
 		$q->sortby('id','ASC');
-		$q->prepare();
 		if ($q->prepare() && $q->stmt->execute()) {
 			while ($row = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
 				$res[$row['id']] = $row;
@@ -93,7 +94,7 @@ class GetThreadProcessor extends modProcessor {
 			$comment = $this->comments[$key];
 			$this->object->fromArray(array(
 				'comment_last' => $key
-				,'comment_time' => $comment['createdon']
+			,'comment_time' => $comment['createdon']
 			));
 			$this->object->save();
 		}
