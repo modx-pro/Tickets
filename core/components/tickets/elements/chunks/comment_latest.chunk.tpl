@@ -1,8 +1,8 @@
 <div class="tickets_latest_row">
 	<span class="user">
-		<i class="icon-user"></i> [[+name]] <span class="arrow">&rarr;</span>
+		<i class="icon-user"></i> [[+name]] <small>[[+date_ago]]</small>
 	</span>
-
+	<br/>
 	<span class="ticket">
 		<i class="icon-comment"></i> <a href="[[~[[+resource]]]]#comment-[[+id]]">[[+pagetitle]]</a>
 	</span>

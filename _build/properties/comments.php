@@ -24,7 +24,7 @@ $properties = array(
 		'name' => 'dateFormat'
 		,'desc' => 'tickets.dateFormat'
 		,'type' => 'textfield'
-		,'value' => '%d %b %Y %H:%M'
+		,'value' => 'd F Y, H:i'
 		,'lexicon' => 'tickets:properties'
 	)
 	,array(

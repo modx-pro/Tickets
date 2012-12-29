@@ -43,7 +43,12 @@ class Tickets {
 			,'tplCommentEmailReply' => 'tpl.Tickets.comment.email.reply'
 
 			,'fastMode' => true
-			,'dateFormat' => '%d %b %Y %H:%M'
+			,'dateFormat' => 'd F Y, H:i'
+			,'dateDeclination' => 1
+			,'dateNow' => 10
+			,'dateDay' => 'day H:i'
+			,'dateMBack' => 59
+			,'dateHBack' => 10
 			,'charset' => $this->modx->getOption('modx_charset')
 			,'snippetPrepareComment' => $this->modx->getOption('tickets.snippet_prepare_comment', null)
 		),$config);
@@ -56,7 +61,6 @@ class Tickets {
 				$this->prepareCommentCustom = $snippet->get('content');
 			}
 		}
-
 	}
 
 
@@ -443,6 +447,7 @@ class Tickets {
 					}
 				}
 				$v['sectiontitle'] = $sections[$v['parent']];
+				$v['date_ago'] = $this->dateFormat($v['publishedon']);
 				if (empty($data['tpl'])) {
 					$output .= '<pre>'.print_r($v,true).'</pre>';
 				}
@@ -479,6 +484,7 @@ class Tickets {
 					}
 				}
 				$v['sectiontitle'] = $sections[$v['section']];
+				$v['date_ago'] = $this->dateFormat($v['createdon']);
 				if (empty($data['tpl'])) {
 					$output .= '<pre>'.print_r($v,true).'</pre>';
 				}
@@ -579,9 +585,10 @@ class Tickets {
 			if (!empty($data['resource'])) {
 				$data['url'] = $this->modx->makeUrl($data['resource'], '', '', 'full');
 			}
-			$data['createdon'] = strftime($this->config['dateFormat'], strtotime($data['createdon']));
-			$data['editedon'] = strftime($this->config['dateFormat'], strtotime($data['editedon']));
-			$data['deletedon'] = strftime($this->config['dateFormat'], strtotime($data['deletedon']));
+			$data['createdon'] = date($this->config['dateFormat'], strtotime($data['createdon']));
+			$data['editedon'] = date($this->config['dateFormat'], strtotime($data['editedon']));
+			$data['deletedon'] = date($this->config['dateFormat'], strtotime($data['deletedon']));
+			$data['date_ago'] = $this->dateFormat($data['createdon']);
 			if ($data['deleted']) {
 				$data['text'] = $this->modx->lexicon('ticket_comment_deleted_text');
 			}
@@ -690,6 +697,124 @@ class Tickets {
 			$this->modx->log(modX::LOG_LEVEL_ERROR,'An error occurred while trying to send the email: '.$this->modx->mail->mailer->ErrorInfo);
 		}
 		$this->modx->mail->reset();
+		return true;
+	}
+
+
+	/*
+	 * Formats date to "10 minutes ago" or "Yesterday in 22:10"
+	 * This algorithm taken from https://github.com/livestreet/livestreet/blob/7a6039b21c326acf03c956772325e1398801c5fe/engine/modules/viewer/plugs/function.date_format.php
+	 * @param $date $time Timestamp to format
+	 * */
+	public function dateFormat($date, $dateFormat = null) {
+		$date = preg_match('/^\d+$/',$date) ?  $date : strtotime($date);
+		$dateFormat = !empty($dateFormat) ? $dateFormat : $this->config['dateFormat'];
+		$current = time();
+		$delta = $current - $date;
+
+		if ($this->config['dateNow']) {
+			if ($delta < $this->config['dateNow']) {return $this->modx->lexicon('date_now');}
+		}
+
+		if ($this->config['dateMBack']) {
+			$minutes = round(($delta) / 60);
+			if ($minutes < $this->config['dateMBack']) {
+				if ($minutes > 0) {
+					return $this->declension($minutes, $this->modx->lexicon('date_minutes_back',array('minutes' => $minutes)));
+				}
+				else {
+					return $this->modx->lexicon('date_minutes_back_less');
+				}
+			}
+		}
+
+		if ($this->config['dateHBack']) {
+			$hours = round(($delta) / 3600);
+			if ($hours < $this->config['dateHBack']) {
+				if ($hours > 0) {
+					return $this->declension($hours, $this->modx->lexicon('date_hours_back',array('hours' => $hours)));
+				}
+				else {
+					return $this->modx->lexicon('date_hours_back_less');
+				}
+			}
+		}
+
+		if ($this->config['dateDay']) {
+			switch(date('Y-m-d', $date)) {
+				case date('Y-m-d'):
+					$day = $this->modx->lexicon('date_today');
+					break;
+				case date('Y-m-d', mktime(0, 0, 0, date('m')  , date('d')-1, date('Y')) ):
+					$day = $this->modx->lexicon('date_yesterday');
+					break;
+				case date('Y-m-d', mktime(0, 0, 0, date('m')  , date('d')+1, date('Y')) ):
+					$day = $this->modx->lexicon('date_tomorrow');
+					break;
+				default: $day = null;
+			}
+			if($day) {
+				$format = str_replace("day",preg_replace("#(\w{1})#",'\\\${1}',$day),$this->config['dateDay']);
+				return date($format,$date);
+			}
+		}
+
+		$m = date("n", $date);
+		$month_arr = $this->modx->fromJSON($this->modx->lexicon('month_array'));
+		$month = $month_arr[$m - 1];
+
+		$format = preg_replace("~(?<!\\\\)F~U", preg_replace('~(\w{1})~u','\\\${1}', $month), $dateFormat);
+
+		return date($format ,$date);
+	}
+
+
+	/*
+	 * Declension of words
+	 * This algorithm taken from https://github.com/livestreet/livestreet/blob/eca10c0186c8174b774a2125d8af3760e1c34825/engine/modules/viewer/plugs/modifier.declension.php
+	 *
+	 * @param int $count
+	 * @param string $forms
+	 * @param string $language
+	 * @return string
+	 * */
+	public function declension($count, $forms, $lang = null) {
+		if (empty($lang)) {
+			$lang = $this->modx->getOption('cultureKey',null,'en');
+		}
+		$forms = $this->modx->fromJSON($forms);
+
+		if ($lang == 'ru') {
+			$mod100 = $count % 100;
+			switch ($count%10) {
+				case 1:
+					if ($mod100 == 11) {$text = $forms[2];}
+					else {$text = $forms[0];}
+					break;
+				case 2:
+				case 3:
+				case 4:
+					if (($mod100 > 10) && ($mod100 < 20)) {$text = $forms[2];}
+					else {$text = $forms[1];}
+					break;
+				case 5:
+				case 6:
+				case 7:
+				case 8:
+				case 9:
+				case 0: $text = $forms[2]; break;
+			}
+		}
+		else {
+			if ($count == 1) {
+				$text = $forms[0];
+			}
+			else {
+				$text = $forms[1];
+			}
+		}
+		return $text;
+
 	}
 
 }

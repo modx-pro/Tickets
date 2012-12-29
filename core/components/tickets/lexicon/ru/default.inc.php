@@ -86,3 +86,14 @@ $_lang['ticket_thread_remove_confirm'] = 'Вы дейтвительно хоти
 $_lang['ticket_thread_view'] = 'Просмотреть на сайте';
 $_lang['ticket_thread_err_deleted'] = 'Комментарии к этому тикету были отключены.';
 $_lang['ticket_thread_manage_comments'] = 'Управление комментариями';
+
+
+$_lang['date_now'] = 'Только что';
+$_lang['date_today'] = 'Сегодня в';
+$_lang['date_yesterday'] = 'Вчера в';
+$_lang['date_tomorrow'] = 'Завтра в';
+$_lang['date_minutes_back'] = '["[[+minutes]] минута назад","[[+minutes]] минуты назад","[[+minutes]] минут назад"]';
+$_lang['date_minutes_back_less'] = 'меньше минуты назад';
+$_lang['date_hours_back'] = '["[[+hours]] час назад","[[+hours]] часа назад","[[+hours]] часов назад"]';
+$_lang['date_hours_back_less'] = 'меньше часа назад';
+$_lang['month_array'] = '["января","февраля","марта","апреля","мая","июня","июля","августа","сенятбря","октября","ноября","декабря"]';

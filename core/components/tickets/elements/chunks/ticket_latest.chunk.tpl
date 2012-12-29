@@ -1,8 +1,8 @@
 <div class="tickets_latest_row">
 	<span class="user">
-		<i class="icon-user"></i> [[+createdby:userinfo=`fullname`]] <span class="arrow">&rarr;</span>
+		<i class="icon-user"></i> [[+createdby:userinfo=`fullname`]] <small>[[+date_ago]]</small>
 	</span>
-
+	<br/>
 	<span class="ticket">
 		<i class="icon-file"></i> <a href="[[~[[+id]]]]">[[+pagetitle]]</a>
 	</span>
