@@ -1,9 +1,11 @@
 Changelog for Tickets.
 
-0.6.1
+0.7.0
 ==========
 - [mgr] Fixed default settings when create new ticket.
 - Added placeholders of user profile in comments chunks.
+- Added plugins events
+- New system setting "snippet_prepare_comment" for custom prepare data of the comment.
 
 0.6.0
 ==========

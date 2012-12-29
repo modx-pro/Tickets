@@ -14,7 +14,7 @@ set_time_limit(0);
 /* define package */
 define('PKG_NAME','Tickets');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
-define('PKG_VERSION','0.6.0');
+define('PKG_VERSION','0.7.0');
 define('PKG_RELEASE','beta');
 
 /* define sources */
@@ -131,6 +131,23 @@ $attr = array(
 		),
 	),
 );
+
+/* load plugins events */
+$events = include $sources['data'].'transport.events.php';
+if (!is_array($events)) {
+	$modx->log(modX::LOG_LEVEL_ERROR,'Could not package in events.');
+} else {
+	$attributes = array (
+		xPDOTransport::PRESERVE_KEYS => true,
+		xPDOTransport::UPDATE_OBJECT => true,
+	);
+	foreach ($events as $event) {
+		$vehicle = $builder->createVehicle($event,$attributes);
+		$builder->putVehicle($vehicle);
+	}
+	$modx->log(xPDO::LOG_LEVEL_INFO,'Packaged in '.count($events).' plugins events.');
+}
+unset ($events, $event, $attributes);
 
 /* load system settings */
 $settings = include $sources['data'].'transport.settings.php';

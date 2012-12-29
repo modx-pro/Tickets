@@ -88,4 +88,13 @@ $settings[5]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
+$settings[5]= $modx->newObject('modSystemSetting');
+$settings[5]->fromArray(array(
+	'key' => 'tickets.snippet_prepare_comment'
+	,'value' => ''
+	,'xtype' => 'textfield'
+	,'namespace' => 'tickets'
+	,'area' => 'Ticket'
+),'',true,true);
+
 return $settings;

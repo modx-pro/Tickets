@@ -3,10 +3,9 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 	private $thread;
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets:default');
-	public $objectType = 'comment';
 	public $permission = 'comment_save';
-	public $beforeSaveEvent = '';
-	public $afterSaveEvent = '';
+	public $beforeSaveEvent = 'OnBeforeCommentSave';
+	public $afterSaveEvent = 'OnCommentSave';
 
 
 	public function beforeSet() {

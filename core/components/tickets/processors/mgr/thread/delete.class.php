@@ -3,8 +3,8 @@ class TicketThreadDeleteProcessor extends modObjectRemoveProcessor  {
 	public $checkRemovePermission = true;
 	public $classKey = 'TicketThread';
 	public $languageTopics = array('tickets');
-	public $beforeRemoveEvent = 'OnBeforeTicketThreadRemove';
-	public $afterRemoveEvent = 'OnTicketThreadRemove';
+	public $beforeRemoveEvent = 'OnBeforeTicketThreadDelete';
+	public $afterRemoveEvent = 'OnTicketThreadDelete';
 
 	public function process() {
 		$canRemove = $this->beforeRemove();

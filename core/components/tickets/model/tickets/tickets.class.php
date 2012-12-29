@@ -5,6 +5,9 @@
  * @package tickets
  */
 class Tickets {
+
+	private $prepareCommentCustom = null;
+
 	function __construct(modX &$modx,array $config = array()) {
 		$this->modx =& $modx;
 
@@ -42,10 +45,18 @@ class Tickets {
 			,'fastMode' => true
 			,'dateFormat' => '%d %b %Y %H:%M'
 			,'charset' => $this->modx->getOption('modx_charset')
+			,'snippetPrepareComment' => $this->modx->getOption('tickets.snippet_prepare_comment', null)
 		),$config);
 
 		$this->modx->addPackage('tickets',$this->config['modelPath']);
 		$this->modx->lexicon->load('tickets:default');
+
+		if ($name = $this->config['snippetPrepareComment']) {
+			if ($snippet = $this->modx->getObject('modSnippet', array('name' => $name))) {
+				$this->prepareCommentCustom = $snippet->get('content');
+			}
+		}
+
 	}
 
 
@@ -63,7 +74,7 @@ class Tickets {
 				}
 				$this->request = new TicketsControllerRequest($this);
 				return $this->request->handleRequest();
-			break;
+				break;
 		}
 	}
 
@@ -82,6 +93,7 @@ class Tickets {
 		return $this->modx->runProcessor($action, $data, array('processors_path' => $this->config['processorsPath']));
 
 	}
+
 
 	/**
 	 * Returns sections, available for user
@@ -380,7 +392,7 @@ class Tickets {
 	 * @param int|string $id Id of ticket
 	 * @return integer Number of comments
 	 */
-	function getTicketComments($thread = '') {
+	public function getTicketComments($thread = '') {
 		//if (empty($thread)) {$thread = $this->modx->resource->id;}
 		if (is_numeric($thread)) {$thread = 'resource-'.$thread;}
 
@@ -398,7 +410,7 @@ class Tickets {
 	 * @param string $string Any string with MODX tags
 	 * @return string String with html entities
 	 */
-	function sanitizeString($string = '') {
+	public function sanitizeString($string = '') {
 		$string = htmlentities(trim($string), ENT_QUOTES, "UTF-8");
 		$arr1 = array('[',']','`');
 		$arr2 = array('&#091;','&#093;','&#096;');
@@ -414,7 +426,7 @@ class Tickets {
 	 * @param array $data Various params for processor
 	 * @return mixed Rendered results
 	 */
-	function getLatestTickets($data) {
+	public function getLatestTickets($data) {
 		if (!empty($data['parents'])) {$data['parents'] = explode(',', $data['parents']);}
 		$response = $this->runProcessor('web/ticket/getlist', $data);
 		$result = json_decode($response->response, true);
@@ -450,7 +462,7 @@ class Tickets {
 	 * @param array $data Various params for processor
 	 * @return mixed Rendered results
 	 */
-	function getLatestComments($data) {
+	public function getLatestComments($data) {
 		if (!empty($data['parents'])) {$data['parents'] = explode(',', $data['parents']);}
 		$response = $this->runProcessor('web/comment/getlist_latest', $data);
 		$result = json_decode($response->response, true);
@@ -482,7 +494,7 @@ class Tickets {
 	/*
 	 * Returns all comments of the resource with given id
 	 * */
-	function getCommentThread($thread = '') {
+	public function getCommentThread($thread = '') {
 		$thread = trim((string) $thread);
 		if (empty($thread)) {
 			$thread = 'resource-' . $this->modx->resource->id;
@@ -558,25 +570,30 @@ class Tickets {
 	/*
 	 * Render of the comment
 	 * */
-	function prepareComment($data = array()) {
-		$data['avatar'] = $this->config['gravatarUrl'] . md5($data['email']) .'?s=' . $this->config['gravatarSize'] . '&d=' . $this->config['gravatarIcon'];
-		if (!empty($data['resource'])) {
-			$data['url'] = $this->modx->makeUrl($data['resource'], '', '', 'full');
+	public function prepareComment($data = array()) {
+		if (!empty($this->prepareCommentCustom)) {
+			return eval($this->prepareCommentCustom);
 		}
-		$data['createdon'] = strftime($this->config['dateFormat'], strtotime($data['createdon']));
-		$data['editedon'] = strftime($this->config['dateFormat'], strtotime($data['editedon']));
-		$data['deletedon'] = strftime($this->config['dateFormat'], strtotime($data['deletedon']));
-		if ($data['deleted']) {
-			$data['text'] = $this->modx->lexicon('ticket_comment_deleted_text');
+		else {
+			$data['avatar'] = $this->config['gravatarUrl'] . md5($data['email']) .'?s=' . $this->config['gravatarSize'] . '&d=' . $this->config['gravatarIcon'];
+			if (!empty($data['resource'])) {
+				$data['url'] = $this->modx->makeUrl($data['resource'], '', '', 'full');
+			}
+			$data['createdon'] = strftime($this->config['dateFormat'], strtotime($data['createdon']));
+			$data['editedon'] = strftime($this->config['dateFormat'], strtotime($data['editedon']));
+			$data['deletedon'] = strftime($this->config['dateFormat'], strtotime($data['deletedon']));
+			if ($data['deleted']) {
+				$data['text'] = $this->modx->lexicon('ticket_comment_deleted_text');
+			}
+			return $data;
 		}
-		return $data;
 	}
 
 
 	/*
 	 * Returns array with separated placeholders and values for fast render without processing chunk
 	 * */
-	function makePlaceholders($arr = array()) {
+	public function makePlaceholders($arr = array()) {
 		$placeholders = array();
 
 		foreach ($arr as $k => $v) {
