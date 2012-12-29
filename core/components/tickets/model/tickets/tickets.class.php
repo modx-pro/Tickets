@@ -713,17 +713,17 @@ class Tickets {
 		$delta = $current - $date;
 
 		if ($this->config['dateNow']) {
-			if ($delta < $this->config['dateNow']) {return $this->modx->lexicon('date_now');}
+			if ($delta < $this->config['dateNow']) {return $this->modx->lexicon('ticket_date_now');}
 		}
 
 		if ($this->config['dateMBack']) {
 			$minutes = round(($delta) / 60);
 			if ($minutes < $this->config['dateMBack']) {
 				if ($minutes > 0) {
-					return $this->declension($minutes, $this->modx->lexicon('date_minutes_back',array('minutes' => $minutes)));
+					return $this->declension($minutes, $this->modx->lexicon('ticket_date_minutes_back',array('minutes' => $minutes)));
 				}
 				else {
-					return $this->modx->lexicon('date_minutes_back_less');
+					return $this->modx->lexicon('ticket_date_minutes_back_less');
 				}
 			}
 		}
@@ -732,10 +732,10 @@ class Tickets {
 			$hours = round(($delta) / 3600);
 			if ($hours < $this->config['dateHBack']) {
 				if ($hours > 0) {
-					return $this->declension($hours, $this->modx->lexicon('date_hours_back',array('hours' => $hours)));
+					return $this->declension($hours, $this->modx->lexicon('ticket_date_hours_back',array('hours' => $hours)));
 				}
 				else {
-					return $this->modx->lexicon('date_hours_back_less');
+					return $this->modx->lexicon('ticket_date_hours_back_less');
 				}
 			}
 		}
@@ -743,13 +743,13 @@ class Tickets {
 		if ($this->config['dateDay']) {
 			switch(date('Y-m-d', $date)) {
 				case date('Y-m-d'):
-					$day = $this->modx->lexicon('date_today');
+					$day = $this->modx->lexicon('ticket_date_today');
 					break;
 				case date('Y-m-d', mktime(0, 0, 0, date('m')  , date('d')-1, date('Y')) ):
-					$day = $this->modx->lexicon('date_yesterday');
+					$day = $this->modx->lexicon('ticket_date_yesterday');
 					break;
 				case date('Y-m-d', mktime(0, 0, 0, date('m')  , date('d')+1, date('Y')) ):
-					$day = $this->modx->lexicon('date_tomorrow');
+					$day = $this->modx->lexicon('ticket_date_tomorrow');
 					break;
 				default: $day = null;
 			}
@@ -760,7 +760,7 @@ class Tickets {
 		}
 
 		$m = date("n", $date);
-		$month_arr = $this->modx->fromJSON($this->modx->lexicon('month_array'));
+		$month_arr = $this->modx->fromJSON($this->modx->lexicon('ticket_date_months'));
 		$month = $month_arr[$m - 1];
 
 		$format = preg_replace("~(?<!\\\\)F~U", preg_replace('~(\w{1})~u','\\\${1}', $month), $dateFormat);
@@ -802,7 +802,8 @@ class Tickets {
 				case 7:
 				case 8:
 				case 9:
-				case 0: $text = $forms[2]; break;
+				case 0:
+				default: $text = $forms[2];
 			}
 		}
 		else {

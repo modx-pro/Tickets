@@ -90,12 +90,12 @@ $_lang['ticket_thread_err_deleted'] = 'Comments to this ticket was disabled';
 $_lang['ticket_thread_manage_comments'] = 'Manage comments';
 
 
-$_lang['date_now'] = 'Just now';
-$_lang['date_today'] = 'Today at';
-$_lang['date_yesterday'] = 'Yesterday at';
-$_lang['date_tomorrow'] = 'Tomorrow at';
-$_lang['date_minutes_back'] = '["[[+minutes]] minutes ago","[[+minutes]] minutes ago","[[+minutes]] minutes ago"]';
-$_lang['date_minutes_back_less'] = 'Less than a minute ago';
-$_lang['date_hours_back'] = '["[[+hours]] hours ago","[[+hours]] hours ago","[[+hours]] hours ago"]';
-$_lang['date_hours_back_less'] = 'Less than an hour ago';
-$_lang['month_array'] = '["january","february","march","april","may","july","august","september","october","november","december"]';
+$_lang['ticket_date_now'] = 'Just now';
+$_lang['ticket_date_today'] = 'Today at';
+$_lang['ticket_date_yesterday'] = 'Yesterday at';
+$_lang['ticket_date_tomorrow'] = 'Tomorrow at';
+$_lang['ticket_date_minutes_back'] = '["[[+minutes]] minutes ago","[[+minutes]] minutes ago","[[+minutes]] minutes ago"]';
+$_lang['ticket_date_minutes_back_less'] = 'Less than a minute ago';
+$_lang['ticket_date_hours_back'] = '["[[+hours]] hours ago","[[+hours]] hours ago","[[+hours]] hours ago"]';
+$_lang['ticket_date_hours_back_less'] = 'Less than an hour ago';
+$_lang['ticket_date_months'] = '["january","february","march","april","may","july","august","september","october","november","december"]';

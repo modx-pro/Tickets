@@ -88,12 +88,12 @@ $_lang['ticket_thread_err_deleted'] = 'Комментарии к этому ти
 $_lang['ticket_thread_manage_comments'] = 'Управление комментариями';
 
 
-$_lang['date_now'] = 'Только что';
-$_lang['date_today'] = 'Сегодня в';
-$_lang['date_yesterday'] = 'Вчера в';
-$_lang['date_tomorrow'] = 'Завтра в';
-$_lang['date_minutes_back'] = '["[[+minutes]] минута назад","[[+minutes]] минуты назад","[[+minutes]] минут назад"]';
-$_lang['date_minutes_back_less'] = 'меньше минуты назад';
-$_lang['date_hours_back'] = '["[[+hours]] час назад","[[+hours]] часа назад","[[+hours]] часов назад"]';
-$_lang['date_hours_back_less'] = 'меньше часа назад';
-$_lang['month_array'] = '["января","февраля","марта","апреля","мая","июня","июля","августа","сенятбря","октября","ноября","декабря"]';
+$_lang['ticket_date_now'] = 'Только что';
+$_lang['ticket_date_today'] = 'Сегодня в';
+$_lang['ticket_date_yesterday'] = 'Вчера в';
+$_lang['ticket_date_tomorrow'] = 'Завтра в';
+$_lang['ticket_date_minutes_back'] = '["[[+minutes]] минута назад","[[+minutes]] минуты назад","[[+minutes]] минут назад"]';
+$_lang['ticket_date_minutes_back_less'] = 'меньше минуты назад';
+$_lang['ticket_date_hours_back'] = '["[[+hours]] час назад","[[+hours]] часа назад","[[+hours]] часов назад"]';
+$_lang['ticket_date_hours_back_less'] = 'меньше часа назад';
+$_lang['ticket_date_months'] = '["января","февраля","марта","апреля","мая","июня","июля","августа","сенятбря","октября","ноября","декабря"]';
