@@ -6,6 +6,7 @@ Changelog for Tickets.
 - Added pretty dates formatting - Tickets::formatDate().
 - Added placeholder [[+date_ago]] to comments chunks.
 - Added placeholder [[+date_ago]] to last tickets and last comments chunks.
+- Added virtual fields "comments" and "views" to class TicketsSection. Now you can get it as they were natural with TicketsSection::get() or TicketsSection::toArray().
 
 0.7.0
 ==========

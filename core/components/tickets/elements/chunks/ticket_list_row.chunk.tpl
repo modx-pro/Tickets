@@ -1,7 +1,7 @@
 <div class="question">
 	<h3 class="title"><a href="[[~[[+id]]]]">[[+pagetitle]]</a></h3>
 	<div class="content">
-		[[+introtext:notempty=`[[+introtext]]<br/><a href="[[~[[+id]]]]#cut" class="btn read-more">[[%ticket_read_more]]</a>`]]
+		[[+introtext:notempty=`[[+introtext]]<br/><a href="[[~[[+id]]]]#cut" class="btn read-more">[[%ticket_read_more?namespace=`tickets`]]</a>`]]
 	</div>
 	<div class="row">
 		<div class="span2 gray">[[+date_ago]]</div>
