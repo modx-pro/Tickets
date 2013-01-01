@@ -44,11 +44,10 @@ class Tickets {
 
 			,'fastMode' => true
 			,'dateFormat' => 'd F Y, H:i'
-			,'dateDeclination' => 1
 			,'dateNow' => 10
 			,'dateDay' => 'day H:i'
-			,'dateMBack' => 59
-			,'dateHBack' => 10
+			,'dateMinutes' => 59
+			,'dateHours' => 10
 			,'charset' => $this->modx->getOption('modx_charset')
 			,'snippetPrepareComment' => $this->modx->getOption('tickets.snippet_prepare_comment', null)
 		),$config);
@@ -165,7 +164,9 @@ class Tickets {
 				unset($data['parent']);
 				$data = array_merge($object,$data);
 				foreach ($data as $k => $v) {
-					$data[$k] = htmlentities($v, ENT_QUOTES, $this->config['charset']);
+					if (is_string($v)) {
+						$data[$k] = htmlentities($v, ENT_QUOTES, $this->config['charset']);
+					}
 				}
 				$tpl = $this->config['tplFormUpdate'];
 			}
@@ -716,9 +717,9 @@ class Tickets {
 			if ($delta < $this->config['dateNow']) {return $this->modx->lexicon('ticket_date_now');}
 		}
 
-		if ($this->config['dateMBack']) {
+		if ($this->config['dateMinutes']) {
 			$minutes = round(($delta) / 60);
-			if ($minutes < $this->config['dateMBack']) {
+			if ($minutes < $this->config['dateMinutes']) {
 				if ($minutes > 0) {
 					return $this->declension($minutes, $this->modx->lexicon('ticket_date_minutes_back',array('minutes' => $minutes)));
 				}
@@ -728,9 +729,9 @@ class Tickets {
 			}
 		}
 
-		if ($this->config['dateHBack']) {
+		if ($this->config['dateHours']) {
 			$hours = round(($delta) / 3600);
-			if ($hours < $this->config['dateHBack']) {
+			if ($hours < $this->config['dateHours']) {
 				if ($hours > 0) {
 					return $this->declension($hours, $this->modx->lexicon('ticket_date_hours_back',array('hours' => $hours)));
 				}

@@ -107,6 +107,7 @@ class Ticket extends modResource {
 	 */
 	public function process() {
 		$this->logView();
+		$this->xpdo->setPlaceholders($this->getVirtualFields());
 		return parent::process();
 	}
 
@@ -126,8 +127,6 @@ class Ticket extends modResource {
 			$content = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $content);
 		}
 		$content = preg_replace('/<cut(.*?)>/i', '<a name="cut"></a>', $content);
-
-		$this->xpdo->setPlaceholders($this->getVirtualFields());
 
 		return $content;
 	}

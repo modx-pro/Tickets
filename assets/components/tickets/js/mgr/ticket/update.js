@@ -363,8 +363,23 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 					,combo: '1'
 					,limit: 0
 				}
-				,width: 300
+				,anchor: '90%'
 				,value: config.record.createdby
+			},{
+				xtype: MODx.config.publish_document ? 'tickets-combo-section' : 'hidden'
+				,id: 'tickets-combo-section'
+				,fieldLabel: _('resource_parent')
+				,description: '<b>[[*parent]]</b><br />'+_('resource_parent_help')
+				,value: config.record.parent
+				,url: Tickets.config.connector_url
+				,listeners: {
+					'select': {
+						fn:function(data) {
+							Ext.getCmp('modx-resource-parent-hidden').setValue(data.value);
+						}
+					}
+				}
+				,anchor: '90%'
 			}]
 		},{
 			html: '<hr />'
@@ -386,7 +401,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,description: '<b>[[*template]]</b><br />'+_('resource_template_help')
 				,name: 'template'
 				,id: 'modx-resource-template'
-				,anchor: '100%'
+				,anchor: '90%'
 				,editable: false
 				,baseParams: {
 					action: 'getList'

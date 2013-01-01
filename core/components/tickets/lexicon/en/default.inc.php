@@ -98,4 +98,4 @@ $_lang['ticket_date_minutes_back'] = '["[[+minutes]] minutes ago","[[+minutes]] 
 $_lang['ticket_date_minutes_back_less'] = 'Less than a minute ago';
 $_lang['ticket_date_hours_back'] = '["[[+hours]] hours ago","[[+hours]] hours ago","[[+hours]] hours ago"]';
 $_lang['ticket_date_hours_back_less'] = 'Less than an hour ago';
-$_lang['ticket_date_months'] = '["january","february","march","april","may","july","august","september","october","november","december"]';
+$_lang['ticket_date_months'] = '["january","february","march","april","may","june","july","august","september","october","november","december"]';

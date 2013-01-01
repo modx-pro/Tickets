@@ -26,7 +26,9 @@ switch($modx->event->name) {
 		}
 		/* @var TicketsSection $resource */
 		if ($mode == 'upd' && $resource->class_key == 'TicketsSection') {
-			$resource->clearCache();
+			if (method_exists($resource, 'clearCache')) {
+				$resource->clearCache();
+			}
 		}
 	break;
 
