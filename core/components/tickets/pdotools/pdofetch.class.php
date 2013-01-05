@@ -67,7 +67,9 @@ class pdoFetch extends pdoTools {
 						}
 					}
 					$this->addTime('Returning processed chunks');
-					$output = implode($this->config['outputSeparator'], $output);
+					if (!empty($output)) {
+						$output = implode($this->config['outputSeparator'], $output);
+					}
 				}
 			}
 		}

@@ -18,12 +18,16 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 		}
 		$this->setProperties(array(
 			'thread' => $this->thread->id
-			,'createdby' => $this->modx->user->id
-			,'createdon' => date('Y-m-d H:i:s')
 			,'name' => $this->modx->user->Profile->fullname
 			,'email' => $this->modx->user->Profile->email
 			,'ip' => $_SERVER['REMOTE_ADDR']
-			,'resource' => $this->thread->resource
+			,'createdon' => date('Y-m-d H:i:s')
+			,'createdby' => $this->modx->user->id
+			,'editedon' => 0
+			,'editedby' => 0
+			,'deleted' => 0
+			,'deletedon' => 0
+			,'deletedby' => 0
 		));
 
 		return parent::beforeSet();

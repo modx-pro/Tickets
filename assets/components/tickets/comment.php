@@ -9,7 +9,7 @@ $modx->setLogLevel(modX::LOG_LEVEL_ERROR);
 $modx->setLogTarget('FILE');
 $modx->error->message = null;
 
-if (!$modx->user->isAuthenticated() || !in_array($_POST['action'], array('previewComment', 'saveComment'))) {
+if (!$modx->user->isAuthenticated() || !isset($_POST['action']) || !in_array($_POST['action'], array('previewComment', 'saveComment'))) {
 	exit('Access denied');
 }
 else {
