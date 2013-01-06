@@ -52,10 +52,15 @@ $_lang['ticket_comment_deletedon'] = 'Deleted on';
 $_lang['ticket_comment_email'] = 'Email';
 $_lang['ticket_comment_view'] = 'View comment on site';
 $_lang['ticket_comment_reply'] = 'reply';
+$_lang['ticket_comment_edit'] = 'edit';
 $_lang['ticket_comment_create'] = 'Write comment';
 $_lang['ticket_comment_preview'] = 'Preview';
 $_lang['ticket_comment_save'] = 'Write';
+$_lang['ticket_comment_was_edited'] = 'Comment was edited';
 $_lang['ticket_comment_err_no_auth'] = 'You need to authenticate for create of comments.';
+$_lang['ticket_comment_err_wrong_user'] = 'You trying to update comment that is not yours.';
+$_lang['ticket_comment_err_no_time'] = 'Time for editing comment is ended.';
+$_lang['ticket_comment_err_has_replies'] = 'This comment already has replies, therefore you cannot change it.';
 
 
 $_lang['ticket_publishedon'] = 'Published On';

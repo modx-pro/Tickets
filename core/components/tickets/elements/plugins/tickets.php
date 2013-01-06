@@ -32,4 +32,9 @@ switch($modx->event->name) {
 		}
 	break;
 
+	case 'OnWebPagePrerender':
+		$output = & $modx->resource->_output;
+		$output = str_replace(array('{{{{{','}}}}}'), array('[',']'), $output);
+	break;
+
 }

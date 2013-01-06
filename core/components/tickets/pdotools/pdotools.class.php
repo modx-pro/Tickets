@@ -52,7 +52,7 @@ class pdoTools {
 	}
 
 
-	public function getChunk($name, array $properties, $fastMode = false) {
+	public function getChunk($name, array $properties = array(), $fastMode = false) {
 		$output = null;
 
 		if (!array_key_exists($name, $this->elements)) {
@@ -74,7 +74,7 @@ class pdoTools {
 			$chunk['object']->_processed = false;
 		}
 
-		if ($chunk['object'] instanceof modChunk) {
+		if (!empty($properties) && $chunk['object'] instanceof modChunk) {
 			$pl = $this->makePlaceholders($properties);
 			$content = str_replace($pl['pl'], $pl['vl'], $chunk['content']);
 			if ($fastMode) {
@@ -89,7 +89,9 @@ class pdoTools {
 				$output = $chunk['object']->process($properties, $content);
 			}
 		}
-		else {$output = false;}
+		else {
+			$output = $chunk['content'];
+		}
 
 		return $output;
 	}

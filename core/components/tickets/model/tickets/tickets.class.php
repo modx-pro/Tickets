@@ -7,6 +7,7 @@
 class Tickets {
 
 	private $prepareCommentCustom = null;
+	private $elements = array();
 
 	function __construct(modX &$modx,array $config = array()) {
 		$this->modx =& $modx;
@@ -49,7 +50,8 @@ class Tickets {
 			,'dateMinutes' => 59
 			,'dateHours' => 10
 			,'charset' => $this->modx->getOption('modx_charset')
-			,'snippetPrepareComment' => $this->modx->getOption('tickets.snippet_prepare_comment', null)
+			,'snippetPrepareComment' => $this->modx->getOption('tickets.snippet_prepare_comment')
+			,'commentEditTime' => $this->modx->getOption('tickets.comment_edit_time', null, 180)
 		),$config);
 
 		$this->modx->addPackage('tickets',$this->config['modelPath']);
@@ -165,7 +167,9 @@ class Tickets {
 				$data = array_merge($object,$data);
 				foreach ($data as $k => $v) {
 					if (is_string($v)) {
-						$data[$k] = htmlentities($v, ENT_QUOTES, $this->config['charset']);
+						$data[$k] = html_entity_decode($v, ENT_QUOTES, $this->config['charset']);
+						$data[$k] = str_replace(array('[^','^]','[',']'), array('&#91;^','^&#93;','{{{{{','}}}}}'), $data[$k]);
+						$data[$k] = htmlentities($data[$k], ENT_QUOTES, $this->config['charset']);
 					}
 				}
 				$tpl = $this->config['tplFormUpdate'];
@@ -202,6 +206,7 @@ class Tickets {
 			CommentsConfig = {
 				jsUrl: "'.$this->config['jsUrl'].'web/"
 				,cssUrl: "'.$this->config['cssUrl'].'web/"
+				,connector: "'.$this->config['assetsUrl'].'comment.php"
 				,'.$editorConfig.'
 			};
 		</script>');
@@ -310,8 +315,7 @@ class Tickets {
 			,'createdby' => $this->modx->user->id
 		));
 		$comment->set('id', '0');
-		$comment = $this->prepareComment($comment->toArray());
-		return $this->modx->getChunk($this->config['tplCommentGuest'], $comment);
+		return $this->templateNode($comment->toArray(), $this->config['tplCommentGuest']);
 	}
 
 
@@ -323,8 +327,15 @@ class Tickets {
 	 * @return mixed rendered preview of Comment for frontend
 	 */
 	public function saveComment($data = array()) {
+		$data['raw'] = $data['text'];
 		$data['text'] = $this->Jevix($data['text'], 'Comment');
-		$response = $this->runProcessor('web/comment/create', $data);
+
+		if (!empty($data['id'])) {
+			$response = $this->runProcessor('web/comment/update', $data);
+		}
+		else {
+			$response = $this->runProcessor('web/comment/create', $data);
+		}
 		if ($response->isError()) {
 			$arr = array(
 				'message' => $response->getMessage()
@@ -339,13 +350,63 @@ class Tickets {
 			}
 			$arr = array(
 				'error' => 0
-				,'data' => $this->modx->getChunk($this->config['tplCommentAuth'], $this->prepareComment($comment))
+				,'data' => $this->templateNode($comment, $this->config['tplCommentAuth'])
 				,'count' => $this->getTicketComments($this->config['thread'])
 			);
 			$this->modx->cacheManager->delete('tickets/latest.comments');
 			$this->modx->cacheManager->delete('tickets/latest.tickets');
-			$this->sendCommentMails($comment);
+			$this->sendCommentMails($this->prepareComment($comment));
 		}
+		return $arr;
+	}
+
+
+	/**
+	 * Returns Comment for edit by its author
+	 *
+	 * @access public
+	 * @param integer $id Id of an comment
+	 * @return array|boolean Json encoded array with comment text and time to edit or false
+	 */
+	public function getComment($id) {
+		$response = $this->runProcessor('web/comment/get', array('id' => $id));
+		if ($response->isError()) {
+			$arr = array(
+				'message' => $response->getMessage()
+				,'error' => 1
+			);
+		}
+		else {
+			$comment = $response->response['object'];
+			$time = time() - strtotime($comment['createdon']);
+			$time_limit = $this->config['commentEditTime'];
+			if ($comment['createdby'] != $this->modx->user->id) {
+				$arr = array(
+					'message' => $this->modx->lexicon('ticket_comment_err_wrong_user')
+					,'error' => 1
+				);
+			}
+			else if ($this->modx->getCount('TicketComment', array('parent' => $comment['id']))) {
+				$arr = array(
+					'message' => $this->modx->lexicon('ticket_comment_err_has_replies')
+					,'error' => 1
+				);
+			}
+			else if ($time >= $time_limit) {
+				$arr = array(
+					'message' => $this->modx->lexicon('ticket_comment_err_no_time')
+					,'error' => 1
+				);
+			}
+			else {
+				$arr = array(
+					'error' => 0
+					,'data' => $comment['raw']
+					,'time' => $time_limit - $time
+				);
+			}
+		}
+
 		return $arr;
 	}
 
@@ -520,9 +581,6 @@ class Tickets {
 		$comments = '';
 		if ($data['total'] > 0) {
 			$tpl = $this->modx->user->isAuthenticated() ? $this->config['tplCommentAuth'] : $this->config['tplCommentGuest'];
-			if ($chunk = $this->modx->getObject('modChunk', array('name' => $tpl))) {
-				$tpl = $chunk->get('snippet');
-			}
 			foreach ($data['results'] as $node) {
 				$comments .= $this->templateNode($node, $tpl);
 			}
@@ -555,21 +613,18 @@ class Tickets {
 		}
 
 		if (!empty($children)) {$node['children'] = $children;}
+		else if ($node['createdby'] == $this->modx->user->id && (time() - strtotime($node['createdon']) <= $this->config['commentEditTime'])) {
+			if (!array_key_exists($tpl, $this->elements)) {
+				$this->getChunk($tpl);
+			}
+			$node['ticket_comment_edit_link'] = @$this->elements[$tpl]['placeholders']['ticket_comment_edit_link'];
+		}
+		if ($node['editedby'] && $node['editedon']) {
+			$node['ticket_comment_was_edited'] = @$this->elements[$tpl]['placeholders']['ticket_comment_was_edited'];
+		}
 		$node = $this->prepareComment($node);
 
-		if ($this->config['fastMode']) {
-			$pl = $this->makePlaceholders($node);
-			$pl['pl'][] = '[[%ticket_comment_reply]]';
-			$pl['vl'][] = $this->modx->lexicon('ticket_comment_reply');
-			$row = str_replace($pl['pl'], $pl['vl'], $tpl);
-			return preg_replace('/\[\[(.*?)\]\]/', '', $row);
-		}
-		else {
-			$chunk = $this->modx->newObject('modChunk');
-			$chunk->setCacheable(false);
-			$row = $chunk->process($node, $tpl);
-			return $row;
-		}
+		return $this->getChunk($tpl, $node, $this->config['fastMode']);
 	}
 
 
@@ -600,12 +655,18 @@ class Tickets {
 	/*
 	 * Returns array with separated placeholders and values for fast render without processing chunk
 	 * */
-	public function makePlaceholders($arr = array()) {
+	public function makePlaceholders($arr = array(), $prefix = '') {
 		$placeholders = array();
 
 		foreach ($arr as $k => $v) {
-			$placeholders['pl'][] = "[[+$k]]";
-			$placeholders['vl'][] = $v;
+			if (is_array($v)) {
+				$prefix .= $k.'_';
+				$placeholders = array_merge($placeholders, $this->makePlaceholders($v, $prefix));
+			}
+			else {
+				$placeholders['pl'][] = "[[+$k]]";
+				$placeholders['vl'][] = $v;
+			}
 		}
 		return $placeholders;
 	}
@@ -700,6 +761,83 @@ class Tickets {
 		return true;
 	}
 
+
+	/**
+	 * Process and return the output from a Chunk by name.
+	 *
+	 * @param string $chunkName The name of the chunk.
+	 * @param array $properties An associative array of properties to process
+	 * the Chunk with, treated as placeholders within the scope of the Element.
+	 * @param boolean $fastMode If true, all MODX tags in chunk will be processed.
+	 * @return string The processed output of the Chunk.
+	 */
+	public function getChunk($name, array $properties = array(), $fastMode = false) {
+		$output = null;
+
+		if (!array_key_exists($name, $this->elements)) {
+			/* @var modChunk $element */
+			if ($element = $this->modx->getObject('modChunk', array('name' => $name))) {
+				$element->setCacheable(false);
+				$content = $element->getContent();
+
+				// processing lexicon placeholders
+				preg_match_all('/\[\[%(.*?)\]\]/',$content, $matches);
+				$src = $dst = array();
+				foreach ($matches[1] as $k => $v) {
+					$src[] = $matches[0][$k];
+					$dst[] = $this->modx->lexicon($v);
+				}
+				$content = str_replace($src,$dst,$content);
+
+				// processing special tags
+				preg_match_all('/\<!--ticket(.*?)[\s|\n|\r\n](.*?)-->/s', $content, $matches);
+				$src = $dst = $placeholders = array();
+				foreach ($matches[1] as $k => $v) {
+					$src[] = $matches[0][$k];
+					$dst[] = '';
+					$placeholders['ticket'.$v] = $matches[2][$k];
+				}
+				$content = str_replace($src,$dst,$content);
+
+				$chunk = array(
+					'object' => $element
+					,'content' => $content
+					,'placeholders' => $placeholders
+				);
+
+				$this->elements[$name] = $chunk;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			$chunk = $this->elements[$name];
+			$chunk['object']->_processed = false;
+		}
+
+		if (!empty($properties) && $chunk['object'] instanceof modChunk) {
+			$pl = $this->makePlaceholders($properties);
+			$content = str_replace($pl['pl'], $pl['vl'], $chunk['content']);
+			$content = str_replace($pl['pl'], $pl['vl'], $content);
+			if ($fastMode) {
+				$matches = $tags = array();
+				$this->modx->parser->collectElementTags($content, $matches);
+				foreach ($matches as $v) {
+					$tags[] = $v[0];
+				}
+				$output = str_replace($tags, '', $content);
+			}
+			else {
+				$output = $chunk['object']->process($properties, $content);
+			}
+		}
+		else {
+			$output = $chunk['content'];
+		}
+
+		return $output;
+	}
 
 	/*
 	 * Formats date to "10 minutes ago" or "Yesterday in 22:10"

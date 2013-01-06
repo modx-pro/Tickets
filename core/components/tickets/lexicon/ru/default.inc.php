@@ -42,7 +42,6 @@ $_lang['ticket_comment_remove_confirm'] = 'Вы уверены, что хоти�
 $_lang['ticket_comment_delete'] = 'Удалить комментарий';
 $_lang['ticket_comment_undelete'] = 'Восстановить комментарий';
 $_lang['ticket_comment_viewauthor'] = 'Открыть страницу автора';
-$_lang['ticket_comment_reply'] = 'ответить';
 
 $_lang['ticket_comment_name'] = 'Автор';
 $_lang['ticket_comment_text'] = 'Комментарий';
@@ -51,10 +50,16 @@ $_lang['ticket_comment_editedon'] = 'Изменен';
 $_lang['ticket_comment_deletedon'] = 'Удалён';
 $_lang['ticket_comment_email'] = 'Email';
 $_lang['ticket_comment_view'] = 'Открыть комментарий на сайте';
+$_lang['ticket_comment_reply'] = 'ответить';
+$_lang['ticket_comment_edit'] = 'изменить';
 $_lang['ticket_comment_create'] = 'Написать комментарий';
 $_lang['ticket_comment_preview'] = 'Предпросмотр';
 $_lang['ticket_comment_save'] = 'Написать';
+$_lang['ticket_comment_was_edited'] = 'Комментарий был изменён';
 $_lang['ticket_comment_err_no_auth'] = 'Вы должны авторизоваться, чтобы оставлять комментарии.';
+$_lang['ticket_comment_err_wrong_user'] = 'Вы пытаетесь обновить комментарий, который вам не принадлежит.';
+$_lang['ticket_comment_err_no_time'] = 'Время для редактирования истекло.';
+$_lang['ticket_comment_err_has_replies'] = 'У этого комментария уже есть ответы, поэтому, вы не можете его менять.';
 
 $_lang['ticket_publishedon'] = 'Опубликован';
 $_lang['ticket_pagetitle'] = 'Заголовок';

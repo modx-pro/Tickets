@@ -47,6 +47,13 @@ $events[3]->fromArray(array(
 	'propertyset' => 0,
 ),'',true,true);
 
+$events[4]= $modx->newObject('modPluginEvent');
+$events[4]->fromArray(array(
+	'event' => 'OnWebPagePrerender',
+	'priority' => 10,
+	'propertyset' => 0,
+),'',true,true);
+
 if (is_array($events) && !empty($events)) {
 	$plugins[0]->addMany($events);
 	$modx->log(xPDO::LOG_LEVEL_INFO,'Packaged in '.count($events).' plugin events.'); flush();

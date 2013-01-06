@@ -1,5 +1,6 @@
 <?php
 class TicketCommentCreateProcessor extends modObjectCreateProcessor {
+	/* @var TicketThread $thread */
 	private $thread;
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets:default');
@@ -34,12 +35,13 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 	}
 
 	public function afterSave() {
-		$thread = $this->object->getOne('Thread');
-		$thread->fromArray(array(
+		$this->thread->fromArray(array(
 			'comment_last' => $this->object->get('id')
 			,'comment_time' => $this->object->get('createdon')
 		));
-		$thread->save();
+		$this->thread->save();
+
+		$this->object->set('resource', $this->thread->get('resource'));
 
 		return parent::afterSave();
 	}

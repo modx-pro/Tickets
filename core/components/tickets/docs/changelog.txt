@@ -1,12 +1,16 @@
 Changelog for Tickets.
 
-0.7.1
+0.8.0
 ==========
 - [mgr] Added changing section of the ticket
+- Added editing of comments by author.
+- New system parameter "tickets.comment_edit_time". You can set number of seconds during which comment can be edited.
 - Added pretty dates formatting - Tickets::formatDate().
 - Added placeholder [[+date_ago]] to comments chunks.
 - Added placeholder [[+date_ago]] to last tickets and last comments chunks.
 - Added virtual fields "comments" and "views" to class TicketsSection. Now you can get it as they were natural with TicketsSection::get() or TicketsSection::toArray().
+- Improved chunks processing.
+- Normal MODX tags when update ticket on frontend. [[*id]] instead of &#091;&#091;*id&#093;&#093;
 
 0.7.0
 ==========

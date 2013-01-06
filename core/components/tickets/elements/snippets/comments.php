@@ -1,5 +1,5 @@
 <?php
-if (empty($scriptProperties['thread'])) {$scriptProperties['thread'] = 'resource-'.$modx->resource->id;}
+if (empty($scriptProperties['thread']) && !empty($modx->resource)) {$scriptProperties['thread'] = 'resource-'.$modx->resource->id;}
 
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 if (!($Tickets instanceof Tickets)) return '';
@@ -11,7 +11,8 @@ $output = null;
 switch ($action) {
 	case 'previewComment': $output = $Tickets->previewComment($scriptProperties); break;
 	case 'saveComment': $output = $Tickets->saveComment($scriptProperties); break;
-	case 'getComments': $output = $Tickets->getCommentThread($scriptProperties['thread']); break;
+	case 'getComments':$output = $Tickets->getCommentThread($scriptProperties['thread']); break;
+	case 'getComment': $output = $Tickets->getComment($scriptProperties['id']); break;
 }
 
 if (is_array($output)) {

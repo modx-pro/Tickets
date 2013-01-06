@@ -10,7 +10,7 @@ class TicketCommentGetProcessor extends modObjectGetProcessor {
 		$comment['createdon'] = $this->formatDate($comment['createdon']);
 		$comment['editedon'] = $this->formatDate($comment['editedon']);
 		$comment['deletedon'] = $this->formatDate($comment['deletedon']);
-		$comment['text'] = html_entity_decode($comment['text']);
+		$comment['text'] = !empty($comment['raw']) ? html_entity_decode($comment['raw']) : html_entity_decode($comment['text']);
 
 		return $this->success('',$comment);
 	}

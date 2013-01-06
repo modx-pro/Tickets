@@ -97,4 +97,13 @@ $settings[5]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
+$settings[5]= $modx->newObject('modSystemSetting');
+$settings[5]->fromArray(array(
+	'key' => 'tickets.comment_edit_time'
+	,'value' => 180
+	,'xtype' => 'numberfield'
+	,'namespace' => 'tickets'
+	,'area' => 'Ticket'
+),'',true,true);
+
 return $settings;

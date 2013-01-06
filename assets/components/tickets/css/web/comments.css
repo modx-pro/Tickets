@@ -2,6 +2,7 @@
 	.ticket-avatar {display:inline-block;}
 	.ticket-comment-author {display:inline-block;font-weight:bold;margin-left: 10px;}
 	.ticket-comment-createdon {display:inline-block;font-size: 0.8em;color: #555555;margin-left: 10px;}
+	.ticket-comment-edited {display:inline-block;font-size: 0.8em;color: #555555;margin-left: 10px;font-style:italic;}
 	.ticket-comment-link {display:inline-block; margin-left: 15px;}
 
 	.ticket-comment-text {margin-top: 5px;}

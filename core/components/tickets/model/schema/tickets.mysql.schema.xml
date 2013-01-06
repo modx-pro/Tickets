@@ -17,6 +17,7 @@
 		<field key="parent" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
 
 		<field key="text" dbtype="text" phptype="text" null="false" default="" />
+		<field key="raw" dbtype="text" phptype="text" null="false" default="" />
 		<field key="name" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
 		<field key="email" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
 		<field key="ip" dbtype="varchar" precision="16" phptype="string" null="false" default="0.0.0.0" />

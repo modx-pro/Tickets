@@ -58,7 +58,7 @@ class pdoFetch extends pdoTools {
 					$output = & $rows;
 				}
 				else {
-					foreach ($rows as $v) {
+					foreach ($rows as $k => $v) {
 						if (empty($this->config['tpl'])) {
 							$output[] = '<pre>'.print_r($v, true).'</pre>';
 						}
@@ -90,7 +90,7 @@ class pdoFetch extends pdoTools {
 		}
 
 		// set placeholder for pagination
-		if ($this->config['return'] == 'chunks') {
+		if ($this->config['return'] != 'sql') {
 			$total = $this->modx->getCount($this->config['class'], $q);
 			$this->modx->setPlaceholder($this->config['totalVar'], $total);
 		}

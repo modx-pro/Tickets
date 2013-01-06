@@ -9,6 +9,7 @@ $xpdo_meta_map['TicketComment']= array (
     'thread' => 0,
     'parent' => 0,
     'text' => '',
+    'raw' => '',
     'name' => '',
     'email' => '',
     'ip' => '0.0.0.0',
@@ -41,6 +42,13 @@ $xpdo_meta_map['TicketComment']= array (
       'default' => 0,
     ),
     'text' => 
+    array (
+      'dbtype' => 'text',
+      'phptype' => 'text',
+      'null' => false,
+      'default' => '',
+    ),
+    'raw' => 
     array (
       'dbtype' => 'text',
       'phptype' => 'text',
