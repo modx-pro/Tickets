@@ -355,7 +355,9 @@ class Tickets {
 			);
 			$this->modx->cacheManager->delete('tickets/latest.comments');
 			$this->modx->cacheManager->delete('tickets/latest.tickets');
-			$this->sendCommentMails($this->prepareComment($comment));
+			if (empty($data['id'])) {
+				$this->sendCommentMails($this->prepareComment($comment));
+			}
 		}
 		return $arr;
 	}

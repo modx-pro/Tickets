@@ -3,6 +3,8 @@ Changelog for Tickets.
 0.8.1
 ==========
 - Added clearing cache of ticket on comments create\update\delete\remove. Now you can call [[TicketComments]] cached.
+- No email notices on comments update.
+- Improved redirect to tickets in plugin. Now it understands any nesting level.
 
 0.8.0
 ==========
