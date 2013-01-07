@@ -54,6 +54,13 @@ $events[4]->fromArray(array(
 	'propertyset' => 0,
 ),'',true,true);
 
+$events[5]= $modx->newObject('modPluginEvent');
+$events[5]->fromArray(array(
+	'event' => 'OnPageNotFound',
+	'priority' => 0,
+	'propertyset' => 0,
+),'',true,true);
+
 if (is_array($events) && !empty($events)) {
 	$plugins[0]->addMany($events);
 	$modx->log(xPDO::LOG_LEVEL_INFO,'Packaged in '.count($events).' plugin events.'); flush();

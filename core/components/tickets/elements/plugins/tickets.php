@@ -37,4 +37,19 @@ switch($modx->event->name) {
 		$output = str_replace(array('{{{{{','}}}}}'), array('[',']'), $output);
 	break;
 
+	case 'OnPageNotFound':
+		// It is working only with friendly urls enabled
+		$q = trim($_REQUEST['q']);
+		$matches = explode('/', $q);
+		if (empty($matches[0]) || empty($matches[1])) {return;}
+
+		// Redirect to requested page, when you moved ticket from one section to another
+		if ($modx->getCount('TicketsSection',array('class_key' => 'TicketsSection', 'alias' => $matches[0], 'deleted' => 0, 'published' => 1))) {
+			if (preg_match('/^\d+$/', $matches[1])) {
+				$url = $modx->makeUrl($matches[1], '', '', 'full');
+				$modx->sendRedirect($url);
+			}
+		}
+	break;
+
 }

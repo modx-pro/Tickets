@@ -11,6 +11,7 @@ Changelog for Tickets.
 - Added virtual fields "comments" and "views" to class TicketsSection. Now you can get it as they were natural with TicketsSection::get() or TicketsSection::toArray().
 - Improved chunks processing.
 - Normal MODX tags when update ticket on frontend. [[*id]] instead of &#091;&#091;*id&#093;&#093;
+- When you request ticket, that was moved into another section, with old url - user will be redirected to right page.
 
 0.7.0
 ==========
