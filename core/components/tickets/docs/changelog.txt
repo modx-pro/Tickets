@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+0.8.1
+==========
+- Added clearing cache of ticket on comments create\update\delete\remove. Now you can call [[TicketComments]] cached.
+
 0.8.0
 ==========
 - [mgr] Added changing section of the ticket.

@@ -1,6 +1,8 @@
 <?php
 
 class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
+	/** @var TicketComment $object */
+	public $object;
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets:default');
 	//public $permission = 'comment_save';
@@ -33,6 +35,12 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 		));
 
 		return parent::beforeSave();
+	}
+
+	public function afterSave() {
+		$this->object->clearTicketCache();
+
+		return parent::afterSave();
 	}
 
 }

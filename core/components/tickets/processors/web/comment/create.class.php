@@ -1,5 +1,7 @@
 <?php
 class TicketCommentCreateProcessor extends modObjectCreateProcessor {
+	/** @var TicketComment $object */
+	public $object;
 	/* @var TicketThread $thread */
 	private $thread;
 	public $classKey = 'TicketComment';
@@ -41,7 +43,7 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 		));
 		$this->thread->save();
 
-		$this->object->set('resource', $this->thread->get('resource'));
+		$this->object->clearTicketCache();
 
 		return parent::afterSave();
 	}

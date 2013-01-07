@@ -1,5 +1,7 @@
 <?php
 class TicketCommentRemoveProcessor extends modObjectRemoveProcessor  {
+	/** @var TicketComment $object */
+	public $object;
 	public $checkRemovePermission = true;
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets');
@@ -22,6 +24,12 @@ class TicketCommentRemoveProcessor extends modObjectRemoveProcessor  {
 				$this->getChildren($child);
 			}
 		}
+	}
+
+	public function afterRemove() {
+		$this->object->clearTicketCache();
+
+		return parent::afterRemove();
 	}
 
 }

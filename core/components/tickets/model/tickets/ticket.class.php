@@ -84,7 +84,7 @@ class Ticket extends modResource {
 
 			if (!$this->paramsLoaded) {$this->loadParams();}
 
-			if (!$this->processTags && is_string($k) && !in_array($k, $fields) && $this->_getPHPType($k) == 'string') {
+			if (!$this->processTags && is_string($k) && !in_array($k, $fields) && @$this->_fieldMeta[$k]['phptype'] == 'string') {
 				$value = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $value);
 			}
 		}

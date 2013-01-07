@@ -33,5 +33,19 @@ class TicketComment extends xPDOSimpleObject {
 			return parent::addMany($obj, $alias);
 		}
 	}
+
+
+	/*
+	 * Try to get parent ticket and clear its cache
+	 * */
+	public function clearTicketCache() {
+		/* @var TicketThread $thread */
+		/* @var Ticket $ticket */
+		$thread = $this->getOne('Thread');
+		if ($ticket = $this->xpdo->getObject('Ticket', array('id' => $thread->get('resource'), 'class_key' => 'Ticket'))) {
+			$ticket->clearCache();
+		}
+
+	}
+
 }
-?>
