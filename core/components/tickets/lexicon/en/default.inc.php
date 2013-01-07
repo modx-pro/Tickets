@@ -12,6 +12,7 @@ $_lang['tickets_section'] = 'Tickets ticket';
 $_lang['ticket'] = 'Ticket';
 $_lang['ticket_all'] = 'Все';
 $_lang['ticket_menu_desc'] = 'Comments management and more.';
+$_lang['comments_all'] = 'All comments';
 
 $_lang['tickets_section_create_here'] = 'Section with tickets';
 $_lang['tickets_section_new'] = 'New tickes ticket';
@@ -34,6 +35,7 @@ $_lang['ticket_clear'] = 'Clear';
 
 
 $_lang['ticket_comment_intro'] = '';
+$_lang['ticket_comment_all_intro'] = 'Here are comments from all of the site.';
 $_lang['ticket_comment_email_owner'] = 'New comment for your ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_email_reply'] = 'Reply to your comment for ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_deleted_text'] = 'This comment was deleted.';
@@ -80,7 +82,7 @@ $_lang['ticket_preview'] = 'Preview';
 $_lang['ticket_save'] = 'Submit';
 $_lang['ticket_read_more'] = 'Read more';
 
-$_lang['ticket_thread_intro'] = 'Here you see all the comments threads of the site and can manage it.';
+$_lang['ticket_thread_intro'] = 'Comments that are grouped on threads. Usually, one thread is the all comments of the one page.';
 $_lang['ticket_thread_createdon'] = 'Created on';
 $_lang['ticket_thread_editedon'] = 'Edited on';
 $_lang['ticket_thread_deletedon'] = 'Deleted on';

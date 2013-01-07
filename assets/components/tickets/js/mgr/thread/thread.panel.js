@@ -16,6 +16,20 @@ Tickets.panel.Home = function(config) {
 			,activeItem: 0
 			,hideMode: 'offsets'
 			,items: [{
+				title: _('comments_all')
+				,items: [{
+					html: _('ticket_comment_all_intro')
+					,border: false
+					,bodyCssClass: 'panel-desc'
+					,bodyStyle: 'margin-bottom: 10px'
+				},{
+					xtype: 'tickets-grid-comments'
+					,preventRender: true
+					,section: 0
+					,parents: 0
+					,threads: 0
+				}]
+			},{
 				title: _('threads')
 				,items: [{
 					html: _('ticket_thread_intro')

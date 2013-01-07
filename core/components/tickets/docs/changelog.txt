@@ -2,7 +2,8 @@ Changelog for Tickets.
 
 0.8.0
 ==========
-- [mgr] Added changing section of the ticket
+- [mgr] Added changing section of the ticket.
+- [mgr] Added tab with all comments.
 - Added editing of comments by author.
 - New system parameter "tickets.comment_edit_time". You can set number of seconds during which comment can be edited.
 - Added pretty dates formatting - Tickets::formatDate().

@@ -12,6 +12,7 @@ $_lang['tickets_section'] = 'Раздел тикетов';
 $_lang['ticket'] = 'Тикет';
 $_lang['ticket_all'] = 'Все';
 $_lang['ticket_menu_desc'] = 'Управление комментариями и не только.';
+$_lang['comments_all'] = 'Все комментарии';
 
 $_lang['tickets_section_create_here'] = 'Раздел с тикетами';
 $_lang['tickets_section_new'] = 'Новый раздел тикетов';
@@ -33,6 +34,7 @@ $_lang['field_required'] = 'Это поле обязательно.';
 $_lang['ticket_clear'] = 'Очистить';
 
 $_lang['ticket_comment_intro'] = '';
+$_lang['ticket_comment_all_intro'] = 'Здесь собраны комментарии со всего сайта.';
 $_lang['ticket_comment_email_owner'] = 'Новый комментарий к вашему тикету "[[+pagetitle]]"';
 $_lang['ticket_comment_email_reply'] = 'Ответ на ваш комментарий к тикету "[[+pagetitle]]"';
 $_lang['ticket_comment_deleted_text'] = 'Комментарий был удален.';
@@ -78,7 +80,7 @@ $_lang['ticket_preview'] = 'Предпросмотр';
 $_lang['ticket_save'] = 'Отправить';
 $_lang['ticket_read_more'] = 'Читать дальше';
 
-$_lang['ticket_thread_intro'] = 'Здесь вы видите все ветви комментариев сайта и можете управлять ими.';
+$_lang['ticket_thread_intro'] = 'Комментарии, сгруппированные по веткам. Обычно, одна ветвь - это комментарии одной страницы.';
 $_lang['ticket_thread_createdon'] = 'Создана';
 $_lang['ticket_thread_editedon'] = 'Изменена';
 $_lang['ticket_thread_deletedon'] = 'Удалёна';
@@ -87,7 +89,7 @@ $_lang['ticket_thread_resource'] = 'Id тикета';
 $_lang['ticket_thread_delete'] = 'Отключить ветку';
 $_lang['ticket_thread_undelete'] = 'Включить ветку';
 $_lang['ticket_thread_remove'] = 'Удалить с комментариями';
-$_lang['ticket_thread_remove_confirm'] = 'Вы дейтвительно хотите удалить <b>всю</b> ветвь комментариев? Эта операция необратима!';
+$_lang['ticket_thread_remove_confirm'] = 'Вы дейcтвительно хотите удалить <b>всю</b> ветвь комментариев? Эта операция необратима!';
 $_lang['ticket_thread_view'] = 'Просмотреть на сайте';
 $_lang['ticket_thread_err_deleted'] = 'Комментарии к этому тикету были отключены.';
 $_lang['ticket_thread_manage_comments'] = 'Управление комментариями';
