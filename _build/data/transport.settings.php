@@ -106,4 +106,13 @@ $settings[5]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
+$settings[5]= $modx->newObject('modSystemSetting');
+$settings[5]->fromArray(array(
+	'key' => 'tickets.clear_cache_on_comment_save'
+	,'value' => 'false'
+	,'xtype' => 'combo-boolean'
+	,'namespace' => 'tickets'
+	,'area' => 'Ticket'
+),'',true,true);
+
 return $settings;
