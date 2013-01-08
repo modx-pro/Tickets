@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+0.8.2
+==========
+- Fixed bug with empty string after Jevix sanitization, if there was some html entities, such as &_nbsp; or &_raquo;.
+
 0.8.1
 ==========
 - Added clearing cache of ticket on comments create\update\delete\remove. Now you can call [[TicketComments]] cached and do not forget to activate next parameter.
