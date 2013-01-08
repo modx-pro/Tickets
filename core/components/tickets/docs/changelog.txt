@@ -4,6 +4,7 @@ Changelog for Tickets.
 ==========
 - Fixed bug with empty string after Jevix sanitization, if there was some html entities, such as &_nbsp; or &_raquo;.
 - Added virtual field "comments" to class TicketThread. Now you can get it as they were natural with TicketThread::get() or TicketThread::toArray().
+- Update last comment id and last comment time in thread on comment remove.
 
 0.8.1
 ==========
