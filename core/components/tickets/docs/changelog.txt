@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+0.8.3
+==========
+- MarkitUp javascript is now loadings at the bottom of web page.
+
 0.8.2
 ==========
 - Fixed bug with empty string after Jevix sanitization, if there was some html entities, such as &_nbsp; or &_raquo;.

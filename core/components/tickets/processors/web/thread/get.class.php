@@ -61,6 +61,8 @@ class GetThreadProcessor extends modProcessor {
 		$q->select($this->modx->getSelectColumns('TicketComment','TicketComment'));
 		$q->select($this->modx->getSelectColumns('modUserProfile','modUserProfile','',array('id'),true));
 		$q->select('`TicketThread`.`resource`');
+		$q->select('`modUser`.`username`');
+		$q->leftJoin('modUser','modUser','`TicketComment`.`createdby` = `modUser`.`id`');
 		$q->leftJoin('modUserProfile','modUserProfile','`TicketComment`.`createdby` = `modUserProfile`.`internalKey`');
 		$q->leftJoin('TicketThread','TicketThread','`TicketThread`.`id` = `TicketComment`.`thread`');
 		$q->where(array('thread' => $this->object->id));

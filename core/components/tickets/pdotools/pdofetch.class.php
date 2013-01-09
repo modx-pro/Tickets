@@ -38,6 +38,7 @@ class pdoFetch extends pdoTools {
 	public function run() {
 		$this->makeQuery();
 		$this->addJoins();
+		$this->setTotal();
 		$this->addSelects();
 
 		if (!$this->prepareQuery()) {return false;}
@@ -89,13 +90,16 @@ class pdoFetch extends pdoTools {
 			$this->addTime('Added where condition: <b>' . http_build_query($where,'',', ').'</b>');
 		}
 
+		$this->query = $q;
+	}
+
+
+	public function setTotal() {
 		// set placeholder for pagination
 		if ($this->config['return'] != 'sql') {
-			$total = $this->modx->getCount($this->config['class'], $q);
+			$total = $this->modx->getCount($this->config['class'], $this->query);
 			$this->modx->setPlaceholder($this->config['totalVar'], $total);
 		}
-
-		$this->query = $q;
 	}
 
 

@@ -136,7 +136,7 @@ class Tickets {
 		$enable_editor = $this->modx->getOption('tickets.enable_editor');
 		$editorConfig = 'enable_editor:'.$enable_editor;
 		if ($enable_editor) {
-			$this->modx->regClientStartupScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
+			$this->modx->regClientScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
 			$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
 			$this->modx->regClientCSS($this->config['cssUrl'].'web/tickets.css');
 			$editorConfig .= "\n".',editor:{ticket:'.$this->modx->getOption('tickets.editor_config.ticket').'}';
@@ -197,7 +197,7 @@ class Tickets {
 		$enable_editor = $this->modx->getOption('tickets.enable_editor');
 		$editorConfig = 'enable_editor:'.$enable_editor.'';
 		if ($enable_editor) {
-			$this->modx->regClientStartupScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
+			$this->modx->regClientScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
 			$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
 			$editorConfig .= "\n".',editor:{comment:'.$this->modx->getOption('tickets.editor_config.comment').'}';
 		}
