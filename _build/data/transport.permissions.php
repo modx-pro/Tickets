@@ -30,6 +30,12 @@ $permissions[0][] = $modx->newObject('modAccessPermission',array(
 	'value' => true,
 ));
 
+$permissions[0][] = $modx->newObject('modAccessPermission',array(
+	'name' => 'ticket_view_private',
+	'description' => 'ticket_view_private',
+	'value' => true,
+));
+
 $permissions[1][] = $modx->newObject('modAccessPermission',array(
 	'name' => 'section_add_children',
 	'description' => 'section_add_children',

@@ -11,10 +11,10 @@
 		</div>
 	</div>
 	<div class="comment-reply">
-		<a href="#reply" onclick="return Comments.forms.reply([[+id]])">[[%ticket_comment_reply]]</a>
+		<a href="#reply" onclick="Comments.forms.reply([[+id]]);return false;">[[%ticket_comment_reply]]</a>
 		[[+ticket_comment_edit_link]]
 	</div>
 	<ol class="comments-list">[[+children]]</ol>
 </li>
-<!--ticket_comment_edit_link <a href="#edit" onclick="return Comments.forms.edit([[+id]])">[[%ticket_comment_edit]]</a>-->
+<!--ticket_comment_edit_link <a href="#edit" onclick="Comments.forms.edit([[+id]]);return false;">[[%ticket_comment_edit]]</a>-->
 <!--ticket_comment_was_edited <span class="ticket-comment-edited">([[%ticket_comment_was_edited]])</span></a>-->

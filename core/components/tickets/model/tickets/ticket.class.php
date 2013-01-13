@@ -106,9 +106,14 @@ class Ticket extends modResource {
 	 * {@inheritDoc}
 	 */
 	public function process() {
-		$this->logView();
-		$this->xpdo->setPlaceholders($this->getVirtualFields());
-		return parent::process();
+		if ($this->privateweb && !$this->xpdo->hasPermission('ticket_view_private') && $id = $this->getOption('tickets.private_ticket_page')) {
+			return $this->xpdo->sendForward($id);
+		}
+		else {
+			$this->logView();
+			$this->xpdo->setPlaceholders($this->getVirtualFields());
+			return parent::process();
+		}
 	}
 
 

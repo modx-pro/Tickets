@@ -432,6 +432,14 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,inputValue: 1
 				,checked: parseInt(config.record.properties.process_tags)
 			},{
+				xtype: 'xcheckbox'
+				,name: 'privateweb'
+				,boxLabel: _('ticket_private')
+				,description: _('ticket_private_help')
+				,id: 'modx-resource-privateweb'
+				,inputValue: 1
+				,checked: parseInt(config.record.properties.privateweb)
+			},{
 				xtype: 'hidden'
 				,name: 'alias'
 				,id: 'modx-resource-alias'

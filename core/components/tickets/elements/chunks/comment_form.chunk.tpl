@@ -9,8 +9,8 @@
 		<textarea name="text" id="comment-editor" cols="30" rows="10">[[+comment]]</textarea>
 
 		<div class="form-actions">
-			<input type="button" class="btn" value="[[%ticket_comment_preview]]" onclick="Comments.comment.preview(this.form, this)" />
-			<input type="button" class="btn btn-primary" value="[[%ticket_comment_save]]" onclick="Comments.comment.save(this.form, this)" />
+			<input type="button" class="btn" value="[[%ticket_comment_preview]]" onclick="Comments.comment.preview(this.form, this);return false;" />
+			<input type="button" class="btn btn-primary" value="[[%ticket_comment_save]]" onclick="Comments.comment.save(this.form, this);return false;" />
 			<span class="time"></span>
 		</div>
 	</form>

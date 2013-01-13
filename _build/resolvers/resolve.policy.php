@@ -26,6 +26,17 @@ if ($object->xpdo) {
 				$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not find TicketUserPolicy Access Policy!');
 			}
 
+		if ($policy = $modx->getObject('modAccessPolicy',array('name' => 'TicketVipPolicy'))) {
+			if ($template = $modx->getObject('modAccessPolicyTemplate',array('name' => 'TicketsUserPolicyTemplate'))) {
+				$policy->set('template',$template->get('id'));
+				$policy->save();
+			} else {
+				$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not find TicketsUserPolicyTemplate Access Policy Template!');
+			}
+		} else {
+			$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not find TicketVipPolicy Access Policy!');
+		}
+
 			if ($policy = $modx->getObject('modAccessPolicy',array('name' => 'TicketSectionPolicy'))) {
 				if ($template = $modx->getObject('modAccessPolicyTemplate',array('name' => 'TicketsSectionPolicyTemplate'))) {
 					$policy->set('template',$template->get('id'));

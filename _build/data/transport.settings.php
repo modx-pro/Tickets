@@ -101,7 +101,7 @@ $settings[5]= $modx->newObject('modSystemSetting');
 $settings[5]->fromArray(array(
 	'key' => 'tickets.comment_edit_time'
 	,'value' => 180
-	,'xtype' => 'numberfield'
+	,'xtype' => 'textfield'
 	,'namespace' => 'tickets'
 	,'area' => 'Ticket'
 ),'',true,true);
@@ -111,6 +111,15 @@ $settings[5]->fromArray(array(
 	'key' => 'tickets.clear_cache_on_comment_save'
 	,'value' => 'false'
 	,'xtype' => 'combo-boolean'
+	,'namespace' => 'tickets'
+	,'area' => 'Ticket'
+),'',true,true);
+
+$settings[5]= $modx->newObject('modSystemSetting');
+$settings[5]->fromArray(array(
+	'key' => 'tickets.private_ticket_page'
+	,'value' => 0
+	,'xtype' => 'textfield'
 	,'namespace' => 'tickets'
 	,'area' => 'Ticket'
 ),'',true,true);

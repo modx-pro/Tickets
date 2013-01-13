@@ -38,6 +38,7 @@ class pdoFetch extends pdoTools {
 	public function run() {
 		$this->makeQuery();
 		$this->addJoins();
+		$this->addGrouping();
 		$this->setTotal();
 		$this->addSelects();
 
@@ -98,6 +99,7 @@ class pdoFetch extends pdoTools {
 		// set placeholder for pagination
 		if ($this->config['return'] != 'sql') {
 			$total = $this->modx->getCount($this->config['class'], $this->query);
+			$this->addTime('<b>Total matching rows</b>: '.$total);
 			$this->modx->setPlaceholder($this->config['totalVar'], $total);
 		}
 	}
@@ -136,13 +138,15 @@ class pdoFetch extends pdoTools {
 	}
 
 
-	public function prepareQuery() {
+	public function addGrouping() {
 		if (!empty($this->config['groupby'])) {
 			$groupby = $this->config['groupby'];
 			$this->query->groupby($groupby);
 			$this->addTime('Grouped by <b>'.$groupby.'</b>');
 		}
+	}
 
+	public function prepareQuery() {
 		$limit = $this->config['limit'];
 		$offset = $this->config['offset'];
 		$sortby = $this->config['sortby'];

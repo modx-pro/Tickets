@@ -3,6 +3,7 @@ Changelog for Tickets.
 0.8.3
 ==========
 - MarkitUp javascript is now loadings at the bottom of web page.
+- Private tickets. If ticket has this param, users will must be have permission "ticket_view_private" for reading it. Otherwise they will be redirected to "tickets.private_ticket_page".
 
 0.8.2
 ==========
