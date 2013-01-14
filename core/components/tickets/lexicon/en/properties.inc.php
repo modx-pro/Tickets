@@ -16,6 +16,7 @@ $_lang['tickets.tplFormUpdate'] = 'Chunk for update existing ticket';
 $_lang['tickets.tplSectionRow'] = 'Chunk for template one section of form select';
 $_lang['tickets.tplPreview'] = 'Chunk for preview ticket before publish';
 $_lang['tickets.cacheKey'] = 'Name of snippet cache. If empty - caching will be disabled.';
+$_lang['tickets.toPlaceholder'] = 'If not empty, the snippet will save output to placeholder with that name, instead of return it to screen.';
 
 $_lang['tickets.thread'] = 'Name of comments thread. By default, "resource-[[*id]]".';
 $_lang['tickets.fastMode'] = 'If true - chunk of the comment will not be fully processed, the script only replace placeholders for values. All filters, chunks, snippets and etc will be cut.';

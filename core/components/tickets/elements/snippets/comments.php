@@ -21,11 +21,11 @@ if (is_array($output)) {
 
 // Support for ajax requests
 if (!empty($output) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
-	//$output = preg_replace('/\[\[(.*?)\]\]/', '', $output);
-	$maxIterations= (integer) $modx->getOption('parser_max_iterations', null, 10);
-	$modx->getParser()->processElementTags('', $output, false, false, '[[', ']]', array(), $maxIterations);
-	$modx->getParser()->processElementTags('', $output, true, true, '[[', ']]', array(), $maxIterations);
-
+	if ($action != 'getComment') {
+		$maxIterations= (integer) $modx->getOption('parser_max_iterations', null, 10);
+		$modx->getParser()->processElementTags('', $output, false, false, '[[', ']]', array(), $maxIterations);
+		$modx->getParser()->processElementTags('', $output, true, true, '[[', ']]', array(), $maxIterations);
+	}
 	echo $output;
 	exit;
 }

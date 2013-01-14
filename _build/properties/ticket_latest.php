@@ -64,6 +64,13 @@ $properties = array(
 		'value' => '',
 		'lexicon' => 'tickets:properties',
 	)
+	,array(
+		'name' => 'toPlaceholder',
+		'desc' => 'tickets.toPlaceholder',
+		'type' => 'textfield',
+		'value' => '',
+		'lexicon' => 'tickets:properties',
+	)
 );
 
 return $properties;

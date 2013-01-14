@@ -37,9 +37,11 @@ $default = array(
 	,'sortdir' => 'desc'
 	,'fastMode' => false
 );
-
+/* @var pdoFetch $pdoFetch */
+/* @var Tickets $Tickets */
 $scriptProperties = array_merge($default, $scriptProperties, array('return' => 'data'));
 $pdoFetch = $modx->getService('pdofetch','pdoFetch',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'pdotools/',$scriptProperties);
+$Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 
 $rows = $pdoFetch->run();
 foreach ($rows as $k => $v) {
@@ -49,6 +51,8 @@ foreach ($rows as $k => $v) {
 			$v[$field] = str_replace(array('[',']'), array('&#91;','&#93;'), $value);
 		}
 	}
+
+	$v['date_ago'] = $Tickets->dateFormat($v['createdon']);
 
 	if (empty($pdoFetch->config['tpl'])) {
 		$output[] = '<pre>'.print_r($v, true).'</pre>';
