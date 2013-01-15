@@ -39,7 +39,6 @@ class pdoFetch extends pdoTools {
 		$this->makeQuery();
 		$this->addJoins();
 		$this->addGrouping();
-		$this->setTotal();
 		$this->addSelects();
 
 		if (!$this->prepareQuery()) {return false;}
@@ -53,8 +52,10 @@ class pdoFetch extends pdoTools {
 			$this->addTime('SQL prepared <small>"'.$this->query->toSql().'"</small>');
 			if ($this->query->stmt->execute()) {
 				$this->addTime('SQL executed');
+
 				$rows = $this->query->stmt->fetchAll(PDO::FETCH_ASSOC);
 				$this->addTime('Rows fetched');
+
 				if ($this->config['return'] == 'data') {
 					$this->addTime('Returning raw data');
 					$output = & $rows;
@@ -69,13 +70,14 @@ class pdoFetch extends pdoTools {
 						}
 					}
 					$this->addTime('Returning processed chunks');
+
 					if (!empty($output)) {
 						$output = implode($this->config['outputSeparator'], $output);
 					}
 				}
 			}
 		}
-
+		$this->setTotal();
 		$this->modx->setPlaceholder('pdoFetchLog', $this->getTime());
 		return $output;
 	}
@@ -96,10 +98,11 @@ class pdoFetch extends pdoTools {
 
 
 	public function setTotal() {
-		// set placeholder for pagination
 		if ($this->config['return'] != 'sql') {
-			$total = $this->modx->getCount($this->config['class'], $this->query);
-			$this->addTime('<b>Total matching rows</b>: '.$total);
+			$q = $this->modx->prepare("SELECT FOUND_ROWS();");
+			$q->execute();
+			$total = $q->fetch(PDO::FETCH_COLUMN);
+			$this->addTime('<b>Total rows</b>: '.$total);
 			$this->modx->setPlaceholder($this->config['totalVar'], $total);
 		}
 	}
@@ -121,17 +124,20 @@ class pdoFetch extends pdoTools {
 	public function addSelects() {
 		if (!empty($this->config['select'])) {
 			$tmp = $this->modx->fromJSON($this->config['select']);
+			$i = 0;
 			foreach ($tmp as $k => $v) {
 				if ($v == 'all' || $v == '*') {
 					$v = $this->modx->getSelectColumns($k, $k);
 				}
+				if ($i == 0) {$v = 'SQL_CALC_FOUND_ROWS '.$v;}
 				$this->query->select($v);
 				$this->addTime('Added selection of <b>'.$k.'</b>: <small>' . $v . '</small>');
+				$i++;
 			}
 		}
 		else {
 			$class = $this->config['class'];
-			$select = $this->modx->getSelectColumns($class,$class);
+			$select = 'SQL_CALC_FOUND_ROWS ' . $this->modx->getSelectColumns($class,$class);
 			$this->query->select($select);
 			$this->addTime('Added selection of <b>'.$class.'</b>: <small>' . $select . '</small>');
 		}
