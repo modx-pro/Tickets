@@ -1,6 +1,6 @@
 <?php
 /**
- * The default Permission scheme for the QuipModeratorPolicy.
+ * The default Permission scheme for the Tickets.
  *
  * @package quip
  * @subpackage build

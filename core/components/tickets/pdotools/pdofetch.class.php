@@ -113,8 +113,9 @@ class pdoFetch extends pdoTools {
 			if (!empty($this->config[$join])) {
 				$tmp = $this->modx->fromJson($this->config[$join]);
 				foreach ($tmp as $k => $v) {
-					$this->query->$join($k, $v['alias'], $v['on']);
-					$this->addTime($join.'ed <i>'.$k.'</i> as <b>'.$v['alias'].'</b>');
+					$class = !empty($v['class']) ? $v['class'] : $k;
+					$this->query->$join($class, $v['alias'], $v['on']);
+					$this->addTime($join.'ed <i>'.$class.'</i> as <b>'.$v['alias'].'</b>');
 				}
 			}
 		}
