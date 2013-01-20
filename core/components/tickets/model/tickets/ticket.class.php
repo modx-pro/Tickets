@@ -71,7 +71,6 @@ class Ticket extends modResource {
 		$fields = array('comments','views','votes');
 
 		if (is_array($k)) {
-			$k = array_merge($k, $fields);
 			$value = parent::get($k, $format, $formatTemplate);
 		}
 		else {

@@ -26,7 +26,8 @@ class GetThreadProcessor extends modProcessor {
 		}
 		else {
 			if ($this->object->deleted == 1) {
-				return $this->modx->lexicon('ticket_thread_err_deleted');
+				$this->modx->error->message = $this->modx->lexicon('ticket_thread_err_deleted');
+				return false;
 			}
 		}
 		return true;

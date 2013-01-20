@@ -17,9 +17,11 @@ $_lang['tickets.tplSectionRow'] = 'Chunk for template one section of form select
 $_lang['tickets.tplPreview'] = 'Chunk for preview ticket before publish';
 $_lang['tickets.cacheKey'] = 'Name of snippet cache. If empty - caching will be disabled.';
 $_lang['tickets.toPlaceholder'] = 'If not empty, the snippet will save output to placeholder with that name, instead of return it to screen.';
+$_lang['tickets.showLog'] = 'Display additional information about snippet work. Only for authenticated in context "mgr".';
+$_lang['tickets.parents'] = 'Container list, separated by commas, to search results. By default, the query is limited to the current parent. If set to 0, query not limited.';
 
 $_lang['tickets.thread'] = 'Name of comments thread. By default, "resource-[[*id]]".';
-$_lang['tickets.fastMode'] = 'If true - chunk of the comment will not be fully processed, the script only replace placeholders for values. All filters, chunks, snippets and etc will be cut.';
+$_lang['tickets.fastMode'] = 'If enabled, then in chunk will be only received values ​​from the database. All raw tags of MODX, such as filters, snippets calls will be cut.';
 $_lang['tickets.dateFormat'] = 'The format of the dates displayed for a comment, with function date().';
 $_lang['tickets.gravatarIcon'] = 'The default Gravatar icon to load if none is found for a user.';
 $_lang['tickets.gravatarSize'] = 'The size, in pixels, of the Gravatar.';

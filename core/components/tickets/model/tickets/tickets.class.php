@@ -7,7 +7,7 @@
 class Tickets {
 
 	private $prepareCommentCustom = null;
-	private $elements = array();
+	public $elements = array();
 
 	function __construct(modX &$modx,array $config = array()) {
 		$this->modx =& $modx;
@@ -109,10 +109,6 @@ class Tickets {
 	 */
 	public function getSections($id = 0) {
 		$response = $this->runProcessor('web/section/getlist');
-		if ($response->isError()) {
-			//return $response->getMessage();
-			return false;
-		}
 		$response = json_decode($response->response, 1);
 		$res = '';
 		foreach ($response['results'] as $v) {
@@ -238,6 +234,7 @@ class Tickets {
 			}
 		}
 		$data['class_key'] = 'Ticket';
+		$data['alias'] = 'fake_alias';
 		if (!empty($data['tid'])) {
 			$data['id'] = $data['tid'];
 			$data['context_key'] = $this->modx->context->key;
@@ -246,6 +243,7 @@ class Tickets {
 		else {
 			$response = $this->modx->runProcessor('resource/create', $data);
 		}
+
 		if ($response->isError()) {
 			$message = $response->getMessage();
 			if (is_array($message) && !empty($message['message'])) {
@@ -576,8 +574,8 @@ class Tickets {
 			'thread' => $thread
 		));
 		$response = $this->runProcessor('web/thread/get', $data);
-		if ($response->isError()) {
-			return $response->getMessage();
+		if (is_array($response->response) && isset($response->response['message'])) {
+			return $response->response['message'];
 		}
 		$data = json_decode($response->response,true);
 		$comments = '';

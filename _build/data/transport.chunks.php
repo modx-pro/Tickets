@@ -156,8 +156,19 @@ $chunks[13]= $modx->newObject('modChunk');
 $chunks[13]->fromArray(array(
 	'id' => 0
 	,'name' => 'tpl.Tickets.list.row'
-	,'description' => 'The chunk for list tickets in getResources'
+	,'description' => 'The chunk for list of tickets'
 	,'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/ticket_list_row.chunk.tpl')
+	//,'source' => 1
+	//,'static' => 1
+	//,'static_file' => 'core/components/tickets/elements/chunks/ticket_list_row.chunk.tpl'
+),'',true,true);
+
+$chunks[14]= $modx->newObject('modChunk');
+$chunks[14]->fromArray(array(
+	'id' => 0
+	,'name' => 'tpl.Tickets.sections.row'
+	,'description' => 'The chunk for list of sections'
+	,'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/ticket_sections_row.chunk.tpl')
 	//,'source' => 1
 	//,'static' => 1
 	//,'static_file' => 'core/components/tickets/elements/chunks/ticket_list_row.chunk.tpl'

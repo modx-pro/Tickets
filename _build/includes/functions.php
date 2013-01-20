@@ -4,5 +4,3 @@ function getSnippetContent($filename) {
 	$o = trim(str_replace(array('<?php','?>'),'',$o));
 	return $o;
 }
-
-?>
