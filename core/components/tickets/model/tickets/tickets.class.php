@@ -508,7 +508,7 @@ class Tickets {
 					}
 				}
 				$v['sectiontitle'] = $sections[$v['parent']];
-				$v['date_ago'] = $this->dateFormat($v['publishedon']);
+				$v['date_ago'] = $this->dateFormat($v['createdon']);
 				if (empty($data['tpl'])) {
 					$output .= '<pre>'.print_r($v,true).'</pre>';
 				}
