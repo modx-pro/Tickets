@@ -5,9 +5,8 @@
  * @package tickets
  */
 
-require_once MODX_CORE_PATH.'model/modx/modprocessor.class.php';
-require_once MODX_CORE_PATH.'model/modx/processors/resource/create.class.php';
-require_once MODX_CORE_PATH.'model/modx/processors/resource/update.class.php';
+require_once MODX_CORE_PATH.'components/tickets/processors/mgr/section/create.class.php';
+require_once MODX_CORE_PATH.'components/tickets/processors/mgr/section/update.class.php';
 
 class TicketsSection extends modResource {
 	public $showInContextMenu = true;
@@ -193,48 +192,4 @@ class TicketsSection extends modResource {
 	public function getTicketsCount() {
 		return $this->xpdo->getCount('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
 	}
-}
-
-
-
-/**
- * Overrides the modResourceCreateProcessor to provide custom processor functionality for the TicketsSection type
- *
- * @package tickets
- */
-class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
-	/** @var TicketsSection $object */
-	public $object;
-	public $classKey = 'TicketsSection';
-
-	public function beforeSet() {
-		$this->setProperties(array(
-			'hide_children_in_tree' => 1
-			,'isfolder' => 1
-		));
-		return parent::beforeSet();
-	}
-
-}
-
-
-
-/**
- * Overrides the modResourceUpdateProcessor to provide custom processor functionality for the TicketsSection type
- *
- * @package tickets
- */
-class TicketsSectionUpdateProcessor extends modResourceUpdateProcessor {
-	/** @var TicketsSection $object */
-	public $object;
-	public $classKey = 'TicketsSection';
-
-	public function beforeSet() {
-		$this->setProperties(array(
-			'hide_children_in_tree' => 1
-			,'isfolder' => 1
-		));
-		return parent::beforeSet();
-	}
-
 }

@@ -36,7 +36,6 @@ $default = array(
 	,'sortby' => 'views'
 	,'sortdir' => 'desc'
 	,'fastMode' => false
-	,'return' => 'data'
 );
 
 $pdoFetch->config = array_merge($pdoFetch->config, $default, $scriptProperties);
