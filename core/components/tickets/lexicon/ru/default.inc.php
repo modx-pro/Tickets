@@ -50,6 +50,7 @@ $_lang['ticket_comment_text'] = 'Комментарий';
 $_lang['ticket_comment_createdon'] = 'Написан';
 $_lang['ticket_comment_editedon'] = 'Изменен';
 $_lang['ticket_comment_deletedon'] = 'Удалён';
+$_lang['ticket_comment_parent'] = 'Родитель';
 $_lang['ticket_comment_email'] = 'Email';
 $_lang['ticket_comment_view'] = 'Открыть комментарий на сайте';
 $_lang['ticket_comment_reply'] = 'ответить';

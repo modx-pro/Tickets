@@ -187,14 +187,14 @@ Tickets.window.UpdateComment = function(config) {
 		title: _('tickets_comment_update')
 		,id: this.ident
 		,width: 700
-		,height: 500
+		,height: 550
 		,url: Tickets.config.connector_url
 		,action: 'mgr/comment/update'
 		,layout: 'anchor'
 		,autoHeight: false
 		,fields: [
 			{xtype: 'hidden',name: 'id',id: 'tickets-'+this.ident+'-id'}
-			,{xtype: 'textarea',fieldLabel: _('comment'),name: 'text',id: 'tickets-'+this.ident+'-text',anchor: '99% -150', height: 250}
+			,{xtype: 'textarea',fieldLabel: _('comment'),name: 'text',id: 'tickets-'+this.ident+'-text',anchor: '99% -180'}
 			,{
 			items: [{
 				layout: 'form'
@@ -240,6 +240,7 @@ Ext.extend(Tickets.window.UpdateComment,MODx.Window,{
 		return [
 			{xtype:'textfield', fieldLabel: _('ticket_comment_name'), name: 'name', id:'tickets-'+this.ident+'-name',anchor: '99%'}
 			,{xtype:'textfield', fieldLabel: _('ticket_comment_email'), name: 'email', id:'tickets-'+this.ident+'-email',anchor: '99%'}
+			,{xtype:'numberfield', fieldLabel: _('ticket_comment_parent'), name: 'parent', id:'tickets-'+this.ident+'-parent',anchor: '50%'}
 		];
 	}
 

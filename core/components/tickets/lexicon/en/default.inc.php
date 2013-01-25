@@ -51,6 +51,7 @@ $_lang['ticket_comment_text'] = 'Comment';
 $_lang['ticket_comment_createdon'] = 'Created on';
 $_lang['ticket_comment_editedon'] = 'Edited on';
 $_lang['ticket_comment_deletedon'] = 'Deleted on';
+$_lang['ticket_comment_parent'] = 'Parent';
 $_lang['ticket_comment_email'] = 'Email';
 $_lang['ticket_comment_view'] = 'View comment on site';
 $_lang['ticket_comment_reply'] = 'reply';
