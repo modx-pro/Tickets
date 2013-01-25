@@ -16,7 +16,7 @@ class TicketCommentGetProcessor extends modObjectGetProcessor {
 	}
 
 	public function formatDate($date = '') {
-		if (empty($date)) {
+		if (empty($date) || $date == '0000-00-00 00:00:00') {
 			return $this->modx->lexicon('no');
 		}
 		return strftime('%d %b %Y %H:%M', strtotime($date));

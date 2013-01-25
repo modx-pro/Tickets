@@ -4,6 +4,7 @@ Changelog for Tickets.
 ==========
 - [mgr] Fixed bug with no changing author of the ticket when creating it in manager.
 - [mgr] Ability to change parent of the comment.
+- [mgr] Fixed empty dates in comment window.
 - Placeholder [[+date_ago]] in snippet TicketLatest now created from "createdon" property.
 
 0.9.0
