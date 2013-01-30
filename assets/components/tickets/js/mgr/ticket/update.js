@@ -289,7 +289,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 			,name: 'ta'
 			,id: 'ta'
 			,anchor: '100%'
-			,height: 400
+			,height: 500
 			,grow: false
 			,value: (config.record.content || config.record.ta) || ''
 		},{
@@ -351,6 +351,18 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,timeWidth: 120
 				,value: config.record.unpub_date
 			},{
+				xtype: 'modx-combo-template'
+				,fieldLabel: _('resource_template')
+				,description: '<b>[[*template]]</b><br />'+_('resource_template_help')
+				,name: 'template'
+				,id: 'modx-resource-template'
+				,anchor: '90%'
+				,editable: false
+				,baseParams: {
+					action: 'getList'
+					,combo: '1'
+				}
+			},{
 				xtype: MODx.config.publish_document ? 'modx-combo-user' : 'hidden'
 				,fieldLabel: _('resource_createdby')
 				,description: '<b>[[*createdby]]</b><br />'+_('resource_createdby_help')
@@ -380,6 +392,14 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 					}
 				}
 				,anchor: '90%'
+			},{
+				xtype: 'textfield'
+				,id: 'modx-resource-alias'
+				,fieldLabel: _('resource_alias')
+				,description: '<b>[[*alias]]</b><br />'+_('resource_alias_help')
+				,name: 'alias'
+				,anchor: '90%'
+				,value: config.record.alias || ''
 			}]
 		},{
 			html: '<hr />'
@@ -396,18 +416,6 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,msgTarget: 'under'
 			}
 			,items: [{
-				xtype: 'modx-combo-template'
-				,fieldLabel: _('resource_template')
-				,description: '<b>[[*template]]</b><br />'+_('resource_template_help')
-				,name: 'template'
-				,id: 'modx-resource-template'
-				,anchor: '90%'
-				,editable: false
-				,baseParams: {
-					action: 'getList'
-					,combo: '1'
-				}
-			},{
 				xtype: 'xcheckbox'
 				,name: 'richtext'
 				,boxLabel: _('resource_richtext')
@@ -439,11 +447,6 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,id: 'modx-resource-privateweb'
 				,inputValue: 1
 				,checked: parseInt(config.record.properties.privateweb)
-			},{
-				xtype: 'hidden'
-				,name: 'alias'
-				,id: 'modx-resource-alias'
-				,value: config.record.alias || ''
 			},{
 				xtype: 'hidden'
 				,name: 'menutitle'

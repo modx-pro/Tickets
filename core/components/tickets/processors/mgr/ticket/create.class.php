@@ -74,7 +74,14 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	 * @return string
 	 */
 	public function prepareAlias() {
-		return '';
+		parent::prepareAlias();
+
+		foreach ($this->modx->error->errors as $k => $v) {
+			if ($v['id'] == 'alias') {
+				unset($this->modx->error->errors[$k]);
+				$this->setProperty('alias', 'empty-resource-alias');
+			}
+		}
 	}
 
 	/**
@@ -109,13 +116,15 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	 */
 	public function afterSave() {
 		$this->object->fromArray(array(
-			'alias' => $this->object->id
-			,'published' => $this->published
+			'published' => $this->published
 			,'publishedon' => $this->published ? $this->publishedon : 0
 			,'publishedby' => $this->published ? $this->publishedby : 0
 			,'isfolder' => 1
 			,'template' => $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true)
 		));
+		if ($this->object->alias == 'empty-resource-alias') {
+			$this->object->set('alias', $this->object->id);
+		}
 		$this->object->save();
 		return parent::afterSave();
 	}

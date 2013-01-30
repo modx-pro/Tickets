@@ -82,8 +82,14 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	 * {@inheritDoc}
 	 * @return string
 	 */
-	public function prepareAlias() {
-		return '';
+	public function checkFriendlyAlias() {
+		parent::checkFriendlyAlias();
+		foreach ($this->modx->error->errors as $k => $v) {
+			if ($v['id'] == 'alias') {
+				unset($this->modx->error->errors[$k]);
+				$this->setProperty('alias', $this->object->id);
+			}
+		}
 	}
 
 	/**
@@ -92,8 +98,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	 */
 	public function afterSave() {
 		$this->object->fromArray(array(
-			'alias' => $this->object->id
-			,'published' => $this->published
+			'published' => $this->published
 			,'isfolder' => 1
 		));
 		if ($this->updatepubdate) {
