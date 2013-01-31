@@ -2,6 +2,7 @@ Changelog for Tickets.
 
 0.9.2
 ==========
+- [mgr] Fixed bug with no refresh on ticket create.
 - Fixed alis of ticket, created from front.
 
 0.9.1

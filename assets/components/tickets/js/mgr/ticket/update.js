@@ -475,5 +475,34 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 		}];
 	}
 
+	,success: function(o) {
+		var g = Ext.getCmp('modx-grid-resource-security');
+		if (g) { g.getStore().commitChanges(); }
+		var t = Ext.getCmp('modx-resource-tree');
+
+		if (t) {
+			var ctx = Ext.getCmp('modx-resource-context-key').getValue();
+			var pa = Ext.getCmp('modx-resource-parent-hidden').getValue();
+			var pao = Ext.getCmp('modx-resource-parent-old-hidden').getValue();
+			var v = ctx+'_'+pa;
+			if(pa !== pao) {
+				t.refresh();
+				Ext.getCmp('modx-resource-parent-old-hidden').setValue(pa);
+			} else {
+				var n = t.getNodeById(v);
+				if (n) {n.leaf = false;}
+				t.refreshNode(v,true);
+			}
+		}
+		if (o.result.object.class_key != this.defaultClassKey && this.config.resource != '' && this.config.resource != 0) {
+			location.href = location.href;
+		} else if (o.result.object['parent'] != this.defaultValues['parent'] && this.config.resource != '' && this.config.resource != 0) {
+			location.href = location.href;
+		} else {
+			this.getForm().setValues(o.result.object);
+			Ext.getCmp('modx-page-update-resource').config.preview_url = o.result.object.preview_url;
+		}
+	}
+
 });
 Ext.reg('modx-panel-ticket',Tickets.panel.Ticket);
