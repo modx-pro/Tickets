@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+0.9.2
+==========
+- Fixed alis of ticket, created from front.
+
 0.9.1
 ==========
 - [mgr] Fixed bug with no changing author of the ticket when creating it in manager.

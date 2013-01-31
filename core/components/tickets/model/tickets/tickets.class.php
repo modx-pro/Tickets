@@ -234,7 +234,6 @@ class Tickets {
 			}
 		}
 		$data['class_key'] = 'Ticket';
-		$data['alias'] = 'fake_alias';
 		if (!empty($data['tid'])) {
 			$data['id'] = $data['tid'];
 			$data['context_key'] = $this->modx->context->key;

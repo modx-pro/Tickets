@@ -79,7 +79,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		foreach ($this->modx->error->errors as $k => $v) {
 			if ($v['id'] == 'alias') {
 				unset($this->modx->error->errors[$k]);
-				$this->setProperty('alias', 'empty-resource-alias');
+				$this->setProperty('alias', 'emptyresourcealias');
 			}
 		}
 	}
@@ -122,7 +122,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			,'isfolder' => 1
 			,'template' => $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true)
 		));
-		if ($this->object->alias == 'empty-resource-alias') {
+		if ($this->object->alias == 'emptyresourcealias') {
 			$this->object->set('alias', $this->object->id);
 		}
 		$this->object->save();
