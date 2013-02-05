@@ -10,19 +10,19 @@ $_lang['comments'] = 'Comments';
 $_lang['threads'] = 'Comments threads';
 $_lang['tickets_section'] = 'Tickets ticket';
 $_lang['ticket'] = 'Ticket';
-$_lang['ticket_all'] = 'Все';
+$_lang['ticket_all'] = 'All tickets';
 $_lang['ticket_menu_desc'] = 'Comments management and more.';
 $_lang['comments_all'] = 'All comments';
 
 $_lang['tickets_section_create_here'] = 'Section with tickets';
-$_lang['tickets_section_new'] = 'New tickes ticket';
+$_lang['tickets_section_new'] = 'New ticket';
 
 $_lang['ticket_create_here'] = 'Create ticket';
 
-$_lang['ticket_no_comments'] = 'This page has no comments. You can write the first.';
+$_lang['ticket_no_comments'] = 'This page has no comments. You can be a trailblazer.';
 $_lang['err_no_jevix'] = 'Snippet Jevix is required for proper work. You need to install it from MODX repository.';
-$_lang['ticket_err_wrong_user'] = 'You trying to update ticket that is not yours.';
-$_lang['ticket_err_no_auth'] = 'You need to authenticate for create of ticket.';
+$_lang['ticket_err_wrong_user'] = 'You trying to update a ticket that is not yours.';
+$_lang['ticket_err_no_auth'] = 'You need to login to create a ticket.';
 $_lang['ticket_err_wrong_parent'] = 'Invalid section for this ticket was specified.';
 $_lang['ticket_err_wrong_resource'] = 'Wrong ticket specified.';
 $_lang['ticket_err_wrong_thread'] = 'Wrong comments thread specified.';
@@ -33,9 +33,8 @@ $_lang['permission_denied'] = 'You do not have permissions for this action.';
 $_lang['field_required'] = 'This field is required.';
 $_lang['ticket_clear'] = 'Clear';
 
-
 $_lang['ticket_comment_intro'] = '';
-$_lang['ticket_comment_all_intro'] = 'Here are comments from all of the site.';
+$_lang['ticket_comment_all_intro'] = 'Here are comments from the entire site.';
 $_lang['ticket_comment_email_owner'] = 'New comment for your ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_email_reply'] = 'Reply to your comment for ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_deleted_text'] = 'This comment was deleted.';
@@ -60,11 +59,10 @@ $_lang['ticket_comment_create'] = 'Write comment';
 $_lang['ticket_comment_preview'] = 'Preview';
 $_lang['ticket_comment_save'] = 'Write';
 $_lang['ticket_comment_was_edited'] = 'Comment was edited';
-$_lang['ticket_comment_err_no_auth'] = 'You need to authenticate for create of comments.';
-$_lang['ticket_comment_err_wrong_user'] = 'You trying to update comment that is not yours.';
-$_lang['ticket_comment_err_no_time'] = 'Time for editing comment is ended.';
-$_lang['ticket_comment_err_has_replies'] = 'This comment already has replies, therefore you cannot change it.';
-
+$_lang['ticket_comment_err_no_auth'] = 'You need to login to create comments.';
+$_lang['ticket_comment_err_wrong_user'] = 'You trying to update a comment that is not yours.';
+$_lang['ticket_comment_err_no_time'] = 'Time for editing a comment is ended.';
+$_lang['ticket_comment_err_has_replies'] = 'This comment already has replies, so you cannot change it.';
 
 $_lang['ticket_publishedon'] = 'Published On';
 $_lang['ticket_pagetitle'] = 'Title';
@@ -98,7 +96,6 @@ $_lang['ticket_thread_remove_confirm'] = 'Are you sure you want to totally remov
 $_lang['ticket_thread_view'] = 'View on site';
 $_lang['ticket_thread_err_deleted'] = 'Comments to this ticket was disabled';
 $_lang['ticket_thread_manage_comments'] = 'Manage comments';
-
 
 $_lang['ticket_date_now'] = 'Just now';
 $_lang['ticket_date_today'] = 'Today at';
