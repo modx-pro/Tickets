@@ -49,7 +49,7 @@ $properties = array(
 		'name' => 'showLog',
 		'desc' => 'tickets.showLog',
 		'type' => 'combo-boolean',
-		'value' => 'true',
+		'value' => 'false',
 		'lexicon' => 'tickets:properties',
 	)
 ,array(
@@ -62,8 +62,8 @@ $properties = array(
 ,array(
 		'name' => 'fastMode',
 		'desc' => 'tickets.fastMode',
-		'type' => 'textfield',
-		'value' => '',
+		'type' => 'combo-boolean',
+		'value' => 'false',
 		'lexicon' => 'tickets:properties',
 	)
 );
