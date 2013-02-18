@@ -50,8 +50,10 @@ switch($modx->event->name) {
 		// Redirect to requested page, when you moved ticket from one section to another
 		if ($modx->getCount('TicketsSection',array('class_key' => 'TicketsSection', 'alias' => $section, 'deleted' => 0, 'published' => 1))) {
 			if (preg_match('/^\d+$/', $ticket)) {
-				$url = $modx->makeUrl($ticket, '', '', 'full');
-				$modx->sendRedirect($url);
+				if ($modx->getCount('Ticket',  array('id' => $ticket, 'published' => 1, 'deleted' => 0))) {
+					$url = $modx->makeUrl($ticket, '', '', 'full');
+					$modx->sendRedirect($url);
+				}
 			}
 		}
 	break;
