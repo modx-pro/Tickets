@@ -88,8 +88,8 @@ $settings[5]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
-$settings[5]= $modx->newObject('modSystemSetting');
-$settings[5]->fromArray(array(
+$settings[6]= $modx->newObject('modSystemSetting');
+$settings[6]->fromArray(array(
 	'key' => 'tickets.snippet_prepare_comment'
 	,'value' => ''
 	,'xtype' => 'textfield'
@@ -97,8 +97,8 @@ $settings[5]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
-$settings[5]= $modx->newObject('modSystemSetting');
-$settings[5]->fromArray(array(
+$settings[7]= $modx->newObject('modSystemSetting');
+$settings[7]->fromArray(array(
 	'key' => 'tickets.comment_edit_time'
 	,'value' => 180
 	,'xtype' => 'textfield'
@@ -106,8 +106,8 @@ $settings[5]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
-$settings[5]= $modx->newObject('modSystemSetting');
-$settings[5]->fromArray(array(
+$settings[8]= $modx->newObject('modSystemSetting');
+$settings[8]->fromArray(array(
 	'key' => 'tickets.clear_cache_on_comment_save'
 	,'value' => 'false'
 	,'xtype' => 'combo-boolean'
@@ -115,8 +115,8 @@ $settings[5]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
-$settings[5]= $modx->newObject('modSystemSetting');
-$settings[5]->fromArray(array(
+$settings[9]= $modx->newObject('modSystemSetting');
+$settings[9]->fromArray(array(
 	'key' => 'tickets.private_ticket_page'
 	,'value' => 0
 	,'xtype' => 'textfield'
