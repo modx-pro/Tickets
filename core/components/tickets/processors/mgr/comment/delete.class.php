@@ -7,6 +7,15 @@ class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
 	public $languageTopics = array('tickets');
 	public $beforeRemoveEvent = 'OnBeforeCommentRemove';
 	public $afterRemoveEvent = 'OnCommentRemove';
+	public $permission = 'comment_save';
+
+	public function initialize() {
+		$parent = parent::initialize();
+		if ($this->checkRemovePermission && !$this->modx->hasPermission($this->permission)) {
+			return $this->modx->lexicon('access_denied');
+		}
+		return $parent;
+	}
 
 	public function process() {
 		$canRemove = $this->beforeRemove();
