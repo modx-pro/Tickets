@@ -24,6 +24,10 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	 * @return mixed
 	 */
 	public function beforeSet() {
+		if ($this->object->createdby != $this->modx->user->id && !$this->modx->hasPermission('edit_document')) {
+			return $this->modx->lexicon('ticket_err_wrong_user');
+		}
+
 		$published = $this->getProperty('published');
 		$this->published = empty($published) || $published === 'false' ? 0 : 1;
 		if ($this->object->published != $this->published) {
@@ -32,19 +36,18 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		if (!$this->publishedon = $this->getProperty('publishedon')) {$this->publishedon = time();}
 		if (!$this->publishedby = $this->getProperty('publishedby')) {$this->publishedby = $this->modx->user->id;}
 
+		foreach (array('parent','pagetitle','content') as $field) {
+			$value = trim($this->getProperty($field));
+			if (empty($value) && $this->modx->context->key != 'mgr') {
+				$this->addFieldError($field, $this->modx->lexicon('field_required'));
+			}
+			else {
+				$this->setProperty($field, $value);
+			}
+		}
+
 		$beforeSet = parent::beforeSet();
-
-		if (!$this->getProperty('pagetitle')) {
-			$this->addFieldError('pagetitle', $this->modx->lexicon('field_required'));
-		}
-		if (!$this->getProperty('content') && $this->modx->context->key != 'mgr') {
-			$this->addFieldError('content', $this->modx->lexicon('field_required'));
-		}
 		if ($this->hasErrors()) {return false;}
-		if ($this->object->createdby != $this->modx->user->id && !$this->modx->hasPermission('edit_document')) {
-			return $this->modx->lexicon('ticket_err_wrong_user');
-		}
-
 		if ($introtext = $this->getProperty('introtext')) {
 			$introtext = $this->object->Jevix($introtext);
 		}

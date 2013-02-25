@@ -29,19 +29,18 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		if (!$this->publishedon = $this->getProperty('publishedon')) {$this->publishedon = time();}
 		if (!$this->publishedby = $this->getProperty('publishedby')) {$this->publishedby = $this->modx->user->id;}
 
+		foreach (array('parent','pagetitle','content') as $field) {
+			$value = trim($this->getProperty($field));
+			if (empty($value) && $this->modx->context->key != 'mgr') {
+				$this->addFieldError($field, $this->modx->lexicon('field_required'));
+			}
+			else {
+				$this->setProperty($field, $value);
+			}
+		}
+
 		$beforeSet = parent::beforeSet();
-
-		if (!$this->getProperty('parent')) {
-			$this->addFieldError('parent', $this->modx->lexicon('field_required'));
-		}
-		if (!$this->getProperty('pagetitle')) {
-			$this->addFieldError('pagetitle', $this->modx->lexicon('field_required'));
-		}
-		if (!$this->getProperty('content') && $this->modx->context->key != 'mgr') {
-			$this->addFieldError('content', $this->modx->lexicon('field_required'));
-		}
 		if ($this->hasErrors()) {return false;}
-
 		if ($introtext = $this->getProperty('introtext')) {
 			$introtext = $this->object->Jevix($introtext);
 		}
