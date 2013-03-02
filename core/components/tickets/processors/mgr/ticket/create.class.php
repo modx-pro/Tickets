@@ -58,6 +58,10 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			,'introtext' => $introtext
 			,'createdby' => !empty($createdby) ? $createdby : $this->modx->user->id
 		);
+		if (!$template = $this->getProperty('template')) {
+			$properties['template'] = $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true);
+		}
+
 
 		$this->setProperties($properties);
 		/* Tickets properties */
@@ -119,12 +123,17 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			,'publishedon' => $this->published ? $this->publishedon : 0
 			,'publishedby' => $this->published ? $this->publishedby : 0
 			,'isfolder' => 1
-			,'template' => $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true)
 		));
 		if ($this->object->alias == 'emptyresourcealias') {
 			$this->object->set('alias', $this->object->id);
 		}
 		$this->object->save();
+
+		// Updating resourceMap before OnDocSaveForm event
+		$results = $this->modx->cacheManager->generateContext($this->object->context_key);
+		$this->modx->context->resourceMap = $results['resourceMap'];
+		$this->modx->context->aliasMap = $results['aliasMap'];
+
 		return parent::afterSave();
 	}
 
@@ -133,10 +142,6 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	 * @return void
 	 */
 	public function clearCache() {
-		$results = $this->modx->cacheManager->generateContext($this->object->context_key);
-		$this->modx->context->resourceMap = $results['resourceMap'];
-		$this->modx->context->aliasMap = $results['aliasMap'];
-
 		/** @var TicketsSection $section */
 		if ($section = $this->modx->getObject('TicketsSection', $this->object->parent)) {
 			$section->clearCache();

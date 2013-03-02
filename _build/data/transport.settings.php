@@ -7,8 +7,8 @@
  */
 $settings = array();
 
-$settings[0]= $modx->newObject('modSystemSetting');
-$settings[0]->fromArray(array(
+$settings['enable_editor']= $modx->newObject('modSystemSetting');
+$settings['enable_editor']->fromArray(array(
 	'key' => 'tickets.enable_editor'
 	,'value' => 'true'
 	,'xtype' => 'combo-boolean'
@@ -16,8 +16,8 @@ $settings[0]->fromArray(array(
 	,'area' => 'Editor'
 ),'',true,true);
 
-$settings[1]= $modx->newObject('modSystemSetting');
-$settings[1]->fromArray(array(
+$settings['editor_config.ticket']= $modx->newObject('modSystemSetting');
+$settings['editor_config.ticket']->fromArray(array(
 	'key' => 'tickets.editor_config.ticket'
 	,'value' => '{onTab: {keepDefault:false, replaceWith:"	"}
 	,markupSet: [
@@ -41,8 +41,8 @@ $settings[1]->fromArray(array(
 	,'area' => 'Editor'
 ),'',true,true);
 
-$settings[2]= $modx->newObject('modSystemSetting');
-$settings[2]->fromArray(array(
+$settings['editor_config.comment']= $modx->newObject('modSystemSetting');
+$settings['editor_config.comment']->fromArray(array(
 	'key' => 'tickets.editor_config.comment'
 	,'value' => '{onTab: {keepDefault:false, replaceWith:"	"}
 	,markupSet: [
@@ -61,8 +61,8 @@ $settings[2]->fromArray(array(
 	,'area' => 'Editor'
 ),'',true,true);
 
-$settings[3]= $modx->newObject('modSystemSetting');
-$settings[3]->fromArray(array(
+$settings['default_template']= $modx->newObject('modSystemSetting');
+$settings['default_template']->fromArray(array(
 	'key' => 'tickets.default_template'
 	,'value' => ''
 	,'xtype' => 'numberfield'
@@ -70,8 +70,8 @@ $settings[3]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
-$settings[4]= $modx->newObject('modSystemSetting');
-$settings[4]->fromArray(array(
+$settings['disable_jevix_default']= $modx->newObject('modSystemSetting');
+$settings['disable_jevix_default']->fromArray(array(
 	'key' => 'tickets.disable_jevix_default'
 	,'value' => 'false'
 	,'xtype' => 'combo-boolean'
@@ -79,8 +79,8 @@ $settings[4]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
-$settings[5]= $modx->newObject('modSystemSetting');
-$settings[5]->fromArray(array(
+$settings['process_tags_default']= $modx->newObject('modSystemSetting');
+$settings['process_tags_default']->fromArray(array(
 	'key' => 'tickets.process_tags_default'
 	,'value' => 'false'
 	,'xtype' => 'combo-boolean'
@@ -88,8 +88,8 @@ $settings[5]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
-$settings[6]= $modx->newObject('modSystemSetting');
-$settings[6]->fromArray(array(
+$settings['snippet_prepare_comment']= $modx->newObject('modSystemSetting');
+$settings['snippet_prepare_comment']->fromArray(array(
 	'key' => 'tickets.snippet_prepare_comment'
 	,'value' => ''
 	,'xtype' => 'textfield'
@@ -97,8 +97,8 @@ $settings[6]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
-$settings[7]= $modx->newObject('modSystemSetting');
-$settings[7]->fromArray(array(
+$settings['comment_edit_time']= $modx->newObject('modSystemSetting');
+$settings['comment_edit_time']->fromArray(array(
 	'key' => 'tickets.comment_edit_time'
 	,'value' => 180
 	,'xtype' => 'textfield'
@@ -106,8 +106,8 @@ $settings[7]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
-$settings[8]= $modx->newObject('modSystemSetting');
-$settings[8]->fromArray(array(
+$settings['clear_cache_on_comment_save']= $modx->newObject('modSystemSetting');
+$settings['clear_cache_on_comment_save']->fromArray(array(
 	'key' => 'tickets.clear_cache_on_comment_save'
 	,'value' => 'false'
 	,'xtype' => 'combo-boolean'
@@ -115,8 +115,8 @@ $settings[8]->fromArray(array(
 	,'area' => 'Ticket'
 ),'',true,true);
 
-$settings[9]= $modx->newObject('modSystemSetting');
-$settings[9]->fromArray(array(
+$settings['private_ticket_page']= $modx->newObject('modSystemSetting');
+$settings['private_ticket_page']->fromArray(array(
 	'key' => 'tickets.private_ticket_page'
 	,'value' => 0
 	,'xtype' => 'textfield'

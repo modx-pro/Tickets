@@ -138,17 +138,28 @@ function installPackage($packageName) {
 					curl_setopt($curl, CURLOPT_URL, $url);
 					curl_setopt($curl, CURLOPT_TIMEOUT, 10);
 					$file = curl_exec($curl);
+					$info = curl_getinfo($curl);
 					if ($file === false) {
 						return array(
 							'success' => 0
-							,'message' => 'Could not download package <b>'.$packageName.'</b>: '.curl_error($curl)
+						,'message' => 'Could not download package <b>'.$packageName.'</b>: '.curl_error($curl)
 						);
+					}
+					else if (empty($file) && !empty($info['redirect_url'])) {
+						curl_setopt($curl, CURLOPT_URL, $info['redirect_url']);
+						$file = curl_exec($curl);
 					}
 					curl_close($curl);
 				} else {
 					$file = file_get_contents($url);
 				}
 
+				if (empty($file)) {
+					return array(
+						'success' => 0
+					,'message' => 'Could not download package <b>'.$packageName.'</b>: Nothing to save'
+					);
+				}
 				file_put_contents($modx->getOption('core_path').'packages/'.$foundPackage->signature.'.transport.zip',$file);
 
 				/* add in the package as an object so it can be upgraded */
@@ -181,13 +192,13 @@ function installPackage($packageName) {
 				if($package->save() && $package->install()) {
 					return array(
 						'success' => 1
-						,'message' => '<b>'.$packageName.'</b> was successfully installed'
+					,'message' => '<b>'.$packageName.'</b> was successfully installed'
 					);
 				}
 				else {
 					return array(
 						'success' => 0
-						,'message' => 'Could not save package <b>'.$packageName.'</b>'
+					,'message' => 'Could not save package <b>'.$packageName.'</b>'
 					);
 				}
 				break;
@@ -197,7 +208,8 @@ function installPackage($packageName) {
 	else {
 		return array(
 			'success' => 0
-			,'message' => 'Could not find <b>'.$packageName.'</b> in MODX repository'
+		,'message' => 'Could not find <b>'.$packageName.'</b> in MODX repository'
 		);
 	}
+	return true;
 }

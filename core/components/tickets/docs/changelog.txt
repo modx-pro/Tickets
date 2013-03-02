@@ -1,9 +1,20 @@
 Changelog for Tickets.
 
+0.9.3
+==========
+- [mgr] Template fix on ticket create
+- [mgr] Fixed permissions for manage comments
+- [mgr] Fixed non-install of some system parameters
+- Improved snippets for calling them multiple times on one page
+- Improved verification of ticket fields when create
+- Fixed endless redirect on unpublished or deleted tickets
+- Parameter "showLog" is now disabled by default in snippets
+- Improved lexicons
+
 0.9.2
 ==========
 - [mgr] Fixed bug with no refresh on ticket create.
-- Fixed alis of ticket, created from front.
+- Fixed alias of ticket, created from front.
 
 0.9.1
 ==========
