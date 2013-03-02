@@ -362,6 +362,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 					action: 'getList'
 					,combo: '1'
 				}
+				,listeners: {select: {fn: this.templateWarning,scope: this}}
 			},{
 				xtype: MODx.config.publish_document ? 'modx-combo-user' : 'hidden'
 				,fieldLabel: _('resource_createdby')

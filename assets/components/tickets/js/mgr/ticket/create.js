@@ -194,11 +194,13 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,id: 'modx-resource-template'
 				,anchor: '90%'
 				,editable: false
-				,value: MODx.config.default_template
 				,baseParams: {
 					action: 'getList'
 					,combo: '1'
+					,limit: 0
 				}
+				,value: MODx.config['tickets.default_template'] > 0 ? MODx.config['tickets.default_template'] : config.record.template
+				//,listeners: {select: {fn: this.templateWarning,scope: this}}
 			},{
 				xtype: MODx.config.publish_document ? 'modx-combo-user' : 'hidden'
 				,fieldLabel: _('resource_createdby')

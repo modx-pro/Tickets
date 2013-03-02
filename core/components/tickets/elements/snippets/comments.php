@@ -3,6 +3,7 @@ if (empty($scriptProperties['thread']) && !empty($modx->resource)) {$scriptPrope
 
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 if (!($Tickets instanceof Tickets)) return '';
+$Tickets->config = array_merge($Tickets->config, $scriptProperties);
 
 if ((empty($action) || $action == 'getComments') && !empty($_REQUEST['action'])) {$action = $_REQUEST['action'];}
 if (empty($action)) {$action = 'getComments';}

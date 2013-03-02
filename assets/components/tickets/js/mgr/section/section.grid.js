@@ -145,7 +145,7 @@ Ext.extend(Tickets.grid.Section,MODx.grid.Grid,{
 
 	,createTicket: function(btn,e) {
 		var createPage = MODx.action ? MODx.action['resource/create'] : 'resource/create';
-		location.href = 'index.php?a='+createPage+'&class_key=Ticket&parent='+MODx.request.id+'&context_key='+MODx.ctx+'&template=' + Tickets.template_ticket_default;
+		location.href = 'index.php?a='+createPage+'&class_key=Ticket&parent='+MODx.request.id+'&context_key='+MODx.ctx;
 	}
 
 	,viewTicket: function(btn,e) {

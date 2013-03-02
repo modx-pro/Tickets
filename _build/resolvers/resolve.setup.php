@@ -149,7 +149,6 @@ function installPackage($packageName) {
 					$file = file_get_contents($url);
 				}
 
-				$file = file_get_contents($url);
 				file_put_contents($modx->getOption('core_path').'packages/'.$foundPackage->signature.'.transport.zip',$file);
 
 				/* add in the package as an object so it can be upgraded */

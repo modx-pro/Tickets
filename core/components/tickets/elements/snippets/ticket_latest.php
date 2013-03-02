@@ -7,6 +7,7 @@ if (empty($cacheKey) || !$output = $modx->cacheManager->get('tickets/latest.'.$c
 
 	$Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 	if (!($Tickets instanceof Tickets)) return '';
+	$Tickets->config = array_merge($Tickets->config, $scriptProperties);
 
 	switch($action) {
 		case 'comments': $output = $Tickets->getLatestComments($scriptProperties); break;
