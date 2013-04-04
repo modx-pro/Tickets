@@ -39,6 +39,10 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			}
 		}
 
+		if (!$this->getProperty('template')) {
+			$this->setProperty('template', $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true));
+		}
+
 		$beforeSet = parent::beforeSet();
 		if ($this->hasErrors()) {return false;}
 		if ($introtext = $this->getProperty('introtext')) {
@@ -58,10 +62,6 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			,'introtext' => $introtext
 			,'createdby' => !empty($createdby) ? $createdby : $this->modx->user->id
 		);
-		if (!$template = $this->getProperty('template')) {
-			$properties['template'] = $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true);
-		}
-
 
 		$this->setProperties($properties);
 		/* Tickets properties */

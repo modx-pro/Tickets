@@ -65,7 +65,7 @@ $settings['default_template']= $modx->newObject('modSystemSetting');
 $settings['default_template']->fromArray(array(
 	'key' => 'tickets.default_template'
 	,'value' => ''
-	,'xtype' => 'numberfield'
+	,'xtype' => 'modx-combo-template'
 	,'namespace' => 'tickets'
 	,'area' => 'Ticket'
 ),'',true,true);

@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+0.9.4
+==========
+- Fixed bug with ignoring default template of ticket on frontend.
+
 0.9.3
 ==========
 - [mgr] Template fix on ticket create
