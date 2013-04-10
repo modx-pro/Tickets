@@ -41,15 +41,15 @@ if (!empty($resources)){
 // Filter by parents
 else {
 	if (empty($parents) && $parents != '0') {$parents = $modx->resource->id;}
-	if (!empty($parents) && $parents > 0){
-		if (empty($depth)) {$depth = 1;}
+	if (!empty($parents) && $parents > 0) {
 		$pids = array_map('trim', explode(',', $parents));
 		$parents = $pids;
-		foreach ($pids as $v) {
-			if (!is_numeric($v)) {continue;}
-			$parents = array_merge($parents, $modx->getChildIds($v, $depth));
+		if (!empty($depth) && $depth > 0) {
+			foreach ($pids as $v) {
+				if (!is_numeric($v)) {continue;}
+				$parents = array_merge($parents, $modx->getChildIds($v, $depth));
+			}
 		}
-
 		if (!empty($parents)) {
 			$where['parent:IN'] = $parents;
 		}
@@ -182,8 +182,6 @@ if (!empty($rows) && is_array($rows)) {
 				}
 			}
 		}
-
-		//echo'<pre>';print_r($row);die;
 
 		// Processing chunk
 		$output[] = empty($tpl)

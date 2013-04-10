@@ -1,50 +1,157 @@
 <?php
 /* @var pdoFetch $pdoFetch */
-$pdoFetch = $modx->getService('pdofetch','pdoFetch',$modx->getOption('pdotools.core_path',null,$modx->getOption('core_path').'components/pdotools/').'model/pdotools/',$scriptProperties);
+if (!empty($modx->services['pdofetch'])) {unset($modx->services['pdofetch']);}
+$pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
+$pdoFetch->config['nestedChunkPrefix'] = 'tickets_';
+$pdoFetch->addTime('pdoTools loaded.');
 
-$where = array('class_key' => 'TicketsSection');
+$class = 'TicketsSection';
+$where = array('class_key' => $class);
 if (empty($showUnpublished)) {$where['published'] = 1;}
+if (empty($showHidden)) {$where['hidemenu'] = 0;}
 if (empty($showDeleted)) {$where['deleted'] = 0;}
-if (!isset($parents)) {$where['parent'] = $modx->resource->id;}
-else if (!empty($parents)){
-	$pids = explode(',', $parents);
-	$parents = $pids;
-	foreach ($pids as $v) {
-		$parents = array_merge($parents, $modx->getChildIds($v));
+
+// Filter by ids
+if (!empty($resources)){
+	$resources = array_map('trim', explode(',', $resources));
+	$in = $out = array();
+	foreach ($resources as $v) {
+		if (!is_numeric($v)) {continue;}
+		if ($v < 0) {$out[] = abs($v);}
+		else {$in[] = $v;}
 	}
-	$where['parent:IN'] = $parents;
+	if (!empty($in)) {$where['id:IN'] = $in;}
+	if (!empty($out)) {$where['id:NOT IN'] = $out;}
 }
+// Filter by parents
+else {
+	if (empty($parents) && $parents != '0') {$parents = $modx->resource->id;}
+	if (!empty($parents) && $parents > 0) {
+		$pids = array_map('trim', explode(',', $parents));
+		$parents = $pids;
+		if (!empty($depth) && $depth > 0) {
+			foreach ($pids as $v) {
+				if (!is_numeric($v)) {continue;}
+				$parents = array_merge($parents, $modx->getChildIds($v, $depth));
+			}
+		}
+		if (!empty($parents)) {
+			$where['parent:IN'] = $parents;
+		}
+	}
+}
+
+// Adding custom where parameters
+if (!empty($scriptProperties['where'])) {
+	$tmp = $modx->fromJSON($scriptProperties['where']);
+	if (is_array($tmp)) {
+		$where = array_merge($where, $tmp);
+	}
+}
+unset($scriptProperties['where']);
+$pdoFetch->addTime('"Where" expression built.');
+
+// Joining tables
+$leftJoin = array(
+		'{"class":"Ticket","alias":"Ticket","on":"Ticket.parent=TicketsSection.id AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key=\'Ticket\'"}'
+		,'{"class":"TicketView","alias":"View","on":"Ticket.id=View.parent"}'
+		,'{"class":"TicketVote","alias":"Vote","on":"Ticket.id=Vote.parent AND Vote.class=\'Ticket\'"}'
+		,'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id"}'
+		,'{"class":"TicketComment","alias":"Comment","on":"Comment.thread=Thread.id"}'
+);
+
+// Include TVs
+$tvsLeftJoin = $tvsSelect = array();
+if (!empty($includeTVs)) {
+	$tvs = array_map('trim',explode(',',$includeTVs));
+	if(!empty($tvs[0])){
+		$q = $modx->newQuery('modTemplateVar', array('name:IN' => $tvs));
+		$q->select('id,name');
+		if ($q->prepare() && $q->stmt->execute()) {
+			$tv_ids = $q->stmt->fetchAll(PDO::FETCH_ASSOC);
+			if (!empty($tv_ids)) {
+				foreach ($tv_ids as $tv) {
+					$leftJoin[] = '{"class":"modTemplateVarResource","alias":"TV'.$tv['name'].'","on":"TV'.$tv['name'].'.contentid = '.$class.'.id AND TV'.$tv['name'].'.tmplvarid = '.$tv['id'].'"}';
+					$tvsSelect[] = ' "TV'.$tv['name'].'":"`TV'.$tv['name'].'`.`value` as `'.$tvPrefix.$tv['name'].'`" ';
+				}
+			}
+		}
+		$pdoFetch->addTime('Included list of tvs: <b>'.implode(', ',$tvs).'</b>.');
+	}
+}
+// End of including TVs
+
+// Fields to select
+$resourceColumns = !empty($includeContent) ?  $modx->getSelectColumns($class, $class) : $modx->getSelectColumns($class, $class, '', array('content'), true);
+$select = array(
+	'"TicketsSection":"'.$resourceColumns.'"'
+	,'"Ticket":"COUNT(DISTINCT `Ticket`.`id`) as `tickets`"'
+	,'"Vote":"SUM(DISTINCT `Vote`.`value`) as `votes`"'
+	,'"View":"COUNT(DISTINCT `View`.`parent`, `View`.`uid`) as `views`"'
+	,'"Comment":"COUNT(DISTINCT `Comment`.`id`) as `comments`"'
+);
+if (!empty($tvsSelect)) {$select = array_merge($select, $tvsSelect);}
 
 $default = array(
 	'class' => 'TicketsSection'
-	,'where' => json_encode($where)
-	,'leftJoin' => '[
-		{"class":"Ticket","alias":"Ticket","on":"Ticket.parent=TicketsSection.id AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key=\'Ticket\'"}
-		,{"class":"TicketView","alias":"View","on":"Ticket.id=View.parent"}
-		,{"class":"TicketVote","alias":"Vote","on":"Ticket.id=Vote.parent AND Vote.class=\'Ticket\'"}
-		,{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id"}
-		,{"class":"TicketComment","alias":"Comment","on":"Comment.thread=Thread.id"}
-	]'
-	,'select' => '{
-		"TicketsSection":"all"
-		,"Ticket":"COUNT(DISTINCT Ticket.id) as tickets"
-		,"Vote":"SUM(DISTINCT Vote.value) as votes"
-		,"View":"COUNT(DISTINCT View.parent, View.uid) as views"
-		,"Comment":"COUNT(DISTINCT Comment.id) as comments"
-	}'
-	,'groupby' => 'TicketsSection.id'
+	,'where' => $modx->toJSON($where)
+	,'leftJoin' => '['.implode(',',$leftJoin).']'
+	,'select' => '{'.implode(',',$select).'}'
+	,'groupby' => '`'.$class.'`.`id`'
 	,'sortby' => 'views'
-	,'sortdir' => 'desc'
+	,'sortdir' => 'DESC'
 	,'fastMode' => false
+	,'return' => 'data'
 );
 
+// Merge all properties and run!
+if (!empty($scriptProperties['sortBy'])) {$scriptProperties['sortby'] = $scriptProperties['sortBy'];}
+if (!empty($scriptProperties['sortDir'])) {$scriptProperties['sortdir'] = $scriptProperties['sortDir'];}
 $pdoFetch->config = array_merge($pdoFetch->config, $default, $scriptProperties);
-$output = $pdoFetch->run();
+$pdoFetch->addTime('Query parameters are prepared.');
+$rows = $pdoFetch->run();
 
-if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
-	$output .= '<pre>' . print_r($pdoFetch->getTime(), 1) . '</pre>';
+// Initializing chunk for template rows
+if (!empty($tpl)) {
+	$pdoFetch->getChunk($tpl);
 }
 
+$output = null;
+// Processing rows
+$output = null;
+if (!empty($rows) && is_array($rows)) {
+	foreach ($rows as $k => $row) {
+		// Processing quick fields
+		if (!empty($tpl)) {
+			$pl = $pdoFetch->makePlaceholders($row);
+			$qfields = array_keys($pdoFetch->elements[$tpl]['placeholders']);
+			foreach ($qfields as $field) {
+				if (!empty($row[$field])) {
+					$row[$field] = str_replace($pl['pl'], $pl['vl'], $pdoFetch->elements[$tpl]['placeholders'][$field]);
+				}
+				else {
+					$row[$field] = '';
+				}
+			}
+		}
+
+		// Processing chunk
+		$output[] = empty($tpl)
+			? '<pre>'.str_replace(array('[',']','`'), array('&#91;','&#93;','&#96;'), htmlentities(print_r($row, true), ENT_QUOTES, 'UTF-8')).'</pre>'
+			: $pdoFetch->getChunk($tpl, $row, $pdoFetch->config['fastMode']);
+	}
+	$pdoFetch->addTime('Returning processed chunks');
+	if (empty($outputSeparator)) {$outputSeparator = "\n";}
+	if (!empty($output)) {
+		$output = implode($outputSeparator, $output);
+	}
+}
+
+if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
+	$output .= '<pre class="getSectionsLog">' . print_r($pdoFetch->getTime(), 1) . '</pre>';
+}
+
+// Return output
 if (!empty($toPlaceholder)) {
 	$modx->setPlaceholder($toPlaceholder, $output);
 }

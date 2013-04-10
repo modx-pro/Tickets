@@ -1,71 +1,97 @@
 <?php
-/**
- * Properties for the getTicketsSections snippet.
- *
- * @package tickets
- * @subpackage build
- */
-$properties = array(
-	array(
-		'name' => 'tpl'
-	,'desc' => 'tickets.tpl'
-	,'type' => 'textfield'
-	,'value' => 'tpl.Tickets.sections.row'
-	,'lexicon' => 'tickets:properties'
+
+$properties = array();
+
+$tmp = array(
+	'tpl' => array(
+		'type' => 'textfield'
+		,'value' => 'tpl.Tickets.sections.row'
 	)
-,array(
-		'name' => 'limit'
-	,'desc' => 'tickets.limit'
-	,'type' => 'numberfield'
-	,'value' => 10
-	,'lexicon' => 'tickets:properties'
+	,'limit' => array(
+		'type' => 'numberfield'
+		,'value' => 10
 	)
-,array(
-		'name' => 'sortBy'
-	,'desc' => 'tickets.sortBy'
-	,'type' => 'textfield'
-	,'value' => 'createdon'
-	,'lexicon' => 'tickets:properties'
+	,'offset' => array(
+		'type' => 'numberfield'
+		,'value' => 0
 	)
-,array(
-		'name' => 'sortDir',
-		'desc' => 'tickets.sortDir',
-		'type' => 'list',
-		'options' => array(
-			array('text' => 'ASC','value' => 'ASC'),
-			array('text' => 'DESC','value' => 'DESC'),
-		),
-		'value' => 'DESC',
-		'lexicon' => 'tickets:properties',
+	,'depth' => array(
+		'type' => 'numberfield'
+		,'value' => 0
 	)
-,array(
-		'name' => 'toPlaceholder',
-		'desc' => 'tickets.toPlaceholder',
-		'type' => 'textfield',
-		'value' => '',
-		'lexicon' => 'tickets:properties',
+	,'parents' => array(
+		'type' => 'textfield'
+		,'value' => ''
 	)
-,array(
-		'name' => 'showLog',
-		'desc' => 'tickets.showLog',
-		'type' => 'combo-boolean',
-		'value' => false,
-		'lexicon' => 'tickets:properties',
+	,'resources' => array(
+		'type' => 'textfield'
+		,'value' => ''
 	)
-,array(
-		'name' => 'parents',
-		'desc' => 'tickets.parents',
-		'type' => 'textfield',
-		'value' => '',
-		'lexicon' => 'tickets:properties',
+	,'sortby' => array(
+		'type' => 'textfield'
+		,'value' => 'views'
 	)
-,array(
-		'name' => 'fastMode',
-		'desc' => 'tickets.fastMode',
-		'type' => 'combo-boolean',
-		'value' => false,
-		'lexicon' => 'tickets:properties',
+	,'sortdir' => array(
+		'type' => 'list'
+		,'options' => array(
+			array('text' => 'ASC','value' => 'ASC')
+			,array('text' => 'DESC','value' => 'DESC')
+		)
+		,'value' => 'DESC'
+	)
+	,'includeContent' => array(
+		'type' => 'combo-boolean'
+		,'value' => false
+	)
+	,'toPlaceholder' => array(
+		'type' => 'textfield'
+		,'value' => ''
+	)
+	,'includeTVs' => array(
+		'type' => 'textfield'
+		,'value' => ''
+	)
+	,'where' => array(
+		'type' => 'textfield'
+		,'value' => ''
+	)
+	,'tvPrefix' => array(
+		'type' => 'textfield'
+		,'value' => ''
+	)
+	,'outputSeparator' => array(
+		'type' => 'textfield'
+		,'value' => "\n"
+	)
+	,'showLog' => array(
+		'type' => 'combo-boolean'
+		,'value' => false
+	)
+	,'fastMode' => array(
+		'type' => 'combo-boolean'
+		,'value' => false
+	)
+	,'showUnpublished' => array(
+		'type' => 'combo-boolean'
+		,'value' => false
+	)
+	,'showDeleted' => array(
+		'type' => 'combo-boolean'
+		,'value' => false
+	)
+	,'showHidden' => array(
+		'type' => 'combo-boolean'
+		,'value' => false
 	)
 );
+
+foreach ($tmp as $k => $v) {
+	$properties[$k] = array_merge(array(
+		'name' => $k
+		,'desc' => 'tickets_prop_'.$k
+		,'lexicon' => 'tickets:properties'
+	)
+	,$v);
+}
 
 return $properties;

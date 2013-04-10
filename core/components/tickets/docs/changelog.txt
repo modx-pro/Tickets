@@ -4,6 +4,7 @@ Changelog for Tickets.
 ==========
 - Fixed default parameters of snippets. "showLog" and "fastMode" are now really disabled by default.
 - Rewrited snippet "getTickets". See snippet properties for details.
+- Rewrited snippet "getTicketsSections". See snippet properties for details.
 
 0.9.4
 ==========
