@@ -1,34 +1,47 @@
 <?php
-/**
- * Properties Russian Lexicon Entries for Tickets
+/*
+ * Properties Russian Lexicon Entries
  *
- * @package tickets
- * @subpackage lexicon
- */
-$_lang['tickets.action'] = 'Режим работы сниппета';
-$_lang['tickets.limit'] = 'Лимит выборки результатов';
-$_lang['tickets.start'] = 'Начало выборки';
-$_lang['tickets.sortBy'] = 'Сортировка выборки';
-$_lang['tickets.sortDir'] = 'Направление сортировки';
-$_lang['tickets.tpl'] = 'Чанк оформления для каждого результата';
-$_lang['tickets.tplFormCreate'] = 'Чанк для создания нового тикета';
-$_lang['tickets.tplFormUpdate'] = 'Чанк для обновления существующего тикета';
-$_lang['tickets.tplSectionRow'] = 'Чанк для оформления раздела вопросов в форме';
-$_lang['tickets.tplPreview'] = 'Чанк для предпросмотра тикета перед публикацией';
-$_lang['tickets.cacheKey'] = 'Имя кэша сниппета. Если пустое - кэширование результатов будет отключено.';
-$_lang['tickets.toPlaceholder'] = 'Если не пусто, сниппет сохранит все данные в плейсхолдер с этим именем, вместо вывода не экран.';
-$_lang['tickets.showLog'] = 'Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контекте "mgr".';
-$_lang['tickets.parents'] = 'Список контейнеров, через запятую, для поиска результатов. По умолчанию выборка ограничена текущим родителем. Если поставить 0 - выборка не ограничивается.';
+ * */
 
-$_lang['tickets.thread'] = 'Имя ветки комментариев. По умолчанию, "resource-[[*id]]".';
-$_lang['tickets.fastMode'] = 'Если включено - в чанк результата будут подставлены только полученные начения из БД. Все необработанные теги MODX, такие как фильтры, вызов сниппетов, будут вырезаны.';
-$_lang['tickets.dateFormat'] = 'Формат даты комментария, для функции date()';
-$_lang['tickets.gravatarIcon'] = 'Если аватарка пользователя не найдена, грузить эту картинку на замену.';
-$_lang['tickets.gravatarSize'] = 'Размер загружаемого аватара';
-$_lang['tickets.gravatarUrl'] = 'Адрес для загрузки аватаров';
-$_lang['tickets.tplCommentForm'] = 'Чанк для формы добавления нового комментария';
-$_lang['tickets.tplComment'] = 'Чанк оформления одного комментария';
-$_lang['tickets.tplComments'] = 'Обертка для всех комментариев страницы';
-$_lang['tickets.tplLoginToComment'] = 'Чанк для показа неавторизованным пользователям';
-$_lang['tickets.tplCommentEmailOwner'] = 'Чанк для уведомления владельца тикета о новом комментарии.';
-$_lang['tickets.tplCommentEmailReply'] = 'Чанк для уведомления пользователя о том, что на его комментарий появился ответ.';
+$_lang['tickets_prop_limit'] = 'Лимит выборки результатов';
+$_lang['tickets_prop_offset'] = 'Пропуск результатов с начала выборки';
+$_lang['tickets_prop_depth'] = 'Глубина поиска ресурсов от каждого родителя.';
+$_lang['tickets_prop_sortby'] = 'Сортировка выборки.';
+$_lang['tickets_prop_sortdir'] = 'Направление сортировки';
+$_lang['tickets_prop_parents'] = 'Список категорий, через запятую, для поиска результатов. По умолчанию выборка ограничена текущим родителем. Если поставить 0 - выборка не ограничивается.';
+$_lang['tickets_prop_resources'] = 'Список ресурсов, через запятую, для вывода в результатах. Если id ресурса начинается с минуса, этот ресурс исключается из выборки.';
+$_lang['tickets_prop_where'] = 'Строка, закодированная в JSON, с дополнительными условиями выборки.';
+$_lang['tickets_prop_tvPrefix'] = 'Префикс для ТВ плейсхолдеров, например "tv.". По умолчанию параметр пуст.';
+$_lang['tickets_prop_includeContent'] = 'Выбирать поле "content" у ресурсов.';
+$_lang['tickets_prop_includeTVs'] = 'Список ТВ параметров для выборки, через запятую. Например: "action,time" дадут плейсхолдеры [[+action]] и [[+time]].';
+$_lang['tickets_prop_toPlaceholder'] = 'Если не пусто, сниппет сохранит все данные в плейсхолдер с этим именем, вместо вывода не экран.';
+$_lang['tickets_prop_outputSeparator'] = 'Необязательная строка для разделения результатов работы.';
+
+$_lang['tickets_prop_showLog'] = 'Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контекте "mgr".';
+$_lang['tickets_prop_showUnpublished'] = 'Показывать неопубликованные ресурсы.';
+$_lang['tickets_prop_showDeleted'] = 'Показывать удалённые ресурсы.';
+$_lang['tickets_prop_showHidden'] = 'Показывать ресурсы, скрытые в меню.';
+$_lang['tickets_prop_fastMode'] = 'Если включено - в чанк результата будут подставлены только значения из БД. Все необработанные теги MODX, такие как фильтры, вызов сниппетов и другие - будут вырезаны.';
+
+$_lang['tickets_prop_action'] = 'Режим работы сниппета';
+$_lang['tickets_prop_cacheKey'] = 'Имя кэша сниппета. Если пустое - кэширование результатов будет отключено.';
+$_lang['tickets_prop_thread'] = 'Имя ветки комментариев. По умолчанию, "resource-[[*id]]".';
+$_lang['tickets_prop_user'] = 'Выбрать только элементы, созданные этим пользователем.';
+
+$_lang['tickets_prop_tpl'] = 'Чанк оформления для каждого результата';
+$_lang['tickets_prop_tplFormCreate'] = 'Чанк для создания нового тикета';
+$_lang['tickets_prop_tplFormUpdate'] = 'Чанк для обновления существующего тикета';
+$_lang['tickets_prop_tplSectionRow'] = 'Чанк для оформления раздела вопросов в форме';
+$_lang['tickets_prop_tplPreview'] = 'Чанк для предпросмотра тикета перед публикацией';
+$_lang['tickets_prop_tplCommentForm'] = 'Чанк для формы добавления нового комментария';
+$_lang['tickets_prop_tplComment'] = 'Чанк оформления одного комментария';
+$_lang['tickets_prop_tplComments'] = 'Обертка для всех комментариев страницы';
+$_lang['tickets_prop_tplLoginToComment'] = 'Чанк для показа неавторизованным пользователям';
+$_lang['tickets_prop_tplCommentEmailOwner'] = 'Чанк для уведомления владельца тикета о новом комментарии.';
+$_lang['tickets_prop_tplCommentEmailReply'] = 'Чанк для уведомления пользователя о том, что на его комментарий появился ответ.';
+
+//$_lang['tickets_prop_dateFormat'] = 'Формат даты комментария, для функции date()';
+$_lang['tickets_prop_gravatarIcon'] = 'Если аватарка пользователя не найдена, грузить эту картинку на замену.';
+$_lang['tickets_prop_gravatarSize'] = 'Размер загружаемого аватара';
+$_lang['tickets_prop_gravatarUrl'] = 'Адрес для загрузки аватаров';
