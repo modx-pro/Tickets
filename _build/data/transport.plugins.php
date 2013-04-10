@@ -13,9 +13,8 @@ $plugins[0]->fromArray(array(
 	,'category' => 0
 	,'description' =>'Main plugin for Tickets'
 	,'plugincode' => getSnippetContent($sources['plugins'] . 'tickets.php')
-	,'source' => 1
-	,'static' => 1
-	,'static_file' => 'core/components/tickets/elements/plugins/tickets.php'
+	//,'static' => 1
+	//,'static_file' => 'core/components/tickets/elements/plugins/tickets.php'
 ));
 
 $events = array();
