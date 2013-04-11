@@ -144,6 +144,9 @@ class Tickets {
 				,cssUrl: "'.$this->config['cssUrl'].'web/"
 				,'.$editorConfig.'
 			};
+			if(typeof jQuery == "undefined") {
+				document.write("<script src=\""+TicketsConfig.jsUrl+"lib/jquery-1.9.1.min.js\" type=\"text/javascript\"><\/script>");
+			}
 		</script>');
 		$this->modx->regClientScript($this->config['jsUrl'].'web/tickets.js');
 
@@ -205,6 +208,9 @@ class Tickets {
 				,connector: "'.$this->config['assetsUrl'].'comment.php"
 				,'.$editorConfig.'
 			};
+			if(typeof jQuery == "undefined") {
+				document.write("<script src=\""+CommentsConfig.jsUrl+"lib/jquery-1.9.1.min.js\" type=\"text/javascript\"><\/script>");
+			}
 		</script>');
 
 		if (!$this->modx->user->isAuthenticated()) {
