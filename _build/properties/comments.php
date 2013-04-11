@@ -1,103 +1,69 @@
 <?php
-/**
- * Properties for the TicketComments snippet.
- *
- * @package tickets
- * @subpackage build
- */
-$properties = array(
-	array(
+
+$properties = array();
+
+$tmp = array(
+	'thread' => array(
 		'name' => 'thread'
-		,'desc' => 'tickets.thread'
 		,'type' => 'textfield'
 		,'value' => ''
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'fastMode'
-		,'desc' => 'tickets.fastMode'
-		,'type' => 'combo-boolean'
+	,'fastMode' => array(
+		'type' => 'combo-boolean'
 		,'value' => true
-		,'lexicon' => 'tickets:properties'
-	)
-	,array(
-		'name' => 'dateFormat'
-		,'desc' => 'tickets.dateFormat'
-		,'type' => 'textfield'
+	)/*
+	,'dateFormat' => array(
+		'type' => 'textfield'
 		,'value' => 'd F Y, H:i'
-		,'lexicon' => 'tickets:properties'
-	)
-	,array(
-		'name' => 'gravatarIcon'
-		,'desc' => 'tickets.gravatarIcon'
-		,'type' => 'textfield'
+	)*/
+	,'gravatarIcon' => array(
+		'type' => 'textfield'
 		,'value' => 'mm'
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'gravatarSize'
-		,'desc' => 'tickets.gravatarSize'
-		,'type' => 'numberfield'
+	,'gravatarSize' => array(
+		'type' => 'numberfield'
 		,'value' => '24'
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'gravatarUrl'
-		,'desc' => 'tickets.gravatarUrl'
-		,'type' => 'textfield'
+	,'gravatarUrl' => array(
+		'type' => 'textfield'
 		,'value' => 'http://www.gravatar.com/avatar/'
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'tplCommentForm'
-		,'desc' => 'tickets.tplCommentForm'
-		,'type' => 'textfield'
+	,'tplCommentForm' => array(
+		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.comment.form'
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'tplCommentAuth'
-		,'desc' => 'tickets.tplCommentAuth'
-		,'type' => 'textfield'
+	,'tplCommentAuth' => array(
+		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.comment.one.auth'
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'tplCommentGuest'
-		,'desc' => 'tickets.tplCommentGuest'
-		,'type' => 'textfield'
+	,'tplCommentGuest' => array(
+		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.comment.one.guest'
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'tplComments'
-		,'desc' => 'tickets.tplComments'
-		,'type' => 'textfield'
+	,'tplComments' => array(
+		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.comment.wrapper'
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'tplLoginToComment'
-		,'desc' => 'tickets.tplLoginToComment'
-		,'type' => 'textfield'
+	,'tplLoginToComment' => array(
+		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.comment.login'
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'tplCommentEmailOwner'
-		,'desc' => 'tickets.tplCommentEmailOwner'
-		,'type' => 'textfield'
+	,'tplCommentEmailOwner' => array(
+		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.comment.email.owner'
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'tplCommentEmailReply'
-		,'desc' => 'tickets.tplCommentEmailReply'
-		,'type' => 'textfield'
+	,'tplCommentEmailReply' => array(
+		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.comment.email.reply'
-		,'lexicon' => 'tickets:properties'
 	)
-
 );
+
+foreach ($tmp as $k => $v) {
+	$properties[$k] = array_merge(array(
+		'name' => $k
+		,'desc' => 'tickets_prop_'.$k
+		,'lexicon' => 'tickets:properties'
+	), $v);
+}
 
 return $properties;

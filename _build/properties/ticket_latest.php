@@ -103,11 +103,10 @@ $tmp = array(
 
 foreach ($tmp as $k => $v) {
 	$properties[$k] = array_merge(array(
-			'name' => $k
+		'name' => $k
 		,'desc' => 'tickets_prop_'.$k
 		,'lexicon' => 'tickets:properties'
-		)
-		,$v);
+	), $v);
 }
 
 return $properties;

@@ -90,8 +90,7 @@ foreach ($tmp as $k => $v) {
 		'name' => $k
 		,'desc' => 'tickets_prop_'.$k
 		,'lexicon' => 'tickets:properties'
-	)
-	,$v);
+	), $v);
 }
 
 return $properties;

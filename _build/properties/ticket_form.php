@@ -1,51 +1,41 @@
 <?php
-/**
- * Properties for the Tickets snippet.
- *
- * @package tickets
- * @subpackage build
- */
-$properties = array(
-	array(
-		'name' => 'action'
-		,'desc' => 'tickets.action'
-		,'type' => 'list'
-		,'value' => 'getTicketForm'
+
+$properties = array();
+
+$tmp = array(
+	'action' => array(
+		'type' => 'list'
 		,'options' => array(
 			array('text' => 'getTicketForm','value' => 'getTicketForm')
 			,array('text' => 'saveTicket','value' => 'saveTicket')
 			,array('text' => 'previewTicket','value' => 'previewTicket')
 		)
-		,'lexicon' => 'tickets:properties'
+		,'value' => 'getTicketForm'
 	)
-	,array(
-		'name' => 'tplFormCreate'
-		,'desc' => 'tickets.tplFormCreate'
-		,'type' => 'textfield'
+	,'tplFormCreate' => array(
+		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.form.create'
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'tplFormUpdate'
-		,'desc' => 'tickets.tplFormUpdate'
-		,'type' => 'textfield'
+	,'tplFormUpdate' => array(
+		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.form.update'
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'tplSectionRow'
-		,'desc' => 'tickets.tplSectionRow'
-		,'type' => 'textfield'
+	,'tplSectionRow' => array(
+		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.form.section.row'
-		,'lexicon' => 'tickets:properties'
 	)
-	,array(
-		'name' => 'tplPreview'
-		,'desc' => 'tickets.tplPreview'
-		,'type' => 'textfield'
+	,'tplPreview' => array(
+		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.form.preview'
-		,'lexicon' => 'tickets:properties'
 	)
 );
+
+foreach ($tmp as $k => $v) {
+	$properties[$k] = array_merge(array(
+		'name' => $k
+		,'desc' => 'tickets_prop_'.$k
+		,'lexicon' => 'tickets:properties'
+	), $v);
+}
 
 return $properties;
