@@ -1,17 +1,8 @@
 <div class="tickets_latest_row">
-	<span class="user">
-		<i class="icon-user"></i> [[+name]] <small>[[+date_ago]]</small>
-	</span>
+	<span class="user"><i class="icon-user"></i> [[+fullname]]</span> <span class="date">[[+date_ago]]</span>
 	<br/>
 	<span class="ticket">
-		<i class="icon-comment"></i> <a href="[[~[[+resource]]]]#comment-[[+id]]">[[+pagetitle]]</a>
+		<a href="[[~[[+ticket.id]]]]#comment-[[+id]]">[[+ticket.pagetitle]]</a>
 	</span>
-
-	<span class="comments">
-		[[+comments]] <span class="arrow">&rarr;</span>
-	</span>
-
-	<span class="section">
-		<i class="icon-folder-open"></i> <a href="[[~[[+section]]]]">[[+sectiontitle]]</a>
-	</span>
+	<nobr><i class="icon-comment"></i> <span class="comments">[[+comments]]</span></nobr>
 </div>
