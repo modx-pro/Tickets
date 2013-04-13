@@ -7,6 +7,9 @@ Tickets = {
 		if(!jQuery().ajaxForm) {
 			document.write('<script src="'+TicketsConfig.jsUrl+'lib/jquery.form.min.js"><\/script>');
 		}
+		if(!jQuery().jGrowl) {
+			document.write('<script src="'+TicketsConfig.jsUrl+'lib/jquery.jgrowl.min.js"><\/script>');
+		}
 		$(document).ready(function() {
 			if (TicketsConfig.enable_editor == true) {
 				$('#ticket-editor').markItUp(TicketsConfig.editor.ticket);
@@ -15,6 +18,7 @@ Tickets = {
 		$(document).ready(function() {
 			if (TicketsConfig.enable_editor == true) {
 				$('#comment-editor').markItUp(TicketsConfig.editor.comment);
+				$.jGrowl.defaults.closerTemplate = '<div>[ '+TicketsConfig.close_all_message+' ]</div>';
 			}
 		});
 		$(document).on('click', '#comment-preview-placeholder a', function(e) {
@@ -266,24 +270,21 @@ Tickets = {
 Tickets.Message = {
 	success: function(message) {
 		if (message) {
-			alert(message);
-			//$.jGrowl(message, {theme: 'ms2-message-success'});
+			$.jGrowl(message, {theme: 'tickets-message-success'});
 		}
 	}
 	,error: function(message) {
 		if (message) {
-			alert(message);
-			//$.jGrowl(message, {theme: 'ms2-message-error', sticky: true});
+			$.jGrowl(message, {theme: 'tickets-message-error', sticky: true});
 		}
 	}
 	,info: function(message) {
 		if (message) {
-			alert(message);
-			//$.jGrowl(message, {theme: 'ms2-message-info'});
+			$.jGrowl(message, {theme: 'tickets-message-info'});
 		}
 	}
 	,close: function() {
-		//$.jGrowl('close');
+		$.jGrowl('close');
 	}
 };
 

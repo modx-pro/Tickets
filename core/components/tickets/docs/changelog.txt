@@ -11,6 +11,7 @@ Changelog for Tickets.
 - Added system parameters "tickets.frontend_js" and "tickets.frontend_css" for loading scripts and styles.
 - Merged and rewrited default frontend styles and scripts.
 - Replaced Tickets::getChunk() by pdoTools::getChunk().
+- Added "jGrowl" script for frontend notifications.
 - [#5] Fixed bug with no field "resource" when preview comment.
 - [#6] Added parameter "depth" to snippet "TicketComments" for limitation thread depth.
 - [#7] Added parameter "formBefore" to snippet "TicketComments" for specify where to show form, before or after.

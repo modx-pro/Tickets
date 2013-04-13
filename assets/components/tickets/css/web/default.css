@@ -1,3 +1,5 @@
+@import url("./lib/jquery.jgrowl.css");
+
 #ticket-preview-placeholder {
 	background: #fff;
 	border: 5px solid #AAA;
@@ -30,3 +32,7 @@
 }
 
 .form-actions .checkbox {display:inline-block;}
+
+.tickets-message-success  {background-color: green !important;}
+.tickets-message-error  {background-color: brown !important;}
+.tickets-message-info  {background-color: black !important;}

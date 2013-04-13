@@ -20,6 +20,7 @@ $_lang['tickets_section_new'] = 'New ticket';
 $_lang['ticket_create_here'] = 'Create ticket';
 
 $_lang['ticket_no_comments'] = 'This page has no comments. You can be a trailblazer.';
+$_lang['tickets_message_close_all'] = 'close all';
 $_lang['err_no_jevix'] = 'Snippet Jevix is required for proper work. You need to install it from MODX repository.';
 $_lang['ticket_err_wrong_user'] = 'You trying to update a ticket that is not yours.';
 $_lang['ticket_err_no_auth'] = 'You need to login to create a ticket.';

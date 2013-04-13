@@ -112,10 +112,11 @@ class Tickets {
 							,cssUrl: "'.$this->config['cssUrl'].'web/"
 							,actionUrl: "'.$this->config['actionUrl'].'"
 							,formBefore: '.$formBefore.'
+							,close_all_message: "'.$this->modx->lexicon('tickets_message_close_all').'"
 							,'.$editorConfig.'
 						};
 						if(typeof jQuery == "undefined") {
-							document.write("<script src=\""+TicketsConfig.jsUrl+"lib/jquery-1.9.1.min.js\" type=\"text/javascript\"><\/script>");
+							document.write("<script src=\""+TicketsConfig.jsUrl+"lib/jquery.min.js\" type=\"text/javascript\"><\/script>");
 						}
 						</script>
 						'), true);
