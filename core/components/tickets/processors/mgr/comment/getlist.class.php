@@ -11,7 +11,7 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 
 		/* Get all comments by section */
 		if ($section = (integer) $this->getProperty('section')) {
-			if ($section = $this->modx->getObject('TicketsSection', $section)) {
+			if ($section = $this->modx->getObject('modResource', $section)) {
 				$parents = $this->modx->getChildIds($section->get('id'),1,array('context' => $section->get('context_key')));
 				$c->where(array('TicketThread.resource:IN' => $parents));
 			}
@@ -73,7 +73,7 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 		*/
 		$resources = & $this->resources;
 		if (!array_key_exists($comment['resource'], $resources)) {
-			if ($resource = $this->modx->getObject('Ticket', $comment['resource'])) {
+			if ($resource = $this->modx->getObject('modResource', $comment['resource'])) {
 				$resources[$comment['resource']] = array(
 					'resource_url' => $this->modx->makeUrl($comment['resource'],'','','full')
 					,'pagetitle' => $resource->get('pagetitle')
