@@ -28,7 +28,7 @@
 		<field key="editedon" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="editedby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
 
-		<field key="published" dbtype="tinyint" precision="1" phptype="boolean" attributes="unsigned" null="false" default="0" />
+		<field key="published" dbtype="tinyint" precision="1" phptype="boolean" attributes="unsigned" null="false" default="1" />
 		<field key="deleted" dbtype="tinyint" precision="1" phptype="boolean" attributes="unsigned" null="false" default="0" />
 		<field key="deletedon" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="deletedby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />

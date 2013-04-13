@@ -17,7 +17,7 @@ $xpdo_meta_map['TicketComment']= array (
     'createdby' => 0,
     'editedon' => NULL,
     'editedby' => 0,
-    'published' => 0,
+    'published' => 1,
     'deleted' => 0,
     'deletedon' => NULL,
     'deletedby' => 0,
@@ -117,7 +117,7 @@ $xpdo_meta_map['TicketComment']= array (
       'phptype' => 'boolean',
       'attributes' => 'unsigned',
       'null' => false,
-      'default' => 0,
+      'default' => 1,
     ),
     'deleted' => 
     array (
