@@ -130,7 +130,7 @@ Tickets = {
 						}
 						else {
 							var pcomm = $('#comment-'+parent);
-							if (parent != pcomm.data('newparent')) {
+							if (pcomm.data('parent') != pcomm.data('newparent')) {
 								parent = pcomm.data('newparent');
 							}
 							$('#comment-'+parent+' > .comments-list').append(response.data);
