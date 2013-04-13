@@ -1,6 +1,4 @@
 <?php
-
-
 $output = '';
 if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.'.$cacheKey)) {
 	return $output;

@@ -1,9 +1,6 @@
 <?php
 /**
  * Add snippets to build
- * 
- * @package tickets
- * @subpackage build
  */
 $snippets = array();
 

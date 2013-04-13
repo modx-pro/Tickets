@@ -140,7 +140,6 @@ if (!empty($tpl)) {
 	$pdoFetch->getChunk($tpl);
 }
 
-$output = null;
 // Processing rows
 $output = null;
 if (!empty($rows) && is_array($rows)) {

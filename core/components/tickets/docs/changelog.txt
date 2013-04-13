@@ -1,12 +1,25 @@
 Changelog for Tickets.
 
-0.9.5
+1.0.0 beta
 ==========
 - Fixed default parameters of snippets. "showLog" and "fastMode" are now really disabled by default.
 - Rewrited snippet "getTickets". See snippet properties for details.
 - Rewrited snippet "getTicketsSections". See snippet properties for details.
 - Rewrited snippet "TicketLatest". See snippet properties for details.
+- Rewrited snippet "TicketComments". See snippet properties for details.
 - Updated awesome html editor "MarkItUp" to version 1.1.14.
+- Added system parameters "tickets.frontend_js" and "tickets.frontend_css" for loading scripts and styles.
+- Merged and rewrited default frontend styles and scripts.
+- Replaced Tickets::getChunk() by pdoTools::getChunk().
+- [#5] Fixed bug with no field "resource" when preview comment.
+- [#6] Added parameter "depth" to snippet "TicketComments" for limitation thread depth.
+- [#7] Added parameter "formBefore" to snippet "TicketComments" for specify where to show form, before or after.
+- [#8] Sorting of thread comments depends from parameter "formBefore".
+- [#11], [#12] Added checking of parent comment status when you reply on it.
+- [#15] Added comments moderation. Check new parameter "autoPublish" of snippet "TicketComments".
+- [#18] Parameters of thread now saving in "TicketThread" object and updates on page refresh.
+- [mgr] Added ability to "close" thread. When thread is closed, comments are shown but adding new is disabled.
+- [mgr] Added ability to "publish" and "unpublish" comments.
 
 0.9.4
 ==========

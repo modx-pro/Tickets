@@ -9,11 +9,7 @@ Tickets.grid.Comments = function(config) {
 			,parents: config.parents
 			,threads: config.threads
 		}
-		,fields: ['id','text','name','createdby','parent','pagetitle'
-			,'createdon','createdby'
-			,'editedon','editedby'
-			,'deleted','deletedon','deletedby'
-			,'resource_url','comment_url','email','ip']
+		,fields: ['id','text','name','createdby','parent','pagetitle','createdon','createdby','editedon','editedby','published','deleted','deletedon','deletedby','resource_url','comment_url','email','ip']
 		,autoHeight: true
 		,paging: true
 		,remoteSort: true
@@ -53,7 +49,8 @@ Tickets.grid.Comments = function(config) {
 			showPreview:true,
 			getRowClass : function(rec, ri, p){
 				var cls = 'tickets-comment-row';
-				if (rec.data.deleted) cls += ' comment-deleted';
+				if (rec.data.deleted) {cls += ' comment-deleted';}
+				if (rec.data.published == 0) {cls += ' comment-unpublished';}
 				return cls;
 			}
 		}
@@ -73,6 +70,7 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 			m.push({text: _('ticket_comment_view'),handler: this.viewComment});
 		}
 		//m.push({text: _('ticket_comment_viewauthor'),handler: this.viewAuthor});
+		m.push({text: row.published ? _('ticket_comment_unpublish') : _('ticket_comment_publish'),handler: this.publishComment});
 		m.push('-');
 		m.push({text: row.deleted ? _('ticket_comment_undelete') : _('ticket_comment_delete'),handler: this.deleteComment});
 		m.push({text: _('ticket_comment_remove'),handler: this.removeComment});
@@ -136,6 +134,22 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 			}
 		})
 	}
+
+	,publishComment: function(btn,e) {
+		if (!this.menu.record) return false;
+
+		MODx.Ajax.request({
+			url: Tickets.config.connector_url
+			,params: {
+				action: 'mgr/comment/publish'
+				,id: this.menu.record.id
+			}
+			,listeners: {
+				'success': {fn:function(r) {this.refresh();},scope:this}
+			}
+		})
+	}
+
 	,removeComment: function() {
 		MODx.msg.confirm({
 			url: Tickets.config.connector_url

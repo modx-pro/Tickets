@@ -6,7 +6,7 @@ Tickets.grid.Threads = function(config) {
 		,baseParams: {
 			action: 'mgr/thread/getlist'
 		}
-		,fields: ['id','resource','name','createdon','createdby','deleted','deletedon','deletedby','pagetitle','comments','url']
+		,fields: ['id','resource','name','createdon','createdby','closed','deleted','deletedon','deletedby','pagetitle','comments','url']
 		,autoHeight: true
 		,paging: true
 		,remoteSort: true
@@ -47,6 +47,7 @@ Tickets.grid.Threads = function(config) {
 			getRowClass : function(rec, ri, p){
 				var cls = 'tickets-thread-row';
 				if (rec.data.deleted) cls += ' thread-deleted';
+				if (rec.data.closed) cls += ' thread-closed';
 				return cls;
 			}
 		}
@@ -60,12 +61,8 @@ Ext.extend(Tickets.grid.Threads,MODx.grid.Grid,{
 		var row = grid.store.data.items[rowIndex].data;
 		var m = [];
 		m.push({text:  _('ticket_thread_manage_comments'),handler: this.manageComments});
-		/*
-		if (row.resource) {
-			m.push({text:  _('ticket_thread_view'),handler: this.viewThread});
-			m.push('-');
-		}
-		*/
+		m.push({text: row.closed ? _('ticket_thread_open') : _('ticket_thread_close'),handler: this.closeThread});
+		m.push('-');
 		m.push({text: row.deleted ? _('ticket_thread_undelete') : _('ticket_thread_delete'),handler: this.deleteThread});
 		m.push({text: _('ticket_thread_remove'),handler: this.removeThread});
 		this.addContextMenuItem(m);
@@ -93,6 +90,21 @@ Ext.extend(Tickets.grid.Threads,MODx.grid.Grid,{
 			url: Tickets.config.connector_url
 			,params: {
 				action: 'mgr/thread/delete'
+				,id: this.menu.record.id
+			}
+			,listeners: {
+				'success': {fn:function(r) {this.refresh();},scope:this}
+			}
+		})
+	}
+
+	,closeThread: function(btn,e) {
+		if (!this.menu.record) return false;
+
+		MODx.Ajax.request({
+			url: Tickets.config.connector_url
+			,params: {
+				action: 'mgr/thread/close'
 				,id: this.menu.record.id
 			}
 			,listeners: {

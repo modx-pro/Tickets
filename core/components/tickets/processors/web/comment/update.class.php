@@ -24,6 +24,12 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 		else if (!$text = $this->getProperty('text')) {
 			return $this->modx->lexicon('ticket_err_empty_comment');
 		}
+		else if ($this->object->get('deleted')) {
+			return $this->modx->lexicon('ticket_err_deleted_comment');
+		}
+		else if (!$this->object->get('published')) {
+			return $this->modx->lexicon('ticket_err_unpublished_comment');
+		}
 		else {
 			$this->properties = array(
 				'text' => $text

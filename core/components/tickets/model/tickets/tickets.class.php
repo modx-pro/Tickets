@@ -5,15 +5,19 @@
  * @package tickets
  */
 class Tickets {
-
+	/* @var modX $modx */
+	public $modx;
+	/* @var pdoTools $pdoTools */
+	public $pdoTools;
+	public $initialized = array();
 	private $prepareCommentCustom = null;
-	public $elements = array();
 
 	function __construct(modX &$modx,array $config = array()) {
 		$this->modx =& $modx;
 
 		$corePath = $this->modx->getOption('tickets.core_path',$config,$this->modx->getOption('core_path').'components/tickets/');
 		$assetsUrl = $this->modx->getOption('tickets.assets_url',$config,$this->modx->getOption('assets_url').'components/tickets/');
+		$actionUrl = $this->modx->getOption('tickets.action_url', $config, $assetsUrl.'action.php');
 		$connectorUrl = $assetsUrl.'connector.php';
 
 		$this->config = array_merge(array(
@@ -23,6 +27,7 @@ class Tickets {
 			,'imagesUrl' => $assetsUrl.'images/'
 
 			,'connectorUrl' => $connectorUrl
+			,'actionUrl' => $actionUrl
 
 			,'corePath' => $corePath
 			,'modelPath' => $corePath.'model/'
@@ -66,21 +71,62 @@ class Tickets {
 
 
 	/**
-	 * Initializes Tickets into different contexts.
+	 * Initializes component into different contexts.
 	 *
 	 * @access public
 	 * @param string $ctx The context to load. Defaults to web.
 	 */
-	public function initialize($ctx = 'mgr') {
+	public function initialize($ctx = 'web', $scriptProperties = array()) {
+		$this->config = array_merge($this->config, $scriptProperties);
+		$this->config['ctx'] = $ctx;
+		if (!empty($this->initialized[$ctx])) {
+			return true;
+		}
 		switch ($ctx) {
-			case 'mgr':
-				if (!$this->modx->loadClass('tickets.request.TicketsControllerRequest',$this->config['modelPath'],true,true)) {
-					return 'Could not load controller request handler.';
+			case 'mgr': break;
+			default:
+				if (!MODX_API_MODE) {
+					$config = $this->makePlaceholders($this->config);
+
+					if ($css = $this->modx->getOption('tickets.frontend_css')) {
+						$this->modx->regClientCSS(str_replace($config['pl'], $config['vl'], $css));
+					}
+					if ($js = $this->modx->getOption('tickets.frontend_js')) {
+						$enable_editor = $this->modx->getOption('tickets.enable_editor');
+						$formBefore = !empty($this->config['formBefore']) ? 1 : 0;
+						$editorConfig = 'enable_editor: '.$enable_editor.'';
+						if ($enable_editor) {
+							$this->modx->regClientScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
+							$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
+							$editorConfig .= '
+							,editor: {
+								ticket: '.$this->modx->getOption('tickets.editor_config.ticket').'
+								,comment: '.$this->modx->getOption('tickets.editor_config.comment').'
+							}';
+						}
+
+						$this->modx->regClientStartupScript(str_replace('					', '', '
+						<script type="text/javascript">
+						TicketsConfig = {
+							jsUrl: "'.$this->config['jsUrl'].'web/"
+							,cssUrl: "'.$this->config['cssUrl'].'web/"
+							,actionUrl: "'.$this->config['actionUrl'].'"
+							,formBefore: '.$formBefore.'
+							,'.$editorConfig.'
+						};
+						if(typeof jQuery == "undefined") {
+							document.write("<script src=\""+TicketsConfig.jsUrl+"lib/jquery-1.9.1.min.js\" type=\"text/javascript\"><\/script>");
+						}
+						</script>
+						'), true);
+						$this->modx->regClientScript(str_replace($config['pl'], $config['vl'], $js));
+					}
 				}
-				$this->request = new TicketsControllerRequest($this);
-				return $this->request->handleRequest();
+
+				$this->initialized[$ctx] = true;
 				break;
 		}
+		return true;
 	}
 
 
@@ -129,26 +175,7 @@ class Tickets {
 	 * @return mixed Rendered form
 	 */
 	public function getTicketForm($data = array()) {
-		$enable_editor = $this->modx->getOption('tickets.enable_editor');
-		$editorConfig = 'enable_editor:'.$enable_editor;
-		if ($enable_editor) {
-			$this->modx->regClientScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
-			$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
-			$this->modx->regClientCSS($this->config['cssUrl'].'web/tickets.css');
-			$editorConfig .= "\n".',editor:{ticket:'.$this->modx->getOption('tickets.editor_config.ticket').'}';
-		}
-
-		$this->modx->regClientStartupScript('<script type="text/javascript">
-			TicketsConfig = {
-				jsUrl: "'.$this->config['jsUrl'].'web/"
-				,cssUrl: "'.$this->config['cssUrl'].'web/"
-				,'.$editorConfig.'
-			};
-			if(typeof jQuery == "undefined") {
-				document.write("<script src=\""+TicketsConfig.jsUrl+"lib/jquery-1.9.1.min.js\" type=\"text/javascript\"><\/script>");
-			}
-		</script>');
-		$this->modx->regClientScript($this->config['jsUrl'].'web/tickets.js');
+		$this->initialize($this->modx->context->key);
 
 		$tpl = $this->config['tplFormCreate'];
 
@@ -193,25 +220,7 @@ class Tickets {
 	 * @return mixed Rendered form
 	 */
 	public function getCommentForm() {
-		$enable_editor = $this->modx->getOption('tickets.enable_editor');
-		$editorConfig = 'enable_editor:'.$enable_editor.'';
-		if ($enable_editor) {
-			$this->modx->regClientScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
-			$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
-			$editorConfig .= "\n".',editor:{comment:'.$this->modx->getOption('tickets.editor_config.comment').'}';
-		}
-
-		$this->modx->regClientStartupScript('<script type="text/javascript">
-			CommentsConfig = {
-				jsUrl: "'.$this->config['jsUrl'].'web/"
-				,cssUrl: "'.$this->config['cssUrl'].'web/"
-				,connector: "'.$this->config['assetsUrl'].'comment.php"
-				,'.$editorConfig.'
-			};
-			if(typeof jQuery == "undefined") {
-				document.write("<script src=\""+CommentsConfig.jsUrl+"lib/jquery-1.9.1.min.js\" type=\"text/javascript\"><\/script>");
-			}
-		</script>');
+		$this->initialize($this->modx->context->key);
 
 		if (!$this->modx->user->isAuthenticated()) {
 			return $this->modx->getChunk($this->config['tplLoginToComment']);
@@ -312,10 +321,11 @@ class Tickets {
 	public function previewComment($data = array()) {
 		$comment = $this->modx->newObject('TicketComment', array(
 			'text' => $this->Jevix($data['text'], 'Comment')
-			,'name' => $this->modx->user->Profile->fullname
-			,'email' => $this->modx->user->Profile->email
+			,'fullname' => $this->modx->user->Profile->get('fullname')
+			,'email' => $this->modx->user->Profile->get('email')
 			,'createdon' => date('Y-m-d H:i:s')
-			,'createdby' => $this->modx->user->id
+			,'createdby' => $this->modx->user->get('id')
+			,'resource' => $this->config['resource']
 		));
 		$comment->set('id', '0');
 		return $this->templateNode($comment->toArray(), $this->config['tplCommentGuest']);
@@ -333,6 +343,7 @@ class Tickets {
 		$data['raw'] = $data['text'];
 		$data['text'] = $this->Jevix($data['text'], 'Comment');
 
+		$data['published'] = !empty($this->config['autoPublish']);
 		if (!empty($data['id'])) {
 			$response = $this->runProcessor('web/comment/update', $data);
 		}
@@ -347,17 +358,31 @@ class Tickets {
 		}
 		else {
 			$comment = $response->response['object'];
+			$comment['resource'] = $this->config['resource'];
 			if ($profile = $this->modx->getObject('modUserProfile', array('internalKey' => $comment['createdby']))) {
 				$profile = $profile->toArray();
 				$comment = array_merge($profile, $comment);
 			}
-			$arr = array(
-				'error' => 0
-				,'data' => $this->templateNode($comment, $this->config['tplCommentAuth'])
-				,'count' => $this->getTicketComments($this->config['thread'])
-			);
-			$this->modx->cacheManager->delete('tickets/latest.comments');
-			$this->modx->cacheManager->delete('tickets/latest.tickets');
+
+			if ($comment['published']) {
+				$arr = array(
+					'error' => 0
+					,'message' => ''
+					,'data' => $this->templateNode($comment, $this->config['tplCommentAuth'])
+					//,'count' => $this->getTicketComments($this->config['thread'])
+				);
+				$this->modx->cacheManager->delete('tickets/latest.comments');
+				$this->modx->cacheManager->delete('tickets/latest.tickets');
+			}
+			else {
+				$arr = array(
+					'error' => 0
+					,'message' => $this->modx->lexicon('ticket_unpublished_comment')
+					,'data' => ''
+					//,'count' => $this->getTicketComments($this->config['thread'])
+				);
+			}
+
 			if (empty($data['id'])) {
 				$this->sendCommentMails($this->prepareComment($comment));
 			}
@@ -462,15 +487,21 @@ class Tickets {
 	 * @param int|string $id Id of ticket
 	 * @return integer Number of comments
 	 */
+	/*
 	public function getTicketComments($thread = '') {
-		//if (empty($thread)) {$thread = $this->modx->resource->id;}
+		$count = 0;
 		if (is_numeric($thread)) {$thread = 'resource-'.$thread;}
 
 		$q = $this->modx->newQuery('TicketComment');
 		$q->leftJoin('TicketThread', 'TicketThread','TicketThread.id = TicketComment.thread');
-		$q->where(array('TicketThread.name' => $thread));
-		return $this->modx->getCount('TicketComment', $q);
+		$q->where(array('TicketThread.name' => $thread, 'published' => 1));
+		$q->select('COUNT(`id`)');
+		if ($q->prepare() && $q->stmt->execute()) {
+			$count = $q->stmt->fetch(PDO::FETCH_COLUMN);
+		}
+		return $count;
 	}
+	*/
 
 
 	/**
@@ -492,6 +523,7 @@ class Tickets {
 	/*
 	 * Returns all comments of the resource with given id
 	 * */
+	/*
 	public function getCommentThread($thread = '') {
 		$thread = trim((string) $thread);
 		if (empty($thread)) {
@@ -517,10 +549,6 @@ class Tickets {
 			}
 		}
 
-		$this->modx->regClientCSS($this->config['assetsUrl'] . 'css/web/comments.css');
-		if ($this->modx->user->isAuthenticated()) {
-			$this->modx->regClientScript($this->config['assetsUrl'] . 'js/web/comments.js');
-		}
 		$arr = array(
 			'total' => $data['total']
 			,'comments' => $comments
@@ -532,10 +560,11 @@ class Tickets {
 		return $commentsThread . $commentForm;
 	}
 
+
 	/*
 	 * Recursive template of the comment node
 	 * */
-	public function templateNode($node = array(), $tpl = '') {
+	public function templateNode($node = array(), $tpl = null) {
 		$children = null;
 		if (!empty($node['children'])) {
 			foreach ($node['children'] as $v) {
@@ -543,17 +572,40 @@ class Tickets {
 			}
 		}
 
-		if (!empty($children)) {$node['children'] = $children;}
-		else if ($node['createdby'] == $this->modx->user->id && (time() - strtotime($node['createdon']) <= $this->config['commentEditTime'])) {
-			if (!array_key_exists($tpl, $this->elements)) {
-				$this->getChunk($tpl);
-			}
-			$node['ticket_comment_edit_link'] = @$this->elements[$tpl]['placeholders']['ticket_comment_edit_link'];
-		}
-		if ($node['editedby'] && $node['editedon']) {
-			$node['ticket_comment_was_edited'] = @$this->elements[$tpl]['placeholders']['ticket_comment_was_edited'];
-		}
+		// Processing comment and selecting needed template
 		$node = $this->prepareComment($node);
+		if (empty($tpl)) {
+			$tpl = $this->modx->user->isAuthenticated() ? $this->config['tplCommentAuth'] : $this->config['tplCommentGuest'];
+		}
+		if ($node['deleted']) {
+			$tpl = $this->config['tplCommentDeleted'];
+		}
+
+		if (!empty($children)) {
+			$node['children'] = $children;
+			$node['comment_edit_link'] = false;
+		}
+		else if ($node['createdby'] == $this->modx->user->id && (time() - strtotime($node['createdon']) <= $this->config['commentEditTime'])) {
+			$node['comment_edit_link'] = true;
+		}
+		$node['comment_was_edited'] = $node['editedby'] && $node['editedon'];
+
+		// Processing quick fields
+		$this->loadPdoTools();
+		if (!array_key_exists($tpl, $this->pdoTools->elements)) {
+			$this->getChunk($tpl);
+		}
+		$pl = $this->pdoTools->makePlaceholders($node);
+		$qfields = array_keys($this->pdoTools->elements[$tpl]['placeholders']);
+		foreach ($qfields as $field) {
+			if (!empty($node[$field])) {
+				$node[$field] = str_replace($pl['pl'], $pl['vl'], $this->pdoTools->elements[$tpl]['placeholders'][$field]);
+
+			}
+			else {
+				$node[$field] = '';
+			}
+		}
 
 		return $this->getChunk($tpl, $node, $this->config['fastMode']);
 	}
@@ -571,35 +623,33 @@ class Tickets {
 			if (!empty($data['resource'])) {
 				$data['url'] = $this->modx->makeUrl($data['resource'], '', '', 'full');
 			}
-			$data['createdon'] = date($this->config['dateFormat'], strtotime($data['createdon']));
-			$data['editedon'] = date($this->config['dateFormat'], strtotime($data['editedon']));
-			$data['deletedon'] = date($this->config['dateFormat'], strtotime($data['deletedon']));
+
 			$data['date_ago'] = $this->dateFormat($data['createdon']);
-			if ($data['deleted']) {
-				$data['text'] = $this->modx->lexicon('ticket_comment_deleted_text');
-			}
 			return $data;
 		}
 	}
 
 
-	/*
-	 * Returns array with separated placeholders and values for fast render without processing chunk
+	/* Method for transform array to placeholders
+	 *
+	 * @var array $array With keys and values
+	 * @return array $array Two nested arrays With placeholders and values
 	 * */
-	public function makePlaceholders($arr = array(), $prefix = '') {
-		$placeholders = array();
-
-		foreach ($arr as $k => $v) {
+	public function makePlaceholders(array $array = array(), $prefix = '') {
+		$result = array(
+			'pl' => array()
+			,'vl' => array()
+		);
+		foreach ($array as $k => $v) {
 			if (is_array($v)) {
-				$prefix .= $k.'_';
-				$placeholders = array_merge($placeholders, $this->makePlaceholders($v, $prefix));
+				$result = array_merge_recursive($result, $this->makePlaceholders($v, $k.'.'));
 			}
 			else {
-				$placeholders['pl'][] = "[[+$k]]";
-				$placeholders['vl'][] = $v;
+				$result['pl'][$prefix.$k] = '[[+'.$prefix.$k.']]';
+				$result['vl'][$prefix.$k] = $v;
 			}
 		}
-		return $placeholders;
+		return $result;
 	}
 
 
@@ -692,6 +742,15 @@ class Tickets {
 		return true;
 	}
 
+	/* Loads an instance of pdoTools for chunks processing
+	 *
+	 * */
+	public function loadPdoTools() {
+		if (!is_object($this->pdoTools) || !($this->pdoTools instanceof pdoTools)) {
+			$this->pdoTools = $this->modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/', array('nestedChunkPrefix' => 'tickets_'));
+		}
+	}
+
 
 	/**
 	 * Process and return the output from a Chunk by name.
@@ -703,71 +762,8 @@ class Tickets {
 	 * @return string The processed output of the Chunk.
 	 */
 	public function getChunk($name, array $properties = array(), $fastMode = false) {
-		$output = null;
-
-		if (!array_key_exists($name, $this->elements)) {
-			/* @var modChunk $element */
-			if ($element = $this->modx->getObject('modChunk', array('name' => $name))) {
-				$element->setCacheable(false);
-				$content = $element->getContent();
-
-				// processing lexicon placeholders
-				preg_match_all('/\[\[%(.*?)\]\]/',$content, $matches);
-				$src = $dst = array();
-				foreach ($matches[1] as $k => $v) {
-					$src[] = $matches[0][$k];
-					$dst[] = $this->modx->lexicon($v);
-				}
-				$content = str_replace($src,$dst,$content);
-
-				// processing special tags
-				preg_match_all('/\<!--ticket(.*?)[\s|\n|\r\n](.*?)-->/s', $content, $matches);
-				$src = $dst = $placeholders = array();
-				foreach ($matches[1] as $k => $v) {
-					$src[] = $matches[0][$k];
-					$dst[] = '';
-					$placeholders['ticket'.$v] = $matches[2][$k];
-				}
-				$content = str_replace($src,$dst,$content);
-
-				$chunk = array(
-					'object' => $element
-					,'content' => $content
-					,'placeholders' => $placeholders
-				);
-
-				$this->elements[$name] = $chunk;
-			}
-			else {
-				return false;
-			}
-		}
-		else {
-			$chunk = $this->elements[$name];
-			$chunk['object']->_processed = false;
-		}
-
-		if (!empty($properties) && $chunk['object'] instanceof modChunk) {
-			$pl = $this->makePlaceholders($properties);
-			$content = str_replace($pl['pl'], $pl['vl'], $chunk['content']);
-			$content = str_replace($pl['pl'], $pl['vl'], $content);
-			if ($fastMode) {
-				$matches = $tags = array();
-				$this->modx->parser->collectElementTags($content, $matches);
-				foreach ($matches as $v) {
-					$tags[] = $v[0];
-				}
-				$output = str_replace($tags, '', $content);
-			}
-			else {
-				$output = $chunk['object']->process($properties, $content);
-			}
-		}
-		else {
-			$output = $chunk['content'];
-		}
-
-		return $output;
+		$this->loadPdoTools();
+		return $this->pdoTools->getChunk($name, $properties, $fastMode);
 	}
 
 	/*

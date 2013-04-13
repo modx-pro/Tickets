@@ -28,6 +28,7 @@
 		<field key="editedon" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="editedby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
 
+		<field key="published" dbtype="tinyint" precision="1" phptype="boolean" attributes="unsigned" null="false" default="0" />
 		<field key="deleted" dbtype="tinyint" precision="1" phptype="boolean" attributes="unsigned" null="false" default="0" />
 		<field key="deletedon" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="deletedby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
@@ -40,6 +41,9 @@
 		</index>
 		<index alias="deleted" name="deleted" primary="false" unique="false" type="BTREE">
 			<column key="deleted" length="" collation="A" null="false" />
+		</index>
+		<index alias="published" name="published" primary="false" unique="false" type="BTREE">
+			<column key="published" length="" collation="A" null="false" />
 		</index>
 
 		<aggregate alias="User" class="modUser" local="author" foreign="id" cardinality="one" owner="foreign" />
@@ -59,12 +63,14 @@
 		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="createdby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
 
+		<field key="closed" dbtype="tinyint" precision="1" phptype="boolean" attributes="unsigned" null="false" default="0" />
 		<field key="deleted" dbtype="tinyint" precision="1" phptype="boolean" attributes="unsigned" null="false" default="0" />
 		<field key="deletedon" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="deletedby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
 
 		<field key="comment_last" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
 		<field key="comment_time" dbtype="datetime" phptype="datetime" null="true" index="index" />
+		<field key="properties" dbtype="text" phptype="json" null="true" />
 
 		<index alias="unique_key" name="unique_key" primary="false" unique="true" type="BTREE">
 			<column key="name" length="" collation="A" null="false" />
@@ -75,7 +81,11 @@
 		<index alias="comment_last" name="comment_last" primary="false" unique="false" type="BTREE">
 			<column key="comment_last" length="" collation="A" null="false" />
 		</index>
+		<index alias="closed" name="closed" primary="false" unique="false" type="BTREE">
+			<column key="closed" length="" collation="A" null="false" />
+		</index>
 
+		<aggregate alias="Ticket" class="Ticket" local="resource" foreign="id" cardinality="one" owner="foreign" />
 		<composite alias="Comments" class="TicketComment" local="id" foreign="thread" cardinality="many" owner="local" />
 	</object>
 <!--

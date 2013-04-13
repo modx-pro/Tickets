@@ -12,13 +12,21 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 
 
 	public function beforeSet() {
-		if (!$this->thread = $this->modx->getObject('TicketThread', array('name' => $this->getProperty('thread')))) {
+		$tid = $this->getProperty('thread');
+		if (!$this->thread = $this->modx->getObject('TicketThread', array('name' => $tid, 'deleted' => 0, 'closed' => 0))) {
 			return $this->modx->lexicon('ticket_err_wrong_thread');
 		}
 		$text = trim($this->getProperty('text'));
 		if (empty($text)) {
-			return $this->modx->lexicon('ticket_err_empty_comment');
+			return $this->modx->lexicon('ticket_comment_err_empty');
 		}
+
+		if ($pid = $this->getProperty('parent')) {
+			if (!$parent = $this->modx->getObject('TicketComment', array('id' => $pid, 'published' => 1, 'deleted' => 0))) {
+				return $this->modx->lexicon('ticket_comment_err_parent');
+			}
+		}
+
 		$this->setProperties(array(
 			'thread' => $this->thread->id
 			,'name' => $this->modx->user->Profile->fullname

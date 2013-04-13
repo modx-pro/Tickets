@@ -3,6 +3,7 @@ class TicketCommentRemoveProcessor extends modObjectRemoveProcessor  {
 	/** @var TicketComment $object */
 	public $object;
 	public $checkRemovePermission = true;
+	public $objectType = 'TicketComment';
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets');
 	public $beforeRemoveEvent = 'OnBeforeCommentRemove';
@@ -45,5 +46,10 @@ class TicketCommentRemoveProcessor extends modObjectRemoveProcessor  {
 		return parent::afterRemove();
 	}
 
+
+	public function logManagerAction() {
+		$this->modx->logManagerAction($this->objectType.'_remove', $this->classKey, $this->object->get($this->primaryKeyField));
+	}
 }
+
 return 'TicketCommentRemoveProcessor';

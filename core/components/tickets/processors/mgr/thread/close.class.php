@@ -1,42 +1,34 @@
 <?php
 class TicketThreadDeleteProcessor extends modObjectRemoveProcessor  {
-	public $checkRemovePermission = true;
+	public $checkClosePermission = true;
 	public $classKey = 'TicketThread';
 	public $objectType = 'TicketThread';
 	public $languageTopics = array('tickets');
-	public $beforeRemoveEvent = 'OnBeforeTicketThreadDelete';
-	public $afterRemoveEvent = 'OnTicketThreadDelete';
+	public $beforeCloseEvent = 'OnBeforeTicketThreadClose';
+	public $afterCloseEvent = 'OnTicketThreadClose';
 
 	public function process() {
-		$canRemove = $this->beforeRemove();
-		if ($canRemove !== true) {
-			return $this->failure($canRemove);
+		$canClose = $this->beforeRemove();
+		if ($canClose !== true) {
+			return $this->failure($canClose);
 		}
 		$preventRemoval = $this->fireBeforeRemoveEvent();
 		if (!empty($preventRemoval)) {
 			return $this->failure($preventRemoval);
 		}
 
-		// Toggle deleted status
-		if ($this->object->get('deleted')) {
-			$this->object->fromArray(array(
-				'deleted' => 0
-				,'deletedon' => null
-				,'deletedby' => 0
-			));
-			$action = 'restore';
+		// Toggle closed status
+		if ($this->object->get('closed')) {
+			$this->object->set('closed', 0);
+			$action = 'open';
 		}
 		else {
-			$this->object->fromArray(array(
-				'deleted' => 1
-				,'deletedon' => time()
-				,'deletedby' => $this->modx->user->id
-			));
-			$action = 'delete';
+			$this->object->set('closed', 1);
+			$action = 'close';
 		}
 
 		if (!$this->object->save()) {
-			return $this->failure($this->modx->lexicon($this->objectType.'_err_remove'));
+			return $this->failure($this->modx->lexicon($this->objectType.'_err_'.$action));
 		}
 		$this->afterRemove();
 		$this->fireAfterRemoveEvent();

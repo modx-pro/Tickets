@@ -26,21 +26,20 @@ if ($object->xpdo) {
 				$modx->addExtensionPackage('tickets', '[[++core_path]]components/tickets/model/');
 			}
 
-			// Alter table TicketThread for last comments feature
-			$sql = "ALTER TABLE  {$modx->getTableName('TicketThread')} ADD `comment_last` INT(10) UNSIGNED NOT NULL DEFAULT  '0', ADD `comment_time` DATETIME NULL , ADD INDEX (`comment_last`, `comment_time`)";
-			if ($stmt = $modx->prepare($sql)) {$stmt->execute();}
+			$TicketThread = $modx->getTableName('TicketThread');
+			$modx->query("ALTER TABLE  {$TicketThread} ADD `comment_last` INT(10) UNSIGNED NOT NULL DEFAULT  '0', ADD `comment_time` DATETIME NULL , ADD INDEX (`comment_last`, `comment_time`)");
+			$modx->query("ALTER TABLE {$TicketThread} ADD `closed` TINYINT(1) NOT NULL AFTER `createdby`, ADD `properties` TEXT NULL DEFAULT NULL");
 
-			// Alter table TicketComment for edit comments feature
-			$sql = "ALTER TABLE {$modx->getTableName('TicketComment')} ADD `raw` TEXT NOT NULL AFTER `text`";
-			if ($stmt = $modx->prepare($sql)) {$stmt->execute();}
-
-			break;
+			$TicketComment = $modx->getTableName('TicketComment');
+			$modx->query("ALTER TABLE {$TicketComment} ADD `raw` TEXT NOT NULL AFTER `text`");
+			$modx->query("ALTER TABLE {$TicketComment} ADD `published` TINYINT(1) NOT NULL AFTER `editedby`");
+		break;
 
 		case xPDOTransport::ACTION_UNINSTALL:
 			if ($modx instanceof modX) {
 				$modx->removeExtensionPackage('tickets');
 			}
-			break;
+		break;
 	}
 }
 return true;

@@ -2,7 +2,7 @@
 	<div class="ticket-comment-body">
 		<div class="ticket-header">
 			<img src="[[+avatar]]" class="ticket-avatar" alt="" />
-			<span class="ticket-comment-author">[[+name]]</span>
+			<span class="ticket-comment-author">[[+fullname]]</span>
 			<span class="ticket-comment-createdon">[[+date_ago]]</span>
 			<span class="ticket-comment-link"><a href="[[+url]]#comment-[[+id]]">#</a></span>
 		</div>

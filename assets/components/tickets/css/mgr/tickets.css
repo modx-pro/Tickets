@@ -2,8 +2,13 @@
 	background-image: url(../../img/tickets_section.png) !important;
 }
 
-.tickets-comment-row.comment-deleted, .tickets-thread-row.thread-deleted {
+.tickets-comment-row.comment-unpublished div, .tickets-thread-row.thread-closed div {
 	color: #AAA;
+	font-style: italic !important;
+}
+.tickets-comment-row.comment-deleted div, .tickets-thread-row.thread-deleted div {
+	color: brown !important;
+	text-decoration: line-through !important;
 }
 
 .tickets-comment-row .resource-link, .tickets-thread-row .resource-link {

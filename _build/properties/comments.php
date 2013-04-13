@@ -40,6 +40,10 @@ $tmp = array(
 		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.comment.one.guest'
 	)
+	,'tplCommentDeleted' => array(
+		'type' => 'textfield'
+		,'value' => 'tpl.Tickets.comment.one.deleted'
+	)
 	,'tplComments' => array(
 		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.comment.wrapper'
@@ -55,6 +59,19 @@ $tmp = array(
 	,'tplCommentEmailReply' => array(
 		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.comment.email.reply'
+	)
+	,'autoPublish' => array(
+		'type' => 'combo-boolean'
+		,'value' => true
+	)
+	,'formBefore' => array(
+		'type' => 'combo-boolean'
+		,'value' => false
+	)
+	,'depth' => array(
+		'type' => 'numberfield'
+		,'desc' => 'tickets_prop_commentsDepth'
+		,'value' => 0
 	)
 );
 

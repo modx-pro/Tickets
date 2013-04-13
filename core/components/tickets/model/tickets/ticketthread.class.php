@@ -7,11 +7,13 @@ class TicketThread extends xPDOSimpleObject {
 		$this->set('comments',0);
 	}
 
+
 	public function getCommentsCount() {
 		$q = $this->xpdo->newQuery('TicketComment', array('thread' => $this->get('id')));
 
 		return $this->xpdo->getCount('TicketComment', $q);
 	}
+
 
 	public function updateLastComment() {
 		$q = $this->xpdo->newQuery('TicketComment', array('thread' => $this->get('id')));
@@ -28,6 +30,7 @@ class TicketThread extends xPDOSimpleObject {
 		}
 	}
 
+
 	public function get($k, $format = null, $formatTemplate= null) {
 		if ($k == 'comments') {
 			return $this->getCommentsCount();
@@ -37,11 +40,49 @@ class TicketThread extends xPDOSimpleObject {
 		}
 	}
 
+
 	public function toArray($keyPrefix= '', $rawValues= false, $excludeLazy= false, $includeRelated= false) {
 		$array = parent::toArray($keyPrefix, $rawValues, $excludeLazy, $includeRelated);
 		$array['comments'] = $this->getCommentsCount();
 
 		return $array;
+	}
+
+
+	public function buildTree($comments = array(), $depth = 0) {
+		if (!$this->get('comment_last') && $key = key(array_slice($comments, -1, 1, true))) {
+			$comment = $comments[$key];
+			$this->fromArray(array(
+				'comment_last' => $key
+				,'comment_time' => $comment['createdon']
+			));
+			$this->save();
+		}
+
+		// Thank to Agel_Nash for the idea about how to limit comments by depth
+		$tree = array();
+		foreach ($comments as $id => &$row) {
+			if (empty($row['parent'])) {
+				$row['level'] = 0;
+				$tree[$id] = &$row;
+			}
+			else {
+				$parent = $row['parent'];
+				$level = $comments[$parent]['level'];
+
+				if (!empty($depth) && $level >= $depth) {
+					$parent = $comments[$parent]['new_parent'];
+					$row['new_parent'] = $parent;
+					$row['level'] = $level;
+				}
+				else {
+					$row['level'] = $level + 1;
+				}
+
+				$comments[$parent]['children'][$id] = &$row;
+			}
+		}
+		return $tree;
 	}
 
 }

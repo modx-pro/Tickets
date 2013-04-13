@@ -11,11 +11,13 @@ $xpdo_meta_map['TicketThread']= array (
     'subscribers' => '',
     'createdon' => NULL,
     'createdby' => 0,
+    'closed' => 0,
     'deleted' => 0,
     'deletedon' => NULL,
     'deletedby' => 0,
     'comment_last' => 0,
     'comment_time' => NULL,
+    'properties' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -54,6 +56,15 @@ $xpdo_meta_map['TicketThread']= array (
       'dbtype' => 'integer',
       'precision' => '10',
       'phptype' => 'integer',
+      'attributes' => 'unsigned',
+      'null' => false,
+      'default' => 0,
+    ),
+    'closed' => 
+    array (
+      'dbtype' => 'tinyint',
+      'precision' => '1',
+      'phptype' => 'boolean',
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
@@ -97,6 +108,12 @@ $xpdo_meta_map['TicketThread']= array (
       'phptype' => 'datetime',
       'null' => true,
       'index' => 'index',
+    ),
+    'properties' => 
+    array (
+      'dbtype' => 'text',
+      'phptype' => 'json',
+      'null' => true,
     ),
   ),
   'indexes' => 
@@ -149,6 +166,22 @@ $xpdo_meta_map['TicketThread']= array (
         ),
       ),
     ),
+    'closed' => 
+    array (
+      'alias' => 'closed',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'closed' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
   ),
   'composites' => 
   array (
@@ -159,6 +192,17 @@ $xpdo_meta_map['TicketThread']= array (
       'foreign' => 'thread',
       'cardinality' => 'many',
       'owner' => 'local',
+    ),
+  ),
+  'aggregates' => 
+  array (
+    'Ticket' => 
+    array (
+      'class' => 'Ticket',
+      'local' => 'resource',
+      'foreign' => 'id',
+      'cardinality' => 'one',
+      'owner' => 'foreign',
     ),
   ),
 );

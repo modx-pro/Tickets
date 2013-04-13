@@ -3,6 +3,7 @@ class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
 	/** @var TicketComment $object */
 	public $object;
 	public $checkRemovePermission = true;
+	public $objectType = 'TicketComment';
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets');
 	public $beforeRemoveEvent = 'OnBeforeCommentRemove';
@@ -34,6 +35,7 @@ class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
 				,'deletedon' => null
 				,'deletedby' => 0
 			));
+			$action = 'restore';
 		}
 		else {
 			$this->object->fromArray(array(
@@ -41,6 +43,7 @@ class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
 				,'deletedon' => time()
 				,'deletedby' => $this->modx->user->id
 			));
+			$action = 'delete';
 		}
 
 		if (!$this->object->save()) {
@@ -48,7 +51,7 @@ class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
 		}
 		$this->afterRemove();
 		$this->fireAfterRemoveEvent();
-		$this->logManagerAction();
+		$this->logManagerAction($action);
 		$this->cleanup();
 		return $this->success('',array($this->primaryKeyField => $this->object->get($this->primaryKeyField)));
 	}
@@ -57,6 +60,11 @@ class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
 		$this->object->clearTicketCache();
 
 		return parent::afterRemove();
+	}
+
+
+	public function logManagerAction($action = '') {
+		$this->modx->logManagerAction($this->objectType.'_'.$action, $this->classKey, $this->object->get($this->primaryKeyField));
 	}
 }
 
