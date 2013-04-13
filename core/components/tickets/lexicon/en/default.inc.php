@@ -1,10 +1,10 @@
 <?php
 /**
  * Default English Lexicon Entries for Tickets
- *
- * @package tickets
- * @subpackage lexicon
  */
+
+include_once('setting.inc.php');
+
 $_lang['tickets'] = 'Tickets';
 $_lang['comments'] = 'Comments';
 $_lang['threads'] = 'Comments threads';
