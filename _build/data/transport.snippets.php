@@ -9,7 +9,7 @@ $tmp = array(
 	,'TicketComments' => 'comments'
 	,'TicketLatest' => 'ticket_latest'
 	,'getTickets' => 'get_tickets'
-	,'getTicketSections' => 'get_sections'
+	,'getTicketsSections' => 'get_sections'
 );
 
 foreach ($tmp as $k => $v) {

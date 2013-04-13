@@ -71,28 +71,38 @@ $default = array(
 	,'select' => '{'.implode(',',$select).'}'
 	,'sortby' => 'id'
 	,'sortdir' => 'ASC'
+	,'limit' => 0
 	,'fastMode' => true
-	,'return' => 'data'
+	,'return' => 'sql'
 );
 
 // Merge all properties and run!
 $pdoFetch->config = array_merge($pdoFetch->config, $default, $scriptProperties);
 $pdoFetch->addTime('Query parameters are prepared.');
-$rows = $pdoFetch->run();
+$sql = $pdoFetch->run();
+/* @var PDOStatement $q*/
+$q = $modx->prepare($sql);
+if (!$q->execute()) {
+	$modx->log(modX::LOG_LEVEL_INFO, '[pdoTools] '.$sql);
+	$errors = $q->errorInfo();
+	$modx->log(modX::LOG_LEVEL_ERROR, '[pdoTools] Error '.$errors[0].': '.$errors[2]);
+}
+
+$rows = array(); $total = 0;
+while ($row = $q->fetch(PDO::FETCH_ASSOC))  {
+	$row['level'] = 0;
+	$row['new_parent'] = $row['parent'];
+	$rows[$row['id']] = $row;
+	$total++;
+}
+$pdoFetch->addTime('Rows fetched');
 
 // Processing rows
-$output = $commentsThread = null; $total = 0;
+$output = $commentsThread = null;
 if (!empty($rows) && is_array($rows)) {
 	$tmp = array();
-	foreach ($rows as $row)  {
-		$row['level'] = 0;
-		$row['new_parent'] = $row['parent'];
-		$tmp[$row['id']] = $row;
-		$total++;
-	}
-	$rows = $thread->buildTree($tmp, $depth);
-	unset($tmp, $row);
 
+	$rows = $thread->buildTree($rows, $depth);
 	if (!empty($formBefore)) {
 		$rows = array_reverse($rows);
 	}

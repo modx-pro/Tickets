@@ -32,7 +32,7 @@ if ($object->xpdo) {
 
 			$TicketComment = $modx->getTableName('TicketComment');
 			$modx->query("ALTER TABLE {$TicketComment} ADD `raw` TEXT NOT NULL AFTER `text`");
-			$modx->query("ALTER TABLE {$TicketComment} ADD `published` TINYINT(1) NOT NULL AFTER `editedby`");
+			$modx->query("ALTER TABLE {$TicketComment} ADD `published` TINYINT(1) NOT NULL DEFAULT 1 AFTER `editedby`");
 		break;
 
 		case xPDOTransport::ACTION_UNINSTALL:

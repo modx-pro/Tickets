@@ -84,17 +84,18 @@ if ($action == 'comments') {
 	$commentColumns = !empty($includeContent) ?  $modx->getSelectColumns('TicketComment', 'TicketComment') : $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text','raw'), true);
 	$mainClass = 'TicketComment';
 	$innerJoin = array(
-		'{"class":"TicketThread","alias":"Thread","on":"TicketComment.thread=Thread.id"}'
+		'{"class":"TicketThread","alias":"Thread","on":"TicketComment.id=Thread.comment_last"}'
 		,'{"class":"modResource","alias":"Ticket","on":"Ticket.id=Thread.resource"}'
 	);
 	$leftJoin = array(
 		'{"class":"modResource","alias":"Section","on":"Section.id=Ticket.parent"}'
+		,'{"class":"TicketComment","alias":"Comments","on":"Comments.thread=Thread.id"}'
 		,'{"class":"modUser","alias":"User","on":"User.id=TicketComment.createdby"}'
 		,'{"class":"modUserProfile","alias":"Profile","on":"Profile.internalKey=User.id"}'
 	);
 	$select = array(
 		'"TicketComment":"'.$commentColumns.'"'
-		,'"Comments":"COUNT(DISTINCT `TicketComment`.`id`) as `comments`"'
+		,'"Comments":"COUNT(DISTINCT `Comments`.`id`) as `comments`"'
 		,'"Ticket":"'.$resourceColumns.'"'
 	);
 

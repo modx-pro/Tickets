@@ -1,6 +1,6 @@
 <h4 id="comment-new-link"><a href="#reply" onclick="return Tickets.forms.comment()">[[%ticket_comment_create]]</a></h4>
 <div id="comment-form-placeholder">
-	<form id="comment-form" action="[[+assetsUrl]]comment.php" method="post">
+	<form id="comment-form" action="" method="post">
 		<div id="comment-preview-placeholder"></div>
 		<input type="hidden" name="thread" value="[[+thread]]" />
 		<input type="hidden" name="parent" value="0" />

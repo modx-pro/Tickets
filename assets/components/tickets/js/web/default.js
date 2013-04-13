@@ -29,7 +29,7 @@ Tickets = {
 	,ticket: {
 		preview: function(form,button) {
 			$(form).ajaxSubmit({
-				data: {action: 'ticket/preview'}
+				data: {action: 'previewTicket'}
 				,form: form
 				,button: button
 				,beforeSubmit: function() {
