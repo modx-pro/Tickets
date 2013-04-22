@@ -1,10 +1,10 @@
 <?php
 class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
+	public $objectType = 'TicketComment';
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets:default');
 	public $defaultSortField = 'createdon';
 	public $defaultSortDirection = 'DESC';
-	public $objectType = 'comment';
 	private $resources = array();
 
 	public function prepareQueryBeforeCount(xPDOQuery $c) {

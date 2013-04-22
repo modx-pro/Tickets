@@ -1,10 +1,10 @@
 <?php
 class TicketThreadsGetListProcessor extends modObjectGetListProcessor {
+	public $objectType = 'TicketThread';
 	public $classKey = 'TicketThread';
 	public $languageTopics = array('tickets:default');
 	public $defaultSortField = 'createdon';
 	public $defaultSortDirection = 'DESC';
-	public $objectType = 'thread';
 
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 		$c->leftJoin('TicketComment','TicketComment','`TicketComment`.`thread` = `TicketThread`.`id`');

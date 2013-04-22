@@ -1,9 +1,9 @@
 <?php
 
 class TicketCommentGetProcessor extends modObjectGetProcessor {
+	public $objectType = 'TicketComment';
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets:default');
-	public $objectType = 'comment';
 
 	public function cleanup() {
 		$comment = $this->object->toArray();

@@ -4,6 +4,7 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 	public $object;
 	/* @var TicketThread $thread */
 	private $thread;
+	public $objectType = 'TicketComment';
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets:default');
 	public $permission = 'comment_save';

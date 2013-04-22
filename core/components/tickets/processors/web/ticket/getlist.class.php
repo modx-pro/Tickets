@@ -1,10 +1,10 @@
 <?php
 class TicketGetListProcessor extends modObjectGetListProcessor {
+	public $objectType = 'Ticket';
 	public $classKey = 'Ticket';
 	public $languageTopics = array('tickets:default');
 	public $defaultSortField = 'createdon';
 	public $defaultSortDirection = 'DESC';
-	public $objectType = 'ticket';
 
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 		if ($parents = $this->getProperty('parents')) {
