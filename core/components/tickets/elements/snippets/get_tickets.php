@@ -70,8 +70,8 @@ $leftJoin = array(
 	'{"class":"TicketView","alias":"View","on":"Ticket.id=View.parent"}'
 	,'{"class":"TicketView","alias":"LastView","on":"Ticket.id=LastView.parent AND LastView.uid = '.$modx->user->id.'"}'
 	,'{"class":"TicketVote","alias":"Vote","on":"Ticket.id=Vote.parent AND Vote.class=\'Ticket\'"}'
-	,'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id"}'
-	,'{"class":"TicketComment","alias":"Comment","on":"Comment.thread=Thread.id"}'
+	,'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id  AND Thread.closed=0 AND Thread.deleted=0"}'
+	,'{"class":"TicketComment","alias":"Comment","on":"Comment.thread=Thread.id AND Comment.published=1"}'
 	,'{"class":"TicketsSection","alias":"Section","on":"Section.id=Ticket.parent"}'
 	,'{"class":"modUser","alias":"User","on":"User.id=Ticket.createdby"}'
 	,'{"class":"modUserProfile","alias":"Profile","on":"Profile.internalKey=User.id"}'
@@ -137,7 +137,7 @@ if (!empty($rows) && is_array($rows)) {
 		else if (!empty($row['new_comments'])) {
 			$thread_name = 'resource-'.$row['id'];
 			$q = $modx->newQuery('TicketComment');
-			$q->leftJoin('TicketThread', 'Thread', 'Thread.name = "'.$thread_name.'" AND `Thread`.`id`=`TicketComment`.`thread`');
+			$q->leftJoin('TicketThread', 'Thread', 'Thread.name = "'.$thread_name.'"  AND `Thread`.`closed`=`0` AND `Thread`.`deleted`=`0` AND `Thread`.`id`=`TicketComment`.`thread` AND `TicketComment`.`published` = 1');
 			$q->where('`Thread`.`name` = "'.$thread_name.'" AND `TicketComment`.`createdon` > "'.$row['new_comments'].'" AND `TicketComment`.`createdby` != '.$modx->user->id);
 			$q->select('COUNT(`TicketComment`.`id`)');
 			if ($q->prepare() && $q->stmt->execute()) {

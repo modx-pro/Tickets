@@ -58,6 +58,13 @@ class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
 
 	public function afterRemove() {
 		$this->object->clearTicketCache();
+		/* @var TicketThread $thread */
+		if ($thread = $this->object->getOne('Thread')) {
+			$thread->updateLastComment();
+		}
+
+		$this->modx->cacheManager->delete('tickets/latest.comments');
+		$this->modx->cacheManager->delete('tickets/latest.tickets');
 
 		return parent::afterRemove();
 	}

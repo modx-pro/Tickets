@@ -43,6 +43,9 @@ class TicketCommentRemoveProcessor extends modObjectRemoveProcessor  {
 			$thread->updateLastComment();
 		}
 
+		$this->modx->cacheManager->delete('tickets/latest.comments');
+		$this->modx->cacheManager->delete('tickets/latest.tickets');
+
 		return parent::afterRemove();
 	}
 

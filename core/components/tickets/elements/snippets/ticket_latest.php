@@ -83,12 +83,12 @@ if ($action == 'comments') {
 	$commentColumns = !empty($includeContent) ?  $modx->getSelectColumns('TicketComment', 'TicketComment') : $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text','raw'), true);
 	$mainClass = 'TicketComment';
 	$innerJoin = array(
-		'{"class":"TicketThread","alias":"Thread","on":"TicketComment.id=Thread.comment_last"}'
+		'{"class":"TicketThread","alias":"Thread","on":"TicketComment.id=Thread.comment_last AND Thread.closed=0 AND Thread.deleted=0"}'
 		,'{"class":"modResource","alias":"Ticket","on":"Ticket.id=Thread.resource"}'
 	);
 	$leftJoin = array(
 		'{"class":"modResource","alias":"Section","on":"Section.id=Ticket.parent"}'
-		,'{"class":"TicketComment","alias":"Comments","on":"Comments.thread=Thread.id"}'
+		,'{"class":"TicketComment","alias":"Comments","on":"Comments.thread=Thread.id AND Comments.published=1"}'
 		,'{"class":"modUser","alias":"User","on":"User.id=TicketComment.createdby"}'
 		,'{"class":"modUserProfile","alias":"Profile","on":"Profile.internalKey=User.id"}'
 	);
@@ -102,10 +102,11 @@ if ($action == 'comments') {
 else if ($action == 'tickets') {
 	$resourceColumns = !empty($includeContent) ?  $modx->getSelectColumns('Ticket', 'Ticket') : $modx->getSelectColumns('Ticket', 'Ticket', '', array('content'), true);
 	$mainClass = 'Ticket';
-	$innerJoin = array();
+	$innerJoin = array(
+		'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id AND Thread.closed=0 AND Thread.deleted=0"}'
+	);
 	$leftJoin = array(
-		'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id"}'
-		,'{"class":"TicketComment","alias":"TicketComment","on":"TicketComment.thread=Thread.id"}'
+		'{"class":"TicketComment","alias":"TicketComment","on":"TicketComment.thread=Thread.id AND TicketComment.published=1"}'
 		,'{"class":"TicketsSection","alias":"Section","on":"Section.id=Ticket.parent"}'
 		,'{"class":"modUser","alias":"User","on":"User.id=Ticket.createdby"}'
 		,'{"class":"modUserProfile","alias":"Profile","on":"Profile.internalKey=User.id"}'

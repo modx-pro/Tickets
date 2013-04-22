@@ -55,8 +55,8 @@ $leftJoin = array(
 		'{"class":"Ticket","alias":"Ticket","on":"Ticket.parent=TicketsSection.id AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key=\'Ticket\'"}'
 		,'{"class":"TicketView","alias":"View","on":"Ticket.id=View.parent"}'
 		,'{"class":"TicketVote","alias":"Vote","on":"Ticket.id=Vote.parent AND Vote.class=\'Ticket\'"}'
-		,'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id"}'
-		,'{"class":"TicketComment","alias":"Comment","on":"Comment.thread=Thread.id"}'
+		,'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id AND Thread.closed=0 AND Thread.deleted=0"}'
+		,'{"class":"TicketComment","alias":"Comment","on":"Comment.thread=Thread.id AND Comment.published=1"}'
 );
 
 // Fields to select

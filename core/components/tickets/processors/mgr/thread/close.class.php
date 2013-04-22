@@ -38,6 +38,12 @@ class TicketThreadDeleteProcessor extends modObjectRemoveProcessor  {
 	}
 
 
+	public function cleanup() {
+		$this->modx->cacheManager->delete('tickets/latest.comments');
+		$this->modx->cacheManager->delete('tickets/latest.tickets');
+	}
+
+
 	public function logManagerAction($action = '') {
 		$this->modx->logManagerAction($this->objectType.'_'.$action, $this->classKey, $this->object->get($this->primaryKeyField));
 	}
