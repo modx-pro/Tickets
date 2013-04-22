@@ -10,8 +10,17 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 	case xPDOTransport::ACTION_INSTALL:
 	case xPDOTransport::ACTION_UPGRADE:
 		/* Checking and installing required packages */
-		foreach (array('Jevix', 'pdoTools') as $package) {
-			if (!$modx->getObject('transport.modTransportPackage', array('package_name' => $package))) {
+		$packages = array(
+			'Jevix' => array()
+			,'pdoTools' => array(
+				'version_major' => 1
+				,'version_minor' => 2
+			)
+		);
+		foreach ($packages as $package => $options) {
+			$query = array('package_name' => $package);
+			if (!empty($options)) {$query = array_merge($query, $options);}
+			if (!$modx->getObject('transport.modTransportPackage', $query)) {
 				$modx->log(modX::LOG_LEVEL_INFO, 'Trying to install <b>'.$package.'</b>. Please wait...');
 
 				$response = installPackage($package);

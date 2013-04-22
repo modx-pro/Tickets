@@ -1,8 +1,7 @@
 <?php
 /* @var pdoFetch $pdoFetch */
-if (!empty($modx->services['pdofetch'])) {unset($modx->services['pdofetch']);}
 $pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
-$pdoFetch->config['nestedChunkPrefix'] = 'tickets_';
+$pdoFetch->setConfig($scriptProperties);
 $pdoFetch->addTime('pdoTools loaded.');
 
 $class = 'TicketsSection';
@@ -60,27 +59,6 @@ $leftJoin = array(
 		,'{"class":"TicketComment","alias":"Comment","on":"Comment.thread=Thread.id"}'
 );
 
-// Include TVs
-$tvsLeftJoin = $tvsSelect = array();
-if (!empty($includeTVs)) {
-	$tvs = array_map('trim',explode(',',$includeTVs));
-	if(!empty($tvs[0])){
-		$q = $modx->newQuery('modTemplateVar', array('name:IN' => $tvs));
-		$q->select('id,name');
-		if ($q->prepare() && $q->stmt->execute()) {
-			$tv_ids = $q->stmt->fetchAll(PDO::FETCH_ASSOC);
-			if (!empty($tv_ids)) {
-				foreach ($tv_ids as $tv) {
-					$leftJoin[] = '{"class":"modTemplateVarResource","alias":"TV'.$tv['name'].'","on":"TV'.$tv['name'].'.contentid = '.$class.'.id AND TV'.$tv['name'].'.tmplvarid = '.$tv['id'].'"}';
-					$tvsSelect[] = ' "TV'.$tv['name'].'":"`TV'.$tv['name'].'`.`value` as `'.$tvPrefix.$tv['name'].'`" ';
-				}
-			}
-		}
-		$pdoFetch->addTime('Included list of tvs: <b>'.implode(', ',$tvs).'</b>.');
-	}
-}
-// End of including TVs
-
 // Fields to select
 $resourceColumns = !empty($includeContent) ?  $modx->getSelectColumns($class, $class) : $modx->getSelectColumns($class, $class, '', array('content'), true);
 $select = array(
@@ -102,6 +80,7 @@ $default = array(
 	,'sortdir' => 'DESC'
 	,'fastMode' => false
 	,'return' => 'data'
+	,'nestedChunkPrefix' => 'tickets_'
 );
 
 // Merge all properties and run!
@@ -121,20 +100,6 @@ $output = null;
 $output = null;
 if (!empty($rows) && is_array($rows)) {
 	foreach ($rows as $k => $row) {
-		// Processing quick fields
-		if (!empty($tpl)) {
-			$pl = $pdoFetch->makePlaceholders($row);
-			$qfields = array_keys($pdoFetch->elements[$tpl]['placeholders']);
-			foreach ($qfields as $field) {
-				if (!empty($row[$field])) {
-					$row[$field] = str_replace($pl['pl'], $pl['vl'], $pdoFetch->elements[$tpl]['placeholders'][$field]);
-				}
-				else {
-					$row[$field] = '';
-				}
-			}
-		}
-
 		// Processing chunk
 		$output[] = empty($tpl)
 			? '<pre>'.str_replace(array('[',']','`'), array('&#91;','&#93;','&#96;'), htmlentities(print_r($row, true), ENT_QUOTES, 'UTF-8')).'</pre>'

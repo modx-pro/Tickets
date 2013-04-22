@@ -10,9 +10,8 @@ $scriptProperties = array_merge(array(
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 $Tickets->initialize($modx->context->key);
 /* @var pdoFetch $pdoFetch */
-if (!empty($modx->services['pdofetch'])) {unset($modx->services['pdofetch']);}
 $pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
-$pdoFetch->config['nestedChunkPrefix'] = 'tickets_';
+$pdoFetch->setConfig($scriptProperties);
 $pdoFetch->addTime('pdoTools loaded.');
 
 /* @var TicketThread $thread */
@@ -74,6 +73,7 @@ $default = array(
 	,'limit' => 0
 	,'fastMode' => true
 	,'return' => 'sql'
+	,'nestedChunkPrefix' => 'tickets_'
 );
 
 // Merge all properties and run!
