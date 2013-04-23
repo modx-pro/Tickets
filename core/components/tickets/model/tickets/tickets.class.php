@@ -591,23 +591,6 @@ class Tickets {
 		}
 		$node['comment_was_edited'] = $node['editedby'] && $node['editedon'];
 
-		// Processing quick fields
-		$this->loadPdoTools();
-		if (!array_key_exists($tpl, $this->pdoTools->elements)) {
-			$this->getChunk($tpl);
-		}
-		$pl = $this->pdoTools->makePlaceholders($node);
-		$qfields = array_keys($this->pdoTools->elements[$tpl]['placeholders']);
-		foreach ($qfields as $field) {
-			if (!empty($node[$field])) {
-				$node[$field] = str_replace($pl['pl'], $pl['vl'], $this->pdoTools->elements[$tpl]['placeholders'][$field]);
-
-			}
-			else {
-				$node[$field] = '';
-			}
-		}
-
 		return $this->getChunk($tpl, $node, $this->config['fastMode']);
 	}
 

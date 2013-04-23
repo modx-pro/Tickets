@@ -137,7 +137,7 @@ if (!empty($rows) && is_array($rows)) {
 		else if (!empty($row['new_comments'])) {
 			$thread_name = 'resource-'.$row['id'];
 			$q = $modx->newQuery('TicketComment');
-			$q->leftJoin('TicketThread', 'Thread', 'Thread.name = "'.$thread_name.'"  AND `Thread`.`closed`=`0` AND `Thread`.`deleted`=`0` AND `Thread`.`id`=`TicketComment`.`thread` AND `TicketComment`.`published` = 1');
+			$q->leftJoin('TicketThread', 'Thread', 'Thread.name = "'.$thread_name.'"  AND `Thread`.`closed`=0 AND `Thread`.`deleted`=0 AND `Thread`.`id`=`TicketComment`.`thread` AND `TicketComment`.`published`=1');
 			$q->where('`Thread`.`name` = "'.$thread_name.'" AND `TicketComment`.`createdon` > "'.$row['new_comments'].'" AND `TicketComment`.`createdby` != '.$modx->user->id);
 			$q->select('COUNT(`TicketComment`.`id`)');
 			if ($q->prepare() && $q->stmt->execute()) {
