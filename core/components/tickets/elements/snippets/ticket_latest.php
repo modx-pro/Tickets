@@ -12,12 +12,11 @@ $pdoFetch->setConfig($scriptProperties);
 $pdoFetch->addTime('pdoTools loaded.');
 
 if (empty($action)) {$action = 'comments';}
-$class = 'Ticket';
 $where = ($action == 'tickets') ? array('class_key' => 'Ticket') : array();
 
-if (empty($showUnpublished)) {$where[$class.'.published'] = 1;}
-if (empty($showHidden)) {$where[$class.'.hidemenu'] = 0;}
-if (empty($showDeleted)) {$where[$class.'.deleted'] = 0;}
+if (empty($showUnpublished)) {$where['Ticket.published'] = 1;}
+if (empty($showHidden)) {$where['Ticket.hidemenu'] = 0;}
+if (empty($showDeleted)) {$where['Ticket.deleted'] = 0;}
 if (!empty($user)) {
 	$user = array_map('trim', explode(',', $user));
 	$user_id = $user_username = array();
@@ -83,21 +82,22 @@ if ($action == 'comments') {
 	$commentColumns = !empty($includeContent) ?  $modx->getSelectColumns('TicketComment', 'TicketComment') : $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text','raw'), true);
 	$mainClass = 'TicketComment';
 	$innerJoin = array(
-		'{"class":"TicketThread","alias":"Thread","on":"TicketComment.id=Thread.comment_last AND Thread.closed=0 AND Thread.deleted=0"}'
+		empty($user)
+			? '{"class":"TicketThread","alias":"Thread","on":"TicketComment.id=Thread.comment_last AND Thread.closed=0 AND Thread.deleted=0"}'
+			: '{"class":"TicketThread","alias":"Thread","on":"TicketComment.thread=Thread.id AND Thread.closed=0 AND Thread.deleted=0"}'
 		,'{"class":"modResource","alias":"Ticket","on":"Ticket.id=Thread.resource"}'
 	);
 	$leftJoin = array(
 		'{"class":"modResource","alias":"Section","on":"Section.id=Ticket.parent"}'
-		,'{"class":"TicketComment","alias":"Comments","on":"Comments.thread=Thread.id AND Comments.published=1"}'
 		,'{"class":"modUser","alias":"User","on":"User.id=TicketComment.createdby"}'
 		,'{"class":"modUserProfile","alias":"Profile","on":"Profile.internalKey=User.id"}'
 	);
 	$select = array(
 		'"TicketComment":"'.$commentColumns.'"'
-		,'"Comments":"COUNT(DISTINCT `Comments`.`id`) as `comments`"'
 		,'"Ticket":"'.$resourceColumns.'"'
 	);
-
+	$groupby = empty($user) ? 'Ticket.id' : 'TicketComment.id';
+	$where['TicketComment.deleted'] = 0;
 }
 else if ($action == 'tickets') {
 	$resourceColumns = !empty($includeContent) ?  $modx->getSelectColumns('Ticket', 'Ticket') : $modx->getSelectColumns('Ticket', 'Ticket', '', array('content'), true);
@@ -115,6 +115,7 @@ else if ($action == 'tickets') {
 		'"Ticket":"'.$resourceColumns.'"'
 		,'"TicketComment":"COUNT(DISTINCT `TicketComment`.`id`) as `comments`"'
 	);
+	$groupby = 'Ticket.id';
 }
 else {return 'wrong action.';}
 
@@ -129,18 +130,16 @@ if (!empty($tvsSelect)) {$select = array_merge($select, $tvsSelect);}
 $default = array(
 	'class' => $mainClass
 	,'where' => $modx->toJSON($where)
+	,'innerJoin' => '['.implode(',',$innerJoin).']'
 	,'leftJoin' => '['.implode(',',$leftJoin).']'
 	,'select' => '{'.implode(',',$select).'}'
 	,'sortby' => 'createdon'
 	,'sortdir' => 'DESC'
-	,'groupby' => '`'.$class.'`.`id`'
+	,'groupby' => $groupby
 	,'fastMode' => false
 	,'return' => 'data'
 	,'nestedChunkPrefix' => 'tickets_'
 );
-if (!empty($innerJoin)) {
-	$default['innerJoin'] = '['.implode(',',$innerJoin).']';
-}
 
 // Merge all properties and run!
 if (!empty($scriptProperties['sortBy'])) {$scriptProperties['sortby'] = $scriptProperties['sortBy'];}
@@ -159,11 +158,18 @@ $output = null;
 $output = null;
 if (!empty($rows) && is_array($rows)) {
 	foreach ($rows as $k => $row) {
-		$properties = $modx->fromJSON(@$row['properties']);
-		if (empty($properties['process_tags'])) {
-			foreach ($row as $field => $value) {
-				$row[$field] = str_replace(array('[',']'), array('&#91;','&#93;'), $value);
+		if ($mainClass == 'Ticket') {
+			$properties = $modx->fromJSON(@$row['properties']);
+			if (empty($properties['process_tags'])) {
+				foreach ($row as $field => $value) {
+					$row[$field] = str_replace(array('[',']'), array('&#91;','&#93;'), $value);
+				}
 			}
+		}
+		else {
+			$row['resource'] = $row['ticket.id'];
+			$row['comments'] = $modx->getCount('TicketComment', array('thread' => $row['thread'], 'published' => 1));
+			$row = $Tickets->prepareComment($row);
 		}
 
 		// Processing main fields
