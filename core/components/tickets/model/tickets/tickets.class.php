@@ -329,7 +329,8 @@ class Tickets {
 			,'resource' => $this->config['resource']
 		));
 		$comment->set('id', '0');
-		return $this->templateNode($comment->toArray(), $this->config['tplCommentGuest']);
+		$comment=$comment->toArray();
+		return $this->templateNode(array_merge(array('mode'=>'preview'),$comment), $this->config['tplCommentGuest']);
 	}
 
 
@@ -359,6 +360,7 @@ class Tickets {
 		}
 		else {
 			$comment = $response->response['object'];
+			$comment['mode'] = 'save';
 			$comment['resource'] = $this->config['resource'];
 			if ($profile = $this->modx->getObject('modUserProfile', array('internalKey' => $comment['createdby']))) {
 				$profile = $profile->toArray();
