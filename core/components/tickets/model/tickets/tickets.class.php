@@ -359,6 +359,7 @@ class Tickets {
 		}
 		else {
 			$comment = $response->response['object'];
+			$comment['mode'] = 'save';
 			$comment['resource'] = $this->config['resource'];
 			if ($profile = $this->modx->getObject('modUserProfile', array('internalKey' => $comment['createdby']))) {
 				$profile = $profile->toArray();
