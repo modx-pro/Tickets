@@ -605,7 +605,7 @@ class Tickets {
 			return eval($this->prepareCommentCustom);
 		}
 		else {
-			$data['avatar'] = $this->config['gravatarUrl'] . md5($data['email']) .'?s=' . $this->config['gravatarSize'] . '&d=' . $this->config['gravatarIcon'];
+			$data['avatar'] = $this->config['gravatarUrl'] . md5(strtolower($data['email'])) .'?s=' . $this->config['gravatarSize'] . '&d=' . $this->config['gravatarIcon'];
 			if (!empty($data['resource'])) {
 				$data['url'] = $this->modx->makeUrl($data['resource'], '', '', 'full');
 			}
