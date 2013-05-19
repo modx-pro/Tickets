@@ -329,7 +329,8 @@ class Tickets {
 			,'resource' => $this->config['resource']
 		));
 		$comment->set('id', '0');
-		return $this->templateNode($comment->toArray(), $this->config['tplCommentGuest']);
+		$comment=$comment->toArray();
+		return $this->templateNode(array_merge(array('mode'=>'preview'),$comment), $this->config['tplCommentGuest']);
 	}
 
 
@@ -359,6 +360,7 @@ class Tickets {
 		}
 		else {
 			$comment = $response->response['object'];
+			$comment['mode'] = 'save';
 			$comment['resource'] = $this->config['resource'];
 			if ($profile = $this->modx->getObject('modUserProfile', array('internalKey' => $comment['createdby']))) {
 				$profile = $profile->toArray();
@@ -603,7 +605,7 @@ class Tickets {
 			return eval($this->prepareCommentCustom);
 		}
 		else {
-			$data['avatar'] = $this->config['gravatarUrl'] . md5($data['email']) .'?s=' . $this->config['gravatarSize'] . '&d=' . $this->config['gravatarIcon'];
+			$data['avatar'] = $this->config['gravatarUrl'] . md5(strtolower($data['email'])) .'?s=' . $this->config['gravatarSize'] . '&d=' . $this->config['gravatarIcon'];
 			if (!empty($data['resource'])) {
 				$data['url'] = $this->modx->makeUrl($data['resource'], '', '', 'full');
 			}
