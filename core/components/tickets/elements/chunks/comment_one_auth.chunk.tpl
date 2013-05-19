@@ -1,6 +1,7 @@
 <li class="ticket-comment" id="comment-[[+id]]" data-parent="[[+parent]]" data-newparent="[[+new_parent]]">
 	<div class="ticket-comment-body">
-		<div class="ticket-header">
+		<div class="ticket-comment-header">
+			<div class="ticket-comment-dot-wrapper"><div class="ticket-comment-dot"></div></div>
 			<img src="[[+avatar]]" class="ticket-avatar" alt="" />
 			<span class="ticket-comment-author">[[+fullname]]</span>
 			<span class="ticket-comment-createdon">[[+date_ago]]</span>[[+comment_was_edited]]
