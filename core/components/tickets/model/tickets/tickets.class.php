@@ -11,6 +11,7 @@ class Tickets {
 	public $pdoTools;
 	public $initialized = array();
 	private $prepareCommentCustom = null;
+	private $last_view = 0;
 
 	function __construct(modX &$modx,array $config = array()) {
 		$this->modx =& $modx;
@@ -113,6 +114,7 @@ class Tickets {
 							,actionUrl: "'.$this->config['actionUrl'].'"
 							,formBefore: '.$formBefore.'
 							,close_all_message: "'.$this->modx->lexicon('tickets_message_close_all').'"
+							,tpanel: '.($this->modx->user->isAuthenticated() ? 1 : 0).'
 							,'.$editorConfig.'
 						};
 						if(typeof jQuery == "undefined") {
@@ -361,6 +363,7 @@ class Tickets {
 		else {
 			$comment = $response->response['object'];
 			$comment['mode'] = 'save';
+			$comment['new_parent'] = $data['parent'];
 			$comment['resource'] = $this->config['resource'];
 			if ($profile = $this->modx->getObject('modUserProfile', array('internalKey' => $comment['createdby']))) {
 				$profile = $profile->toArray();
@@ -443,6 +446,48 @@ class Tickets {
 		return $arr;
 	}
 
+
+	public function getNewComments($name) {
+		$arr = array(
+			'error' => 0
+			,'data' => array()
+		);
+		if (!$this->modx->user->isAuthenticated()) {
+			$arr['error'] = 1;
+			$arr['message'] = $this->modx->lexicon('access_denied');
+		}
+		else if ($thread = $this->modx->getObject('TicketThread', array('name' => $name))) {
+			if ($view = $this->modx->getObject('TicketView', array('uid' => $this->modx->user->id, 'parent' => $thread->get('resource')))) {
+
+				$date = $view->get('timestamp');
+				$q = $this->modx->newQuery('TicketComment');
+				$q->leftJoin('modUser', 'User', '`User`.`id` = `TicketComment`.`createdby`');
+				$q->leftJoin('modUserProfile', 'Profile', '`Profile`.`internalKey` = `TicketComment`.`createdby`');
+				$q->where(array(
+					'`TicketComment`.`published`' => 1
+					,'`TicketComment`.`thread`' => $thread->id
+					,'`TicketComment`.`createdon`:>' => $date
+				));
+				$q->sortby('`TicketComment`.`id`', 'ASC');
+				$q->select($this->modx->getSelectColumns('TicketComment', 'TicketComment'));
+				$q->select($this->modx->getSelectColumns('modUser', 'User', '', array('username')));
+				$q->select($this->modx->getSelectColumns('modUserProfile', 'Profile', '', array('id'), true));
+
+				$comments = array();
+				if ($q->prepare() && $q->stmt->execute()) {
+					while ($row = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
+						$row['resource'] = $thread->resource;
+						$row['new_parent'] = $row['parent'];
+						$comments[$row['id']] = $this->templateNode($row);
+					}
+					$arr['data'] = $comments;
+					$this->logView($thread->resource);
+				}
+			}
+		}
+
+		return $arr;
+	}
 
 	/**
 	 * Sanitize any text through Jevix snippet
@@ -575,6 +620,16 @@ class Tickets {
 			}
 		}
 
+		// Checking comment novelty
+		if (isset($node['resource']) && $this->last_view === 0) {
+			if ($view = $this->modx->getObject('TicketView', array('parent' => $node['resource'], 'uid' => $this->modx->user->id))) {
+				$this->last_view = strtotime($view->get('timestamp'));
+			}
+			else {
+				$this->last_view = -1;
+			}
+		}
+
 		// Processing comment and selecting needed template
 		$node = $this->prepareComment($node);
 		if (empty($tpl)) {
@@ -592,6 +647,7 @@ class Tickets {
 			$node['comment_edit_link'] = true;
 		}
 		$node['comment_was_edited'] = $node['editedby'] && $node['editedon'];
+		$node['comment_new'] = $node['createdby'] != $this->modx->user->id && $this->last_view > 0 && strtotime($node['createdon']) > $this->last_view;
 
 		return $this->getChunk($tpl, $node, $this->config['fastMode']);
 	}
@@ -749,6 +805,9 @@ class Tickets {
 	 */
 	public function getChunk($name, array $properties = array(), $fastMode = false) {
 		$this->loadPdoTools();
+		if (!$this->modx->parser) {
+			$this->modx->getParser();
+		}
 		return $this->pdoTools->getChunk($name, $properties, $fastMode);
 	}
 
@@ -867,6 +926,21 @@ class Tickets {
 		}
 		return $text;
 
+	}
+
+
+	/*
+	 * Logs user views of a Resource. Need for new comments feature.
+	 *
+	 * @return void
+	 * */
+	public function logView($resource) {
+		if ($this->modx->user->isAuthenticated() && $this->modx->user->id && $this->modx->getCount('modResource', $resource)) {
+			$table = $this->modx->getTableName('TicketView');
+			$timestamp = date('Y-m-d H:i:s');
+			$sql = "INSERT INTO {$table} (`uid`,`parent`,`timestamp`) VALUES ({$this->modx->user->id},{$resource},'{$timestamp}') ON DUPLICATE KEY UPDATE `timestamp` = '{$timestamp}'";
+			if ($stmt = $this->modx->prepare($sql)) {$stmt->execute();}
+		}
 	}
 
 }

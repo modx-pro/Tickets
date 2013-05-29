@@ -20,6 +20,7 @@ $xpdo_meta_map['TicketView']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
+      'index' => 'pk',
     ),
     'uid' => 
     array (
@@ -29,6 +30,7 @@ $xpdo_meta_map['TicketView']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
+      'index' => 'pk',
     ),
     'timestamp' => 
     array (

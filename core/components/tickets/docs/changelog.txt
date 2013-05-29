@@ -1,7 +1,12 @@
 Changelog for Tickets.
+
 1.0.0 rc2
 ==========
 - Added comments level dots in default css.
+- Added indication of unseen comments.
+- Added ajax navigation through new comments.
+- Added ajax fetching of new comments.
+- Fixed primary keys in model of component.
 
 1.0.0 rc1
 ==========

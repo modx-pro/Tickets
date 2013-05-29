@@ -33,6 +33,7 @@ switch ($action) {
 	case 'comment/preview': $response = $Tickets->previewComment($_POST); break;
 	case 'comment/save': $response = $Tickets->saveComment($_POST); break;
 	case 'comment/get': $response = $Tickets->getComment(@$_POST['id']); break;
+	case 'comment/getlist': $response = $Tickets->getNewComments(@$_POST['thread']); break;
 	case 'ticket/preview': $response = $Tickets->previewTicket($_POST); break;
 	case 'ticket/save': $response = $Tickets->saveTicket($_POST); break;
 	case 'ticket/update': $response = $Tickets->saveTicket($_POST); break;
@@ -45,4 +46,5 @@ if (is_array($response)) {
 	$response = $modx->toJSON($response);
 }
 
+@session_write_close();
 exit($response);

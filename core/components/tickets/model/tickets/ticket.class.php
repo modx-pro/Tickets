@@ -233,7 +233,7 @@ class Ticket extends modResource {
 		$id = $this->id;
 
 		/* @var PDOStatement $stmt */
-		if ($this->xpdo->user->isAuthenticated() && $uid = $this->xpdo->user->id) {
+		//if ($this->xpdo->user->isAuthenticated() && $uid = $this->xpdo->user->id) {
 			/*
 			if (!$res = $this->xpdo->getObject('TicketView', array('parent' => $this->id, 'uid' => $uid))) {
 				$res = $this->xpdo->newObject('TicketView');
@@ -243,11 +243,13 @@ class Ticket extends modResource {
 			$res->set('timestamp', time());
 			$res->save();
 			*/
+			/*
 			$table = $this->xpdo->getTableName('TicketView');
 			$timestamp = date('Y-m-d H:i:s');
 			$sql = "INSERT INTO {$table} (`uid`,`parent`,`timestamp`) VALUES ({$uid},{$id},'{$timestamp}') ON DUPLICATE KEY UPDATE `timestamp` = '{$timestamp}'";
 			if ($stmt = $this->xpdo->prepare($sql)) {$stmt->execute();}
-		}
+			*/
+		//}
 	}
 
 

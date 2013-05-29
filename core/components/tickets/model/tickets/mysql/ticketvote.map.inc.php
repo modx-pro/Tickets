@@ -23,6 +23,7 @@ $xpdo_meta_map['TicketVote']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
+      'index' => 'pk',
     ),
     'ip' => 
     array (
@@ -55,6 +56,7 @@ $xpdo_meta_map['TicketVote']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
+      'index' => 'pk',
     ),
     'class' => 
     array (

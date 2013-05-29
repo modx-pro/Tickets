@@ -99,12 +99,12 @@
 	</object>
 -->
 	<object class="TicketVote" table="tickets_votes" extends="xPDOObject">
-		<field key="parent" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
+		<field key="parent" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
 		<field key="ip" dbtype="varchar" precision="16" phptype="string" null="false" default="0.0.0.0" />
 		<field key="value" dbtype="tinyint" precision="1" attributes="unsigned" phptype="integer" null="false" />
 
 		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" index="index" />
-		<field key="createdby" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
+		<field key="createdby" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
 
 		<field key="class" dbtype="varchar" precision="100" phptype="string" index="pk" />
 
@@ -120,8 +120,8 @@
 	</object>
 
 	<object class="TicketView" table="tickets_views" extends="xPDOObject">
-		<field key="parent" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
-		<field key="uid" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
+		<field key="parent" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
+		<field key="uid" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
 		<field key="timestamp" dbtype="datetime" phptype="datetime" null="false" />
 
 		<index alias="unique_key" name="unique_key" primary="true" unique="true" type="BTREE">

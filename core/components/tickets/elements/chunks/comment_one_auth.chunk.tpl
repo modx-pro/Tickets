@@ -1,4 +1,4 @@
-<li class="ticket-comment" id="comment-[[+id]]" data-parent="[[+parent]]" data-newparent="[[+new_parent]]">
+<li class="ticket-comment[[+comment_new]]" id="comment-[[+id]]" data-parent="[[+parent]]" data-newparent="[[+new_parent]]">
 	<div class="ticket-comment-body">
 		<div class="ticket-comment-header">
 			<div class="ticket-comment-dot-wrapper"><div class="ticket-comment-dot"></div></div>
@@ -19,3 +19,4 @@
 </li>
 <!--tickets_comment_edit_link <a href="#edit" onclick="Tickets.forms.edit([[+id]]);return false;">[[%ticket_comment_edit]]</a>-->
 <!--tickets_comment_was_edited <span class="ticket-comment-edited">([[%ticket_comment_was_edited]])</span></a>-->
+<!--tickets_comment_new  ticket-comment-new-->

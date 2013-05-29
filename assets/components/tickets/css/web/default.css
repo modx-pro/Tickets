@@ -39,6 +39,47 @@
 
 .form-actions .checkbox {display:inline-block;}
 
+#tpanel {width:32px;position:fixed;top:50%;opacity:0.5;background: #AAA;}
+#tpanel:hover{opacity:1;}
+#tpanel .change{color:#666;font-size:12px;text-decoration:none;padding:0 10px;position:absolute;left:0;top:-15px}
+#tpanel .divider{border-top: solid 1px #5c5c5c;border-bottom: solid 1px #dddddd;width: 28px;height: 0px;margin:0 auto;}
+#tpanel .refresh{display:block;background:url("../../img/web/refresh.gif") no-repeat left top;width:28px;margin:2px;height:28px;background-size:32px;}
+#tpanel .refresh.loading{background:url("../../img/web/loading.gif") no-repeat left top;background-size:32px;}
+#tpanel .new{text-decoration:none;display: block;color:#fff;font-size:12px;padding:0;padding-top:4px;padding-bottom:6px;width:34px;text-align:center;}
+
 .tickets-message-success  {background-color: green !important;}
 .tickets-message-error  {background-color: brown !important;}
 .tickets-message-info  {background-color: black !important;}
+
+.ticket-comment-new .ticket-comment-header {background-color: #efefef;}
+#comments-tpanel {
+	width:32px;
+	display: none;
+	position:fixed;
+	right:0;
+	top:50%;
+	margin-top: -16px;
+}
+
+#tpanel-refresh {
+	opacity: .5;
+	width: 32px;
+	height: 32px;
+	background-image: url('../../img/web/refresh.gif');
+	background-size: 32px;
+	cursor: pointer;
+}
+#tpanel-refresh:hover {opacity: 1;}
+#tpanel-refresh.loading {
+	opacity: 1;
+	background-image: url('../../img/web/loading.gif');
+	cursor: default;
+}
+
+#tpanel-new {
+	margin-top: 2px;
+	border-top: solid 1px #efefef;
+	text-align: center;
+	color: darkgreen;
+	cursor: pointer;
+}

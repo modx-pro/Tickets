@@ -19,15 +19,15 @@ if (!$thread = $modx->getObject('TicketThread', array('name' => $scriptPropertie
 	$thread = $modx->newObject('TicketThread');
 	$thread->fromArray(array(
 		'name' => $scriptProperties['thread']
+		,'resource' => $modx->resource->id
 		,'createdby' => $modx->user->id
 		,'createdon' => date('Y-m-d H:i:s')
-		,'resource' => $modx->resource->id
 	));
 }
 else if ($thread->get('deleted')) {
 	return $modx->lexicon('ticket_thread_err_deleted');
 }
-
+$scriptProperties['resource'] = $modx->resource->id;
 $thread->set('properties', $scriptProperties);
 $thread->save();
 

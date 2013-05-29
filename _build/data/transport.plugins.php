@@ -60,6 +60,13 @@ $events[5]->fromArray(array(
 	'propertyset' => 0,
 ),'',true,true);
 
+$events[6]= $modx->newObject('modPluginEvent');
+$events[6]->fromArray(array(
+	'event' => 'OnWebPageComplete',
+	'priority' => 0,
+	'propertyset' => 0,
+),'',true,true);
+
 if (is_array($events) && !empty($events)) {
 	$plugins[0]->addMany($events);
 	$modx->log(xPDO::LOG_LEVEL_INFO,'Packaged in '.count($events).' plugin events.'); flush();

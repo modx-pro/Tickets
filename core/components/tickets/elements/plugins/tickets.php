@@ -58,4 +58,9 @@ switch($modx->event->name) {
 		}
 	break;
 
+	case 'OnWebPageComplete':
+		$Tickets = $modx->getService('tickets');
+		$Tickets->logView($modx->resource->id);
+	break;
+
 }

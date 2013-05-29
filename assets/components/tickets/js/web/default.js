@@ -32,6 +32,7 @@ Tickets = {
 				data: {action: 'previewTicket'}
 				,form: form
 				,button: button
+				,dataType: 'json'
 				,beforeSubmit: function() {
 					var content = $('textarea[name="content"]',form).val();
 					content = content.replace(/\s+/g, "");
@@ -43,7 +44,6 @@ Tickets = {
 				}
 				,success: function(response) {
 					$(button).removeClass('loading');
-					response = $.parseJSON(response);
 					var element = $('#ticket-preview-placeholder');
 					if (response.error == 1) {
 						element.html('').hide();
@@ -92,6 +92,7 @@ Tickets = {
 				,url: TicketsConfig.actionUrl
 				,form: form
 				,button: button
+				,dataType: 'json'
 				,beforeSubmit: function() {
 					//$(button).addClass('loading');
 					clearInterval(window.timer);
@@ -101,10 +102,10 @@ Tickets = {
 						return false;
 					}
 					$(button).attr('disabled','disabled');
+					$('.ticket-comment.ticket-comment-new').removeClass('ticket-comment-new');
 					return true;
 				}
 				,success: function(response) {
-					response = $.parseJSON(response);
 					if (response.error == 1) {
 						$(button).removeAttr('disabled');
 						Tickets.Message.error(response.message);
@@ -112,39 +113,17 @@ Tickets = {
 					}
 					else if (!response.data && response.message) {
 						Tickets.Message.info(response.message);
+						return;
 					}
-					else {
-						var parent = $(response.data).attr('data-parent');
-						var id = $(response.data).attr('id');
-						var comment = $('#' + id);
 
-						Tickets.forms.comment();
-						if (comment.length > 0) {
-							comment.replaceWith(response.data);
-						}
-						else if (parent == 0 && TicketsConfig.formBefore) {
-							$('#comments').prepend(response.data)
-						}
-						else if (parent == 0) {
-							$('#comments').append(response.data)
-						}
-						else {
-							var pcomm = $('#comment-'+parent);
-							if (pcomm.data('parent') != pcomm.data('newparent')) {
-								parent = pcomm.data('newparent');
-							}
-							$('#comment-'+parent+' > .comments-list').append(response.data);
-						}
-					}
+					var id = $(response.data).attr('id');
+					//Tickets.comment.insert(response.data);
+					Tickets.comment.getlist();
 
 					$('#comment-preview-placeholder').html('').hide();
 					$('#comment-editor',form).val('');
 					$(form).hide();
 					$('.ticket-comment .comment-reply a').show();
-
-					var count = $('.ticket-comment').size();
-					$('#comment-total').text(count);
-
 					$(button).removeAttr('disabled');
 					prettyPrint();
 
@@ -152,6 +131,47 @@ Tickets = {
 				}
 			});
 			return false;
+		}
+		,getlist: function() {
+			var thread = $('#comment-form [name="thread"]');
+			if (!thread) {return false;}
+			Tickets.tpanel.start();
+			$.post(TicketsConfig.actionUrl, {action: 'comment/getlist', thread: thread.val()}, function(response) {
+				for (k in response.data) {
+					Tickets.comment.insert(response.data[k]);
+				}
+				var count = $('.ticket-comment').size();
+				$('#comment-total').text(count);
+
+				Tickets.tpanel.stop();
+			}, 'json')
+		}
+
+		,insert: function(data) {
+			var comment = $(data);
+			var parent = $(comment).attr('data-parent');
+			var id = $(comment).attr('id');
+
+			if ($('#'+ id).size() != 0) {
+				comment.replaceWith(data);
+			}
+			else {
+				if (parent == 0 && TicketsConfig.formBefore) {
+					$('#comments').prepend(data)
+				}
+				else if (parent == 0) {
+					$('#comments').append(data)
+				}
+				else {
+					var pcomm = $('#comment-'+parent);
+					if (pcomm.data('parent') != pcomm.data('newparent')) {
+						parent = pcomm.data('newparent');
+					}
+					else {
+						$('#comment-'+parent+' > .comments-list').append(data);
+					}
+				}
+			}
 		}
 	}
 
@@ -191,7 +211,6 @@ Tickets = {
 		}
 		,edit: function(comment_id) {
 			$.post(TicketsConfig.actionUrl, {action: "comment/get", id: comment_id}, function(response) {
-				response = $.parseJSON(response);
 				if (response.error == 1) {
 					Tickets.Message.error(response.message);
 				}
@@ -226,7 +245,7 @@ Tickets = {
 						}
 					}, 1000);
 				}
-			});
+			}, 'json');
 
 			return false;
 		}
@@ -289,4 +308,57 @@ Tickets.Message = {
 };
 
 
+Tickets.tpanel = {
+	wrapper: $('#comments-tpanel')
+	,refresh: $('#tpanel-refresh')
+	,new: $('#tpanel-new')
+	,class_new: 'ticket-comment-new'
+
+	,initialize: function() {
+		if (TicketsConfig.tpanel) {
+			this.wrapper.show();
+			this.stop();
+		}
+
+		this.refresh.on('click', function() {
+			Tickets.comment.getlist();
+		});
+
+		this.new.on('click', function() {
+			var elem = $('.' + Tickets.tpanel.class_new + ':first');
+			$('html, body').animate({
+				scrollTop: elem.offset().top
+			}, 1000, 'linear', function() {
+				elem.removeClass(Tickets.tpanel.class_new);
+			});
+
+			var count = parseInt(Tickets.tpanel.new.text());
+			if (count > 1) {
+				Tickets.tpanel.new.text(count - 1);
+			}
+			else {
+				Tickets.tpanel.new.text('').hide();
+			}
+		});
+	}
+
+	,start: function() {
+		$('.'+this.class_new).removeClass(this.class_new);
+		this.refresh.addClass('loading');
+	}
+
+	,stop: function() {
+		var count = $('.' + this.class_new).size();
+		if (count > 0) {
+			this.new.text(count).show();
+		}
+		else {
+			this.new.hide();
+		}
+		this.refresh.removeClass('loading');
+	}
+
+};
+
 Tickets.initialize();
+Tickets.tpanel.initialize();
