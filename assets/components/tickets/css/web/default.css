@@ -51,7 +51,7 @@
 .tickets-message-error  {background-color: brown !important;}
 .tickets-message-info  {background-color: black !important;}
 
-.ticket-comment-new .ticket-comment-header {background-color: #efefef;}
+.ticket-comment-new .ticket-comment-header {background-color: #f5f5dc;}
 #comments-tpanel {
 	width:32px;
 	display: none;
