@@ -14,7 +14,7 @@ Tickets = {
 			if (TicketsConfig.enable_editor == true) {
 				$('#ticket-editor').markItUp(TicketsConfig.editor.ticket);
 			}
-		})
+		});
 		$(document).ready(function() {
 			if (TicketsConfig.enable_editor == true) {
 				$('#comment-editor').markItUp(TicketsConfig.editor.comment);
@@ -116,8 +116,9 @@ Tickets = {
 						return;
 					}
 
+					Tickets.forms.comment();
 					var id = $(response.data).attr('id');
-					//Tickets.comment.insert(response.data);
+					Tickets.comment.insert(response.data);
 					Tickets.comment.getlist();
 
 					$('#comment-preview-placeholder').html('').hide();
@@ -151,25 +152,25 @@ Tickets = {
 			var comment = $(data);
 			var parent = $(comment).attr('data-parent');
 			var id = $(comment).attr('id');
+			var exists = $('#' + id);
 
-			if ($('#'+ id).size() != 0) {
-				comment.replaceWith(data);
+			if (exists.length > 0) {
+				exists.remove();
+			}
+
+			if (parent == 0 && TicketsConfig.formBefore) {
+				$('#comments').prepend(data)
+			}
+			else if (parent == 0) {
+				$('#comments').append(data)
 			}
 			else {
-				if (parent == 0 && TicketsConfig.formBefore) {
-					$('#comments').prepend(data)
-				}
-				else if (parent == 0) {
-					$('#comments').append(data)
+				var pcomm = $('#comment-'+parent);
+				if (pcomm.data('parent') != pcomm.data('newparent')) {
+					parent = pcomm.data('newparent');
 				}
 				else {
-					var pcomm = $('#comment-'+parent);
-					if (pcomm.data('parent') != pcomm.data('newparent')) {
-						parent = pcomm.data('newparent');
-					}
-					else {
-						$('#comment-'+parent+' > .comments-list').append(data);
-					}
+					$('#comment-'+parent+' > .comments-list').append(data);
 				}
 			}
 		}
@@ -275,7 +276,9 @@ Tickets = {
 			return (n < 10) ? '0'+n : n;
 		}
 		,goto: function(id) {
-			document.location.hash = id;
+			$('html, body').animate({
+				scrollTop: $('#' + id).offset().top
+			}, 1000);
 		}
 	}
 

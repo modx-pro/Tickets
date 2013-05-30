@@ -466,8 +466,13 @@ class Tickets {
 				$q->where(array(
 					'`TicketComment`.`published`' => 1
 					,'`TicketComment`.`thread`' => $thread->id
-					,'`TicketComment`.`createdon`:>' => $date
+					,'`TicketComment`.`createdby`:!=' => $this->modx->user->id
 				));
+				$q->andCondition(array(
+					'`TicketComment`.`createdon`:>' => $date
+					,'OR:`TicketComment`.`editedon`:>' => $date
+				));
+
 				$q->sortby('`TicketComment`.`id`', 'ASC');
 				$q->select($this->modx->getSelectColumns('TicketComment', 'TicketComment'));
 				$q->select($this->modx->getSelectColumns('modUser', 'User', '', array('username')));
