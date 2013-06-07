@@ -58,6 +58,7 @@ class Tickets {
 			,'charset' => $this->modx->getOption('modx_charset')
 			,'snippetPrepareComment' => $this->modx->getOption('tickets.snippet_prepare_comment')
 			,'commentEditTime' => $this->modx->getOption('tickets.comment_edit_time', null, 180)
+			,'depth' => 0
 		),$config);
 
 		$this->modx->addPackage('tickets',$this->config['modelPath']);
@@ -115,6 +116,7 @@ class Tickets {
 							,formBefore: '.$formBefore.'
 							,close_all_message: "'.$this->modx->lexicon('tickets_message_close_all').'"
 							,tpanel: '.($this->modx->user->isAuthenticated() ? 1 : 0).'
+							,thread_depth: '.$this->config['depth'].'
 							,'.$editorConfig.'
 						};
 						if(typeof jQuery == "undefined") {
@@ -644,7 +646,7 @@ class Tickets {
 			$tpl = $this->config['tplCommentDeleted'];
 		}
 
-		if (!empty($children)) {
+		if (!empty($children) || !empty($node['has_children'])) {
 			$node['children'] = $children;
 			$node['comment_edit_link'] = false;
 		}

@@ -20,6 +20,8 @@ Tickets = {
 				$('#comment-editor').markItUp(TicketsConfig.editor.comment);
 				$.jGrowl.defaults.closerTemplate = '<div>[ '+TicketsConfig.close_all_message+' ]</div>';
 			}
+			var count = $('.ticket-comment').size();
+			$('#comment-total').text(count);
 		});
 		$(document).on('click', '#comment-preview-placeholder a', function(e) {
 			return false;
@@ -116,8 +118,7 @@ Tickets = {
 						return;
 					}
 
-					Tickets.forms.comment();
-					var id = $(response.data).attr('id');
+					Tickets.forms.comment(false);
 					Tickets.comment.insert(response.data);
 					Tickets.comment.getlist();
 
@@ -128,7 +129,7 @@ Tickets = {
 					$(button).removeAttr('disabled');
 					prettyPrint();
 
-					Tickets.utils.goto(id);
+					Tickets.utils.goto($(response.data).attr('id'));
 				}
 			});
 			return false;
@@ -139,7 +140,7 @@ Tickets = {
 			Tickets.tpanel.start();
 			$.post(TicketsConfig.actionUrl, {action: 'comment/getlist', thread: thread.val()}, function(response) {
 				for (k in response.data) {
-					Tickets.comment.insert(response.data[k]);
+					Tickets.comment.insert(response.data[k], true);
 				}
 				var count = $('.ticket-comment').size();
 				$('#comment-total').text(count);
@@ -148,14 +149,23 @@ Tickets = {
 			}, 'json')
 		}
 
-		,insert: function(data) {
+		,insert: function(data, remove) {
 			var comment = $(data);
 			var parent = $(comment).attr('data-parent');
 			var id = $(comment).attr('id');
 			var exists = $('#' + id);
 
 			if (exists.length > 0) {
-				exists.remove();
+				var np = exists.data('newparent');
+				comment.attr('data-newparent', np);
+				data = comment[0].outerHTML;
+				if (remove) {
+					exists.remove();
+				}
+				else {
+					exists.replaceWith(data);
+					return;
+				}
 			}
 
 			if (parent == 0 && TicketsConfig.formBefore) {
@@ -168,10 +178,18 @@ Tickets = {
 				var pcomm = $('#comment-'+parent);
 				if (pcomm.data('parent') != pcomm.data('newparent')) {
 					parent = pcomm.data('newparent');
+					comment.attr('data-newparent', parent);
+					data = comment[0].outerHTML;
 				}
-				else {
-					$('#comment-'+parent+' > .comments-list').append(data);
+				else if (TicketsConfig.thread_depth) {
+					var level = pcomm.parents('.ticket-comment').length;
+					if (level > 0 && level >= (TicketsConfig.thread_depth - 1)) {
+						parent = pcomm.data('parent');
+						comment.attr('data-newparent', parent);
+						data = comment[0].outerHTML;
+					}
 				}
+				$('#comment-'+parent+' > .comments-list').append(data);
 			}
 		}
 	}
@@ -195,7 +213,8 @@ Tickets = {
 			$('#comment-editor', form).focus().val('');
 			return false;
 		}
-		,comment: function() {
+		,comment: function(focus) {
+			if (focus !== false) {focus = true;}
 			clearInterval(window.timer);
 			$('.time', form).text('');
 			$('.ticket-comment .comment-reply a').show();
@@ -207,7 +226,10 @@ Tickets = {
 			$('#comment-form-placeholder').append(form);
 			form.show();
 
-			$('#comment-editor', form).focus().val('');
+			$('#comment-editor', form).val('');
+			if (focus) {
+				$('#comment-editor', form).focus();
+			}
 			return false;
 		}
 		,edit: function(comment_id) {

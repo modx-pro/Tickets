@@ -1,5 +1,11 @@
 Changelog for Tickets.
 
+1.0.0 rc4
+==========
+- Fixed comments bugs when work in limited depth mode.
+- Smooth scroll to just created comment.
+- Improved ajax update of comments.
+
 1.0.0 rc3
 ==========
 - Comments fixes and improvements

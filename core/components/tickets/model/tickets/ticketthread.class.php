@@ -62,13 +62,15 @@ class TicketThread extends xPDOSimpleObject {
 		// Thank to Agel_Nash for the idea about how to limit comments by depth
 		$tree = array();
 		foreach ($comments as $id => &$row) {
+			$row['has_children'] = $row['level'] = 0;
+
 			if (empty($row['parent'])) {
-				$row['level'] = 0;
 				$tree[$id] = &$row;
 			}
 			else {
 				$parent = $row['parent'];
 				$level = $comments[$parent]['level'];
+				$comments[$parent]['has_children'] = 1;
 
 				if (!empty($depth) && $level >= $depth) {
 					$parent = $comments[$parent]['new_parent'];
