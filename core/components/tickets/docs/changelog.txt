@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.0.0 pl
+==========
+- Add ukrainian lang for frontend
+
 1.0.0 rc4
 ==========
 - Fixed comments bugs when work in limited depth mode.
@@ -17,7 +21,7 @@ Changelog for Tickets.
 - Added ajax navigation through new comments.
 - Added ajax fetching of new comments.
 - Fixed primary keys in model of component.
-- Added "mode" indication in comment save^ "preview" or "create".
+- Added "mode" indication in comment save: "preview" or "create".
 - Improved gravatar hash generation.
 
 1.0.0 rc1
