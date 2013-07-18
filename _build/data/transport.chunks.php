@@ -28,12 +28,12 @@ foreach ($tmp as $k => $v) {
 	/* @avr modChunk $chunk */
 	$chunk = $modx->newObject('modChunk');
 	$chunk->fromArray(array(
-		'id' => 0
-		,'name' => $k
+		'name' => $k
 		,'description' => ''
 		,'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/'.$v.'.chunk.tpl')
-		//,'static' => 1
-		//,'static_file' => 'core/components/tickets/elements/chunks/'.$v.'.chunk.tpl'
+		,'static' => BUILD_CHUNK_STATIC
+		,'source' => 1
+		,'static_file' => 'core/components/'.PKG_NAME_LOWER.'/elements/chunks/'.$v.'.chunk.tpl'
 		),'',true,true);
 
 	$chunks[] = $chunk;

@@ -101,8 +101,8 @@ foreach ($tmp as $k => $v) {
 	$setting = $modx->newObject('modSystemSetting');
 	$setting->fromArray(array_merge(
 		array(
-			'key' => 'tickets.'.$k
-			,'namespace' => 'tickets'
+			'key' => PKG_NAME_LOWER.'.'.$k
+			,'namespace' => PKG_NAME_LOWER
 		), $v
 	),'',true,true);
 

@@ -1,78 +1,54 @@
 <?php
-/**
- * Package in plugins
- *
- * @package miniShop
- * @subpackage build
- */
 $plugins = array();
-$plugins[0] = $modx->newObject('modPlugin');
-$plugins[0]->set('name','Tickets');
-$plugins[0]->fromArray(array(
-	'id' => 0
-	,'category' => 0
-	,'description' =>'Main plugin for Tickets'
-	,'plugincode' => getSnippetContent($sources['plugins'] . 'tickets.php')
-	//,'static' => 1
-	//,'static_file' => 'core/components/tickets/elements/plugins/tickets.php'
-));
 
-$events = array();
-$events[0]= $modx->newObject('modPluginEvent');
-$events[0]->fromArray(array(
-	'event' => 'OnDocFormSave',
-	'priority' => 0,
-	'propertyset' => 0,
-),'',true,true);
+$tmp = array(
+	'Tickets' => array(
+		'file' => 'tickets'
+		,'description' => ''
+		,'events' => array(
+			'OnDocFormSave'
+			,'OnSiteRefresh'
+			,'OnManagerPageInit'
+			,'OnDocFormRender'
+			,'OnWebPagePrerender'
+			,'OnPageNotFound'
+			,'OnWebPageComplete'
+		)
+	)
+);
 
-$events[1]= $modx->newObject('modPluginEvent');
-$events[1]->fromArray(array(
-	'event' => 'OnSiteRefresh',
-	'priority' => 0,
-	'propertyset' => 0,
-),'',true,true);
+foreach ($tmp as $k => $v) {
+	/* @var modplugin $plugin */
+	$plugin = $modx->newObject('modPlugin');
+	$plugin->fromArray(array(
+		'name' => $k
+		,'description' => @$v['description']
+		,'plugincode' => getSnippetContent($sources['source_core'].'/elements/plugins/'.$v['file'].'.php')
+		,'static' => BUILD_PLUGIN_STATIC
+		,'source' => 1
+		,'static_file' => 'core/components/'.PKG_NAME_LOWER.'/elements/plugins/'.$v['file'].'.php'
+	),'',true,true);
 
-$events[2]= $modx->newObject('modPluginEvent');
-$events[2]->fromArray(array(
-	'event' => 'OnManagerPageInit',
-	'priority' => 0,
-	'propertyset' => 0,
-),'',true,true);
+	$events = array();
+	if (!empty($v['events']) && is_array($v['events'])) {
+		foreach ($v['events'] as $k2 => $v2) {
+			/* @var $event modPluginEvent */
+			$event = $modx->newObject('modPluginEvent');
+			$event->fromArray(array(
+				'event' => $v2,
+				'priority' => 0,
+				'propertyset' => 0,
+			),'',true,true);
+			$events[] = $event;
+		}
+		unset($v['events']);
+	}
 
-$events[3]= $modx->newObject('modPluginEvent');
-$events[3]->fromArray(array(
-	'event' => 'OnDocFormRender',
-	'priority' => 0,
-	'propertyset' => 0,
-),'',true,true);
+	if (!empty($events)) {
+		$plugin->addMany($events);
+	}
 
-$events[4]= $modx->newObject('modPluginEvent');
-$events[4]->fromArray(array(
-	'event' => 'OnWebPagePrerender',
-	'priority' => 10,
-	'propertyset' => 0,
-),'',true,true);
-
-$events[5]= $modx->newObject('modPluginEvent');
-$events[5]->fromArray(array(
-	'event' => 'OnPageNotFound',
-	'priority' => 0,
-	'propertyset' => 0,
-),'',true,true);
-
-$events[6]= $modx->newObject('modPluginEvent');
-$events[6]->fromArray(array(
-	'event' => 'OnWebPageComplete',
-	'priority' => 0,
-	'propertyset' => 0,
-),'',true,true);
-
-if (is_array($events) && !empty($events)) {
-	$plugins[0]->addMany($events);
-	$modx->log(xPDO::LOG_LEVEL_INFO,'Packaged in '.count($events).' plugin events.'); flush();
-} else {
-	$modx->log(xPDO::LOG_LEVEL_ERROR,'Could not find plugin events!');
+	$plugins[] = $plugin;
 }
 
-unset($events);
 return $plugins;

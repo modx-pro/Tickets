@@ -16,12 +16,12 @@ foreach ($tmp as $k => $v) {
 	/* @avr modSnippet $snippet */
 	$snippet = $modx->newObject('modSnippet');
 	$snippet->fromArray(array(
-		'id' => 0
-		,'name' => $k
+		'name' => $k
 		,'description' => ''
 		,'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/'.$v.'.php')
-		,'static' => 1
-		,'static_file' => 'core/components/tickets/elements/snippets/'.$v.'.php'
+		,'static' => BUILD_SNIPPET_STATIC
+		,'source' => 1
+		,'static_file' => 'core/components/'.PKG_NAME_LOWER.'/elements/snippets/'.$v.'.php'
 	),'',true,true);
 
 	$properties = include $sources['build'].'properties/'.$v.'.php';
