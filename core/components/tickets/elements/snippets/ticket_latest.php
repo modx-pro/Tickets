@@ -56,7 +56,7 @@ else {
 			}
 		}
 		if (!empty($parents)) {
-			$where['parent:IN'] = $parents;
+			$where['Ticket.parent:IN'] = $parents;
 		}
 	}
 }

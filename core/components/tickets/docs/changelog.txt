@@ -2,7 +2,9 @@ Changelog for Tickets.
 
 1.0.0 pl
 ==========
-- Add ukrainian lang for frontend
+- Add ukrainian lang for frontend.
+- Improved snippets "getTickets" and "getTicketsSections" for more speed.
+- Fixed parameter "parents" in "TicketLatest".
 
 1.0.0 rc4
 ==========

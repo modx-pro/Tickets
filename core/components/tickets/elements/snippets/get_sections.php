@@ -35,7 +35,7 @@ else {
 			}
 		}
 		if (!empty($parents)) {
-			$where['parent:IN'] = $parents;
+			$where[$class.'.parent:IN'] = $parents;
 		}
 	}
 }
@@ -66,7 +66,7 @@ $select = array(
 	,'"Ticket":"COUNT(DISTINCT `Ticket`.`id`) as `tickets`"'
 	,'"Vote":"SUM(DISTINCT `Vote`.`value`) as `votes`"'
 	,'"View":"COUNT(DISTINCT `View`.`parent`, `View`.`uid`) as `views`"'
-	,'"Comment":"COUNT(DISTINCT `Comment`.`id`) as `comments`"'
+	//,'"Comment":"COUNT(DISTINCT `Comment`.`id`) as `comments`"'
 );
 if (!empty($tvsSelect)) {$select = array_merge($select, $tvsSelect);}
 
@@ -101,6 +101,7 @@ $output = null;
 if (!empty($rows) && is_array($rows)) {
 	foreach ($rows as $k => $row) {
 		// Processing chunk
+		$row['comments'] = $modx->getCount('TicketComment', array('published' => 1, 'thread' => $row['thread']));
 		$output[] = empty($tpl)
 			? '<pre>'.str_replace(array('[',']','`'), array('&#91;','&#93;','&#96;'), htmlentities(print_r($row, true), ENT_QUOTES, 'UTF-8')).'</pre>'
 			: $pdoFetch->getChunk($tpl, $row, $pdoFetch->config['fastMode']);

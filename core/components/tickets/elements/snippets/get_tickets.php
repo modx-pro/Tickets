@@ -3,7 +3,6 @@
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 /* @var pdoFetch $pdoFetch */
 $pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
-$pdoFetch->setConfig($scriptProperties);
 $pdoFetch->addTime('pdoTools loaded.');
 
 $class = 'Ticket';
@@ -38,20 +37,19 @@ if (!empty($resources)){
 	if (!empty($out)) {$where['id:NOT IN'] = $out;}
 }
 // Filter by parents
-else {
-	if (empty($parents) && $parents != '0') {$parents = $modx->resource->id;}
-	if (!empty($parents) && $parents > 0) {
-		$pids = array_map('trim', explode(',', $parents));
-		$parents = $pids;
-		if (!empty($depth) && $depth > 0) {
-			foreach ($pids as $v) {
-				if (!is_numeric($v)) {continue;}
-				$parents = array_merge($parents, $modx->getChildIds($v, $depth));
-			}
+if (empty($parents) && $parents != '0') {$parents = $modx->resource->id;}
+if (!empty($parents) && $parents > 0){
+	$pids = array_map('trim', explode(',', $parents));
+	$parents = $pids;
+	if (!empty($depth) && $depth > 0) {
+		foreach ($pids as $v) {
+			if (!is_numeric($v)) {continue;}
+			$parents = array_merge($parents, $modx->getChildIds($v, $depth));
 		}
-		if (!empty($parents)) {
-			$where['parent:IN'] = $parents;
-		}
+	}
+
+	if (!empty($parents)) {
+		$where[$class.'.parent:IN'] = $parents;
 	}
 }
 
@@ -71,7 +69,6 @@ $leftJoin = array(
 	,'{"class":"TicketView","alias":"LastView","on":"Ticket.id=LastView.parent AND LastView.uid = '.$modx->user->id.'"}'
 	,'{"class":"TicketVote","alias":"Vote","on":"Ticket.id=Vote.parent AND Vote.class=\'Ticket\'"}'
 	,'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id  AND Thread.closed=0 AND Thread.deleted=0"}'
-	,'{"class":"TicketComment","alias":"Comment","on":"Comment.thread=Thread.id AND Comment.published=1"}'
 	,'{"class":"TicketsSection","alias":"Section","on":"Section.id=Ticket.parent"}'
 	,'{"class":"modUser","alias":"User","on":"User.id=Ticket.createdby"}'
 	,'{"class":"modUserProfile","alias":"Profile","on":"Profile.internalKey=User.id"}'
@@ -90,7 +87,7 @@ $select = array(
 	,'"Vote":"SUM(`Vote`.`value`) AS `votes`"'
 	,'"View":"COUNT(DISTINCT `View`.`uid`) as `views`"'
 	,'"LastView":"`LastView`.`timestamp` as `new_comments`"'
-	,'"Comment":"COUNT(DISTINCT `Comment`.`id`) as `comments`"'
+	,'"Thread":"`Thread`.`id` as `thread`"'
 );
 if (!empty($tvsSelect)) {$select = array_merge($select, $tvsSelect);}
 
@@ -110,7 +107,7 @@ $default = array(
 // Merge all properties and run!
 if (!empty($scriptProperties['sortBy'])) {$scriptProperties['sortby'] = $scriptProperties['sortBy'];}
 if (!empty($scriptProperties['sortDir'])) {$scriptProperties['sortdir'] = $scriptProperties['sortDir'];}
-$pdoFetch->config = array_merge($pdoFetch->config, $default, $scriptProperties);
+$pdoFetch->setConfig(array_merge($default, $scriptProperties));
 $pdoFetch->addTime('Query parameters are prepared.');
 $rows = $pdoFetch->run();
 
@@ -130,19 +127,18 @@ if (!empty($rows) && is_array($rows)) {
 			}
 		}
 
+		$row['comments'] = $modx->getCount('TicketComment', array('published' => 1, 'thread' => $row['thread']));
 		// Processing new comments
 		if ($modx->user->isAuthenticated() && empty($row['new_comments'])) {
 			$row['new_comments'] = $row['comments'];
 		}
 		else if (!empty($row['new_comments'])) {
-			$thread_name = 'resource-'.$row['id'];
-			$q = $modx->newQuery('TicketComment');
-			$q->leftJoin('TicketThread', 'Thread', 'Thread.name = "'.$thread_name.'"  AND `Thread`.`closed`=0 AND `Thread`.`deleted`=0 AND `Thread`.`id`=`TicketComment`.`thread` AND `TicketComment`.`published`=1');
-			$q->where('`Thread`.`name` = "'.$thread_name.'" AND `TicketComment`.`createdon` > "'.$row['new_comments'].'" AND `TicketComment`.`createdby` != '.$modx->user->id);
-			$q->select('COUNT(`TicketComment`.`id`)');
-			if ($q->prepare() && $q->stmt->execute()) {
-				$row['new_comments'] = $q->stmt->fetch(PDO::FETCH_COLUMN);
-			}
+			$row['new_comments'] = $modx->getCount('TicketComment', array(
+				'published' => 1
+				,'thread' => $row['thread']
+				,'createdon:>' => $row['new_comments']
+				,'createdby:!=' => $modx->user->id
+			));
 		}
 		// Processing main fields
 		$row['date_ago'] = $Tickets->dateFormat($row['createdon']);
