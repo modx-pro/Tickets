@@ -21,6 +21,7 @@ if ($object->xpdo) {
 			//$manager->createObjectContainer('TicketAttachment');
 			$manager->createObjectContainer('TicketVote');
 			$manager->createObjectContainer('TicketView');
+			//$manager->createObjectContainer('TicketSubscription');
 
 			if ($modx instanceof modX) {
 				$modx->addExtensionPackage('tickets', '[[++core_path]]components/tickets/model/');

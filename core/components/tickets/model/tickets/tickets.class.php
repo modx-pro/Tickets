@@ -59,6 +59,10 @@ class Tickets {
 			,'snippetPrepareComment' => $this->modx->getOption('tickets.snippet_prepare_comment')
 			,'commentEditTime' => $this->modx->getOption('tickets.comment_edit_time', null, 180)
 			,'depth' => 0
+
+			,'gravatarUrl' => 'http://www.gravatar.com/avatar/'
+			,'gravatarSize' => 24
+			,'gravatarIcon' => 'mm'
 		),$config);
 
 		$this->modx->addPackage('tickets',$this->config['modelPath']);
@@ -536,30 +540,6 @@ class Tickets {
 
 
 	/**
-	 * Returns comments count for ticket
-	 *
-	 * @access public
-	 * @param int|string $id Id of ticket
-	 * @return integer Number of comments
-	 */
-	/*
-	public function getTicketComments($thread = '') {
-		$count = 0;
-		if (is_numeric($thread)) {$thread = 'resource-'.$thread;}
-
-		$q = $this->modx->newQuery('TicketComment');
-		$q->leftJoin('TicketThread', 'TicketThread','TicketThread.id = TicketComment.thread');
-		$q->where(array('TicketThread.name' => $thread, 'published' => 1));
-		$q->select('COUNT(`id`)');
-		if ($q->prepare() && $q->stmt->execute()) {
-			$count = $q->stmt->fetch(PDO::FETCH_COLUMN);
-		}
-		return $count;
-	}
-	*/
-
-
-	/**
 	 * Sanitize MODX tags
 	 *
 	 * @access public
@@ -575,50 +555,9 @@ class Tickets {
 	}
 
 
-	/*
-	 * Returns all comments of the resource with given id
-	 * */
-	/*
-	public function getCommentThread($thread = '') {
-		$thread = trim((string) $thread);
-		if (empty($thread)) {
-			$thread = 'resource-' . $this->modx->resource->id;
-		}
-		else if (is_numeric($thread)) {
-			$thread = 'resource-'.$thread;
-		}
-
-		$data = array_merge($this->config, array(
-			'thread' => $thread
-		));
-		$response = $this->runProcessor('web/thread/get', $data);
-		if (is_array($response->response) && isset($response->response['message'])) {
-			return $response->response['message'];
-		}
-		$data = json_decode($response->response,true);
-		$comments = '';
-		if ($data['total'] > 0) {
-			$tpl = $this->modx->user->isAuthenticated() ? $this->config['tplCommentAuth'] : $this->config['tplCommentGuest'];
-			foreach ($data['results'] as $node) {
-				$comments .= $this->templateNode($node, $tpl);
-			}
-		}
-
-		$arr = array(
-			'total' => $data['total']
-			,'comments' => $comments
-		);
-
-		$commentsThread = $this->modx->getChunk($this->config['tplComments'], $arr);
-		$commentForm = $this->getCommentForm();
-
-		return $commentsThread . $commentForm;
-	}
-
-
-	/*
+	/**
 	 * Recursive template of the comment node
-	 * */
+	 */
 	public function templateNode($node = array(), $tpl = null) {
 		$children = null;
 		if (!empty($node['children'])) {
@@ -660,9 +599,9 @@ class Tickets {
 	}
 
 
-	/*
+	/**
 	 * Render of the comment
-	 * */
+	 */
 	public function prepareComment($data = array()) {
 		if (!empty($this->prepareCommentCustom)) {
 			return eval($this->prepareCommentCustom);
@@ -679,11 +618,11 @@ class Tickets {
 	}
 
 
-	/* Method for transform array to placeholders
+	/** Method for transform array to placeholders
 	 *
 	 * @var array $array With keys and values
 	 * @return array $array Two nested arrays With placeholders and values
-	 * */
+	 */
 	public function makePlaceholders(array $array = array(), $prefix = '') {
 		$result = array(
 			'pl' => array()
@@ -702,9 +641,9 @@ class Tickets {
 	}
 
 
-	/*
+	/**
 	 *Email notifications about new comment
-	 * */
+	 */
 	public function sendCommentMails($comment = array()) {
 		$owner = $reply = null;
 		$resource = $parent = array();
@@ -769,9 +708,9 @@ class Tickets {
 	}
 
 
-	/*
+	/**
 	 * Just sends emails
-	 * */
+	 */
 	public function sendMail($data = array()) {
 		if (empty($data['subject']) || empty($data['to']) || empty($data['message'])) {
 			return false;
@@ -791,9 +730,9 @@ class Tickets {
 		return true;
 	}
 
-	/* Loads an instance of pdoTools for chunks processing
+	/** Loads an instance of pdoTools for chunks processing
 	 *
-	 * */
+	 */
 	public function loadPdoTools() {
 		if (!is_object($this->pdoTools) || !($this->pdoTools instanceof pdoTools)) {
 			$this->pdoTools = $this->modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/', array('nestedChunkPrefix' => 'tickets_'));
@@ -804,10 +743,9 @@ class Tickets {
 	/**
 	 * Process and return the output from a Chunk by name.
 	 *
-	 * @param string $chunkName The name of the chunk.
-	 * @param array $properties An associative array of properties to process
-	 * the Chunk with, treated as placeholders within the scope of the Element.
-	 * @param boolean $fastMode If true, all MODX tags in chunk will be processed.
+	 * @param string $name The name of the chunk.
+	 * @param array $properties An associative array of properties to process the Chunk with, treated as placeholders within the scope of the Element.
+	 * @param boolean $fastMode If false, all MODX tags in chunk will be processed.
 	 * @return string The processed output of the Chunk.
 	 */
 	public function getChunk($name, array $properties = array(), $fastMode = false) {
@@ -818,11 +756,11 @@ class Tickets {
 		return $this->pdoTools->getChunk($name, $properties, $fastMode);
 	}
 
-	/*
+	/**
 	 * Formats date to "10 minutes ago" or "Yesterday in 22:10"
 	 * This algorithm taken from https://github.com/livestreet/livestreet/blob/7a6039b21c326acf03c956772325e1398801c5fe/engine/modules/viewer/plugs/function.date_format.php
 	 * @param $date $time Timestamp to format
-	 * */
+	 */
 	public function dateFormat($date, $dateFormat = null) {
 		$date = preg_match('/^\d+$/',$date) ?  $date : strtotime($date);
 		$dateFormat = !empty($dateFormat) ? $dateFormat : $this->config['dateFormat'];
@@ -886,7 +824,7 @@ class Tickets {
 	}
 
 
-	/*
+	/**
 	 * Declension of words
 	 * This algorithm taken from https://github.com/livestreet/livestreet/blob/eca10c0186c8174b774a2125d8af3760e1c34825/engine/modules/viewer/plugs/modifier.declension.php
 	 *
@@ -894,7 +832,7 @@ class Tickets {
 	 * @param string $forms
 	 * @param string $language
 	 * @return string
-	 * */
+	 */
 	public function declension($count, $forms, $lang = null) {
 		if (empty($lang)) {
 			$lang = $this->modx->getOption('cultureKey',null,'en');
@@ -936,11 +874,11 @@ class Tickets {
 	}
 
 
-	/*
+	/**
 	 * Logs user views of a Resource. Need for new comments feature.
 	 *
 	 * @return void
-	 * */
+	 */
 	public function logView($resource) {
 		if ($this->modx->user->isAuthenticated() && $this->modx->user->id && $this->modx->getCount('modResource', $resource)) {
 			$table = $this->modx->getTableName('TicketView');

@@ -1,4 +1,5 @@
 <?php
+/* @var array $scriptProperties */
 /* @var Tickets $Tickets */
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 /* @var pdoFetch $pdoFetch */
@@ -7,9 +8,9 @@ $pdoFetch->addTime('pdoTools loaded.');
 
 $class = 'Ticket';
 $where = array('class_key' => $class);
-if (empty($showUnpublished)) {$where['published'] = 1;}
-if (empty($showHidden)) {$where['hidemenu'] = 0;}
-if (empty($showDeleted)) {$where['deleted'] = 0;}
+if (empty($showUnpublished)) {$where[$class.'.published'] = 1;}
+if (empty($showHidden)) {$where[$class.'.hidemenu'] = 0;}
+if (empty($showDeleted)) {$where[$class.'.deleted'] = 0;}
 if (!empty($user)) {
 	$user = array_map('trim', explode(',', $user));
 	$user_id = $user_username = array();
@@ -67,7 +68,7 @@ $pdoFetch->addTime('"Where" expression built.');
 $leftJoin = array(
 	'{"class":"TicketView","alias":"View","on":"Ticket.id=View.parent"}'
 	,'{"class":"TicketView","alias":"LastView","on":"Ticket.id=LastView.parent AND LastView.uid = '.$modx->user->id.'"}'
-	,'{"class":"TicketVote","alias":"Vote","on":"Ticket.id=Vote.parent AND Vote.class=\'Ticket\'"}'
+	//,'{"class":"TicketVote","alias":"Vote","on":"Ticket.id=Vote.parent AND Vote.class=\'Ticket\'"}'
 	,'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id  AND Thread.closed=0 AND Thread.deleted=0"}'
 	,'{"class":"TicketsSection","alias":"Section","on":"Section.id=Ticket.parent"}'
 	,'{"class":"modUser","alias":"User","on":"User.id=Ticket.createdby"}'
@@ -84,7 +85,7 @@ $select = array(
 	,'"Section":"'.$sectionColumns.'"'
 	,'"User":"'.$userColumns.'"'
 	,'"Profile":"'.$profileColumns.'"'
-	,'"Vote":"SUM(`Vote`.`value`) AS `votes`"'
+	//,'"Vote":"SUM(`Vote`.`value`) AS `votes`"'
 	,'"View":"COUNT(DISTINCT `View`.`uid`) as `views`"'
 	,'"LastView":"`LastView`.`timestamp` as `new_comments`"'
 	,'"Thread":"`Thread`.`id` as `thread`"'
@@ -98,36 +99,36 @@ $default = array(
 	,'select' => '{'.implode(',',$select).'}'
 	,'sortby' => 'createdon'
 	,'sortdir' => 'DESC'
-	,'groupby' => '`'.$class.'`.`id`'
-	,'fastMode' => false
+	,'groupby' => $class.'.id'
 	,'return' => 'data'
 	,'nestedChunkPrefix' => 'tickets_'
 );
 
+if (!empty($in) && (empty($scriptProperties['sortby']) || $scriptProperties['sortby'] == 'id')) {
+	$scriptProperties['sortby'] = "find_in_set(`$class`.`id`,'".implode(',', $in)."')";
+	$scriptProperties['sortdir'] = '';
+}
+
 // Merge all properties and run!
-if (!empty($scriptProperties['sortBy'])) {$scriptProperties['sortby'] = $scriptProperties['sortBy'];}
-if (!empty($scriptProperties['sortDir'])) {$scriptProperties['sortdir'] = $scriptProperties['sortDir'];}
 $pdoFetch->setConfig(array_merge($default, $scriptProperties));
 $pdoFetch->addTime('Query parameters are prepared.');
 $rows = $pdoFetch->run();
-
-// Initializing chunk for template rows
-if (!empty($tpl)) {
-	$pdoFetch->getChunk($tpl);
-}
 
 // Processing rows
 $output = null;
 if (!empty($rows) && is_array($rows)) {
 	foreach ($rows as $k => $row) {
-		$properties = $modx->fromJSON(@$row['properties']);
+		$properties = $modx->fromJSON($row['properties']);
 		if (empty($properties['process_tags'])) {
 			foreach ($row as $field => $value) {
 				$row[$field] = str_replace(array('[',']'), array('&#91;','&#93;'), $value);
 			}
 		}
 
+		// Processing main fields
+		$row['date_ago'] = $Tickets->dateFormat($row['createdon']);
 		$row['comments'] = $modx->getCount('TicketComment', array('published' => 1, 'thread' => $row['thread']));
+		$row['idx'] = $pdoFetch->idx++;
 		// Processing new comments
 		if ($modx->user->isAuthenticated() && empty($row['new_comments'])) {
 			$row['new_comments'] = $row['comments'];
@@ -140,12 +141,11 @@ if (!empty($rows) && is_array($rows)) {
 				,'createdby:!=' => $modx->user->id
 			));
 		}
-		// Processing main fields
-		$row['date_ago'] = $Tickets->dateFormat($row['createdon']);
 
 		// Processing chunk
+		$tpl = $pdoFetch->defineChunk($row);
 		$output[] = empty($tpl)
-			? '<pre>'.str_replace(array('[',']','`'), array('&#91;','&#93;','&#96;'), htmlentities(print_r($row, true), ENT_QUOTES, 'UTF-8')).'</pre>'
+			? '<pre>'.$pdoFetch->getChunk('', $row).'</pre>'
 			: $pdoFetch->getChunk($tpl, $row, $pdoFetch->config['fastMode']);
 	}
 	$pdoFetch->addTime('Returning processed chunks');

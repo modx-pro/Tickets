@@ -1,9 +1,9 @@
 Changelog for Tickets.
 
-1.0.0 pl
+1.0.0 pl1 (requires pdoTools 1.4.1 or later)
 ==========
 - Add ukrainian lang for frontend.
-- Improved snippets "getTickets" and "getTicketsSections" for more speed.
+- Improved all snippets.
 - Fixed parameter "parents" in "TicketLatest".
 
 1.0.0 rc4

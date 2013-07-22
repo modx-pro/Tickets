@@ -1,4 +1,5 @@
 <?php
+/* @var array $scriptProperties */
 if (empty($scriptProperties['thread']) && !empty($modx->resource)) {$scriptProperties['thread'] = 'resource-'.$modx->resource->id;}
 $scriptProperties = array_merge(array(
 	'resource' => $modx->resource->id
@@ -6,12 +7,15 @@ $scriptProperties = array_merge(array(
 	,'commentEditTime' => $modx->getOption('tickets.comment_edit_time', null, 180)
 ), $scriptProperties);
 
+if (!isset($depth)) {$depth = 0;}
+if (!isset($tplCommentAuth)) {$tplCommentAuth = 'tpl.Tickets.comment.one.auth';}
+if (!isset($tplCommentGuest)) {$tplCommentGuest = 'tpl.Tickets.comment.one.guest';}
+
 /* @var Tickets $Tickets */
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 $Tickets->initialize($modx->context->key);
 /* @var pdoFetch $pdoFetch */
 $pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
-$pdoFetch->setConfig($scriptProperties);
 $pdoFetch->addTime('pdoTools loaded.');
 
 /* @var TicketThread $thread */
@@ -77,23 +81,30 @@ $default = array(
 );
 
 // Merge all properties and run!
-$pdoFetch->config = array_merge($pdoFetch->config, $default, $scriptProperties);
+$pdoFetch->setConfig(array_merge($default, $scriptProperties));
 $pdoFetch->addTime('Query parameters are prepared.');
 $sql = $pdoFetch->run();
+
 /* @var PDOStatement $q*/
 $q = $modx->prepare($sql);
+$pdoFetch->addTime('SQL prepared <small>"'.$q->queryString.'"</small>');
 if (!$q->execute()) {
 	$modx->log(modX::LOG_LEVEL_INFO, '[pdoTools] '.$sql);
 	$errors = $q->errorInfo();
 	$modx->log(modX::LOG_LEVEL_ERROR, '[pdoTools] Error '.$errors[0].': '.$errors[2]);
 }
+$pdoFetch->addTime('SQL executed.');
 
-$rows = array(); $total = 0;
+$q2 = $modx->prepare("SELECT FOUND_ROWS();");
+$q2->execute();
+$total = $q2->fetch(PDO::FETCH_COLUMN);
+$pdoFetch->addTime('Total rows: <b>'.$total.'</b>');
+
+$rows = array();
 while ($row = $q->fetch(PDO::FETCH_ASSOC))  {
 	$row['level'] = 0;
 	$row['new_parent'] = $row['parent'];
 	$rows[$row['id']] = $row;
-	$total++;
 }
 $pdoFetch->addTime('Rows fetched');
 

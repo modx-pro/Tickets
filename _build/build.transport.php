@@ -266,7 +266,7 @@ if (file_exists($sources['build'].'setup.options.php')) {
 		'source' => $sources['build'].'setup.options.php',
 	);
 }
-$builder->setPackageAttributes();
+$builder->setPackageAttributes($package_attributes);
 $modx->log(modX::LOG_LEVEL_INFO,'Added package attributes and setup options.');
 
 /* zip up package */

@@ -1,5 +1,5 @@
 <?php
-$output = '';
+/* @var array $scriptProperties */
 if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.'.$cacheKey)) {
 	return $output;
 }
@@ -8,7 +8,6 @@ if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.'.$c
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 /* @var pdoFetch $pdoFetch */
 $pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
-$pdoFetch->setConfig($scriptProperties);
 $pdoFetch->addTime('pdoTools loaded.');
 
 if (empty($action)) {$action = 'comments';}
@@ -45,7 +44,6 @@ if (!empty($resources)){
 }
 // Filter by parents
 else {
-	//if (empty($parents) && $parents != '0') {$parents = $modx->resource->id;}
 	if (!empty($parents) && $parents > 0) {
 		$pids = array_map('trim', explode(',', $parents));
 		$parents = $pids;
@@ -71,16 +69,11 @@ if (!empty($scriptProperties['where'])) {
 unset($scriptProperties['where']);
 $pdoFetch->addTime('"Where" expression built.');
 
-// Fields to select
-$sectionColumns = $modx->getSelectColumns('TicketsSection', 'Section', 'section.', array('content'), true);
-$userColumns = $modx->getSelectColumns('modUser', 'User', '', array('username'));
-$profileColumns = $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id'), true);
-
 // Joining tables
 if ($action == 'comments') {
 	$resourceColumns = !empty($includeContent) ?  $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.') : $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.', array('content'), true);
 	$commentColumns = !empty($includeContent) ?  $modx->getSelectColumns('TicketComment', 'TicketComment') : $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text','raw'), true);
-	$mainClass = 'TicketComment';
+	$class = 'TicketComment';
 	$innerJoin = array(
 		empty($user)
 			? '{"class":"TicketThread","alias":"Thread","on":"TicketComment.id=Thread.comment_last AND Thread.closed=0 AND Thread.deleted=0"}'
@@ -101,7 +94,7 @@ if ($action == 'comments') {
 }
 else if ($action == 'tickets') {
 	$resourceColumns = !empty($includeContent) ?  $modx->getSelectColumns('Ticket', 'Ticket') : $modx->getSelectColumns('Ticket', 'Ticket', '', array('content'), true);
-	$mainClass = 'Ticket';
+	$class = 'Ticket';
 	$innerJoin = array(
 		'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id AND Thread.closed=0 AND Thread.deleted=0"}'
 	);
@@ -113,11 +106,16 @@ else if ($action == 'tickets') {
 	);
 	$select = array(
 		'"Ticket":"'.$resourceColumns.'"'
-		,'"TicketComment":"COUNT(DISTINCT `TicketComment`.`id`) as `comments`"'
+		,'"Thread":"`Thread`.`id` as `thread`"'
 	);
 	$groupby = 'Ticket.id';
 }
 else {return 'wrong action.';}
+
+// Fields to select
+$sectionColumns = $modx->getSelectColumns('TicketsSection', 'Section', 'section.', array('content'), true);
+$userColumns = $modx->getSelectColumns('modUser', 'User', '', array('username'));
+$profileColumns = $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id'), true);
 
 $select = array_merge($select, array(
 	'"Section":"'.$sectionColumns.'"'
@@ -125,10 +123,8 @@ $select = array_merge($select, array(
 	,'"Profile":"'.$profileColumns.'"'
 ));
 
-if (!empty($tvsSelect)) {$select = array_merge($select, $tvsSelect);}
-
 $default = array(
-	'class' => $mainClass
+	'class' => $class
 	,'where' => $modx->toJSON($where)
 	,'innerJoin' => '['.implode(',',$innerJoin).']'
 	,'leftJoin' => '['.implode(',',$leftJoin).']'
@@ -136,30 +132,27 @@ $default = array(
 	,'sortby' => 'createdon'
 	,'sortdir' => 'DESC'
 	,'groupby' => $groupby
-	,'fastMode' => false
 	,'return' => 'data'
 	,'nestedChunkPrefix' => 'tickets_'
 );
 
 // Merge all properties and run!
-if (!empty($scriptProperties['sortBy'])) {$scriptProperties['sortby'] = $scriptProperties['sortBy'];}
-if (!empty($scriptProperties['sortDir'])) {$scriptProperties['sortdir'] = $scriptProperties['sortDir'];}
-$pdoFetch->config = array_merge($pdoFetch->config, $default, $scriptProperties);
+$pdoFetch->setConfig(array_merge($default, $scriptProperties));
 $pdoFetch->addTime('Query parameters are prepared.');
 $rows = $pdoFetch->run();
 
-// Initializing chunk for template rows
-if (!empty($tpl)) {
-	$pdoFetch->getChunk($tpl);
-}
-
-$output = null;
 // Processing rows
-$output = null;
+$output = '';
 if (!empty($rows) && is_array($rows)) {
 	foreach ($rows as $k => $row) {
-		if ($mainClass == 'Ticket') {
-			$properties = $modx->fromJSON(@$row['properties']);
+
+		// Processing main fields
+		$row['comments'] = $modx->getCount('TicketComment', array('thread' => $row['thread'], 'published' => 1));
+		$row['idx'] = $pdoFetch->idx++;
+
+		if ($class == 'Ticket') {
+			$row['date_ago'] = $Tickets->dateFormat($row['createdon']);
+			$properties = $modx->fromJSON($row['properties']);
 			if (empty($properties['process_tags'])) {
 				foreach ($row as $field => $value) {
 					$row[$field] = str_replace(array('[',']'), array('&#91;','&#93;'), $value);
@@ -168,16 +161,13 @@ if (!empty($rows) && is_array($rows)) {
 		}
 		else {
 			$row['resource'] = $row['ticket.id'];
-			$row['comments'] = $modx->getCount('TicketComment', array('thread' => $row['thread'], 'published' => 1));
 			$row = $Tickets->prepareComment($row);
 		}
 
-		// Processing main fields
-		$row['date_ago'] = $Tickets->dateFormat($row['createdon']);
-
 		// Processing chunk
+		$tpl = $pdoFetch->defineChunk($row);
 		$output[] = empty($tpl)
-			? '<pre>'.str_replace(array('[',']','`'), array('&#91;','&#93;','&#96;'), htmlentities(print_r($row, true), ENT_QUOTES, 'UTF-8')).'</pre>'
+			? '<pre>'.$pdoFetch->getChunk('', $row).'</pre>'
 			: $pdoFetch->getChunk($tpl, $row, $pdoFetch->config['fastMode']);
 	}
 	$pdoFetch->addTime('Returning processed chunks');

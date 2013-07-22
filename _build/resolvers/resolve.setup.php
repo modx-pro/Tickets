@@ -14,7 +14,8 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 			'Jevix' => array()
 			,'pdoTools' => array(
 				'version_major' => 1
-				,'version_minor' => 2
+				,'version_minor' => 4
+				,'version_patch' => 1
 			)
 		);
 		foreach ($packages as $package => $options) {
@@ -119,7 +120,10 @@ function installPackage($packageName) {
 	global $modx;
 
 	/* @var modTransportProvider $provider */
-	$provider = $modx->getObject('transport.modTransportProvider', 1);
+	if (!$provider = $modx->getObject('transport.modTransportProvider', array('service_url:LIKE' => '%simpledream%'))) {
+		$provider = $modx->getObject('transport.modTransportProvider', 1);
+	}
+
 	$provider->getClient();
 	$modx->getVersionData();
 	$productVersion = $modx->version['code_name'].'-'.$modx->version['full_version'];
@@ -138,38 +142,12 @@ function installPackage($packageName) {
 				$versionSignature = explode('.',$sig[1]);
 				$url = $foundPackage->location;
 
-				if (function_exists('curl_init')) {
-					$curl = curl_init($url);
-					curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-					curl_setopt($curl, CURLOPT_HEADER, false);
-					curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-					curl_setopt($curl, CURLOPT_AUTOREFERER, true);
-					curl_setopt($curl, CURLOPT_URL, $url);
-					curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-					$file = curl_exec($curl);
-					$info = curl_getinfo($curl);
-					if ($file === false) {
-						return array(
-							'success' => 0
-						,'message' => 'Could not download package <b>'.$packageName.'</b>: '.curl_error($curl)
-						);
-					}
-					else if (empty($file) && !empty($info['redirect_url'])) {
-						curl_setopt($curl, CURLOPT_URL, $info['redirect_url']);
-						$file = curl_exec($curl);
-					}
-					curl_close($curl);
-				} else {
-					$file = file_get_contents($url);
-				}
-
-				if (empty($file)) {
+				if (!download($url, $modx->getOption('core_path').'packages/'.$foundPackage->signature.'.transport.zip')) {
 					return array(
 						'success' => 0
-					,'message' => 'Could not download package <b>'.$packageName.'</b>: Nothing to save'
+						,'message' => 'Could not download package <b>'.$packageName.'</b>.'
 					);
 				}
-				file_put_contents($modx->getOption('core_path').'packages/'.$foundPackage->signature.'.transport.zip',$file);
 
 				/* add in the package as an object so it can be upgraded */
 				/** @var modTransportPackage $package */
@@ -207,7 +185,7 @@ function installPackage($packageName) {
 				else {
 					return array(
 						'success' => 0
-					,'message' => 'Could not save package <b>'.$packageName.'</b>'
+						,'message' => 'Could not save package <b>'.$packageName.'</b>'
 					);
 				}
 				break;
@@ -217,8 +195,37 @@ function installPackage($packageName) {
 	else {
 		return array(
 			'success' => 0
-		,'message' => 'Could not find <b>'.$packageName.'</b> in MODX repository'
+			,'message' => 'Could not find <b>'.$packageName.'</b> in MODX repository'
 		);
 	}
 	return true;
+}
+
+
+
+function download($src, $dst) {
+	if (ini_get('allow_url_fopen')) {
+		$file = @file_get_contents($src);
+	}
+	else if (function_exists('curl_init')) {
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $src);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_TIMEOUT,180);
+		$safeMode = @ini_get('safe_mode');
+		$openBasedir = @ini_get('open_basedir');
+		if (empty($safeMode) && empty($openBasedir)) {
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		}
+
+		$file = curl_exec($ch);
+		curl_close($ch);
+	}
+	else {
+		return false;
+	}
+	file_put_contents($dst, $file);
+
+	return file_exists($dst);
 }

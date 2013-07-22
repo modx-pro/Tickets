@@ -1,4 +1,5 @@
 <?php
+/* @var array $scriptProperties */
 /* @var pdoFetch $pdoFetch */
 $pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
 $pdoFetch->setConfig($scriptProperties);
@@ -11,7 +12,7 @@ if (empty($showHidden)) {$where['hidemenu'] = 0;}
 if (empty($showDeleted)) {$where['deleted'] = 0;}
 
 // Filter by ids
-if (!empty($resources)){
+if (!empty($resources)) {
 	$resources = array_map('trim', explode(',', $resources));
 	$in = $out = array();
 	foreach ($resources as $v) {
@@ -54,7 +55,7 @@ $pdoFetch->addTime('"Where" expression built.');
 $leftJoin = array(
 		'{"class":"Ticket","alias":"Ticket","on":"Ticket.parent=TicketsSection.id AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key=\'Ticket\'"}'
 		,'{"class":"TicketView","alias":"View","on":"Ticket.id=View.parent"}'
-		,'{"class":"TicketVote","alias":"Vote","on":"Ticket.id=Vote.parent AND Vote.class=\'Ticket\'"}'
+		//,'{"class":"TicketVote","alias":"Vote","on":"Ticket.id=Vote.parent AND Vote.class=\'Ticket\'"}'
 		,'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id AND Thread.closed=0 AND Thread.deleted=0"}'
 		,'{"class":"TicketComment","alias":"Comment","on":"Comment.thread=Thread.id AND Comment.published=1"}'
 );
@@ -64,11 +65,10 @@ $resourceColumns = !empty($includeContent) ?  $modx->getSelectColumns($class, $c
 $select = array(
 	'"TicketsSection":"'.$resourceColumns.'"'
 	,'"Ticket":"COUNT(DISTINCT `Ticket`.`id`) as `tickets`"'
-	,'"Vote":"SUM(DISTINCT `Vote`.`value`) as `votes`"'
+	//,'"Vote":"SUM(DISTINCT `Vote`.`value`) as `votes`"'
 	,'"View":"COUNT(DISTINCT `View`.`parent`, `View`.`uid`) as `views`"'
-	//,'"Comment":"COUNT(DISTINCT `Comment`.`id`) as `comments`"'
+	,'"Comment":"COUNT(DISTINCT `Comment`.`id`) as `comments`"'
 );
-if (!empty($tvsSelect)) {$select = array_merge($select, $tvsSelect);}
 
 $default = array(
 	'class' => 'TicketsSection'
@@ -78,32 +78,26 @@ $default = array(
 	,'groupby' => '`'.$class.'`.`id`'
 	,'sortby' => 'views'
 	,'sortdir' => 'DESC'
-	,'fastMode' => false
 	,'return' => 'data'
 	,'nestedChunkPrefix' => 'tickets_'
 );
 
 // Merge all properties and run!
-if (!empty($scriptProperties['sortBy'])) {$scriptProperties['sortby'] = $scriptProperties['sortBy'];}
-if (!empty($scriptProperties['sortDir'])) {$scriptProperties['sortdir'] = $scriptProperties['sortDir'];}
-$pdoFetch->config = array_merge($pdoFetch->config, $default, $scriptProperties);
+$pdoFetch->setConfig(array_merge($default, $scriptProperties));
 $pdoFetch->addTime('Query parameters are prepared.');
 $rows = $pdoFetch->run();
 
-// Initializing chunk for template rows
-if (!empty($tpl)) {
-	$pdoFetch->getChunk($tpl);
-}
-
-$output = null;
 // Processing rows
 $output = null;
 if (!empty($rows) && is_array($rows)) {
 	foreach ($rows as $k => $row) {
+		// Processing main fields
+		$row['idx'] = $pdoFetch->idx++;
+
 		// Processing chunk
-		$row['comments'] = $modx->getCount('TicketComment', array('published' => 1, 'thread' => $row['thread']));
+		$tpl = $pdoFetch->defineChunk($row);
 		$output[] = empty($tpl)
-			? '<pre>'.str_replace(array('[',']','`'), array('&#91;','&#93;','&#96;'), htmlentities(print_r($row, true), ENT_QUOTES, 'UTF-8')).'</pre>'
+			? '<pre>'.$pdoFetch->getChunk('', $row).'</pre>'
 			: $pdoFetch->getChunk($tpl, $row, $pdoFetch->config['fastMode']);
 	}
 	$pdoFetch->addTime('Returning processed chunks');
