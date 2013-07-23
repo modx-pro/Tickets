@@ -1,5 +1,19 @@
 Changelog for Tickets.
 
+1.1.0 beta
+==========
+- Added system setting "tickets.mail_from"
+- Added system setting "tickets.mail_from_name"
+- Added system setting "tickets.mail_bcc" for sending notifications for site admins.
+- Added system setting "tickets.mail_bcc_level" for setting level of admin notifications.
+- Added chunk "tpl.Tickets.ticket.email.bcc" for admin notification about new ticket.
+- Added chunk "tpl.Tickets.comment.email.bcc" for admin notification about new comment.
+- Added chunk "tpl.Tickets.comment.email.subscription" for notification of thread subscribers.
+- Improved responses from server through ajax.
+- New class "TicketQueue" for mail queue.
+- New methods: Tickets::addQueue(), TicketThread:isSubscribed() and Tickets::Subscribe() that using TicketThread::Subscribe().
+- Added system setting "tickets.mail_queue" for specifying whether to use delayed send of mail.
+
 1.0.0 pl1 (requires pdoTools 1.4.1 or later)
 ==========
 - Add ukrainian lang for frontend.

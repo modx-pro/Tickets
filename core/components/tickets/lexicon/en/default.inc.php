@@ -39,8 +39,6 @@ $_lang['ticket_clear'] = 'Clear';
 
 $_lang['ticket_comment_intro'] = '';
 $_lang['ticket_comment_all_intro'] = 'Here are comments from the entire site.';
-$_lang['ticket_comment_email_owner'] = 'New comment for your ticket "[[+pagetitle]]"';
-$_lang['ticket_comment_email_reply'] = 'Reply to your comment for ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_deleted_text'] = 'This comment was deleted.';
 $_lang['ticket_comment_update'] = 'Update this comment';
 $_lang['ticket_comment_remove'] = 'Remove with children';
@@ -106,6 +104,8 @@ $_lang['ticket_thread_view'] = 'View on site';
 $_lang['ticket_thread_err_deleted'] = 'Commenting is disabled.';
 $_lang['ticket_thread_err_closed'] = 'Adding new comments is disabled.';
 $_lang['ticket_thread_manage_comments'] = 'Manage comments';
+$_lang['ticket_thread_subscribed'] = 'You have subscribe to notifications about new comments.';
+$_lang['ticket_thread_subscribed'] = 'You will no longer receive notifications about new comments in this thread.';
 
 $_lang['ticket_date_now'] = 'Just now';
 $_lang['ticket_date_today'] = 'Today at';
@@ -116,3 +116,9 @@ $_lang['ticket_date_minutes_back_less'] = 'Less than a minute ago';
 $_lang['ticket_date_hours_back'] = '["[[+hours]] hours ago","[[+hours]] hours ago","[[+hours]] hours ago"]';
 $_lang['ticket_date_hours_back_less'] = 'Less than an hour ago';
 $_lang['ticket_date_months'] = '["january","february","march","april","may","june","july","august","september","october","november","december"]';
+
+$_lang['ticket_comment_email_owner'] = 'New comment for your ticket "[[+pagetitle]]"';
+$_lang['ticket_comment_email_reply'] = 'Reply to your comment for ticket "[[+pagetitle]]"';
+$_lang['ticket_comment_email_subscription'] = 'New comment for ticket "[[+pagetitle]]"';
+$_lang['ticket_comment_email_bcc'] = 'New comment for ticket "[[+pagetitle]]"';
+$_lang['ticket_email_bcc'] = 'New ticket on site - "[[+pagetitle]]"';

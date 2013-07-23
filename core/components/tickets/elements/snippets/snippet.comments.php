@@ -26,11 +26,17 @@ if (!$thread = $modx->getObject('TicketThread', array('name' => $scriptPropertie
 		,'resource' => $modx->resource->id
 		,'createdby' => $modx->user->id
 		,'createdon' => date('Y-m-d H:i:s')
+		,'subscribers' => array($modx->resource->get('createdby'))
 	));
 }
 else if ($thread->get('deleted')) {
 	return $modx->lexicon('ticket_thread_err_deleted');
 }
+// Migrate authors to subscription system
+if (!is_array($thread->get('subscribers'))) {
+	$thread->set('subscribers', array($modx->resource->get('createdby')));
+}
+
 $scriptProperties['resource'] = $modx->resource->id;
 $thread->set('properties', $scriptProperties);
 $thread->save();
@@ -130,7 +136,11 @@ if (!empty($rows) && is_array($rows)) {
 	}
 }
 
-$commentsThread = $pdoFetch->getChunk($Tickets->config['tplComments'], array('total' => $total, 'comments' => $output));
+$commentsThread = $pdoFetch->getChunk($Tickets->config['tplComments'], array(
+	'total' => $total
+	,'comments' => $output
+	,'subscribed' => $thread->isSubscribed()
+));
 $commentForm = $thread->get('closed') ? $modx->lexicon('ticket_thread_err_closed') : $Tickets->getCommentForm();
 $output = (!empty($formBefore)) ? $commentForm . $commentsThread : $commentsThread . $commentForm;
 

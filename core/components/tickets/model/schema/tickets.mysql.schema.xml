@@ -6,11 +6,9 @@
 
 	<object class="Ticket" extends="modResource">
 		<aggregate alias="Section" class="TicketsSection" local="parent" foreign="id" cardinality="one" owner="foreign" />
-		<!--<composite alias="Attachments" class="TicketAttachment" local="id" foreign="parent" cardinality="many" owner="local" />-->
 		<composite alias="Votes" class="TicketVote" local="id" foreign="parent" cardinality="many" owner="local" />
 		<composite alias="Views" class="TicketView" local="id" foreign="parent" cardinality="many" owner="local" />
-		<!--<composite alias="Subscriptions" class="TicketSubscription" local="id" foreign="parent" cardinality="one" owner="local" />-->
-		<composite alias="Threads" class="TicketThread" local="id" foreign="resource" cardinality="one" owner="local" />
+		<composite alias="Threads" class="TicketThread" local="id" foreign="resource" cardinality="many" owner="local" />
 	</object>
 
 	<object class="TicketComment" table="tickets_comments" extends="xPDOSimpleObject">
@@ -51,7 +49,6 @@
 		<aggregate alias="Thread" class="TicketThread" local="thread" foreign="id" cardinality="one" owner="foreign" />
 		<aggregate alias="Parent" class="TicketComment" local="parent" foreign="id" cardinality="one" owner="foreign" />
 		<composite alias="Children" class="TicketComment" local="id" foreign="parent" cardinality="many" owner="local" />
-		<!--<composite alias="Attachments" class="TicketAttachment" local="id" foreign="parent" cardinality="many" owner="local" />-->
 		<composite alias="Votes" class="TicketVote" local="id" foreign="parent" cardinality="many" owner="local" />
 	</object>
 
@@ -59,7 +56,7 @@
 		<field key="resource" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
 		<field key="name" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
 
-		<field key="subscribers" dbtype="text" phptype="text" null="false" default="" />
+		<field key="subscribers" dbtype="text" phptype="json" null="false" default="" />
 
 		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="createdby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
@@ -89,16 +86,7 @@
 		<aggregate alias="Ticket" class="Ticket" local="resource" foreign="id" cardinality="one" owner="foreign" />
 		<composite alias="Comments" class="TicketComment" local="id" foreign="thread" cardinality="many" owner="local" />
 	</object>
-<!--
-	<object class="TicketAttachment" table="tickets_attachments" extends="xPDOSimpleObject">
-		<field key="parent" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="index" />
-		<field key="file" dbtype="varchar" precision="255" phptype="string" index="index" />
-		<field key="name" dbtype="varchar" precision="255" phptype="string" index="index" />
-		<field key="description" dbtype="text" null="true" phptype="text" />
-		<field key="type" dbtype="varchar" null="true" precision="100" phptype="string" index="index" />
-		<field key="class" dbtype="varchar" precision="100" phptype="string" index="index" />
-	</object>
--->
+
 	<object class="TicketVote" table="tickets_votes" extends="xPDOObject">
 		<field key="parent" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
 		<field key="ip" dbtype="varchar" precision="16" phptype="string" null="false" default="0.0.0.0" />
@@ -133,19 +121,17 @@
 		<aggregate alias="Ticket" class="Ticket" local="parent" foreign="id" cardinality="one" owner="foreign" />
 	</object>
 
-	<!--
-	<object class="TicketSubscription" table="tickets_subscriptions" extends="xPDOObject">
-		<field key="parent" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
-		<field key="uid" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
-		<field key="timestamp" dbtype="datetime" phptype="datetime" null="false" />
+	<object class="TicketQueue" table="tickets_mail_queues" extends="xPDOSimpleObject">
+		<field key="timestamp" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" />
+		<field key="uid" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
+		<field key="subject" dbtype="varchar" precision="255" phptype="string" null="true" default="" />
+		<field key="body" dbtype="text" phptype="string" null="true" default="" />
 
-		<index alias="unique_key" name="unique_key" primary="true" unique="true" type="BTREE">
-			<column key="parent" length="" collation="A" null="false" />
+		<index alias="uid" name="uid" primary="false" unique="false" type="BTREE">
 			<column key="uid" length="" collation="A" null="false" />
 		</index>
 
-		<aggregate alias="Ticket" class="Ticket" local="parent" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="User" class="modUser" local="uid" foreign="id" cardinality="one" owner="foreign" />
 	</object>
-	-->
 
 </model>

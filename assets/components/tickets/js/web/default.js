@@ -21,10 +21,14 @@ Tickets = {
 				$.jGrowl.defaults.closerTemplate = '<div>[ '+TicketsConfig.close_all_message+' ]</div>';
 			}
 			var count = $('.ticket-comment').size();
-			$('#comment-total').text(count);
+			$('#comment-total, .comments-count').text(count);
 		});
-		$(document).on('click', '#comment-preview-placeholder a', function(e) {
+		$(document).on('click', '#comment-preview-placeholder a', function() {
 			return false;
+		});
+
+		$(document).on('change', '#comments-subscribe', function() {
+			Tickets.comment.subscribe();
 		});
 	}
 
@@ -47,15 +51,15 @@ Tickets = {
 				,success: function(response) {
 					$(button).removeClass('loading');
 					var element = $('#ticket-preview-placeholder');
-					if (response.error == 1) {
+					if (response.success) {
+						element.html(response.data.preview).show();
+						$(button).removeAttr('disabled');
+						prettyPrint();
+					}
+					else {
 						element.html('').hide();
 						Tickets.Message.error(response.message);
 						$(button).removeAttr('disabled');
-					}
-					else {
-						element.html(response.data).show();
-						$(button).removeAttr('disabled');
-						prettyPrint();
 					}
 				}
 			});
@@ -69,8 +73,8 @@ Tickets = {
 				,url: TicketsConfig.actionUrl
 				,form: form
 				,button: button
+				,dataType: 'json'
 				,beforeSubmit: function() {
-					//$(button).addClass('loading');
 					var text = $('textarea[name="text"]',form).val();
 					var allSpacesRe = /\s+/g;
 					text = text.replace(allSpacesRe, "");
@@ -80,14 +84,20 @@ Tickets = {
 					$(button).attr('disabled','disabled');
 					return true;
 				}
-				,success: function(data) {
-					$('#comment-preview-placeholder').html(data).show();
+				,success: function(response) {
+					if (response.success) {
+						$('#comment-preview-placeholder').html(response.data.preview).show();
+						prettyPrint();
+					}
+					else {
+						Tickets.Message.error(response.message);
+					}
 					$(button).removeAttr('disabled');
-					prettyPrint();
 				}
 			});
 			return false;
 		}
+
 		,save: function(form, button)  {
 			$(form).ajaxSubmit({
 				data: {action: 'comment/save'}
@@ -108,7 +118,7 @@ Tickets = {
 					return true;
 				}
 				,success: function(response) {
-					if (response.error == 1) {
+					if (!response.success) {
 						$(button).removeAttr('disabled');
 						Tickets.Message.error(response.message);
 						return;
@@ -134,19 +144,24 @@ Tickets = {
 			});
 			return false;
 		}
+
 		,getlist: function() {
-			var thread = $('#comment-form [name="thread"]');
+			var form = $('#comment-form');
+			var thread = $('[name="thread"]', form);
 			if (!thread) {return false;}
 			Tickets.tpanel.start();
 			$.post(TicketsConfig.actionUrl, {action: 'comment/getlist', thread: thread.val()}, function(response) {
-				for (k in response.data) {
-					Tickets.comment.insert(response.data[k], true);
+				for (var k in response.data.comments) {
+					if (response.data.comments.hasOwnProperty(k)) {
+						Tickets.comment.insert(response.data.comments[k], true);
+					}
 				}
 				var count = $('.ticket-comment').size();
 				$('#comment-total').text(count);
 
 				Tickets.tpanel.stop();
-			}, 'json')
+			}, 'json');
+			return true;
 		}
 
 		,insert: function(data, remove) {
@@ -192,15 +207,31 @@ Tickets = {
 				$('#comment-'+parent+' > .comments-list').append(data);
 			}
 		}
+
+		,subscribe: function() {
+			var form = $('#comment-form');
+			var thread = $('[name="thread"]', form);
+			if (thread.length) {
+				$.post(TicketsConfig.actionUrl, {action: "comment/subscribe", thread: thread.val()}, function(response) {
+					if (response.success) {
+						Tickets.Message.success(response.message);
+					}
+					else {
+						Tickets.Message.error(response.message);
+					}
+				}, 'json');
+			}
+		}
 	}
 
 	,forms: {
 		reply: function(comment_id) {
 			clearInterval(window.timer);
+			var form = $('#comment-form');
+
 			$('.time', form).text('');
 			$('.ticket-comment .comment-reply a').show();
 
-			var form = $('#comment-form');
 			$('#comment-preview-placeholder').hide();
 			$('input[name="parent"]',form).val(comment_id);
 			$('input[name="id"]',form).val(0);
@@ -213,13 +244,14 @@ Tickets = {
 			$('#comment-editor', form).focus().val('');
 			return false;
 		}
+
 		,comment: function(focus) {
+			var form = $('#comment-form');
 			if (focus !== false) {focus = true;}
 			clearInterval(window.timer);
 			$('.time', form).text('');
 			$('.ticket-comment .comment-reply a').show();
 
-			var form = $('#comment-form');
 			$('#comment-preview-placeholder').hide();
 			$('input[name="parent"]',form).val(0);
 			$('input[name="id"]',form).val(0);
@@ -232,9 +264,10 @@ Tickets = {
 			}
 			return false;
 		}
+
 		,edit: function(comment_id) {
 			$.post(TicketsConfig.actionUrl, {action: "comment/get", id: comment_id}, function(response) {
-				if (response.error == 1) {
+				if (!response.success) {
 					Tickets.Message.error(response.message);
 				}
 				else {
@@ -253,9 +286,9 @@ Tickets = {
 
 					reply.append(form);
 					form.show();
-					$('#comment-editor', form).focus().val(response.data);
+					$('#comment-editor', form).focus().val(response.data.raw);
 
-					var time = response.time;
+					var time = response.data.time;
 					window.timer = setInterval(function(){
 						if (time > 0) {
 							time -= 1;
@@ -294,19 +327,16 @@ Tickets = {
 
 			return result.join(':');
 		}
+
 		,addzero: function(n) {
 			return (n < 10) ? '0'+n : n;
 		}
+
 		,goto: function(id) {
 			$('html, body').animate({
 				scrollTop: $('#' + id).offset().top
 			}, 1000);
 		}
-	}
-
-
-	,error: function(message) {
-		alert(message);
 	}
 };
 

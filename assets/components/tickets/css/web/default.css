@@ -83,3 +83,9 @@
 	color: darkgreen;
 	cursor: pointer;
 }
+
+.ticket-footer {
+	margin-top: 25px;
+	padding-top: 10px;
+	border-top: 1px solid #efefef;
+}

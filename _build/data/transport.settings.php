@@ -94,6 +94,33 @@ $tmp = array(
 		,'value' => 0
 		,'area' => 'tickets.ticket'
 	)
+
+	,'mail_from' => array(
+		'xtype' => 'textfield'
+		,'value' => ''
+		,'area' => 'tickets.mail'
+	)
+	,'mail_from_name' => array(
+		'xtype' => 'textfield'
+		,'value' => ''
+		,'area' => 'tickets.mail'
+	)
+	,'mail_queue' => array(
+		'xtype' => 'combo-boolean'
+		,'value' => false
+		,'area' => 'tickets.mail'
+	)
+	,'mail_bcc' => array(
+		'xtype' => 'textfield'
+		,'value' => ''
+		,'area' => 'tickets.mail'
+	)
+	,'mail_bcc_level' => array(
+		'xtype' => 'numberfield'
+		,'value' => 1
+		,'area' => 'tickets.mail'
+	)
+
 );
 
 foreach ($tmp as $k => $v) {

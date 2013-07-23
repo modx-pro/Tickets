@@ -41,7 +41,7 @@ $xpdo_meta_map['TicketThread']= array (
     'subscribers' => 
     array (
       'dbtype' => 'text',
-      'phptype' => 'text',
+      'phptype' => 'json',
       'null' => false,
       'default' => '',
     ),

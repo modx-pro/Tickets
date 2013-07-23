@@ -39,8 +39,6 @@ $_lang['ticket_clear'] = 'Очистить';
 
 $_lang['ticket_comment_intro'] = '';
 $_lang['ticket_comment_all_intro'] = 'Здесь собраны комментарии со всего сайта.';
-$_lang['ticket_comment_email_owner'] = 'Новый комментарий к вашему тикету "[[+pagetitle]]"';
-$_lang['ticket_comment_email_reply'] = 'Ответ на ваш комментарий к тикету "[[+pagetitle]]"';
 $_lang['ticket_comment_deleted_text'] = 'Комментарий был удален.';
 $_lang['ticket_comment_update'] = 'Изменить комментарий';
 $_lang['ticket_comment_remove'] = 'Уничтожить вместе с потомками';
@@ -106,6 +104,8 @@ $_lang['ticket_thread_view'] = 'Просмотреть на сайте';
 $_lang['ticket_thread_err_deleted'] = 'Комментирование отключено.';
 $_lang['ticket_thread_err_closed'] = 'Добавление новых комментариев запрещено.';
 $_lang['ticket_thread_manage_comments'] = 'Управление комментариями';
+$_lang['ticket_thread_subscribed'] = 'Вы подписались на уведомления о новых комментариях в этой теме.';
+$_lang['ticket_thread_unsubscribed'] = 'Вы больше не будете получать уведомления о комментариях из этой темы.';
 
 $_lang['ticket_date_now'] = 'Только что';
 $_lang['ticket_date_today'] = 'Сегодня в';
@@ -116,3 +116,9 @@ $_lang['ticket_date_minutes_back_less'] = 'меньше минуты назад'
 $_lang['ticket_date_hours_back'] = '["[[+hours]] час назад","[[+hours]] часа назад","[[+hours]] часов назад"]';
 $_lang['ticket_date_hours_back_less'] = 'меньше часа назад';
 $_lang['ticket_date_months'] = '["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"]';
+
+$_lang['ticket_comment_email_owner'] = 'Новый комментарий к вашему тикету "[[+pagetitle]]"';
+$_lang['ticket_comment_email_reply'] = 'Ответ на ваш комментарий к тикету "[[+pagetitle]]"';
+$_lang['ticket_comment_email_subscription'] = 'Новый комментарий в теме "[[+pagetitle]]"';
+$_lang['ticket_comment_email_bcc'] = 'Новый комментарий в теме "[[+pagetitle]]"';
+$_lang['ticket_email_bcc'] = 'Новый тикет у вас на сайте - "[[+pagetitle]]"';

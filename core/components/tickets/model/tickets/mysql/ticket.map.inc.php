@@ -32,7 +32,7 @@ $xpdo_meta_map['Ticket']= array (
       'class' => 'TicketThread',
       'local' => 'id',
       'foreign' => 'resource',
-      'cardinality' => 'one',
+      'cardinality' => 'many',
       'owner' => 'local',
     ),
   ),

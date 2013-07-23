@@ -58,7 +58,6 @@ class TicketThread extends xPDOSimpleObject {
 			));
 			$this->save();
 		}
-
 		// Thank to Agel_Nash for the idea about how to limit comments by depth
 		$tree = array();
 		foreach ($comments as $id => &$row) {
@@ -87,4 +86,37 @@ class TicketThread extends xPDOSimpleObject {
 		return $tree;
 	}
 
+
+	public function Subscribe($uid = 0) {
+		if (!$uid) {$uid = $this->xpdo->user->id;}
+
+		$subscribers = $this->get('subscribers');
+		if (empty($subscribers) || !is_array($subscribers)) {
+			$subscribers = array();
+		}
+
+		$found = array_search($uid, $subscribers);
+		if ($found !== false) {
+			unset($subscribers[$found]);
+		}
+		else {
+			$subscribers[] = $uid;
+		}
+		$this->set('subscribers', $subscribers);
+		$this->save();
+
+		return !$found;
+	}
+
+
+	public function isSubscribed($uid = 0) {
+		if (!$uid) {$uid = $this->xpdo->user->id;}
+
+		$subscribers = $this->get('subscribers');
+		if (empty($subscribers) || !is_array($subscribers)) {
+			$subscribers = array();
+		}
+
+		return in_array($uid, $subscribers);
+	}
 }

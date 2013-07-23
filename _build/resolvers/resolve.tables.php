@@ -18,10 +18,9 @@ if ($object->xpdo) {
 			$manager = $modx->getManager();
 			$manager->createObjectContainer('TicketComment');
 			$manager->createObjectContainer('TicketThread');
-			//$manager->createObjectContainer('TicketAttachment');
 			$manager->createObjectContainer('TicketVote');
 			$manager->createObjectContainer('TicketView');
-			//$manager->createObjectContainer('TicketSubscription');
+			$manager->createObjectContainer('TicketQueue');
 
 			if ($modx instanceof modX) {
 				$modx->addExtensionPackage('tickets', '[[++core_path]]components/tickets/model/');

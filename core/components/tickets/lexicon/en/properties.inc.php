@@ -43,6 +43,9 @@ $_lang['tickets_prop_tplComments'] = 'Chunk for the outer wrapper for comments.'
 $_lang['tickets_prop_tplLoginToComment'] = 'Chunk  for guests with requirement of authorization.';
 $_lang['tickets_prop_tplCommentEmailOwner'] = 'Chunk for notification of new comments of ticket owner.';
 $_lang['tickets_prop_tplCommentEmailReply'] = 'Chunk for notification of user who replied to a comment.';
+$_lang['tickets_prop_tplCommentEmailSubscription'] = 'Chunk for notification of a subscriber about new comment.';
+$_lang['tickets_prop_tplCommentEmailBcc'] = 'Chunk for bcc notification about new ticket.';
+$_lang['tickets_prop_tplTicketEmailBcc'] = 'Chunk for bcc notification about new comment.';
 
 $_lang['tickets_prop_commentsDepth'] = 'Integer value indicating maximum depth of comments thread.';
 $_lang['tickets_prop_autoPublish'] = 'If true, all comments in thread will be published without moderation.';

@@ -35,10 +35,10 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 			,'ip' => $_SERVER['REMOTE_ADDR']
 			,'createdon' => date('Y-m-d H:i:s')
 			,'createdby' => $this->modx->user->id
-			,'editedon' => 0
+			,'editedon' => ''
 			,'editedby' => 0
 			,'deleted' => 0
-			,'deletedon' => 0
+			,'deletedon' => ''
 			,'deletedby' => 0
 		));
 
