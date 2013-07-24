@@ -765,6 +765,9 @@ class Tickets {
 	 * @return array|string
 	 */
 	public function Subscribe($name) {
+		if (!$this->modx->user->isAuthenticated()) {
+			return $this->error('ticket_err_access_denied');
+		}
 		/* @var TicketThread $thread */
 		if ($thread = $this->modx->getObject('TicketThread', array('name' => $name))) {
 			$message = $thread->Subscribe() ? 'ticket_thread_subscribed' : 'ticket_thread_unsubscribed';
