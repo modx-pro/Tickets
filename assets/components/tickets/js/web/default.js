@@ -106,7 +106,6 @@ Tickets = {
 				,button: button
 				,dataType: 'json'
 				,beforeSubmit: function() {
-					//$(button).addClass('loading');
 					clearInterval(window.timer);
 					var text = $('textarea[name="text"]',form).val();
 					text = text.replace(/\s+/g, "");
@@ -121,25 +120,27 @@ Tickets = {
 					if (!response.success) {
 						$(button).removeAttr('disabled');
 						Tickets.Message.error(response.message);
-						return;
 					}
-					else if (!response.data && response.message) {
-						Tickets.Message.info(response.message);
-						return;
+					else {
+						Tickets.forms.comment(false);
+						$('#comment-preview-placeholder').html('').hide();
+						$('#comment-editor',form).val('');
+						$(form).hide();
+						$('.ticket-comment .comment-reply a').show();
+						$(button).removeAttr('disabled');
+
+						// autoPublish = 0
+						if (!response.data.length && response.message) {
+							Tickets.Message.info(response.message);
+						}
+						else {
+							Tickets.comment.insert(response.data);
+							Tickets.utils.goto($(response.data).attr('id'));
+						}
+
+						Tickets.comment.getlist();
+						prettyPrint();
 					}
-
-					Tickets.forms.comment(false);
-					Tickets.comment.insert(response.data);
-					Tickets.comment.getlist();
-
-					$('#comment-preview-placeholder').html('').hide();
-					$('#comment-editor',form).val('');
-					$(form).hide();
-					$('.ticket-comment .comment-reply a').show();
-					$(button).removeAttr('disabled');
-					prettyPrint();
-
-					Tickets.utils.goto($(response.data).attr('id'));
 				}
 			});
 			return false;
