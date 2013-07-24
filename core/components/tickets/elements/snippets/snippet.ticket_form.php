@@ -2,7 +2,7 @@
 /* @var array $scriptProperties */
 /* @var Tickets $Tickets */
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
-$Tickets->initialize($this->context->key, $scriptProperties);
+$Tickets->initialize($modx->context->key, $scriptProperties);
 
 if ((empty($action) || $action == 'getTicketForm') && !empty($_REQUEST['action'])) {$action = $_REQUEST['action'];}
 $tid = $modx->getOption('tid', $_REQUEST, 0);
