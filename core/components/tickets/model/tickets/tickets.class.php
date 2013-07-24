@@ -359,8 +359,6 @@ class Tickets {
 		$comment->set('id', 0);
 
 		$preview = $this->templateNode($comment->toArray(), $this->config['tplCommentGuest']);
-		$preview = $this->pdoTools->fastProcess($preview);
-
 		return $this->success('', array('preview' => $preview));
 	}
 
@@ -404,7 +402,8 @@ class Tickets {
 			if ($comment['published']) {
 				$this->modx->cacheManager->delete('tickets/latest.comments');
 				$this->modx->cacheManager->delete('tickets/latest.tickets');
-				return $this->success('', $this->templateNode($comment, $this->config['tplCommentAuth']));
+				$comment = $this->templateNode($comment, $this->config['tplCommentAuth']);
+				return $this->success('', $comment);
 			}
 			else {
 				return $this->success($this->modx->lexicon('ticket_unpublished_comment'));
@@ -486,7 +485,9 @@ class Tickets {
 					while ($row = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
 						$row['resource'] = $thread->resource;
 						$row['new_parent'] = $row['parent'];
-						$comments[$row['id']] = $this->templateNode($row);
+
+						$tmp = $this->templateNode($row);
+						$comments[$row['id']] = $tmp;
 					}
 
 					$this->logView($thread->resource);
@@ -595,7 +596,11 @@ class Tickets {
 		$node['comment_was_edited'] = $node['editedby'] && $node['editedon'];
 		$node['comment_new'] = $node['createdby'] != $this->modx->user->id && $this->last_view > 0 && strtotime($node['createdon']) > $this->last_view;
 
-		return $this->getChunk($tpl, $node, $this->config['fastMode']);
+		$res = $this->getChunk($tpl, $node, $this->config['fastMode']);
+		if (!$this->config['fastMode']) {
+			$res = $this->pdoTools->fastProcess($res);
+		}
+		return $res;
 	}
 
 
