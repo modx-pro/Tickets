@@ -324,7 +324,6 @@ class Tickets {
 		foreach ($data as $k => $v) {
 			if ($k == 'content') {
 				if (!$data[$k] = $this->Jevix($v, 'Ticket')) {
-					$this->modx->log(modX::LOG_LEVEL_ERROR, $message);
 					return $this->error($this->modx->lexicon('err_no_jevix'));
 				}
 			}
@@ -332,10 +331,11 @@ class Tickets {
 				$data[$k] = $this->sanitizeString($v);
 			}
 		}
-		return $this->success($message, array(
-				'preview' => $this->modx->getChunk($this->config['tplPreview'], $data)
-			)
-		);
+
+		$preview = $this->getChunk($this->config['tplPreview'], $data);
+		$preview = $this->pdoTools->fastProcess($preview);
+
+		return $this->success($message, array('preview' => $preview));
 	}
 
 
@@ -354,18 +354,14 @@ class Tickets {
 			,'createdon' => date('Y-m-d H:i:s')
 			,'createdby' => $this->modx->user->get('id')
 			,'resource' => $this->config['resource']
+			,'mode' => 'preview'
 		));
-		$comment->set('id', '0');
+		$comment->set('id', 0);
 
-		return $this->success('', array(
-			'preview' => $this->templateNode(
-				array_merge(
-					array('mode'=>'preview')
-					,$comment->toArray()
-				)
-				,$this->config['tplCommentGuest']
-			)
-		));
+		$preview = $this->templateNode($comment->toArray(), $this->config['tplCommentGuest']);
+		$preview = $this->pdoTools->fastProcess($preview);
+
+		return $this->success('', array('preview' => $preview));
 	}
 
 
