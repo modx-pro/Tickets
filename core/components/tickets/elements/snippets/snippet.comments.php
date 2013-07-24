@@ -12,8 +12,9 @@ if (!isset($tplCommentAuth)) {$tplCommentAuth = 'tpl.Tickets.comment.one.auth';}
 if (!isset($tplCommentGuest)) {$tplCommentGuest = 'tpl.Tickets.comment.one.guest';}
 
 /* @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
-$Tickets->initialize($modx->context->key);
+$Tickets = $modx->getService('tickets ','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
+$Tickets->initialize($modx->context->key, $scriptProperties);
+
 /* @var pdoFetch $pdoFetch */
 $pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
 $pdoFetch->addTime('pdoTools loaded.');

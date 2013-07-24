@@ -14,6 +14,7 @@ Changelog for Tickets.
 - New methods: Tickets::addQueue(), TicketThread:isSubscribed() and Tickets::Subscribe() that using TicketThread::Subscribe().
 - Added system setting "tickets.mail_queue" for specifying whether to use delayed send of mail.
 - [#34] Unprocessed placeholders are now removed from preview.
+- [#29] Fixed errors when snippet "TicketLatest" called before "TicketComments".
 
 1.0.0 pl1 (requires pdoTools 1.4.1 or later)
 ==========

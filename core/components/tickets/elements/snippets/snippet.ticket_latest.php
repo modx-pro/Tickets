@@ -6,6 +6,7 @@ if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.'.$c
 
 /* @var Tickets $Tickets */
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
+$Tickets->initialize($modx->context->key, $scriptProperties);
 /* @var pdoFetch $pdoFetch */
 $pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
 $pdoFetch->addTime('pdoTools loaded.');
