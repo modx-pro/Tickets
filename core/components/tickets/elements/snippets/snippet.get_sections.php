@@ -2,7 +2,6 @@
 /* @var array $scriptProperties */
 /* @var pdoFetch $pdoFetch */
 $pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
-$pdoFetch->setConfig($scriptProperties);
 $pdoFetch->addTime('pdoTools loaded.');
 
 $class = 'TicketsSection';
@@ -71,41 +70,26 @@ $select = array(
 );
 
 $default = array(
-	'class' => 'TicketsSection'
+	'class' => $class
 	,'where' => $modx->toJSON($where)
 	,'leftJoin' => '['.implode(',',$leftJoin).']'
 	,'select' => '{'.implode(',',$select).'}'
 	,'groupby' => '`'.$class.'`.`id`'
 	,'sortby' => 'views'
 	,'sortdir' => 'DESC'
-	,'return' => 'data'
+	,'return' => 'chunks'
 	,'nestedChunkPrefix' => 'tickets_'
 );
+
+if (!empty($in) && (empty($scriptProperties['sortby']) || $scriptProperties['sortby'] == 'id')) {
+	$scriptProperties['sortby'] = "find_in_set(`$class`.`id`,'".implode(',', $in)."')";
+	$scriptProperties['sortdir'] = '';
+}
 
 // Merge all properties and run!
 $pdoFetch->setConfig(array_merge($default, $scriptProperties));
 $pdoFetch->addTime('Query parameters are prepared.');
-$rows = $pdoFetch->run();
-
-// Processing rows
-$output = null;
-if (!empty($rows) && is_array($rows)) {
-	foreach ($rows as $k => $row) {
-		// Processing main fields
-		$row['idx'] = $pdoFetch->idx++;
-
-		// Processing chunk
-		$tpl = $pdoFetch->defineChunk($row);
-		$output[] = empty($tpl)
-			? '<pre>'.$pdoFetch->getChunk('', $row).'</pre>'
-			: $pdoFetch->getChunk($tpl, $row, $pdoFetch->config['fastMode']);
-	}
-	$pdoFetch->addTime('Returning processed chunks');
-	if (empty($outputSeparator)) {$outputSeparator = "\n";}
-	if (!empty($output)) {
-		$output = implode($outputSeparator, $output);
-	}
-}
+$output = $pdoFetch->run();
 
 if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
 	$output .= '<pre class="getSectionsLog">' . print_r($pdoFetch->getTime(), 1) . '</pre>';
