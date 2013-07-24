@@ -192,4 +192,80 @@ class TicketsSection extends modResource {
 	public function getTicketsCount() {
 		return $this->xpdo->getCount('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
 	}
+
+
+	/**
+	 * @param array $node
+	 * @return array
+	 */
+	public function prepareTreeNode(array $node = array()) {
+		$this->xpdo->lexicon->load('tickets:default');
+		$menu = array();
+
+		$idNote = $this->xpdo->hasPermission('tree_show_resource_ids') ? ' <span dir="ltr">('.$this->id.')</span>' : '';
+		$menu[] = array(
+			'text' => '<b>'.$this->get('pagetitle').'</b>'.$idNote,
+			'handler' => 'Ext.emptyFn',
+		);
+		$menu[] = '-';
+		$menu[] = array(
+			'text' => $this->xpdo->lexicon('tickets_section_management'),
+			'handler' => 'this.editResource',
+		);
+		/*
+		$menu[] = array(
+			'text' => $this->xpdo->lexicon('create')
+			,'handler' => 'Ext.emptyFn'
+			,'menu' => array('items' => array(
+				array(
+					'text' => $this->xpdo->lexicon('ticket')
+					,'handler' => 'function(itm,e) { var tree = Ext.getCmp("modx-resource-tree"); itm.classKey = "Ticket"; tree.createResourceHere(itm,e); }'
+				)
+			))
+		);
+		*/
+		$menu[] = array(
+			'text' => $this->xpdo->lexicon('ticket_create_here')
+			,'handler' => 'function(itm,e) { var tree = Ext.getCmp("modx-resource-tree"); itm.classKey = "Ticket"; tree.createResourceHere(itm,e); }'
+		);
+
+		$menu[] = '-';
+		$menu[] = array(
+			'text' => $this->xpdo->lexicon('tickets_section_duplicate'),
+			'handler' => 'function(itm,e) {itm.classKey = "TicketsSection"; this.duplicateResource(itm,e); }',
+		);
+
+		if ($this->get('published')) {
+			$menu[] = array(
+				'text' => $this->xpdo->lexicon('tickets_section_unpublish'),
+				'handler' => 'this.unpublishDocument',
+			);
+		} else {
+			$menu[] = array(
+				'text' => $this->xpdo->lexicon('tickets_section_publish'),
+				'handler' => 'this.publishDocument',
+			);
+		}
+		if ($this->get('deleted')) {
+			$menu[] = array(
+				'text' => $this->xpdo->lexicon('tickets_section_undelete'),
+				'handler' => 'this.undeleteDocument',
+			);
+		} else {
+			$menu[] = array(
+				'text' => $this->xpdo->lexicon('tickets_section_delete'),
+				'handler' => 'this.deleteDocument',
+			);
+
+		}
+		$menu[] = '-';
+		$menu[] = array(
+			'text' => $this->xpdo->lexicon('tickets_section_view'),
+			'handler' => 'this.preview',
+		);
+
+		$node['menu'] = array('items' => $menu);
+		$node['hasChildren'] = false;
+		return $node;
+	}
 }

@@ -16,6 +16,13 @@ $_lang['comments_all'] = 'All comments';
 
 $_lang['tickets_section_create_here'] = 'Section with tickets';
 $_lang['tickets_section_new'] = 'New ticket';
+$_lang['tickets_section_management'] = 'Tickets management';
+$_lang['tickets_section_duplicate'] = 'Duplicate section';
+$_lang['tickets_section_unpublish'] = 'Unpublish section';
+$_lang['tickets_section_publish'] = 'Publish section';
+$_lang['tickets_section_undelete'] = 'Undelete section';
+$_lang['tickets_section_delete'] = 'Delete section';
+$_lang['tickets_section_view'] = 'View on site';
 
 $_lang['ticket_create_here'] = 'Create ticket';
 

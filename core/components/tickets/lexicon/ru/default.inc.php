@@ -16,6 +16,13 @@ $_lang['comments_all'] = 'Все комментарии';
 
 $_lang['tickets_section_create_here'] = 'Раздел с тикетами';
 $_lang['tickets_section_new'] = 'Новый раздел тикетов';
+$_lang['tickets_section_management'] = 'Управление тикетами';
+$_lang['tickets_section_duplicate'] = 'Копировать секцию';
+$_lang['tickets_section_unpublish'] = 'Снять с публикации';
+$_lang['tickets_section_publish'] = 'Опубликовать секцию';
+$_lang['tickets_section_undelete'] = 'Восстановить секцию';
+$_lang['tickets_section_delete'] = 'Удалить секцию';
+$_lang['tickets_section_view'] = 'Просмотреть на сайте';
 
 $_lang['ticket_create_here'] = 'Создать тикет';
 
