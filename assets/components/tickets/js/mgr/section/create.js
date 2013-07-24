@@ -102,5 +102,12 @@ Ext.extend(Tickets.panel.Section,MODx.panel.Resource,{
 		}];
 	}
 
+	,getMainFields: function(config) {
+		var fields = MODx.panel.Resource.prototype.getMainFields.apply(this, [config]);
+		fields.push({xtype: 'hidden',name: 'class_key',id: 'modx-resource-class-key',value: 'TicketsSection'});
+		fields.push({xtype: 'hidden',name: 'content_type',id: 'modx-resource-content-type', value: MODx.config.default_content_type || 1});
+
+		return fields;
+	}
 });
 Ext.reg('tickets-panel-section',Tickets.panel.Section);

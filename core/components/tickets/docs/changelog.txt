@@ -13,9 +13,11 @@ Changelog for Tickets.
 - New class "TicketQueue" for mail queue.
 - New methods: Tickets::addQueue(), TicketThread:isSubscribed() and Tickets::Subscribe() that using TicketThread::Subscribe().
 - Added system setting "tickets.mail_queue" for specifying whether to use delayed send of mail.
+- [#37] Fixed issue with loading incorrect TVs when create new Ticket.
 - [#34] Unprocessed placeholders are now removed from preview.
 - [#30] TicketsSection now has its own context menu in manager.
 - [#29] Fixed errors when snippet "TicketLatest" called before "TicketComments".
+- Fixed issue with change template when create new Ticket.
 
 1.0.0 pl1 (requires pdoTools 1.4.1 or later)
 ==========

@@ -448,22 +448,13 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,id: 'modx-resource-privateweb'
 				,inputValue: 1
 				,checked: parseInt(config.record.properties.privateweb)
-			},{
-				xtype: 'hidden'
-				,name: 'menutitle'
-				,id: 'modx-resource-menutitle'
-				,value: config.record.menutitle || ''
-			},{
-				xtype: 'hidden'
-				,name: 'link_attributes'
-				,id: 'modx-resource-link-attributes'
-				,value: config.record.link_attributes || ''
-			},{
-				xtype: 'hidden'
-				,name: 'hidemenu'
-				,id: 'modx-resource-hidemenu'
-				,value: config.record.hidemenu
-			}]
+			}
+				,{xtype: 'hidden',name: 'menutitle',id: 'modx-resource-menutitle',value: config.record.menutitle || ''}
+				,{xtype: 'hidden',name: 'link_attributes',id: 'modx-resource-link-attributes',value: config.record.link_attributes || ''}
+				,{xtype: 'hidden',name: 'hidemenu',id: 'modx-resource-hidemenu',value: config.record.hidemenu}
+				,{xtype: 'hidden',name: 'content_type',id: 'modx-resource-content-type', value: MODx.config.default_content_type || 1}
+				,{xtype: 'hidden',name: 'class_key',id: 'modx-resource-class-key',value: 'Ticket'}
+			]
 		}]
 	}
 

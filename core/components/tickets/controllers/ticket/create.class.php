@@ -5,6 +5,19 @@
  * @package tickets
  */
 class TicketCreateManagerController extends ResourceCreateManagerController {
+
+	/**
+	 * Custom logic code here for setting placeholders, etc
+	 * @param array $scriptProperties
+	 * @return mixed
+	 */
+	public function process(array $scriptProperties = array()) {
+		$this->scriptProperties['template'] = $this->modx->getOption('tickets.default_template',null,$this->modx->getOption('default_template',null,1));
+
+		return parent::process($scriptProperties);
+	}
+
+
 	/**
 	 * Returns language topics
 	 * @return array

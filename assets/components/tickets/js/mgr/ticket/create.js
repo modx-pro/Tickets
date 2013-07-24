@@ -200,7 +200,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 					,limit: 0
 				}
 				,value: MODx.config['tickets.default_template'] > 0 ? MODx.config['tickets.default_template'] : config.record.template
-				//,listeners: {select: {fn: this.templateWarning,scope: this}}
+				,listeners: {select: {fn: this.templateWarning,scope: this}}
 			},{
 				xtype: MODx.config.publish_document ? 'modx-combo-user' : 'hidden'
 				,fieldLabel: _('resource_createdby')
@@ -281,26 +281,13 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,description: _('ticket_private_help')
 				,id: 'modx-resource-privateweb'
 				,inputValue: 0
-			},{
-				xtype: 'hidden'
-				,name: 'menutitle'
-				,id: 'modx-resource-menutitle'
-				,value: config.record.menutitle || ''
-			},{
-				xtype: 'hidden'
-				,name: 'link_attributes'
-				,id: 'modx-resource-link-attributes'
-				,value: config.record.link_attributes || ''
-			},{
-				xtype: 'hidden'
-				,name: 'hidemenu'
-				,id: 'modx-resource-hidemenu'
-				,value: config.record.hidemenu
-			},{
-				xtype: 'hidden'
-				,name: 'class_key'
-				,value: 'Ticket'
-			}]
+			}
+				,{xtype: 'hidden',name: 'menutitle',id: 'modx-resource-menutitle',value: config.record.menutitle || ''}
+				,{xtype: 'hidden',name: 'link_attributes',id: 'modx-resource-link-attributes',value: config.record.link_attributes || ''}
+				,{xtype: 'hidden',name: 'hidemenu',id: 'modx-resource-hidemenu',value: config.record.hidemenu}
+				,{xtype: 'hidden',name: 'content_type',id: 'modx-resource-content-type', value: MODx.config.default_content_type || 1}
+				,{xtype: 'hidden',name: 'class_key',id: 'modx-resource-class-key',value: 'Ticket'}
+			]
 		}]
 	}
 
@@ -330,6 +317,32 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 		} else {
 			this.getForm().setValues(o.result.object);
 			Ext.getCmp('modx-page-update-resource').config.preview_url = o.result.object.preview_url;
+		}
+	}
+
+	,templateWarning: function() {
+		var t = Ext.getCmp('modx-resource-template');
+		if (!t) { return false; }
+		if(t.getValue() !== t.originalValue) {
+			Ext.Msg.confirm(_('warning'), _('resource_change_template_confirm'), function(e) {
+				if (e == 'yes') {
+					var nt = t.getValue();
+					var f = Ext.getCmp('modx-page-update-resource');
+					f.config.action = 'reload';
+					MODx.activePage.submitForm({
+						success: {fn:function(r) {
+							var page = MODx.action ? MODx.action[r.result.object.action] : r.result.object.action;
+							MODx.loadPage(page, '&id='+r.result.object.id+'&reload='+r.result.object.reload+'&class_key='+this.config.record.class_key);
+						},scope:this}
+					},{
+						bypassValidCheck: true
+					},{
+						reloadOnly: true
+					});
+				} else {
+					t.setValue(this.config.record.template);
+				}
+			},this);
 		}
 	}
 
