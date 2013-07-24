@@ -113,7 +113,7 @@ Tickets = {
 						return false;
 					}
 					$(button).attr('disabled','disabled');
-					$('.ticket-comment.ticket-comment-new').removeClass('ticket-comment-new');
+					//$('.ticket-comment.ticket-comment-new').removeClass('ticket-comment-new');
 					return true;
 				}
 				,success: function(response) {
@@ -170,12 +170,14 @@ Tickets = {
 			var parent = $(comment).attr('data-parent');
 			var id = $(comment).attr('id');
 			var exists = $('#' + id);
+			var children = '';
 
 			if (exists.length > 0) {
 				var np = exists.data('newparent');
 				comment.attr('data-newparent', np);
 				data = comment[0].outerHTML;
 				if (remove) {
+					children = exists.find('.comments-list').html();
 					exists.remove();
 				}
 				else {
@@ -206,6 +208,10 @@ Tickets = {
 					}
 				}
 				$('#comment-'+parent+' > .comments-list').append(data);
+			}
+
+			if (children.length > 0) {
+				$('#' + id).find('.comments-list').html(children);
 			}
 		}
 
@@ -240,6 +246,7 @@ Tickets = {
 			var reply = $('#comment-'+comment_id+' > .comment-reply');
 			$('a',reply).hide();
 			reply.append(form);
+			reply.parents('.ticket-comment').removeClass('ticket-comment-new');
 			form.show();
 
 			$('#comment-editor', form).focus().val('');

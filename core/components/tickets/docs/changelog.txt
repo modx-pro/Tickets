@@ -19,6 +19,7 @@ Changelog for Tickets.
 - [#30] TicketsSection now has its own context menu in manager.
 - [#29] Fixed errors when snippet "TicketLatest" called before "TicketComments".
 - Fixed issue with change template when create new Ticket.
+- Fixed issue with hidden new comment, when you reply to another one, and it was changed while you typing.
 
 1.0.0 pl1 (requires pdoTools 1.4.1 or later)
 ==========
