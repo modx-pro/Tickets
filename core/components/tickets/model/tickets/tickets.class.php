@@ -173,7 +173,7 @@ class Tickets {
 		$res = '';
 		foreach ($response['results'] as $v) {
 			if ($id == $v['id']) {$v['selected'] = 'selected';} else {$v['selected'] = '';}
-			$res .= $this->modx->getChunk($this->config['tplSectionRow'], $v);
+			$res .= $this->getChunk($this->config['tplSectionRow'], $v);
 		}
 
 		return $res;
@@ -223,7 +223,7 @@ class Tickets {
 			,$data
 		);
 
-		return $this->modx->getChunk($tpl, $arr);
+		return $this->getChunk($tpl, $arr);
 	}
 
 
@@ -237,14 +237,14 @@ class Tickets {
 		$this->initialize($this->modx->context->key);
 
 		if (!$this->modx->user->isAuthenticated()) {
-			return $this->modx->getChunk($this->config['tplLoginToComment']);
+			return $this->getChunk($this->config['tplLoginToComment']);
 		}
 		else {
 			$arr = array(
 				'assetsUrl' => $this->config['assetsUrl']
 				,'thread' => $this->config['thread']
 			);
-			return $this->modx->getChunk($this->config['tplCommentForm'], $arr);
+			return $this->getChunk($this->config['tplCommentForm'], $arr);
 		}
 	}
 
