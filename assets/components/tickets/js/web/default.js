@@ -384,6 +384,7 @@ Tickets.tpanel = {
 		}
 
 		this.refresh.on('click', function() {
+			$('.' + Tickets.tpanel.class_new).removeClass(Tickets.tpanel.class_new);
 			Tickets.comment.getlist();
 		});
 
@@ -405,8 +406,7 @@ Tickets.tpanel = {
 		});
 	}
 
-	,start: function() {
-		$('.'+this.class_new).removeClass(this.class_new);
+	,start: function(remove_class) {
 		this.refresh.addClass('loading');
 	}
 
