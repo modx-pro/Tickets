@@ -32,6 +32,8 @@
 		<field key="deletedon" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="deletedby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
 
+		<field key="properties" dbtype="text" phptype="json" null="true" />
+
 		<index alias="thread" name="thread" primary="false" unique="false" type="BTREE">
 			<column key="thread" length="" collation="A" null="false" />
 		</index>

@@ -686,6 +686,7 @@ class Tickets {
 		}
 
 		$comment = $this->prepareComment($comment);
+		unset($comment['properties']);
 
 		// We always send replies for comments
 		if (!empty($reply_uid)) {

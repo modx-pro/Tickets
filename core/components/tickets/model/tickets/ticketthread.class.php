@@ -62,6 +62,9 @@ class TicketThread extends xPDOSimpleObject {
 		$tree = array();
 		foreach ($comments as $id => &$row) {
 			$row['has_children'] = $row['level'] = 0;
+			if (!empty($row['properties'])) {
+				$row['properties'] = $this->xpdo->fromJSON($row['properties']);
+			}
 
 			if (empty($row['parent'])) {
 				$tree[$id] = &$row;
