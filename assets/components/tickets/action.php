@@ -40,7 +40,7 @@ switch ($action) {
 	case 'ticket/update': $response = $Tickets->saveTicket($_POST); break;
 	default:
 		$message = $_REQUEST['action'] != $action ? 'tickets_err_register_globals' : 'tickets_err_unknown';
-		$response = json_encode(array('success' => false, 'message' => $modx->lexicon($message)));
+		$response = $modx->toJSON(array('success' => false, 'message' => $modx->lexicon($message)));
 }
 
 if (is_array($response)) {

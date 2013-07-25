@@ -23,7 +23,7 @@ switch ($action) {
 }
 
 if (is_array($output)) {
-	$output = json_encode($output);
+	$output = $modx->toJSON($output);
 }
 
 // Support for ajax requests

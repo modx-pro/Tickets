@@ -169,7 +169,7 @@ class Tickets {
 	 */
 	public function getSections($id = 0) {
 		$response = $this->runProcessor('web/section/getlist');
-		$response = json_decode($response->response, 1);
+		$response = $this->modx->fromJSON($response->response);
 		$res = '';
 		foreach ($response['results'] as $v) {
 			if ($id == $v['id']) {$v['selected'] = 'selected';} else {$v['selected'] = '';}

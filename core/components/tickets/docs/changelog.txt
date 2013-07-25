@@ -4,6 +4,7 @@ Changelog for Tickets.
 ==========
 - Unread comments class removes only when it refreshed manually.
 - Added JSON field "properties" to "TicketComment". Now you can store additional data in comments.
+- Functions json_encode() and json_decode() replaced to modX::toJSON() and modX::fromJSON().
 
 1.1.0 beta
 ==========
