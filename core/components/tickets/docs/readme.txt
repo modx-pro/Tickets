@@ -1,11 +1,10 @@
 --------------------
 Tickets
 --------------------
-Version: 1.0.0
-Author: John Doe <john@doe.com>
+Author: Vasiliy Naumkin <bezumkin@yandex.ru>
 --------------------
 
-A basic Extra for MODx Revolution.
+Tickets system for MODX Revolution.
 
 Feel free to suggest ideas/improvements/bugs on GitHub:
-http://github.com/username/Tickets/issues
+http://github.com/bezumkin/Tickets/issues
