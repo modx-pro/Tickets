@@ -142,7 +142,12 @@ $commentsThread = $pdoFetch->getChunk($Tickets->config['tplComments'], array(
 	,'comments' => $output
 	,'subscribed' => $thread->isSubscribed()
 ));
-$commentForm = $thread->get('closed') ? $modx->lexicon('ticket_thread_err_closed') : $Tickets->getCommentForm();
+
+$form = !$modx->user->isAuthenticated()
+	? $Tickets->getChunk($Tickets->config['tplLoginToComment'])
+	: $Tickets->getChunk($Tickets->config['tplCommentForm'], array('thread' => $scriptProperties['thread']));
+
+$commentForm = $thread->get('closed') ? $modx->lexicon('ticket_thread_err_closed') : $form;
 $output = (!empty($formBefore)) ? $commentForm . $commentsThread : $commentsThread . $commentForm;
 
 if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
