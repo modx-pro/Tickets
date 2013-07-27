@@ -54,3 +54,6 @@ $_lang['tickets_prop_formBefore'] = 'If true, commenting form will be placed bef
 $_lang['tickets_prop_gravatarIcon'] = 'The default Gravatar icon to load if none is found for a user.';
 $_lang['tickets_prop_gravatarSize'] = 'The size, in pixels, of the Gravatar.';
 $_lang['tickets_prop_gravatarUrl'] = 'The URL of Gravatar';
+
+$_lang['tickets_prop_allowedFields'] = 'Fields of the ticket, which allowed to fill the user. You can specify the names of the TVs.';
+$_lang['tickets_prop_requiredFields'] = 'The required fields of the ticket, which the user must fill in to send the form.';

@@ -30,12 +30,18 @@ Tickets = {
 		$(document).on('change', '#comments-subscribe', function() {
 			Tickets.comment.subscribe();
 		});
+
+		$(document).on('submit', '#ticketForm', function() {
+			Tickets.ticket.save(this, $(this).find('[type="submit"]')[0]);
+			return false;
+		});
 	}
 
 	,ticket: {
 		preview: function(form,button) {
 			$(form).ajaxSubmit({
-				data: {action: 'previewTicket'}
+				data: {action: 'ticket/preview'}
+				,url: TicketsConfig.actionUrl
 				,form: form
 				,button: button
 				,dataType: 'json'
@@ -49,17 +55,55 @@ Tickets = {
 					return true;
 				}
 				,success: function(response) {
-					$(button).removeClass('loading');
 					var element = $('#ticket-preview-placeholder');
 					if (response.success) {
 						element.html(response.data.preview).show();
-						$(button).removeAttr('disabled');
 						prettyPrint();
 					}
 					else {
 						element.html('').hide();
 						Tickets.Message.error(response.message);
+					}
+					$(button).removeAttr('disabled');
+				}
+			});
+		}
+
+		,save: function(form,button) {
+			$(form).ajaxSubmit({
+				data: {action: 'ticket/save'}
+				,url: TicketsConfig.actionUrl
+				,form: form
+				,button: button
+				,dataType: 'json'
+				,beforeSubmit: function() {
+					var content = $('textarea[name="content"]',form).val().replace(/\s+/g, '');
+					if (content == '') {return false;}
+					else {
+						$(button).attr('disabled','disabled');
+						$('.error',form).text('');
+						return true;
+					}
+				}
+				,success: function(response) {
+					if (response.success && response.data.redirect) {
+						document.location.href = response.data.redirect;
+					}
+					else if (response.success && response.message) {
 						$(button).removeAttr('disabled');
+						Tickets.Message.success(response.message);
+					}
+					else {
+						$(button).removeAttr('disabled');
+						Tickets.Message.error(response.message);
+						if (response.data) {
+							for (var i in response.data) {
+								if (response.data.hasOwnProperty(i)) {
+									var input = $(form).find('[name="'+ i + '"]');
+									input.parents('label').find('.error').text(response.data[i]);
+								}
+							}
+						}
 					}
 				}
 			});
@@ -75,16 +119,15 @@ Tickets = {
 				,button: button
 				,dataType: 'json'
 				,beforeSubmit: function() {
-					var text = $('textarea[name="text"]',form).val();
-					var allSpacesRe = /\s+/g;
-					text = text.replace(allSpacesRe, "");
-					if(text == ''){
-						return false;
+					var text = $('textarea[name="text"]',form).val().replace(/\s+/g, '');
+					if (text == '') {return false;}
+					else {
+						$(button).attr('disabled','disabled');
+						return true;
 					}
-					$(button).attr('disabled','disabled');
-					return true;
 				}
 				,success: function(response) {
+					$(button).removeAttr('disabled');
 					if (response.success) {
 						$('#comment-preview-placeholder').html(response.data.preview).show();
 						prettyPrint();
@@ -92,7 +135,6 @@ Tickets = {
 					else {
 						Tickets.Message.error(response.message);
 					}
-					$(button).removeAttr('disabled');
 				}
 			});
 			return false;
@@ -107,27 +149,21 @@ Tickets = {
 				,dataType: 'json'
 				,beforeSubmit: function() {
 					clearInterval(window.timer);
-					var text = $('textarea[name="text"]',form).val();
-					text = text.replace(/\s+/g, "");
-					if(text == ''){
-						return false;
+					var text = $('textarea[name="text"]',form).val().replace(/\s+/g, '');
+					if (text == '') {return false;}
+					else {
+						$(button).attr('disabled','disabled');
+						return true;
 					}
-					$(button).attr('disabled','disabled');
-					//$('.ticket-comment.ticket-comment-new').removeClass('ticket-comment-new');
-					return true;
 				}
 				,success: function(response) {
-					if (!response.success) {
-						$(button).removeAttr('disabled');
-						Tickets.Message.error(response.message);
-					}
-					else {
+					$(button).removeAttr('disabled');
+					if (response.success) {
 						Tickets.forms.comment(false);
 						$('#comment-preview-placeholder').html('').hide();
 						$('#comment-editor',form).val('');
 						$(form).hide();
 						$('.ticket-comment .comment-reply a').show();
-						$(button).removeAttr('disabled');
 
 						// autoPublish = 0
 						if (!response.data.length && response.message) {
@@ -140,6 +176,9 @@ Tickets = {
 
 						Tickets.comment.getlist();
 						prettyPrint();
+					}
+					else {
+						Tickets.Message.error(response.message);
 					}
 				}
 			});
@@ -357,7 +396,7 @@ Tickets.Message = {
 	}
 	,error: function(message) {
 		if (message) {
-			$.jGrowl(message, {theme: 'tickets-message-error', sticky: true});
+			$.jGrowl(message, {theme: 'tickets-message-error'/*, sticky: true*/});
 		}
 	}
 	,info: function(message) {

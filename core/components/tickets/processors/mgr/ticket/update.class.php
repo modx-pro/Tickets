@@ -127,4 +127,28 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			$section->clearCache();
 		}
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * @return array|mixed
+	 */
+	public function saveTemplateVariables() {
+		$properties = $this->getProperties();
+		$fields = array_keys($this->modx->getFieldMeta($this->classKey));
+		$tvs = array_diff(array_keys($properties), $fields);
+
+		if (!empty($tvs)) {
+			$q = $this->modx->newQuery('modTemplateVar', array('name:IN' => $tvs));
+			$q->select('id,name');
+			if ($q->prepare() && $q->stmt->execute()) {
+				while ($row = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
+					$this->setProperty('tv'.$row['id'], $properties[$row['name']]);
+				}
+			}
+			$this->setProperty('tvs', 1);
+			return parent::saveTemplateVariables();
+		}
+		return false;
+	}
+
 }

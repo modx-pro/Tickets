@@ -32,6 +32,14 @@ $tmp = array(
 		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.ticket.email.bcc'
 	)
+	,'allowedFields' => array(
+		'type' => 'textfield'
+		,'value' => 'parent,pagetitle,content,published'
+	)
+	,'requiredFields' => array(
+		'type' => 'textfield'
+		,'value' => 'parent,pagetitle,content'
+	)
 );
 
 foreach ($tmp as $k => $v) {

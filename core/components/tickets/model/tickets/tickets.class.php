@@ -37,7 +37,7 @@ class Tickets {
 			,'chunkSuffix' => '.chunk.tpl'
 			,'snippetsPath' => $corePath.'elements/snippets/'
 			,'processorsPath' => $corePath.'processors/'
-
+			/*
 			,'tplFormCreate' => 'tpl.Tickets.form.create'
 			,'tplFormUpdate' => 'tpl.Tickets.form.update'
 			,'tplSectionRow' => 'tpl.Tickets.form.section.row'
@@ -51,8 +51,10 @@ class Tickets {
 			,'tplCommentEmailSubscription' => 'tpl.Tickets.comment.email.subscription'
 			,'tplCommentEmailBcc' => 'tpl.Tickets.comment.email.bcc'
 			,'tplTicketEmailBcc' => 'tpl.Tickets.ticket.email'
-
-			,'fastMode' => true
+			,'allowedFields' => 'pagetitle,parent,content,published'
+			,'requiredFields' => 'pagetitle,parent,content'
+			*/
+			,'fastMode' => false
 			,'dateFormat' => 'd F Y, H:i'
 			,'dateNow' => 10
 			,'dateDay' => 'day H:i'
@@ -69,6 +71,7 @@ class Tickets {
 
 			,'json_response' => true
 		),$config);
+		$_SESSION['Tickets'] = $this->config;
 
 		$this->modx->addPackage('tickets',$this->config['modelPath']);
 		$this->modx->lexicon->load('tickets:default');
@@ -154,161 +157,7 @@ class Tickets {
 	 */
 	public function runProcessor($action = '', $data = array()) {
 		if (empty($action)) {return false;}
-
 		return $this->modx->runProcessor($action, $data, array('processors_path' => $this->config['processorsPath']));
-
-	}
-
-
-	/**
-	 * Returns sections, available for user
-	 *
-	 * @access public
-	 * @param integer @id Id of current section for "selected" placeholder
-	 * @return mixed Templated sections for ticket form
-	 */
-	public function getSections($id = 0) {
-		$response = $this->runProcessor('web/section/getlist');
-		$response = $this->modx->fromJSON($response->response);
-		$res = '';
-		foreach ($response['results'] as $v) {
-			if ($id == $v['id']) {$v['selected'] = 'selected';} else {$v['selected'] = '';}
-			$res .= $this->getChunk($this->config['tplSectionRow'], $v);
-		}
-
-		return $res;
-	}
-
-
-	/**
-	 * Returns form for create/update Ticket
-	 *
-	 * @access public
-	 * @param integer $id Id of an existing Ticket
-	 * @param mixed $mode What form is need to load, for create or update?
-	 * @return mixed Rendered form
-	 */
-	public function getTicketForm($data = array()) {
-		$this->initialize($this->modx->context->key);
-
-		$tpl = $this->config['tplFormCreate'];
-
-		if (!empty($data)) {
-			if (!empty($data['tid'])) {
-				$response = $this->modx->runProcessor('resource/get', array('id' => $data['tid']));
-				if ($response->isError()) {
-					return $response->getMessage();
-				}
-				$object = $response->response['object'];
-				if ($object['class_key'] != 'Ticket' || ($object['createdby'] != $this->modx->user->id  && !$this->modx->hasPermission('edit_document'))) {
-					return $this->modx->lexicon('ticket_err_wrong_user');
-				}
-				unset($data['parent']);
-				$data = array_merge($object,$data);
-				foreach ($data as $k => $v) {
-					if (is_string($v)) {
-						$data[$k] = html_entity_decode($v, ENT_QUOTES, $this->config['charset']);
-						$data[$k] = str_replace(array('[^','^]','[',']'), array('&#91;^','^&#93;','{{{{{','}}}}}'), $data[$k]);
-						$data[$k] = htmlentities($data[$k], ENT_QUOTES, $this->config['charset']);
-					}
-				}
-				$tpl = $this->config['tplFormUpdate'];
-			}
-		}
-		$parent = !empty($data['parent']) ? $data['parent'] : 0;
-		$arr = array_merge(array(
-				'assetsUrl' => $this->config['assetsUrl']
-				,'sections' => $this->getSections($parent)
-			)
-			,$data
-		);
-
-		return $this->getChunk($tpl, $arr);
-	}
-
-
-	/**
-	 * Returns form for create/update Comment
-	 *
-	 * @access public
-	 * @return mixed Rendered form
-	 */
-	public function getCommentForm() {
-		$this->initialize($this->modx->context->key);
-
-		if (!$this->modx->user->isAuthenticated()) {
-			return $this->getChunk($this->config['tplLoginToComment']);
-		}
-		else {
-			$arr = array(
-				'assetsUrl' => $this->config['assetsUrl']
-				,'thread' => $this->config['thread']
-			);
-			return $this->getChunk($this->config['tplCommentForm'], $arr);
-		}
-	}
-
-
-	/**
-	 * Save ticket through processor and redirect to it
-	 *
-	 * @access public
-	 * @param array $data section, pagetitle,text, etc
-	 * @return
-	 */
-	public function saveTicket($data = array()) {
-		foreach ($data as $k => $v) {
-			if ($k !== 'content') {
-				$data[$k] = $this->sanitizeString($v);
-			}
-		}
-		$data['class_key'] = 'Ticket';
-		if (!empty($data['tid'])) {
-			$data['id'] = $data['tid'];
-			$data['context_key'] = $this->modx->context->key;
-			$response = $this->modx->runProcessor('resource/update', $data);
-		}
-		else {
-			$response = $this->modx->runProcessor('resource/create', $data);
-		}
-
-		if ($response->isError()) {
-			$message = $response->getMessage();
-			if (is_array($message) && !empty($message['message'])) {
-				$data['error'] = $message['message'];
-			}
-			else if (count($response->errors)) {
-				foreach ($response->errors as $v) {
-					$data['error.'.$v->field] = $v->message;
-				}
-				$data['error'] = $this->modx->lexicon('ticket_err_form');
-			}
-			else {
-				$data['error'] = $message;
-			}
-			return $this->getTicketForm($data);
-		}
-		else if (empty($data['tid']) && $this->modx->getOption('tickets.mail_bcc_level') >= 1) {
-			if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
-				$bcc = array_map('trim', explode(',', $bcc));
-				if (!empty($bcc) && $resource = $this->modx->getObject('Ticket', $response->response['object']['id'])) {
-					$resource = $resource->toArray();
-					foreach ($bcc as $to) {
-						if ($to == $this->modx->user->id) {continue;}
-						$this->addQueue(
-							$to
-							,$this->modx->lexicon('ticket_email_bcc', $resource)
-							,$this->getChunk($this->config['tplTicketEmailBcc'], $resource, false)
-						);
-					}
-				}
-			}
-		}
-
-		$id = $response->response['object']['id'];
-
-		if ($data['published'] != 1) {$id = $data['parent'];}
-		$this->modx->sendRedirect($this->modx->makeUrl($id,'','','full'));
 	}
 
 
@@ -336,6 +185,92 @@ class Tickets {
 		$preview = $this->pdoTools->fastProcess($preview);
 
 		return $this->success($message, array('preview' => $preview));
+	}
+
+
+	/**
+	 * Save ticket through processor and redirect to it
+	 *
+	 * @access public
+	 * @param array $data section, pagetitle,text, etc
+	 * @return
+	 */
+	public function saveTicket($data = array()) {
+		$allowedFields = array_map('trim', explode(',', $this->config['allowedFields']));
+		$allowedFields = array_unique(array_merge($allowedFields, array('parent','pagetitle','content')));
+		$requiredFields = array_map('trim', explode(',', $this->config['requiredFields']));
+		$requiredFields = array_unique(array_merge($requiredFields, array('parent','pagetitle','content')));
+
+		$fields = array();
+		foreach ($allowedFields as $field) {
+			if (in_array($field, $allowedFields) && array_key_exists($field, $data)) {
+				$value = $data[$field];
+				if ($field !== 'content') {
+					$value = $this->sanitizeString($value);
+				}
+				$fields[$field] = $value;
+			}
+		}
+
+		$errors = array();
+		foreach ($requiredFields as $v) {
+			if (empty($fields[$v])) {
+				$errors[$v] = $this->modx->lexicon('field_required');
+			}
+		}
+		if (!empty($errors)) {
+			return $this->error($this->modx->lexicon('ticket_err_form'), $errors);
+		}
+
+		$fields['class_key'] = 'Ticket';
+		if (!empty($data['tid'])) {
+			$fields['id'] = (integer) $data['tid'];
+			if ($ticket = $this->modx->getObject('Ticket', array('class_key' => 'Ticket', 'id' => $fields['id']))) {
+				$fields['context_key'] = $ticket->get('context_key');
+				$response = $this->modx->runProcessor('resource/update', $fields);
+			}
+			else {
+				return $this->error($this->modx->lexicon('ticket_err_id', array('id' => $fields['id'])));
+			}
+		}
+		else {
+			$response = $this->modx->runProcessor('resource/create', $fields);
+		}
+
+		/* @var modProcessorResponse $response */
+		if ($response->isError()) {
+			$message = $response->getMessage();
+			if (empty($message)) {$message = $this->modx->lexicon('ticket_err_form');}
+			$tmp = $response->getFieldErrors();
+			$errors = array();
+			foreach ($tmp as $v) {
+				$errors[$v->field] = $v->message;
+			}
+
+			return $this->error($message, $errors);
+		}
+		else if (empty($data['tid']) && $this->modx->getOption('tickets.mail_bcc_level') >= 1) {
+			if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
+				$bcc = array_map('trim', explode(',', $bcc));
+				if (!empty($bcc) && $resource = $this->modx->getObject('Ticket', $response->response['object']['id'])) {
+					$resource = $resource->toArray();
+					foreach ($bcc as $to) {
+						if ($to == $this->modx->user->id) {continue;}
+						$this->addQueue(
+							$to
+							,$this->modx->lexicon('ticket_email_bcc', $resource)
+							,$this->getChunk($this->config['tplTicketEmailBcc'], $resource, false)
+						);
+					}
+				}
+			}
+		}
+
+		$id = $response->response['object']['id'];
+		if (empty($data['published'])) {$id = $data['parent'];}
+		$redirect = $this->modx->makeUrl($id,'','','full');
+
+		return $this->success('', array('redirect' => $redirect));
 	}
 
 
@@ -549,9 +484,10 @@ class Tickets {
 	 */
 	public function sanitizeString($string = '') {
 		$string = htmlentities(trim($string), ENT_QUOTES, "UTF-8");
+		$string = preg_replace('/^@.*\b/', '', $string);
+
 		$arr1 = array('[',']','`');
 		$arr2 = array('&#091;','&#093;','&#096;');
-
 		return str_replace($arr1, $arr2, $string);
 	}
 
