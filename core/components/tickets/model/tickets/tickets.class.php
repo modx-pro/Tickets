@@ -254,10 +254,10 @@ class Tickets {
 				$bcc = array_map('trim', explode(',', $bcc));
 				if (!empty($bcc) && $resource = $this->modx->getObject('Ticket', $response->response['object']['id'])) {
 					$resource = $resource->toArray();
-					foreach ($bcc as $to) {
-						if ($to == $this->modx->user->id) {continue;}
+					foreach ($bcc as $uid) {
+						if ($uid == $resource['createdby']) {continue;}
 						$this->addQueue(
-							$to
+							$uid
 							,$this->modx->lexicon('ticket_email_bcc', $resource)
 							,$this->getChunk($this->config['tplTicketEmailBcc'], $resource, false)
 						);
@@ -615,9 +615,10 @@ class Tickets {
 			$q->select('TicketComment.createdby as uid, TicketComment.text');
 			$q->where(array('TicketComment.id' => $comment['parent'], 'TicketComment.createdby:!=' => $comment['createdby']));
 			if ($q->prepare() && $q->stmt->execute()) {
-				$res = $q->stmt->fetch(PDO::FETCH_ASSOC);
-				$reply_uid = $res['uid'];
-				$comment['parent_text'] = $res['text'];
+				if ($res = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
+					$reply_uid = $res['uid'];
+					$comment['parent_text'] = $res['text'];
+				}
 			}
 		}
 
@@ -635,7 +636,7 @@ class Tickets {
 
 		// Then we send emails to subscribers
 		foreach ($subscribers as $uid) {
-			if ($uid == $reply_uid || $uid == $this->modx->user->id) {
+			if ($uid == $reply_uid || $uid == $comment['createdby']) {
 				continue;
 			}
 			else if ($uid == $owner_uid) {
@@ -658,10 +659,10 @@ class Tickets {
 		if ($this->modx->getOption('tickets.mail_bcc_level') >= 2) {
 			if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
 				$bcc = array_map('trim', explode(',', $bcc));
-				foreach ($bcc as $to) {
-					if ($to != $reply_uid && $to != $owner_uid) {
+				foreach ($bcc as $uid) {
+					if ($uid != $reply_uid && $uid != $owner_uid && $uid != $comment['createdby']) {
 						$this->addQueue(
-							$to
+							$uid
 							,$this->modx->lexicon('ticket_comment_email_bcc', $comment)
 							,$this->getChunk($this->config['tplCommentEmailBcc'], $comment, false)
 						);
@@ -708,7 +709,6 @@ class Tickets {
 		/* @var TicketThread $thread */
 		if ($thread = $this->modx->getObject('TicketThread', array('name' => $name))) {
 			$message = $thread->Subscribe() ? 'ticket_thread_subscribed' : 'ticket_thread_unsubscribed';
-
 			return $this->success($this->modx->lexicon($message));
 		}
 		else {

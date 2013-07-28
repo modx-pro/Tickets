@@ -99,16 +99,16 @@ class TicketThread extends xPDOSimpleObject {
 		}
 
 		$found = array_search($uid, $subscribers);
-		if ($found !== false) {
-			unset($subscribers[$found]);
-		}
-		else {
+		if ($found === false) {
 			$subscribers[] = $uid;
 		}
-		$this->set('subscribers', $subscribers);
+		else {
+			unset($subscribers[$found]);
+		}
+		$this->set('subscribers', array_values($subscribers));
 		$this->save();
 
-		return !$found;
+		return ($found === false);
 	}
 
 
