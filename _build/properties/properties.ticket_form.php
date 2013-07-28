@@ -3,16 +3,7 @@
 $properties = array();
 
 $tmp = array(
-	'action' => array(
-		'type' => 'list'
-		,'options' => array(
-			array('text' => 'getTicketForm','value' => 'getTicketForm')
-			,array('text' => 'saveTicket','value' => 'saveTicket')
-			,array('text' => 'previewTicket','value' => 'previewTicket')
-		)
-		,'value' => 'getTicketForm'
-	)
-	,'tplFormCreate' => array(
+	'tplFormCreate' => array(
 		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.form.create'
 	)
@@ -20,13 +11,13 @@ $tmp = array(
 		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.form.update'
 	)
-	,'tplSectionRow' => array(
-		'type' => 'textfield'
-		,'value' => 'tpl.Tickets.form.section.row'
-	)
 	,'tplPreview' => array(
 		'type' => 'textfield'
 		,'value' => 'tpl.Tickets.form.preview'
+	)
+	,'tplSectionRow' => array(
+		'type' => 'textfield'
+		,'value' => 'tpl.Tickets.form.section.row'
 	)
 	,'tplTicketEmailBcc' => array(
 		'type' => 'textfield'
