@@ -71,7 +71,6 @@ class Tickets {
 
 			,'json_response' => true
 		),$config);
-		$_SESSION['Tickets'] = $this->config;
 
 		$this->modx->addPackage('tickets',$this->config['modelPath']);
 		$this->modx->lexicon->load('tickets:default');

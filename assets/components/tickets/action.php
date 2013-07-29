@@ -24,8 +24,8 @@ $properties = array();
 if (!empty($_REQUEST['thread']) && $thread = $modx->getObject('TicketThread', array('name' => $_REQUEST['thread']))) {
 	$properties = $thread->get('properties');
 }
-else if (!empty($_SESSION['Tickets'])) {
-	$properties = $_SESSION['Tickets'];
+else if (!empty($_SESSION['TicketForm'])) {
+	$properties = $_SESSION['TicketForm'];
 }
 /* @var Tickets $Tickets */
 define('MODX_ACTION_MODE', true);

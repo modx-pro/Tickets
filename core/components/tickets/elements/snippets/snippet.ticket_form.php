@@ -55,4 +55,5 @@ foreach ($response['results'] as $v) {
 	$data['sections'] .= $Tickets->getChunk($Tickets->config['tplSectionRow'], $v);
 }
 
+$_SESSION['TicketForm'] = $Tickets->config;
 return $Tickets->getChunk($tpl, $data);
