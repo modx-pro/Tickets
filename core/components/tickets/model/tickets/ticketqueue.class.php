@@ -15,9 +15,9 @@ class TicketQueue extends xPDOSimpleObject {
 
 		$mail->set(modMail::MAIL_SUBJECT, $this->subject);
 		$mail->set(modMail::MAIL_BODY, $this->body);
+		$mail->set(modMail::MAIL_SENDER, $this->xpdo->getOption('tickets.mail_from', null, $this->xpdo->getOption('emailsender'), true));
 		$mail->set(modMail::MAIL_FROM, $this->xpdo->getOption('tickets.mail_from', null, $this->xpdo->getOption('emailsender'), true));
 		$mail->set(modMail::MAIL_FROM_NAME, $this->xpdo->getOption('tickets.mail_from_name', null, $this->xpdo->getOption('site_name'), true));
-		$mail->set(modMail::MAIL_SENDER, $this->xpdo->getOption('tickets.mail_fom_name', null, $this->xpdo->getOption('site_name'), true));
 
 		$mail->address('to', $profile->get('email'));
 
