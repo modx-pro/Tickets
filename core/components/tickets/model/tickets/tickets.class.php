@@ -456,8 +456,8 @@ class Tickets {
 		if ($setName) {
 			$params = $snippet->getPropertySet($setName);
 		}
-		$text = preg_replace('/\{\{\{\{\(*.?\)\}\}\}\}/','',$text);
-		$text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+
+		$text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
 		$params['input'] =  str_replace(array('[',']'), array('{{{{{','}}}}}'), $text);
 
 		$snippet->setCacheable(false);
