@@ -13,18 +13,24 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 		if ($section = (integer) $this->getProperty('section')) {
 			if ($section = $this->modx->getObject('modResource', $section)) {
 				$parents = $this->modx->getChildIds($section->get('id'),1,array('context' => $section->get('context_key')));
-				$c->where(array('TicketThread.resource:IN' => $parents));
+				if (!empty($parents)) {
+					$c->where(array('TicketThread.resource:IN' => $parents));
+				}
 			}
 		}
 		/* OR get all comments by threads list */
 		else if ($threads = $this->getProperty('threads')) {
 			if (!is_array($threads)) {$threads = explode(',',$threads);}
-			$c->where(array('TicketComment.thread:IN' => $threads));
+			if (!empty($threads)) {
+				$c->where(array('TicketComment.thread:IN' => $threads));
+			}
 		}
 		/* OR get all comments by tickets list */
 		else if ($parents = $this->getProperty('parents')) {
 			if (!is_array($parents)) {$parents = explode(',',$parents);}
-			$c->where(array('TicketThread.resource:IN' => $parents));
+			if (!empty($parents)) {
+				$c->where(array('TicketThread.resource:IN' => $parents));
+			}
 		}
 		/* OR get all comments */
 		else {
