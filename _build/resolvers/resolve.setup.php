@@ -11,11 +11,13 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 	case xPDOTransport::ACTION_UPGRADE:
 		/* Checking and installing required packages */
 		$packages = array(
-			'Jevix' => array()
-			,'pdoTools' => array(
-				'version_major' => 1
-				,'version_minor' => 4
-				,'version_patch' => 1
+			'Jevix' => array(
+				'version_major' => 1,
+				'version_minor:>' => 1,
+			),
+			'pdoTools' => array(
+				'version_major' => 1,
+				'version_minor:>' => 8,
 			)
 		);
 		foreach ($packages as $package => $options) {
@@ -144,8 +146,8 @@ function installPackage($packageName) {
 
 				if (!download($url, $modx->getOption('core_path').'packages/'.$foundPackage->signature.'.transport.zip')) {
 					return array(
-						'success' => 0
-						,'message' => 'Could not download package <b>'.$packageName.'</b>.'
+						'success' => 0,
+						'message' => 'Could not download package <b>'.$packageName.'</b>.',
 					);
 				}
 
@@ -158,7 +160,7 @@ function installPackage($packageName) {
 					'updated' => null,
 					'state' => 1,
 					'workspace' => 1,
-					'provider' => 1,
+					'provider' => $provider->id,
 					'source' => $foundPackage->signature.'.transport.zip',
 					'package_name' => $sig[0],
 					'version_major' => $versionSignature[0],
@@ -178,14 +180,14 @@ function installPackage($packageName) {
 
 				if($package->save() && $package->install()) {
 					return array(
-						'success' => 1
-					,'message' => '<b>'.$packageName.'</b> was successfully installed'
+						'success' => 1,
+						'message' => '<b>'.$packageName.'</b> was successfully installed',
 					);
 				}
 				else {
 					return array(
-						'success' => 0
-						,'message' => 'Could not save package <b>'.$packageName.'</b>'
+						'success' => 0,
+						'message' => 'Could not save package <b>'.$packageName.'</b>',
 					);
 				}
 				break;
@@ -194,8 +196,8 @@ function installPackage($packageName) {
 	}
 	else {
 		return array(
-			'success' => 0
-			,'message' => 'Could not find <b>'.$packageName.'</b> in MODX repository'
+			'success' => 0,
+			'message' => 'Could not find <b>'.$packageName.'</b> in MODX repository',
 		);
 	}
 	return true;
