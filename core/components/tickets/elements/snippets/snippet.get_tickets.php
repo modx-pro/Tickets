@@ -118,7 +118,9 @@ $rows = $pdoFetch->run();
 $output = null;
 if (!empty($rows) && is_array($rows)) {
 	foreach ($rows as $k => $row) {
-		$properties = $modx->fromJSON($row['properties']);
+		$properties = is_string($row['properties'])
+			? $modx->fromJSON($row['properties'])
+			: $row['properties'];
 		if (empty($properties['process_tags'])) {
 			foreach ($row as $field => $value) {
 				$row[$field] = str_replace(array('[',']'), array('&#91;','&#93;'), $value);

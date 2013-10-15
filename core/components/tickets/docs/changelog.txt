@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.1.0 rc2
+==========
+- Fixed snippets for work with pdoTools 1.8.0.
+
 1.1.0 rc1
 ==========
 - Improved send of emails.
