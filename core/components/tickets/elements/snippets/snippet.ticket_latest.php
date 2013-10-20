@@ -17,6 +17,7 @@ $where = ($action == 'tickets') ? array('class_key' => 'Ticket') : array();
 if (empty($showUnpublished)) {$where['Ticket.published'] = 1;}
 if (empty($showHidden)) {$where['Ticket.hidemenu'] = 0;}
 if (empty($showDeleted)) {$where['Ticket.deleted'] = 0;}
+if (!isset($cacheTime)) {$cacheTime = 1800;}
 if (!empty($user)) {
 	$user = array_map('trim', explode(',', $user));
 	$user_id = $user_username = array();
@@ -181,7 +182,7 @@ if (!empty($rows) && is_array($rows)) {
 }
 
 if (!empty($cacheKey)) {
-	$modx->cacheManager->set('tickets/latest.'.$cacheKey, $output, 1800);
+	$modx->cacheManager->set('tickets/latest.'.$cacheKey, $output, $cacheTime);
 }
 
 if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {

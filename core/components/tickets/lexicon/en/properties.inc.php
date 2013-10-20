@@ -26,6 +26,7 @@ $_lang['tickets_prop_fastMode'] = 'If enabled, then in chunk will be only receiv
 
 $_lang['tickets_prop_action'] = 'Mode of snippet';
 $_lang['tickets_prop_cacheKey'] = 'Name of snippet cache. If empty - caching will be disabled.';
+$_lang['tickets_prop_cacheTime'] = 'Time of cache.';
 $_lang['tickets_prop_thread'] = 'Name of comments thread. By default, "resource-[[*id]]".';
 $_lang['tickets_prop_user'] = 'Select only elements created by this user.';
 

@@ -99,6 +99,10 @@ $tmp = array(
 		'type' => 'textfield'
 		,'value' => ''
 	)
+	,'cacheTime' => array(
+		'type' => 'numberfield'
+		,'value' => 1800
+	)
 );
 
 foreach ($tmp as $k => $v) {
