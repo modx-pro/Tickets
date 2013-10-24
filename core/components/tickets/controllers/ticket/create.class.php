@@ -12,8 +12,7 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 	 * @return mixed
 	 */
 	public function process(array $scriptProperties = array()) {
-		$this->scriptProperties['template'] = $this->modx->getOption('tickets.default_template',null,$this->modx->getOption('default_template',null,1));
-
+		$this->scriptProperties['template'] = $this->modx->getOption('tickets.default_template',null,$this->modx->getOption('default_template',null,1), true);
 		return parent::process($scriptProperties);
 	}
 
