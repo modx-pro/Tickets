@@ -34,6 +34,7 @@ class Ticket extends modResource {
 		$this->paramsLoaded = true;
 	}
 
+
 	/**
 	 * {@inheritDoc}
 	 * @return mixed
@@ -41,6 +42,7 @@ class Ticket extends modResource {
 	public static function getControllerPath(xPDO &$modx) {
 		return $modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'controllers/ticket/';
 	}
+
 
 	/**
 	 * {@inheritDoc}
@@ -53,6 +55,7 @@ class Ticket extends modResource {
 			'text_create_here' => $this->xpdo->lexicon('ticket_create_here'),
 		);
 	}
+
 
 	/**
 	 * {@inheritDoc}
@@ -77,6 +80,7 @@ class Ticket extends modResource {
 				case 'comments': $value = $this->getCommentsCount(); break;
 				case 'views': $value = $this->getViewsCount(); break;
 				case 'votes': $value = $this->getVotesSum(); break;
+				case 'date_ago': $value = $this->getDateAgo(); break;
 				default: $value = parent::get($k, $format, $formatTemplate);
 			}
 
@@ -95,20 +99,24 @@ class Ticket extends modResource {
 	 * {@inheritDoc}
 	 */
 	public function toArray($keyPrefix= '', $rawValues= false, $excludeLazy= false, $includeRelated= false) {
-		$array = array_merge(parent::toArray(), $this->getVirtualFields());
+		$array = array_merge(
+			parent::toArray($keyPrefix, $rawValues, $excludeLazy, $includeRelated),
+			$this->getVirtualFields()
+		);
 
 		return $array;
 	}
+
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function process() {
 		if ($this->privateweb && !$this->xpdo->hasPermission('ticket_view_private') && $id = $this->getOption('tickets.private_ticket_page')) {
-			return $this->xpdo->sendForward($id);
+			$this->xpdo->sendForward($id);
+			die;
 		}
 		else {
-			$this->logView();
 			$this->xpdo->setPlaceholders($this->getVirtualFields());
 			return parent::process();
 		}
@@ -156,17 +164,17 @@ class Ticket extends modResource {
 
 	/**
 	 * Html filter and typograf
+	 *
 	 * @var mixed Text for processing
-	 * @returns mixed Filtered text
-	 * */
+	 *
+	 * @return mixed Filtered text
+	 */
 	function Jevix($text, $replaceTags = true) {
-		if (!in_array('Tickets', get_declared_classes())) {
-			require 'tickets.class.php';
+		/** @var Tickets $Tickets */
+		if ($Tickets = $this->xpdo->getService('Tickets')) {
+			return $Tickets->Jevix($text, 'Ticket', $replaceTags);
 		}
-		if (!isset($this->xpdo->Tickets) || !is_object($this->xpdo->Tickets) || !($this->xpdo->Tickets instanceof Tickets)) {
-			$this->xpdo->Tickets = new Tickets($this->xpdo, array());
-		}
-		return $this->xpdo->Tickets->Jevix($text, 'Ticket', $replaceTags);
+		return 'Error on loading class "Tickets".';
 	}
 
 
@@ -211,6 +219,7 @@ class Ticket extends modResource {
 		$added= false;
 		if (is_array($obj)) {
 			foreach ($obj as $o) {
+				/** @var xpdoObject $o */
 				if (is_object($o)) {
 					$o->set('class', $this->class_key);
 					$added = parent::addMany($obj, $alias);
@@ -225,35 +234,6 @@ class Ticket extends modResource {
 
 
 	/*
-	 * Logs user views of a Ticket
-	 *
-	 * @return void
-	 * */
-	public function logView() {
-		$id = $this->id;
-
-		/* @var PDOStatement $stmt */
-		//if ($this->xpdo->user->isAuthenticated() && $uid = $this->xpdo->user->id) {
-			/*
-			if (!$res = $this->xpdo->getObject('TicketView', array('parent' => $this->id, 'uid' => $uid))) {
-				$res = $this->xpdo->newObject('TicketView');
-				$res->set('parent', $this->id);
-				$res->set('uid', $uid);
-			}
-			$res->set('timestamp', time());
-			$res->save();
-			*/
-			/*
-			$table = $this->xpdo->getTableName('TicketView');
-			$timestamp = date('Y-m-d H:i:s');
-			$sql = "INSERT INTO {$table} (`uid`,`parent`,`timestamp`) VALUES ({$uid},{$id},'{$timestamp}') ON DUPLICATE KEY UPDATE `timestamp` = '{$timestamp}'";
-			if ($stmt = $this->xpdo->prepare($sql)) {$stmt->execute();}
-			*/
-		//}
-	}
-
-
-	/*
 	 * Shorthand for getting virtual Ticket fields
 	 *
 	 * @return array $array Array with virtual fields
@@ -263,6 +243,7 @@ class Ticket extends modResource {
 			'comments' => $this->getCommentsCount()
 			,'views' => $this->getViewsCount()
 			,'votes' => $this->getVotesSum()
+			,'date_ago' => $this->getDateAgo()
 		);
 
 		return $array;
@@ -322,4 +303,20 @@ class Ticket extends modResource {
 		}
 		return $sum;
 	}
+
+
+	/**
+	 * Return formatted date of ticket creation
+	 *
+	 * @return string
+	 */
+	public function getDateAgo() {
+		$createdon = parent::get('createdon');
+		/** @var Tickets $Tickets */
+		if ($Tickets = $this->xpdo->getService('Tickets')) {
+			$createdon = $Tickets->dateFormat($createdon);
+		}
+		return $createdon;
+	}
+
 }

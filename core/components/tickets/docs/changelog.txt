@@ -3,6 +3,8 @@ Changelog for Tickets.
 1.1.0 pl
 ==========
 - Added parameter "cacheTime" for TicketLatest.
+- Fixed method Ticket::toArray().
+- Added placeholder [[+date_ago]] to class "Ticket". You can use $ticket->get('date_ago');
 
 1.1.0 rc2
 ==========
