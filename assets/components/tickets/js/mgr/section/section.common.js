@@ -36,7 +36,7 @@ Ext.extend(Tickets.panel.SectionTemplateSettings,MODx.Panel,{
 			,anchor: '100%'
 			,height: 300
 			,grow: false
-			,value: config.record && config.record.content ? config.record.content : "[[!getPage?\n    &element=`getTickets`\n]]\n\n<div class=\"pagination\">\n    <ul>\n        [[!+page.nav]]\n    </ul>\n</div>"
+			,value: config.record && config.record.content ? config.record.content : MODx.config['tickets.section_content_default']
 		},{
 			id: 'modx-content-below'
 			,border: false

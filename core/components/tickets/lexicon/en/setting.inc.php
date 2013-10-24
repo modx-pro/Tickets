@@ -15,6 +15,8 @@ $_lang['setting_tickets.frontend_js_desc'] = 'Path to file with scripts of the s
 
 $_lang['setting_tickets.default_template'] = 'Default template for new tickets';
 $_lang['setting_tickets.default_template_desc'] = 'Default template for new tickets. Using in manager and when creating tickets on frontend.';
+$_lang['setting_tickets.section_content_default'] = 'Default content for new tickets section';
+$_lang['setting_tickets.section_content_default_desc'] = ' Here you can specify the default content of new tickets section. By default it lists children tickets.';
 
 $_lang['setting_tickets.enable_editor'] = 'Editor "markItUp"';
 $_lang['setting_tickets.enable_editor_desc'] = 'If true, enables "markItUp" on frontend, for handy work with tickets and comments.';

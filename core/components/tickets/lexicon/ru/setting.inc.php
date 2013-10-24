@@ -15,6 +15,8 @@ $_lang['setting_tickets.frontend_js_desc'] = 'Путь к файлу со скр
 
 $_lang['setting_tickets.default_template'] = 'Шаблон для новых тикетов';
 $_lang['setting_tickets.default_template_desc'] = 'Шаблон "по умолчанию" для новых тикетов. Используется и в административной части, и при создании тикета на фронтенде.';
+$_lang['setting_tickets.section_content_default']  = 'Содержимое секций тикетов по умолчанию';
+$_lang['setting_tickets.section_content_default_desc'] = 'Здесь вы можете указать контент вновь создаваемой секции тикетов. По умолчанию установен вывод дочерних тикетов.';
 
 $_lang['setting_tickets.enable_editor'] = 'Редактор "markItUp"';
 $_lang['setting_tickets.enable_editor_desc'] = 'Эта настройка активирует редактор "markItUp" на фронтенде, для удобной работы с тикетами и комментариями.';
@@ -29,6 +31,7 @@ $_lang['setting_tickets.process_tags_default'] = 'Выполнять теги п
 $_lang['setting_tickets.process_tags_default_desc'] = 'Эта настройка включает или отключает параметр "Выполнять теги MODX" по умолчанию у новых тикетов.';
 $_lang['setting_tickets.private_ticket_page'] = 'Редирект с приватных тикетов';
 $_lang['setting_tickets.private_ticket_page_desc'] = 'Id существующего ресурса MODX, на который отправлять пользователя, если у него недостаточно прав для просмотра приватного тикета.';
+
 
 $_lang['setting_tickets.snippet_prepare_comment'] = 'Сниппет обработки комментария';
 $_lang['setting_tickets.snippet_prepare_comment_desc'] = 'Специальный сниппет, который будет обрабатывать комментарий. Перекрывает обработку по умолчанию и вызывается прямо в классе "Tickets", соответственно, ему доступны все методы и переменные этого класса.';

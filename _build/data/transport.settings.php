@@ -120,6 +120,11 @@ $tmp = array(
 		,'value' => 1
 		,'area' => 'tickets.mail'
 	)
+	,'section_content_default' => array(
+		'value' => "[[!getPage?\n    &element=`getTickets`\n]]\n\n<div class=\"pagination\">\n    <ul>\n        [[!+page.nav]]\n    </ul>\n</div>"
+		,'xtype' => 'textarea'
+		,'area' => 'tickets'
+	)
 
 );
 
