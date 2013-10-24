@@ -65,6 +65,14 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 				? $this->getProperty('isfolder')
 				: $isfolder = $this->modx->getOption('isfolder', null, false, true);
 		}
+		if ($category = $this->modx->getObject('TicketsSection', array('id' => $this->getProperty('parent'), 'class_key' => 'TicketsSection'))) {
+			if (!$category->checkPolicy('section_add_children') && $this->object->parent != $category->id) {
+				return $this->modx->lexicon('ticket_err_wrong_parent') . $this->modx->lexicon('ticket_err_access_denied');
+			}
+		}
+		else {
+			return $this->modx->lexicon('resource_err_nfs', array('id' => $this->getProperty('parent')));
+		}
 
 		$this->setProperties(array(
 			'class_key' => 'Ticket'

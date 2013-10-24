@@ -12,7 +12,7 @@
 	</label>
 
 	<label for="ticket-editor">
-		<textarea class="input-xxlarge" placeholder="[[%ticket_content]]" name="content" id="ticket-editor" rows="20"></textarea>
+		<textarea class="input-xxlarge" placeholder="[[%ticket_content]]" name="content" id="ticket-editor" rows="20">[[+content]]</textarea>
 		<span class="error"></span>
 	</label>
 

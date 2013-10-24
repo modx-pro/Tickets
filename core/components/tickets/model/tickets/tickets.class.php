@@ -445,7 +445,7 @@ class Tickets {
 	public function Jevix($text = null, $setName = 'Ticket', $replaceTags = true) {
 		if (empty($text)) {return ' ';}
 		if (!$snippet = $this->modx->getObject('modSnippet', array('name' => 'Jevix'))) {
-			return false;
+			return 'Could not load snippet Jevix';
 		}
 		// Loading parser if needed - it is for mgr context
 		if (!is_object($this->modx->parser)) {

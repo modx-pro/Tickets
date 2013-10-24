@@ -9,6 +9,7 @@ Changelog for Tickets.
 - Fixed blank template when create new ticket if no "tickets.default_template" set.
 - Added more checkboxes for Ticket in manager.
 - Added new system parameters "ticket_hidemenu_force" and "ticket_isfolder_force". You can disable them.
+- If user edits ticket which was moved in the category into which the user has no rights, this category will be saved.
 
 1.1.0 rc2
 ==========

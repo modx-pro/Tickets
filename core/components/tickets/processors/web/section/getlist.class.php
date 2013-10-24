@@ -9,7 +9,6 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 	public $classKey = 'TicketsSection';
 	public $defaultSortField = 'pagetitle';
 	public $defaultSortDirection  = 'ASC';
-	public $checkListPermission = true;
 
 	/**
 	 * {@inheritDoc}
@@ -31,10 +30,18 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 	public function iterate(array $data) {
 		$list = array();
 		$list = $this->beforeIteration($list);
+
+		$pid = 0;
+		if (!empty($_REQUEST['tid']) && $current = $this->modx->getObject('Ticket', (integer) $_REQUEST['tid'])) {
+			$pid = $current->get('parent');
+		}
+
 		$this->currentIndex = 0;
 		/** @var xPDOObject|modAccessibleObject $object */
 		foreach ($data['results'] as $object) {
-			if ($this->checkListPermission && $object instanceof modAccessibleObject && !$object->checkPolicy('section_add_children')) continue;
+			if ($object instanceof modAccessibleObject && !$object->checkPolicy('section_add_children') && $object->id != $pid) {
+				continue;
+			}
 			$objectArray = $this->prepareRow($object);
 			if (!empty($objectArray) && is_array($objectArray)) {
 				$list[] = $objectArray;
