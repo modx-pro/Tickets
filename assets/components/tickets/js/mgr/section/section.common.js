@@ -36,7 +36,9 @@ Ext.extend(Tickets.panel.SectionTemplateSettings,MODx.Panel,{
 			,anchor: '100%'
 			,height: 300
 			,grow: false
-			,value: config.record && config.record.content ? config.record.content : MODx.config['tickets.section_content_default']
+			,value: config.record && config.record.content
+				? config.record.content
+				: MODx.config['tickets.section_content_default']
 		},{
 			id: 'modx-content-below'
 			,border: false

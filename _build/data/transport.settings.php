@@ -121,9 +121,9 @@ $tmp = array(
 		,'area' => 'tickets.mail'
 	)
 	,'section_content_default' => array(
-		'value' => "[[!getPage?\n    &element=`getTickets`\n]]\n\n<div class=\"pagination\">\n    <ul>\n        [[!+page.nav]]\n    </ul>\n</div>"
+		'value' => "[[!pdoPage?\n\t&element=`getTickets`\n]]\n\n[[!+page.nav]]"
 		,'xtype' => 'textarea'
-		,'area' => 'tickets'
+		,'area' => 'tickets.main'
 	)
 
 );
