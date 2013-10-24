@@ -15,6 +15,10 @@ $_lang['setting_tickets.frontend_js_desc'] = 'Путь к файлу со скр
 
 $_lang['setting_tickets.default_template'] = 'Шаблон для новых тикетов';
 $_lang['setting_tickets.default_template_desc'] = 'Шаблон "по умолчанию" для новых тикетов. Используется и в административной части, и при создании тикета на фронтенде.';
+$_lang['setting_tickets.ticket_isfolder_force'] = 'Все тикеты - контейнеры';
+$_lang['setting_tickets.ticket_isfolder_force_desc'] = 'Обязательное указание параметра "isfolder" у тикетов';
+$_lang['setting_tickets.ticket_hidemenu_force'] = 'Не показывать тикеты в меню';
+$_lang['setting_tickets.ticket_hidemenu_force_desc'] = 'Обязательное указание параметра "hidemenu" у тикетов';
 $_lang['setting_tickets.section_content_default']  = 'Содержимое секций тикетов по умолчанию';
 $_lang['setting_tickets.section_content_default_desc'] = 'Здесь вы можете указать контент вновь создаваемой секции тикетов. По умолчанию установен вывод дочерних тикетов.';
 

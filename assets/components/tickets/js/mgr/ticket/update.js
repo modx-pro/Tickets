@@ -308,13 +308,14 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 			,defaults: {
 				msgTarget: 'under'
 			}
-			,items: [{
+			,items: [/*{
 				xtype: 'tickets-combo-publish-status'
 				,id: 'modx-resource-published'
 				,name: 'published'
 				,hiddenName: 'published'
 				,fieldLabel: _('ticket_status')
-			},{
+			},*/
+			{
 				xtype: 'xdatetime'
 				,fieldLabel: _('resource_publishedon')
 				,description: '<b>[[*publishedon]]</b><br />'+_('resource_publishedon_help')
@@ -417,45 +418,50 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,msgTarget: 'under'
 			}
 			,items: [{
-				xtype: 'xcheckbox'
-				,name: 'richtext'
-				,boxLabel: _('resource_richtext')
-				,description: '<b>[[*richtext]]</b><br />'+_('resource_richtext_help')
-				,id: 'modx-resource-richtext'
-				,inputValue: 1
-				,checked: parseInt(config.record.richtext)
-			},{
-				xtype: 'xcheckbox'
-				,name: 'properties[disable_jevix]'
-				,boxLabel: _('ticket_disable_jevix')
-				,description: _('ticket_dialiassable_jevix_help')
-				,id: 'modx-resource-disablejevix'
-				,inputValue: 1
-				,checked: parseInt(config.record.properties.disable_jevix)
-			},{
-				xtype: 'xcheckbox'
-				,name: 'properties[process_tags]'
-				,boxLabel: _('ticket_process_tags')
-				,description: _('ticket_process_tags_help')
-				,id: 'modx-resource-process_tags'
-				,inputValue: 1
-				,checked: parseInt(config.record.properties.process_tags)
-			},{
-				xtype: 'xcheckbox'
-				,name: 'privateweb'
-				,boxLabel: _('ticket_private')
-				,description: _('ticket_private_help')
-				,id: 'modx-resource-privateweb'
-				,inputValue: 1
-				,checked: parseInt(config.record.properties.privateweb)
-			}
-				,{xtype: 'hidden',name: 'menutitle',id: 'modx-resource-menutitle',value: config.record.menutitle || ''}
-				,{xtype: 'hidden',name: 'link_attributes',id: 'modx-resource-link-attributes',value: config.record.link_attributes || ''}
-				,{xtype: 'hidden',name: 'hidemenu',id: 'modx-resource-hidemenu',value: config.record.hidemenu}
-				,{xtype: 'hidden',name: 'content_type',id: 'modx-resource-content-type', value: MODx.config.default_content_type || 1}
-				,{xtype: 'hidden',name: 'class_key',id: 'modx-resource-class-key',value: 'Ticket'}
-			]
+				xtype: 'checkboxgroup'
+				,columns: 2
+				,items: this.getCheckboxes(config)
+			}]
 		}]
+	}
+
+	,getCheckboxes: function(config) {
+		var fields = [];
+
+		var tmp = {
+			searchable: {}
+			,disable_jevix: {name: 'properties[disable_jevix]',boxLabel: _('ticket_disable_jevix'),description: _('ticket_disable_jevix_help')}
+			,cacheable: {}
+			,process_tags: {name: 'properties[process_tags]',boxLabel: _('ticket_process_tags'),description: _('ticket_process_tags_help')}
+			,published: {}
+			,private: {boxLabel: _('ticket_private'),description: _('ticket_private_help')}
+			,richtext: {}
+			,hidemenu: {boxLabel: _('resource_hide_from_menus'),description: _('resource_hide_from_menus_help')}
+			//,show_in_tree: {}
+			,isfolder: {boxLabel: _('resource_folder'),description: _('resource_folder_help')}
+			,menutitle: {xtype: 'hidden', value: config.record.menutitle || ''}
+			,link_attributes: {xtype: 'hidden',name: 'link_attributes',id: 'modx-resource-link-attributes'}
+			,content_type: {xtype: 'hidden',name: 'content_type',id: 'modx-resource-content-type', value: MODx.config.default_content_type || 1}
+			,class_key: {xtype: 'hidden',id: 'modx-resource-class-key',value: 'Ticket'}
+		};
+
+		for (var i in tmp) {
+			if (tmp.hasOwnProperty(i)) {
+				fields.push(Ext.apply({
+						xtype: 'xcheckbox'
+						,name: i
+						,boxLabel: _('resource_' + i)
+						,description: '<b>[[*' + i + ']]</b><br/>' + _('resource_' + i + '_help')
+						,id: 'modx-resource-' + i
+						,inputValue: 1
+						,checked: parseInt(config.record[i])
+					}
+					,tmp[i]
+				));
+			}
+		}
+
+		return fields;
 	}
 
 	,getComments: function(config) {

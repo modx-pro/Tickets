@@ -125,6 +125,16 @@ $tmp = array(
 		,'xtype' => 'textarea'
 		,'area' => 'tickets.main'
 	)
+	,'ticket_hidemenu_force' => array(
+		'value' => true
+		,'xtype' => 'combo-boolean'
+		,'area' => 'tickets.ticket'
+	)
+	,'ticket_isfolder_force' => array(
+		'value' => true
+		,'xtype' => 'combo-boolean'
+		,'area' => 'tickets.ticket'
+	)
 
 );
 

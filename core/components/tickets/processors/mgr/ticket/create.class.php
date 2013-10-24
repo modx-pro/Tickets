@@ -52,13 +52,24 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$introtext = $this->object->getIntroText($this->getProperty('content'));
 		}
 
+		if (!$hidemenu = $this->modx->getOption('tickets.ticket_hidemenu_force', null, 1, true)) {
+			$hidemenu = array_key_exists('hidemenu', $this->properties)
+				? $this->getProperty('hidemenu')
+				: $this->modx->getOption('hidemenu', null, false, true);
+		}
+		if (!$isfolder = $this->modx->getOption('tickets.ticket_isfolder_force', null, 1, true)) {
+			$isfolder = array_key_exists('isfolder', $this->properties)
+				? $this->getProperty('isfolder')
+				: $isfolder = $this->modx->getOption('isfolder', null, false, true);
+		}
+
 		$properties = array(
 			'class_key' => 'Ticket'
 			,'show_in_tree' => 0
 			,'published' => 0
-			,'hidemenu' => 1
+			,'hidemenu' => $hidemenu
 			,'syncsite' => 0
-			,'isfolder' => 1
+			,'isfolder' => $isfolder
 			,'introtext' => $introtext
 			,'createdby' => !empty($createdby) ? $createdby : $this->modx->user->id
 		);
@@ -122,7 +133,6 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			'published' => $this->published
 			,'publishedon' => $this->published ? $this->publishedon : 0
 			,'publishedby' => $this->published ? $this->publishedby : 0
-			,'isfolder' => 1
 		));
 		if ($this->object->alias == 'emptyresourcealias') {
 			$this->object->set('alias', $this->object->id);
