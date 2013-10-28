@@ -5,6 +5,7 @@ Changelog for Tickets.
 - Improved load of pdoTools.
 - Improved registration of javascript on frontend.
 - Updated jQuery to version 1.10.2.
+- Updated jQuery.Form to version 20131017.
 
 1.1.0 pl
 ==========
