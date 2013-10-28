@@ -65,7 +65,7 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 
 		if (!empty($resourceArray['publishedon'])) {
 			$resourceArray['publishedon_date'] = strftime('%b %d',strtotime($resourceArray['publishedon']));
-			$resourceArray['publishedon_time'] = strftime('%H:%I %p',strtotime($resourceArray['publishedon']));
+			$resourceArray['publishedon_time'] = strftime('%H:%M %p',strtotime($resourceArray['publishedon']));
 			$resourceArray['publishedon'] = strftime('%b %d, %Y %H:%I %p',strtotime($resourceArray['publishedon']));
 		}
 

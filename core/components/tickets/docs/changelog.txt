@@ -8,6 +8,7 @@ Changelog for Tickets.
 - Updated jQuery.Form to version 20131017.
 - Added jQuery.Sisyphus for persisting your forms data in a browsers local storage.
 - [#49] Added action fields to Ticket actions for more Form Customization.
+- [#44] Fixed time format in tickets list.
 
 1.1.0 pl
 ==========
