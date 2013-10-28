@@ -70,6 +70,7 @@ class Tickets {
 			,'gravatarIcon' => 'mm'
 
 			,'json_response' => true
+			,'nestedChunkPrefix' => 'tickets_'
 		),$config);
 
 		$this->modx->addPackage('tickets',$this->config['modelPath']);
@@ -531,11 +532,7 @@ class Tickets {
 		$node['comment_was_edited'] = $node['editedby'] && $node['editedon'];
 		$node['comment_new'] = $node['createdby'] != $this->modx->user->id && $this->last_view > 0 && strtotime($node['createdon']) > $this->last_view;
 
-		$res = $this->getChunk($tpl, $node, $this->config['fastMode']);
-		if (!$this->config['fastMode']) {
-			$res = $this->pdoTools->fastProcess($res);
-		}
-		return $res;
+		return $this->getChunk($tpl, $node, $this->config['fastMode']);
 	}
 
 
@@ -721,8 +718,14 @@ class Tickets {
 	 */
 	public function loadPdoTools() {
 		if (!is_object($this->pdoTools) || !($this->pdoTools instanceof pdoTools)) {
-			$this->pdoTools = $this->modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/', array('nestedChunkPrefix' => 'tickets_'));
+			if ($this->modx->getService('pdoFetch')) {
+				$this->pdoTools = new pdoFetch($this->modx, $this->config);
+			}
+			else {
+				return false;
+			}
 		}
+		return $this->pdoTools;
 	}
 
 
@@ -735,12 +738,16 @@ class Tickets {
 	 * @return string The processed output of the Chunk.
 	 */
 	public function getChunk($name, array $properties = array(), $fastMode = false) {
-		$this->loadPdoTools();
 		if (!$this->modx->parser) {
 			$this->modx->getParser();
 		}
+		if (!$this->pdoTools) {
+			$this->loadPdoTools();
+		}
+
 		return $this->pdoTools->getChunk($name, $properties, $fastMode);
 	}
+
 
 	/**
 	 * Formats date to "10 minutes ago" or "Yesterday in 22:10"

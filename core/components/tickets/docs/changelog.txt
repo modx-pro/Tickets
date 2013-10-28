@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.1.1 pl
+==========
+- Improved load of pdoTools.
+
 1.1.0 pl
 ==========
 - Added parameter "cacheTime" for TicketLatest.
