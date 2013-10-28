@@ -26,7 +26,7 @@ var Tickets = {
 			var count = $('.ticket-comment').size();
 			$('#comment-total, .comments-count').text(count);
 
-			$("#ticketForm, #comment-form").sisyphus();
+			$("#ticketForm.create").sisyphus();
 		});
 		$(document).on('click', '#comment-preview-placeholder a', function() {
 			return false;
