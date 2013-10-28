@@ -22,7 +22,8 @@ class Tickets {
 		$this->modx =& $modx;
 
 		$corePath = $this->modx->getOption('tickets.core_path',$config,$this->modx->getOption('core_path').'components/tickets/');
-		$assetsUrl = $this->modx->getOption('tickets.assets_url',$config,$this->modx->getOption('assets_url').'components/tickets/');
+		$assetsPath = $this->modx->getOption('tickets.assets_path', $config, $this->modx->getOption('assets_path').'components/tickets/');
+		$assetsUrl = $this->modx->getOption('tickets.assets_url', $config, $this->modx->getOption('assets_url').'components/tickets/');
 		$actionUrl = $this->modx->getOption('tickets.action_url', $config, $assetsUrl.'action.php');
 		$connectorUrl = $assetsUrl.'connector.php';
 
@@ -30,6 +31,7 @@ class Tickets {
 			'assetsUrl' => $assetsUrl
 			,'cssUrl' => $assetsUrl.'css/'
 			,'jsUrl' => $assetsUrl.'js/'
+			,'jsPath' => $assetsPath.'js/'
 			,'imagesUrl' => $assetsUrl.'images/'
 
 			,'connectorUrl' => $connectorUrl
@@ -90,28 +92,26 @@ class Tickets {
 		switch ($ctx) {
 			case 'mgr': break;
 			default:
-				if (!MODX_API_MODE) {
+				if (!defined('MODX_API_MODE') || !MODX_API_MODE) {
 					$config = $this->makePlaceholders($this->config);
 
 					if ($css = $this->modx->getOption('tickets.frontend_css')) {
 						$this->modx->regClientCSS(str_replace($config['pl'], $config['vl'], $css));
 					}
-					if ($js = $this->modx->getOption('tickets.frontend_js')) {
-						$enable_editor = $this->modx->getOption('tickets.enable_editor');
-						$formBefore = !empty($this->config['formBefore']) ? 1 : 0;
-						$editorConfig = 'enable_editor: '.$enable_editor.'';
-						if ($enable_editor) {
-							$this->modx->regClientScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
-							$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
-							$editorConfig .= '
+
+					$enable_editor = $this->modx->getOption('tickets.enable_editor');
+					$formBefore = !empty($this->config['formBefore']) ? 1 : 0;
+					$editorConfig = 'enable_editor: '.$enable_editor.'';
+					if ($enable_editor) {
+						$this->modx->regClientScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
+						$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
+						$editorConfig .= '
 							,editor: {
 								ticket: '.$this->modx->getOption('tickets.editor_config.ticket').'
 								,comment: '.$this->modx->getOption('tickets.editor_config.comment').'
 							}';
-						}
-
-						$this->modx->regClientStartupScript(str_replace('					', '', '
-						<script type="text/javascript">
+					}
+					$config_js = preg_replace(array('/^\n/', '/\t{6}/'), '', '
 						TicketsConfig = {
 							jsUrl: "'.$this->config['jsUrl'].'web/"
 							,cssUrl: "'.$this->config['cssUrl'].'web/"
@@ -122,12 +122,26 @@ class Tickets {
 							,thread_depth: '.$this->config['depth'].'
 							,'.$editorConfig.'
 						};
-						if(typeof jQuery == "undefined") {
-							document.write("<script src=\""+TicketsConfig.jsUrl+"lib/jquery.min.js\" type=\"text/javascript\"><\/script>");
+					');
+
+					if (file_put_contents($this->config['jsPath'] . 'web/config.js', $config_js)) {
+						$this->modx->regClientStartupScript($this->config['jsUrl'] . 'web/config.js');
+					}
+					else {
+						$this->modx->regClientStartupScript("<script type=\"text/javascript\">\n".$config_js."\n</script>", true);
+					}
+
+					if ($js = trim($this->modx->getOption('tickets.frontend_js'))) {
+						if (!empty($js) && preg_match('/\.js/i', $js)) {
+							$this->modx->regClientScript(preg_replace(array('/^\n/', '/\t{7}/'), '', '
+							<script type="text/javascript">
+								if(typeof jQuery == "undefined") {
+									document.write("<script src=\"'.$this->config['jsUrl'].'web/lib/jquery.min.js\" type=\"text/javascript\"><\/script>");
+								}
+							</script>
+							'), true);
+							$this->modx->regClientScript(str_replace($config['pl'], $config['vl'], $js));
 						}
-						</script>
-						'), true);
-						$this->modx->regClientScript(str_replace($config['pl'], $config['vl'], $js));
 					}
 				}
 

@@ -3,6 +3,8 @@ Changelog for Tickets.
 1.1.1 pl
 ==========
 - Improved load of pdoTools.
+- Improved registration of javascript on frontend.
+- Updated jQuery to version 1.10.2.
 
 1.1.0 pl
 ==========
