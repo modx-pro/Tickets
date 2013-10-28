@@ -6,6 +6,7 @@ Changelog for Tickets.
 - Improved registration of javascript on frontend.
 - Updated jQuery to version 1.10.2.
 - Updated jQuery.Form to version 20131017.
+- Added jQuery.Sisyphus for persisting your forms data in a browsers local storage.
 
 1.1.0 pl
 ==========
