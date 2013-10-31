@@ -1,4 +1,4 @@
-Tickets = {
+var Tickets = {
 	initialize: function() {
 		if (typeof window['prettyPrint'] != 'function') {
 			document.write('<script src="'+TicketsConfig.jsUrl+'lib/prettify/prettify.js"><\/script>');
@@ -9,6 +9,9 @@ Tickets = {
 		}
 		if(!jQuery().jGrowl) {
 			document.write('<script src="'+TicketsConfig.jsUrl+'lib/jquery.jgrowl.min.js"><\/script>');
+		}
+		if(!jQuery().sisyphus) {
+			document.write('<script src="'+TicketsConfig.jsUrl+'lib/jquery.sisyphus.min.js"><\/script>');
 		}
 		$(document).ready(function() {
 			if (TicketsConfig.enable_editor == true) {
@@ -22,6 +25,8 @@ Tickets = {
 			}
 			var count = $('.ticket-comment').size();
 			$('#comment-total, .comments-count').text(count);
+
+			$("#ticketForm.create").sisyphus();
 		});
 		$(document).on('click', '#comment-preview-placeholder a', function() {
 			return false;
@@ -445,7 +450,7 @@ Tickets.tpanel = {
 		});
 	}
 
-	,start: function(remove_class) {
+	,start: function() {
 		this.refresh.addClass('loading');
 	}
 

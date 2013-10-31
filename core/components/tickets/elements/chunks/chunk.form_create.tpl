@@ -1,4 +1,4 @@
-<form class="well" method="post" action="" id="ticketForm">
+<form class="well create" method="post" action="" id="ticketForm">
 	<div id="ticket-preview-placeholder"></div>
 
 	<label for="ticket-sections">

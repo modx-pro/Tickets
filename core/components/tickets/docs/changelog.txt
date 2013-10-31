@@ -1,5 +1,15 @@
 Changelog for Tickets.
 
+1.1.1 pl
+==========
+- Improved load of pdoTools.
+- Improved registration of javascript on frontend.
+- Updated jQuery to version 1.10.2.
+- Updated jQuery.Form to version 20131017.
+- Added jQuery.Sisyphus for persisting your forms data in a browsers local storage.
+- [#49] Added action fields to Ticket actions for more Form Customization.
+- [#44] Fixed time format in tickets list.
+
 1.1.0 pl
 ==========
 - Added parameter "cacheTime" for TicketLatest.

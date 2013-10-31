@@ -13,11 +13,17 @@ class Tickets {
 	private $prepareCommentCustom = null;
 	private $last_view = 0;
 
+
+	/**
+	 * @param modX $modx
+	 * @param array $config
+	 */
 	function __construct(modX &$modx,array $config = array()) {
 		$this->modx =& $modx;
 
 		$corePath = $this->modx->getOption('tickets.core_path',$config,$this->modx->getOption('core_path').'components/tickets/');
-		$assetsUrl = $this->modx->getOption('tickets.assets_url',$config,$this->modx->getOption('assets_url').'components/tickets/');
+		$assetsPath = $this->modx->getOption('tickets.assets_path', $config, $this->modx->getOption('assets_path').'components/tickets/');
+		$assetsUrl = $this->modx->getOption('tickets.assets_url', $config, $this->modx->getOption('assets_url').'components/tickets/');
 		$actionUrl = $this->modx->getOption('tickets.action_url', $config, $assetsUrl.'action.php');
 		$connectorUrl = $assetsUrl.'connector.php';
 
@@ -25,6 +31,7 @@ class Tickets {
 			'assetsUrl' => $assetsUrl
 			,'cssUrl' => $assetsUrl.'css/'
 			,'jsUrl' => $assetsUrl.'js/'
+			,'jsPath' => $assetsPath.'js/'
 			,'imagesUrl' => $assetsUrl.'images/'
 
 			,'connectorUrl' => $connectorUrl
@@ -37,23 +44,7 @@ class Tickets {
 			,'chunkSuffix' => '.chunk.tpl'
 			,'snippetsPath' => $corePath.'elements/snippets/'
 			,'processorsPath' => $corePath.'processors/'
-			/*
-			,'tplFormCreate' => 'tpl.Tickets.form.create'
-			,'tplFormUpdate' => 'tpl.Tickets.form.update'
-			,'tplSectionRow' => 'tpl.Tickets.form.section.row'
-			,'tplCommentAuth' => 'tpl.Tickets.comment.one.auth'
-			,'tplCommentGuest' => 'tpl.Tickets.comment.one.guest'
-			,'tplComments' => 'tpl.Tickets.comment.wrapper'
-			,'tplLoginToComment' => 'tpl.Tickets.comment.login'
-			,'tplPreview' => 'tpl.Tickets.form.preview'
-			,'tplCommentEmailOwner' => 'tpl.Tickets.comment.email.owner'
-			,'tplCommentEmailReply' => 'tpl.Tickets.comment.email.reply'
-			,'tplCommentEmailSubscription' => 'tpl.Tickets.comment.email.subscription'
-			,'tplCommentEmailBcc' => 'tpl.Tickets.comment.email.bcc'
-			,'tplTicketEmailBcc' => 'tpl.Tickets.ticket.email'
-			,'allowedFields' => 'pagetitle,parent,content,published'
-			,'requiredFields' => 'pagetitle,parent,content'
-			*/
+
 			,'fastMode' => false
 			,'dateFormat' => 'd F Y, H:i'
 			,'dateNow' => 10
@@ -70,6 +61,7 @@ class Tickets {
 			,'gravatarIcon' => 'mm'
 
 			,'json_response' => true
+			,'nestedChunkPrefix' => 'tickets_'
 		),$config);
 
 		$this->modx->addPackage('tickets',$this->config['modelPath']);
@@ -86,8 +78,10 @@ class Tickets {
 	/**
 	 * Initializes component into different contexts.
 	 *
-	 * @access public
 	 * @param string $ctx The context to load. Defaults to web.
+	 * @param array $scriptProperties
+	 *
+	 * @return boolean
 	 */
 	public function initialize($ctx = 'web', $scriptProperties = array()) {
 		$this->config = array_merge($this->config, $scriptProperties);
@@ -98,28 +92,26 @@ class Tickets {
 		switch ($ctx) {
 			case 'mgr': break;
 			default:
-				if (!MODX_API_MODE) {
+				if (!defined('MODX_API_MODE') || !MODX_API_MODE) {
 					$config = $this->makePlaceholders($this->config);
 
 					if ($css = $this->modx->getOption('tickets.frontend_css')) {
 						$this->modx->regClientCSS(str_replace($config['pl'], $config['vl'], $css));
 					}
-					if ($js = $this->modx->getOption('tickets.frontend_js')) {
-						$enable_editor = $this->modx->getOption('tickets.enable_editor');
-						$formBefore = !empty($this->config['formBefore']) ? 1 : 0;
-						$editorConfig = 'enable_editor: '.$enable_editor.'';
-						if ($enable_editor) {
-							$this->modx->regClientScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
-							$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
-							$editorConfig .= '
+
+					$enable_editor = $this->modx->getOption('tickets.enable_editor');
+					$formBefore = !empty($this->config['formBefore']) ? 1 : 0;
+					$editorConfig = 'enable_editor: '.$enable_editor.'';
+					if ($enable_editor) {
+						$this->modx->regClientScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
+						$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
+						$editorConfig .= '
 							,editor: {
 								ticket: '.$this->modx->getOption('tickets.editor_config.ticket').'
 								,comment: '.$this->modx->getOption('tickets.editor_config.comment').'
 							}';
-						}
-
-						$this->modx->regClientStartupScript(str_replace('					', '', '
-						<script type="text/javascript">
+					}
+					$config_js = preg_replace(array('/^\n/', '/\t{6}/'), '', '
 						TicketsConfig = {
 							jsUrl: "'.$this->config['jsUrl'].'web/"
 							,cssUrl: "'.$this->config['cssUrl'].'web/"
@@ -130,12 +122,26 @@ class Tickets {
 							,thread_depth: '.$this->config['depth'].'
 							,'.$editorConfig.'
 						};
-						if(typeof jQuery == "undefined") {
-							document.write("<script src=\""+TicketsConfig.jsUrl+"lib/jquery.min.js\" type=\"text/javascript\"><\/script>");
+					');
+
+					if (file_put_contents($this->config['jsPath'] . 'web/config.js', $config_js)) {
+						$this->modx->regClientStartupScript($this->config['jsUrl'] . 'web/config.js');
+					}
+					else {
+						$this->modx->regClientStartupScript("<script type=\"text/javascript\">\n".$config_js."\n</script>", true);
+					}
+
+					if ($js = trim($this->modx->getOption('tickets.frontend_js'))) {
+						if (!empty($js) && preg_match('/\.js/i', $js)) {
+							$this->modx->regClientScript(preg_replace(array('/^\n/', '/\t{7}/'), '', '
+							<script type="text/javascript">
+								if(typeof jQuery == "undefined") {
+									document.write("<script src=\"'.$this->config['jsUrl'].'web/lib/jquery.min.js\" type=\"text/javascript\"><\/script>");
+								}
+							</script>
+							'), true);
+							$this->modx->regClientScript(str_replace($config['pl'], $config['vl'], $js));
 						}
-						</script>
-						'), true);
-						$this->modx->regClientScript(str_replace($config['pl'], $config['vl'], $js));
 					}
 				}
 
@@ -163,9 +169,9 @@ class Tickets {
 	/**
 	 * Returns sanitized preview of Ticket
 	 *
-	 * @access public
-	 * @param array $data section, pagetitle,text, etc
-	 * @return mixed rendered preview of Ticket for frontend
+	 * @param array $data section, pagetitle, text, etc
+	 *
+	 * @return array
 	 */
 	public function previewTicket($data = array()) {
 		$message = '';
@@ -190,9 +196,9 @@ class Tickets {
 	/**
 	 * Save ticket through processor and redirect to it
 	 *
-	 * @access public
-	 * @param array $data section, pagetitle,text, etc
-	 * @return
+	 * @param array $data section, pagetitle, text, etc
+	 *
+	 * @return array
 	 */
 	public function saveTicket($data = array()) {
 		$allowedFields = array_map('trim', explode(',', $this->config['allowedFields']));
@@ -277,8 +283,9 @@ class Tickets {
 	 * Returns sanitized preview of Comment
 	 *
 	 * @access public
-	 * @param array $data section, pagetitle,comment, etc
-	 * @return mixed rendered preview of Comment for frontend
+	 * @param array $data section, pagetitle, comment, etc
+	 *
+	 * @return array
 	 */
 	public function previewComment($data = array()) {
 		$comment = $this->modx->newObject('TicketComment', array(
@@ -300,9 +307,9 @@ class Tickets {
 	/**
 	 * Returns sanitized preview of Comment
 	 *
-	 * @access public
-	 * @param array $data section, pagetitle,comment, etc
-	 * @return mixed rendered preview of Comment for frontend
+	 * @param array $data section, pagetitle, comment, etc
+	 *
+	 * @return array
 	 */
 	public function saveComment($data = array()) {
 		$data['raw'] = $data['text'];
@@ -349,10 +356,9 @@ class Tickets {
 	/**
 	 * Returns Comment for edit by its author
 	 *
-	 * @access public
 	 * @param integer $id Id of an comment
 	 *
-	 * @return array|string
+	 * @return array
 	 */
 	public function getComment($id) {
 		$response = $this->runProcessor('web/comment/get', array('id' => $id));
@@ -387,7 +393,7 @@ class Tickets {
 	 *
 	 * @param $name
 	 *
-	 * @return array|string
+	 * @return array
 	 */
 	public function getNewComments($name) {
 		if (!$this->modx->user->isAuthenticated()) {
@@ -438,9 +444,11 @@ class Tickets {
 	/**
 	 * Sanitize any text through Jevix snippet
 	 *
-	 * @access public
 	 * @param string $text Text for sanitization
-	 * @return array Array with status and sanitized text or error message
+	 * @param string $setName Name of property set for get parameters from
+	 * @param boolean $replaceTags Replace MODX tags?
+	 *
+	 * @return string
 	 */
 	public function Jevix($text = null, $setName = 'Ticket', $replaceTags = true) {
 		if (empty($text)) {return ' ';}
@@ -477,8 +485,8 @@ class Tickets {
 	/**
 	 * Sanitize MODX tags
 	 *
-	 * @access public
 	 * @param string $string Any string with MODX tags
+	 *
 	 * @return string String with html entities
 	 */
 	public function sanitizeString($string = '') {
@@ -493,6 +501,11 @@ class Tickets {
 
 	/**
 	 * Recursive template of the comment node
+	 *
+	 * @param array $node
+	 * @param null $tpl
+	 *
+	 * @return string
 	 */
 	public function templateNode($node = array(), $tpl = null) {
 		$children = null;
@@ -531,16 +544,16 @@ class Tickets {
 		$node['comment_was_edited'] = $node['editedby'] && $node['editedon'];
 		$node['comment_new'] = $node['createdby'] != $this->modx->user->id && $this->last_view > 0 && strtotime($node['createdon']) > $this->last_view;
 
-		$res = $this->getChunk($tpl, $node, $this->config['fastMode']);
-		if (!$this->config['fastMode']) {
-			$res = $this->pdoTools->fastProcess($res);
-		}
-		return $res;
+		return $this->getChunk($tpl, $node, $this->config['fastMode']);
 	}
 
 
 	/**
 	 * Render of the comment
+	 *
+	 * @param array $data
+	 *
+	 * @return array
 	 */
 	public function prepareComment($data = array()) {
 		if (!empty($this->prepareCommentCustom)) {
@@ -558,31 +571,29 @@ class Tickets {
 	}
 
 
-	/** Method for transform array to placeholders
+	/**
+	 * Method for transform array to placeholders
 	 *
 	 * @var array $array With keys and values
-	 * @return array $array Two nested arrays With placeholders and values
+	 * @var string $prefix Prefix for array keys
+	 *
+	 * @return array $array Two nested arrays with placeholders and values
 	 */
 	public function makePlaceholders(array $array = array(), $prefix = '') {
-		$result = array(
-			'pl' => array()
-			,'vl' => array()
-		);
-		foreach ($array as $k => $v) {
-			if (is_array($v)) {
-				$result = array_merge_recursive($result, $this->makePlaceholders($v, $k.'.'));
-			}
-			else {
-				$result['pl'][$prefix.$k] = '[[+'.$prefix.$k.']]';
-				$result['vl'][$prefix.$k] = $v;
-			}
+		if (!$this->pdoTools) {
+			$this->loadPdoTools();
 		}
-		return $result;
+
+		return $this->pdoTools->makePlaceholders($array, $prefix);
 	}
 
 
 	/**
-	 *Email notifications about new comment
+	 * Email notifications about new comment
+	 *
+	 * @param array $comment
+	 *
+	 * @return void
 	 */
 	public function sendCommentMails($comment = array()) {
 		$owner_uid = $reply_uid = null;
@@ -669,12 +680,17 @@ class Tickets {
 				}
 			}
 		}
-
 	}
 
 
 	/**
 	 * Adds emails to queue
+	 *
+	 * @param $uid
+	 * @param $subject
+	 * @param $body
+	 *
+	 * @return bool|string
 	 */
 	public function addQueue($uid, $subject, $body) {
 		$uid = (integer) $uid;
@@ -697,9 +713,9 @@ class Tickets {
 	/**
 	 * This method subscribe or unsubscribe users for notifications about new comments in thread.
 	 *
-	 * @param $id
+	 * @param string $name Name of tickets thread for subscribe or unsubscribe
 	 *
-	 * @return array|string
+	 * @return array
 	 */
 	public function Subscribe($name) {
 		if (!$this->modx->user->isAuthenticated()) {
@@ -716,13 +732,21 @@ class Tickets {
 	}
 
 
-	/** Loads an instance of pdoTools for chunks processing
+	/**
+	 * Loads an instance of pdoTools
 	 *
+	 * @return boolean
 	 */
 	public function loadPdoTools() {
 		if (!is_object($this->pdoTools) || !($this->pdoTools instanceof pdoTools)) {
-			$this->pdoTools = $this->modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/', array('nestedChunkPrefix' => 'tickets_'));
+			if ($this->modx->getService('pdoFetch')) {
+				$this->pdoTools = new pdoFetch($this->modx, $this->config);
+			}
+			else {
+				return false;
+			}
 		}
+		return true;
 	}
 
 
@@ -732,20 +756,29 @@ class Tickets {
 	 * @param string $name The name of the chunk.
 	 * @param array $properties An associative array of properties to process the Chunk with, treated as placeholders within the scope of the Element.
 	 * @param boolean $fastMode If false, all MODX tags in chunk will be processed.
+	 *
 	 * @return string The processed output of the Chunk.
 	 */
 	public function getChunk($name, array $properties = array(), $fastMode = false) {
-		$this->loadPdoTools();
 		if (!$this->modx->parser) {
 			$this->modx->getParser();
 		}
+		if (!$this->pdoTools) {
+			$this->loadPdoTools();
+		}
+
 		return $this->pdoTools->getChunk($name, $properties, $fastMode);
 	}
+
 
 	/**
 	 * Formats date to "10 minutes ago" or "Yesterday in 22:10"
 	 * This algorithm taken from https://github.com/livestreet/livestreet/blob/7a6039b21c326acf03c956772325e1398801c5fe/engine/modules/viewer/plugs/function.date_format.php
-	 * @param $date $time Timestamp to format
+
+	 * @param string $date Timestamp to format
+	 * @param string $dateFormat
+	 *
+	 * @return string
 	 */
 	public function dateFormat($date, $dateFormat = null) {
 		$date = preg_match('/^\d+$/',$date) ?  $date : strtotime($date);
@@ -816,7 +849,8 @@ class Tickets {
 	 *
 	 * @param int $count
 	 * @param string $forms
-	 * @param string $language
+	 * @param string $lang
+	 *
 	 * @return string
 	 */
 	public function declension($count, $forms, $lang = null) {
@@ -863,6 +897,8 @@ class Tickets {
 	/**
 	 * Logs user views of a Resource. Need for new comments feature.
 	 *
+	 * @param integer $resource An id of resource
+	 *
 	 * @return void
 	 */
 	public function logView($resource) {
@@ -870,12 +906,15 @@ class Tickets {
 			$table = $this->modx->getTableName('TicketView');
 			$timestamp = date('Y-m-d H:i:s');
 			$sql = "INSERT INTO {$table} (`uid`,`parent`,`timestamp`) VALUES ({$this->modx->user->id},{$resource},'{$timestamp}') ON DUPLICATE KEY UPDATE `timestamp` = '{$timestamp}'";
-			if ($stmt = $this->modx->prepare($sql)) {$stmt->execute();}
+			if ($stmt = $this->modx->prepare($sql)) {
+				$stmt->execute();
+			}
 		}
 	}
 
 
-	/* This method returns an error of the cart
+	/**
+	 * This method returns an error of the cart
 	 *
 	 * @param string $message A lexicon key for error message
 	 * @param array $data.Additional data, for example cart status
@@ -890,7 +929,9 @@ class Tickets {
 			,'data' => $data
 		);
 
-		return $this->config['json_response'] ? $this->modx->toJSON($response) : $response;
+		return $this->config['json_response']
+			? $this->modx->toJSON($response)
+			: $response;
 	}
 
 
@@ -909,7 +950,9 @@ class Tickets {
 			,'data' => $data
 		);
 
-		return $this->config['json_response'] ? $this->modx->toJSON($response) : $response;
+		return $this->config['json_response']
+			? $this->modx->toJSON($response)
+			: $response;
 	}
 
 }
