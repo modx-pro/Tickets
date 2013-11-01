@@ -265,11 +265,11 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 
 		var tmp = {
 			searchable: {}
-			,disable_jevix: {name: 'properties[disable_jevix]',boxLabel: _('ticket_disable_jevix'),description: _('ticket_disable_jevix_help')}
+			,disable_jevix: {name: 'properties[disable_jevix]',boxLabel: _('ticket_disable_jevix'),description: _('ticket_disable_jevix_help'), checked: parseInt(config.record.disable_jevix)}
 			,cacheable: {}
-			,process_tags: {name: 'properties[process_tags]',boxLabel: _('ticket_process_tags'),description: _('ticket_process_tags_help')}
+			,process_tags: {name: 'properties[process_tags]',boxLabel: _('ticket_process_tags'),description: _('ticket_process_tags_help'), checked: parseInt(config.record.process_tags)}
 			,published: {}
-			,private: {boxLabel: _('ticket_private'),description: _('ticket_private_help')}
+			,private: {name: 'privateweb',boxLabel: _('ticket_private'),description: _('ticket_private_help')}
 			,richtext: {}
 			,hidemenu: {boxLabel: _('resource_hide_from_menus'),description: _('resource_hide_from_menus_help')}
 			//,show_in_tree: {}

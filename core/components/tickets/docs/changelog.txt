@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.1.2 pl
+==========
+- [#51] Fixed work of checkboxes in manager.
+
 1.1.1 pl
 ==========
 - Improved load of pdoTools.
