@@ -86,10 +86,10 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 			'className' => 'view',
 			'text' => $this->modx->lexicon('view'),
 		);
-        $resourceArray['actions'][] = array(
-            'className' => 'duplicate',
-            'text' => $this->modx->lexicon('duplicate'),
-        );
+		$resourceArray['actions'][] = array(
+			'className' => 'duplicate',
+			'text' => $this->modx->lexicon('duplicate'),
+		);
 		if (!empty($resourceArray['deleted'])) {
 			$resourceArray['actions'][] = array(
 				'className' => 'undelete green',

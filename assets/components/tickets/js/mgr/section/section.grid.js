@@ -72,7 +72,7 @@ Ext.extend(Tickets.grid.Section,MODx.grid.Grid,{
 		this.tplPageTitle = new Ext.XTemplate('<tpl for="."><div class="ticket-title-column">'
 											+'<h3 class="main-column"><a href="{action_edit}" title="Edit {pagetitle}">{pagetitle}</a><span class="ticket-id">({id})</span></h3>'
 												+'<tpl if="actions">'
-				 						        	+'<ul class="actions">'
+				 									+'<ul class="actions">'
 														+'<tpl for="actions">'
 															+'<li><a href="#" class="controlBtn {className}">{text}</a></li>'
 														+'</tpl>'
@@ -117,9 +117,9 @@ Ext.extend(Tickets.grid.Section,MODx.grid.Grid,{
 				case 'view':
 					this.viewTicket();
 					break;
-                case 'duplicate':
-                    this.duplicateTicket();
-                    break;
+				case 'duplicate':
+					this.duplicateTicket();
+					break;
 				default:
 					window.location = record.data.edit_action;
 					break;
@@ -210,21 +210,20 @@ Ext.extend(Tickets.grid.Section,MODx.grid.Grid,{
 		});
 	}
 
-    ,duplicateTicket: function(btn,e) {
-        var r = this.menu.record;
-
-        var w = MODx.load({
-            xtype: 'modx-window-resource-duplicate'
-            ,resource: r.id
-            ,hasChildren: 0
-            ,listeners: {
-                'success': {fn:function() {this.refresh();},scope:this}
-            }
-        });
-        w.config.hasChildren = 0;
-        w.setValues(r.data);
-        w.show();
-    }
+	,duplicateTicket: function(btn,e) {
+		var r = this.menu.record;
+		var w = MODx.load({
+			xtype: 'modx-window-resource-duplicate'
+			,resource: r.id
+			,hasChildren: 0
+			,listeners: {
+				'success': {fn:function() {this.refresh();},scope:this}
+			}
+		});
+		w.config.hasChildren = 0;
+		w.setValues(r.data);
+		w.show();
+	}
 
 });
 Ext.reg('tickets-grid-section',Tickets.grid.Section);
