@@ -204,7 +204,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,value: MODx.config['tickets.default_template'] > 0 ? MODx.config['tickets.default_template'] : config.record.template
 				,listeners: {select: {fn: this.templateWarning,scope: this}}
 			},{
-				xtype: MODx.config.publish_document ? 'modx-combo-user' : 'hidden'
+				xtype: MODx.config.publish_document ? 'tickets-combo-user' : 'hidden'
 				,fieldLabel: _('resource_createdby')
 				,description: '<b>[[*createdby]]</b><br />'+_('resource_createdby_help')
 				,name: 'created_by'

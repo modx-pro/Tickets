@@ -157,3 +157,33 @@
 .tickets-grid .ticket-title-column ul {
 	clear: both;
 }
+
+.tickets-section-list-item, .tickets-user-list-item {
+	font:normal 11px tahoma, arial, helvetica, sans-serif;
+	padding:3px 10px 3px 10px;
+	border:1px solid #fff;
+	border-bottom:1px solid #eeeeee;
+	white-space:normal;
+	color:#555;
+	cursor: pointer;
+}
+.tickets-section-list-item:hover, .tickets-user-list-item:hover {
+	background: #efefef;
+}
+
+.tickets-section-list-item h3, .tickets-user-list-item h3 {
+	display:block;
+	font:inherit;
+	font-weight:bold;
+	font-size: 1.1em;
+	line-height: 1.1em;
+}
+
+.tickets-section-list-item .parents {
+	display:block;
+	font:inherit;
+	font-weight:normal;
+	color:#555;
+	font-size: 1em;
+	line-height: 1em;
+}
