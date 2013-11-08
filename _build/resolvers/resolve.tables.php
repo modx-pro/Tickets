@@ -26,14 +26,22 @@ if ($object->xpdo) {
 				$modx->addExtensionPackage('tickets', '[[++core_path]]components/tickets/model/');
 			}
 
-			$TicketThread = $modx->getTableName('TicketThread');
-			$modx->query("ALTER TABLE  {$TicketThread} ADD `comment_last` INT(10) UNSIGNED NOT NULL DEFAULT  '0', ADD `comment_time` DATETIME NULL , ADD INDEX (`comment_last`, `comment_time`)");
-			$modx->query("ALTER TABLE {$TicketThread} ADD `closed` TINYINT(1) NOT NULL AFTER `createdby`, ADD `properties` TEXT NULL DEFAULT NULL");
+			$level = $modx->getLogLevel();
+			$modx->setLogLevel(xPDO::LOG_LEVEL_FATAL);
 
-			$TicketComment = $modx->getTableName('TicketComment');
-			$modx->query("ALTER TABLE {$TicketComment} ADD `raw` TEXT NOT NULL AFTER `text`");
-			$modx->query("ALTER TABLE {$TicketComment} ADD `published` TINYINT(1) NOT NULL DEFAULT 1 AFTER `editedby`");
-			$modx->query("ALTER TABLE {$TicketComment} ADD `properties` TEXT NULL AFTER `deletedby`");
+			$manager->addField('TicketThread', 'comment_last');
+			$manager->addField('TicketThread', 'comment_time');
+			$manager->addField('TicketThread', 'comments');
+			$manager->addIndex('TicketThread', 'comment_last');
+			$manager->addIndex('TicketThread', 'comment_time');
+			$manager->addIndex('TicketThread', 'comments');
+
+			$manager->addField('TicketComment', 'raw');
+			$manager->addField('TicketComment', 'published');
+			$manager->addField('TicketComment', 'properties');
+			$manager->addIndex('TicketComment', 'published');
+
+			$modx->setLogLevel($level);
 		break;
 
 		case xPDOTransport::ACTION_UNINSTALL:

@@ -13,11 +13,11 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 		$packages = array(
 			'Jevix' => array(
 				'version_major' => 1,
-				'version_minor:>' => 1,
+				'version_minor:>=' => 1,
 			),
 			'pdoTools' => array(
 				'version_major' => 1,
-				'version_minor:>' => 8,
+				'version_minor:>=' => 8,
 			)
 		);
 		foreach ($packages as $package => $options) {

@@ -17,6 +17,7 @@ $xpdo_meta_map['TicketThread']= array (
     'deletedby' => 0,
     'comment_last' => 0,
     'comment_time' => NULL,
+    'comments' => 0,
     'properties' => NULL,
   ),
   'fieldMeta' => 
@@ -109,6 +110,15 @@ $xpdo_meta_map['TicketThread']= array (
       'null' => true,
       'index' => 'index',
     ),
+    'comments' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'attributes' => 'unsigned',
+      'null' => true,
+      'default' => 0,
+    ),
     'properties' => 
     array (
       'dbtype' => 'text',
@@ -159,6 +169,22 @@ $xpdo_meta_map['TicketThread']= array (
       'columns' => 
       array (
         'comment_last' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
+    'comments' => 
+    array (
+      'alias' => 'comments',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'comments' => 
         array (
           'length' => '',
           'collation' => 'A',

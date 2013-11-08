@@ -70,6 +70,8 @@
 
 		<field key="comment_last" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
 		<field key="comment_time" dbtype="datetime" phptype="datetime" null="true" index="index" />
+		<field key="comments" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
+
 		<field key="properties" dbtype="text" phptype="json" null="true" />
 
 		<index alias="unique_key" name="unique_key" primary="false" unique="true" type="BTREE">
@@ -80,6 +82,9 @@
 		</index>
 		<index alias="comment_last" name="comment_last" primary="false" unique="false" type="BTREE">
 			<column key="comment_last" length="" collation="A" null="false" />
+		</index>
+		<index alias="comments" name="comments" primary="false" unique="false" type="BTREE">
+			<column key="comments" length="" collation="A" null="false" />
 		</index>
 		<index alias="closed" name="closed" primary="false" unique="false" type="BTREE">
 			<column key="closed" length="" collation="A" null="false" />

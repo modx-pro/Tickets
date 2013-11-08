@@ -1,22 +1,14 @@
 <?php
 class TicketThread extends xPDOSimpleObject {
 
-	function __construct(xPDO & $xpdo) {
-		parent :: __construct($xpdo);
-
-		$this->set('comments',0);
-	}
-
 
 	public function getCommentsCount() {
-		$q = $this->xpdo->newQuery('TicketComment', array('thread' => $this->get('id')));
-
-		return $this->xpdo->getCount('TicketComment', $q);
+		return $this->get('comments');
 	}
 
 
 	public function updateLastComment() {
-		$q = $this->xpdo->newQuery('TicketComment', array('thread' => $this->get('id')));
+		$q = $this->xpdo->newQuery('TicketComment', array('thread' => $this->id, 'published' => 1, 'deleted' => 0));
 		$q->sortby('createdon','DESC');
 		$q->limit(1);
 		$q->select('id as comment_last,createdon as comment_time');
@@ -28,24 +20,22 @@ class TicketThread extends xPDOSimpleObject {
 			$this->fromArray($comment);
 			$this->save();
 		}
+
+		$this->updateCommentsCount();
 	}
 
 
-	public function get($k, $format = null, $formatTemplate= null) {
-		if ($k == 'comments') {
-			return $this->getCommentsCount();
+	public function updateCommentsCount() {
+		$comments = 0;
+		$q = $this->xpdo->newQuery('TicketComment', array('thread' => $this->id, 'published' => 1));
+		$q->select('COUNT(`id`)');
+		if ($q->prepare() && $q->stmt->execute()) {
+			$comments = $q->stmt->fetch(PDO::FETCH_COLUMN);
+			$this->set('comments', $comments);
+			$this->save();
 		}
-		else {
-			return parent::get($k, $format, $formatTemplate);
-		}
-	}
 
-
-	public function toArray($keyPrefix= '', $rawValues= false, $excludeLazy= false, $includeRelated= false) {
-		$array = parent::toArray($keyPrefix, $rawValues, $excludeLazy, $includeRelated);
-		$array['comments'] = $this->getCommentsCount();
-
-		return $array;
+		return $comments;
 	}
 
 

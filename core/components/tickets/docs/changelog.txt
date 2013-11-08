@@ -1,5 +1,10 @@
 Changelog for Tickets.
 
+1.2.0 pl
+==========
+- Replaced virtual field "comment" in TicketThread to real.
+- Optimized snippet "getTicketsSections" for work on big sites.
+
 1.1.3 pl
 ==========
 - [#50] Added button for ticket duplicate in section grid.
