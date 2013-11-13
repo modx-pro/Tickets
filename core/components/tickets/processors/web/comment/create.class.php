@@ -52,6 +52,7 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 		));
 		$this->thread->save();
 
+		$this->thread->updateCommentsCount();
 		$this->object->clearTicketCache();
 
 		return parent::afterSave();
