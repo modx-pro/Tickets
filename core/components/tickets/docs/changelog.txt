@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.2.1 pl
+==========
+- Fixed page with TicketsSection in manager for work in php 5.5.
+
 1.2.0 pl
 ==========
 - Replaced virtual field "comment" in TicketThread to real.

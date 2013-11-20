@@ -9,10 +9,10 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 	public $classKey = 'Ticket';
 	public $defaultSortField = 'id';
 	public $defaultSortDirection  = 'DESC';
-	public $renderers = '';
 	/** @var modAction $editAction */
 	public $editAction;
 
+	/** {@inheritDoc} */
 	public function initialize() {
 		$this->editAction = $this->modx->getObject('modAction',array(
 			'namespace' => 'core',
@@ -21,6 +21,8 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 		return parent::initialize();
 	}
 
+
+	/** {@inheritDoc} */
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 		if ($query = $this->getProperty('query',null)) {
 			$queryWhere = array(
@@ -38,6 +40,8 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 		return $c;
 	}
 
+
+	/** {@inheritDoc} */
 	public function prepareQueryAfterCount(xPDOQuery $c) {
 		$c->select($this->modx->getSelectColumns('Ticket','Ticket'));
 		$c->select(array(
@@ -60,6 +64,8 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 		return $c;
 	}
 
+
+	/** {@inheritDoc} */
 	public function prepareRow(xPDOObject $object) {
 		$resourceArray = parent::prepareRow($object);
 
@@ -75,7 +81,7 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 		$this->modx->getContext($resourceArray['context_key']);
 		$resourceArray['preview_url'] = $this->modx->makeUrl($resourceArray['id'],$resourceArray['context_key']);
 
-		$resourceArray['content'] = '<br/>'.strip_tags($this->ellipsis($object->get('content'),500));
+		$resourceArray['content'] = '<br/>' . nl2br($this->ellipsis(strip_tags($resourceArray['content'])));
 
 		$resourceArray['actions'] = array();
 		$resourceArray['actions'][] = array(
@@ -115,9 +121,18 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 		return $resourceArray;
 	}
 
-	public function ellipsis($string,$length = 500) {
-		if (strlen($string) > $length) {
-			$string = substr($string,0,$length).'...';
+
+	/**
+	 * Text cut
+	 *
+	 * @param $string
+	 * @param int $length
+	 *
+	 * @return string
+	 */
+	public function ellipsis($string, $length = 500) {
+		if (mb_strlen($string) > $length) {
+			$string = mb_substr($string, 0, $length, 'UTF-8') . '...';
 		}
 		return $string;
 	}
