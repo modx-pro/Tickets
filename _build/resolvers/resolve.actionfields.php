@@ -30,12 +30,9 @@ if ($object->xpdo) {
 		case xPDOTransport::ACTION_INSTALL:
 		case xPDOTransport::ACTION_UPGRADE:
 			/** @var modActionField $action */
-			/*
-			$oldActions = $modx->getIterator('modActionField', array('other' => 'tickets'));
-			foreach ($oldActions as $action) {
-				$action->remove();
+			if ($modx->getCount('modActionField', array('name' => 'publishedon', 'other' => 'tickets')) > 1) {
+				$modx->removeCollection('modActionField', array('other' => 'tickets'));
 			}
-			*/
 
 			$actions = array();
 			foreach ($resourceActions as $controller) {
@@ -54,7 +51,9 @@ if ($object->xpdo) {
 
 				foreach ($actionFields as $tab) {
 					/** @var modActionField $tabObj */
-					$tabObj = $modx->newObject('modActionField');
+					if (!$tabObj = $modx->getObject('modActionField', array('action' => $actionId, 'name' => $tab['name'], 'other' => 'tickets'))) {
+						$tabObj = $modx->newObject('modActionField');
+					}
 					$tabObj->fromArray(array_merge($tab, array(
 						'action' => $actionId,
 						'form' => 'modx-panel-resource',
@@ -63,7 +62,7 @@ if ($object->xpdo) {
 						'rank' => $tabIdx,
 					)), '', true, true);
 					$success = $tabObj->save();
-				   /* if ($success) {
+					/*if ($success) {
 						$modx->log(xPDO::LOG_LEVEL_INFO,'[Tickets] Tab ' . $tab['name'] . ' added!');
 					} else {
 						$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not add Tab ' . $tab['name'] . '!');
@@ -72,7 +71,9 @@ if ($object->xpdo) {
 					$tabIdx++;
 					$idx = 0;
 					foreach ($tab['fields'] as $field) {
-						$fieldObj = $modx->newObject('modActionField');
+						if (!$fieldObj = $modx->getObject('modActionField', array('action' => $actionId, 'name' => $field, 'tab' => $tab['name'], 'other' => 'tickets'))) {
+							$fieldObj = $modx->newObject('modActionField');
+						}
 						$fieldObj->fromArray(array(
 							'action' => $actionId,
 							'name' => $field,
@@ -81,7 +82,7 @@ if ($object->xpdo) {
 							'type' => 'field',
 							'other' => 'tickets',
 							'rank' => $idx,
-						));
+						), '', true, true);
 						$success = $fieldObj->save();
 						/*if ($success) {
 							$modx->log(xPDO::LOG_LEVEL_INFO,'[Tickets] Action field ' . $field . ' added!');
@@ -95,11 +96,7 @@ if ($object->xpdo) {
 			}
 		break;
 	case xPDOTransport::ACTION_UNINSTALL:
-		$actions = $modx->getIterator('modActionField', array('other' => 'tickets'));
-		/** @var modActionField $action */
-		foreach ($actions as $action) {
-			$action->remove();
-		}
+		$modx->removeCollection('modActionField', array('other' => 'tickets'));
 		break;
 	}
 }
