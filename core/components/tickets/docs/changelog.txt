@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.2.3 pl
+==========
+- Fixed requirement of TicketThread in snippet TicketLatest for showing last tickets.
+
 1.2.2 pl
 ==========
 - Fixed load of CMP scripts

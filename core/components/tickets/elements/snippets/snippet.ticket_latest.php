@@ -97,11 +97,10 @@ if ($action == 'comments') {
 else if ($action == 'tickets') {
 	$resourceColumns = !empty($includeContent) ?  $modx->getSelectColumns('Ticket', 'Ticket') : $modx->getSelectColumns('Ticket', 'Ticket', '', array('content'), true);
 	$class = 'Ticket';
-	$innerJoin = array(
-		'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id AND Thread.closed=0 AND Thread.deleted=0"}'
-	);
+	$innerJoin = array();
 	$leftJoin = array(
-		'{"class":"TicketComment","alias":"TicketComment","on":"TicketComment.thread=Thread.id AND TicketComment.published=1"}'
+		'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id AND Thread.closed=0 AND Thread.deleted=0"}'
+		,'{"class":"TicketComment","alias":"TicketComment","on":"TicketComment.thread=Thread.id AND TicketComment.published=1"}'
 		,'{"class":"TicketsSection","alias":"Section","on":"Section.id=Ticket.parent"}'
 		,'{"class":"modUser","alias":"User","on":"User.id=Ticket.createdby"}'
 		,'{"class":"modUserProfile","alias":"Profile","on":"Profile.internalKey=User.id"}'
