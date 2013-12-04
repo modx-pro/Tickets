@@ -15,7 +15,7 @@ abstract class TicketsMainController extends modExtraManagerController {
 		$this->Tickets = new Tickets($this->modx);
 
 		$this->addCSS($this->Tickets->config['cssUrl'].'mgr/tickets.css');
-		$this->addLastJavascript($this->Tickets->config['jsUrl'].'mgr/tickets.js');
+		$this->addJavascript($this->Tickets->config['jsUrl'].'mgr/tickets.js');
 		$this->addHtml('<script type="text/javascript">
 		Ext.onReady(function() {
 			Tickets.config = '.$this->modx->toJSON($this->Tickets->config).';

@@ -10,10 +10,17 @@ class TicketsHomeManagerController extends TicketsMainController {
 	public function getPageTitle() { return $this->modx->lexicon('tickets'); }
 
 	public function loadCustomCssJs() {
-		$this->modx->regClientStartupScript($this->Tickets->config['jsUrl'].'mgr/comment/comments.grid.js');
-		$this->modx->regClientStartupScript($this->Tickets->config['jsUrl'].'mgr/thread/thread.grid.js');
-		$this->modx->regClientStartupScript($this->Tickets->config['jsUrl'].'mgr/thread/thread.panel.js');
-		$this->modx->regClientStartupScript($this->Tickets->config['jsUrl'].'mgr/home.js');
+		$this->addJavascript($this->Tickets->config['jsUrl'].'mgr/comment/comments.grid.js');
+		$this->addJavascript($this->Tickets->config['jsUrl'].'mgr/thread/thread.grid.js');
+		$this->addJavascript($this->Tickets->config['jsUrl'].'mgr/thread/thread.panel.js');
+		$this->addJavascript($this->Tickets->config['jsUrl'].'mgr/home.js');
+		$this->addHtml('<script type="text/javascript">
+		Ext.onReady(function() {
+			MODx.load({xtype: "tickets-page-home"});
+		});
+		</script>');
+
+
 	}
 
 	public function getTemplateFile() {

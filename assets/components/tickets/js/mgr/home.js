@@ -1,7 +1,3 @@
-Ext.onReady(function() {
-	MODx.load({ xtype: 'tickets-page-home'});
-});
-
 Tickets.page.Home = function(config) {
 	config = config || {};
 	Ext.applyIf(config,{
