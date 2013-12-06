@@ -1,6 +1,6 @@
 Changelog for Tickets.
 
-1.2.3 pl
+1.2.3 pl1
 ==========
 - Fixed requirement of TicketThread in snippet TicketLatest for showing last tickets.
 

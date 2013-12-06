@@ -32,9 +32,11 @@ if ($object->xpdo) {
 			$manager->addField('TicketThread', 'comment_last');
 			$manager->addField('TicketThread', 'comment_time');
 			$manager->addField('TicketThread', 'comments');
+			$manager->addField('TicketThread', 'closed');
 			$manager->addIndex('TicketThread', 'comment_last');
 			$manager->addIndex('TicketThread', 'comment_time');
 			$manager->addIndex('TicketThread', 'comments');
+			$manager->addIndex('TicketThread', 'closed');
 
 			$manager->addField('TicketComment', 'raw');
 			$manager->addField('TicketComment', 'published');
