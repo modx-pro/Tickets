@@ -4,7 +4,7 @@
 define('PKG_NAME','Tickets');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
 define('PKG_VERSION','1.2.3');
-define('PKG_RELEASE','pl1');
+define('PKG_RELEASE','pl2');
 define('PKG_AUTO_INSTALL', true);
 
 
