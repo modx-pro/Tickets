@@ -45,8 +45,10 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 		$connectorUrl = $ticketsAssetsUrl.'connector.php';
 		$ticketsJsUrl = $ticketsAssetsUrl.'js/mgr/';
 
-		$this->resourceArray['disable_jevix'] = $this->modx->getOption('tickets.disable_jevix_default', null, "false");
-		$this->resourceArray['process_tags'] = $this->modx->getOption('tickets.process_tags_default', null, "false");
+		$this->resourceArray['properties'] = array(
+			'disable_jevix' => $this->modx->getOption('tickets.disable_jevix_default', null, false),
+			'process_tags' => $this->modx->getOption('tickets.process_tags_default', null, false),
+		);
 
 		$this->addJavascript($mgrUrl.'assets/modext/util/datetime.js');
 		$this->addJavascript($mgrUrl.'assets/modext/widgets/element/modx.panel.tv.renders.js');
