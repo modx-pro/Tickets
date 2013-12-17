@@ -538,8 +538,11 @@ class Tickets {
 			$node['children'] = $children;
 			$node['comment_edit_link'] = false;
 		}
-		else if ($node['createdby'] == $this->modx->user->id && (time() - strtotime($node['createdon']) <= $this->config['commentEditTime'])) {
+		elseif ($node['createdby'] == $this->modx->user->id && (time() - strtotime($node['createdon']) <= $this->config['commentEditTime'])) {
 			$node['comment_edit_link'] = true;
+		}
+		else {
+			$node['children'] = '';
 		}
 		$node['comment_was_edited'] = $node['editedby'] && $node['editedon'];
 		$node['comment_new'] = $node['createdby'] != $this->modx->user->id && $this->last_view > 0 && strtotime($node['createdon']) > $this->last_view;

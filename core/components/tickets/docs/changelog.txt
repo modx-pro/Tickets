@@ -1,13 +1,11 @@
 Changelog for Tickets.
 
-1.2.4 pl
-==========
-- [#52] Fixed checkboxes, again.
-
-1.2.3 pl2
+1.2.3 pl3
 ==========
 - Fixed requirement of TicketThread in snippet TicketLatest for showing last tickets.
 - Improved snippet TicketLatest.
+- [#52] Fixed checkboxes, again.
+- Fixed duplicate replies in TicketComments when fastMode = 0.
 
 1.2.2 pl
 ==========
