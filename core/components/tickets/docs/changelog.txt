@@ -6,6 +6,7 @@ Changelog for Tickets.
 - Improved snippet TicketLatest.
 - [#52] Fixed checkboxes, again.
 - Fixed duplicate replies in TicketComments when fastMode = 0.
+- Removed user and email inputs in comment window in manager.
 
 1.2.2 pl
 ==========
