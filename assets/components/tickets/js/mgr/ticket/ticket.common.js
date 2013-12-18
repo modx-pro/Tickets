@@ -259,16 +259,12 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				,layout: 'form'
 				,msgTarget: 'under'
 			}
-			,items: [{
-				xtype: 'checkboxgroup'
-				,columns: 2
-				,items: this.getCheckboxes(config)
-			}]
+			,items: this.getCheckboxes(config)
 		}]
 	}
 
 	,getCheckboxes: function(config) {
-		var fields = [];
+		var items = [];
 
 		var tmp = {
 			searchable: {}
@@ -280,6 +276,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 			,richtext: {}
 			,hidemenu: {boxLabel: _('resource_hide_from_menus'),description: _('resource_hide_from_menus_help')}
 			//,show_in_tree: {}
+			,uri_override: {xtype:'xcheckbox', inputValue:1, checked:parseInt(config.record.uri_override), id: 'modx-resource-uri-override'}
 			,isfolder: {boxLabel: _('resource_folder'),description: _('resource_folder_help')}
 			,menutitle: {xtype: 'hidden', value: config.record.menutitle || ''}
 			,link_attributes: {xtype: 'hidden',name: 'link_attributes',id: 'modx-resource-link-attributes'}
@@ -289,7 +286,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 
 		for (var i in tmp) {
 			if (tmp.hasOwnProperty(i)) {
-				fields.push(Ext.apply({
+				items.push(Ext.apply({
 						xtype: 'xcheckbox'
 						,name: i
 						,boxLabel: _('resource_' + i)
@@ -302,6 +299,13 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 				));
 			}
 		}
+
+		var fields = [{
+			xtype: 'checkboxgroup'
+			,columns: 2
+			,items: items
+		}];
+		fields.push({xtype:'textfield', name: 'uri', id: 'modx-resource-uri',fieldLabel: _('ms2_product_uri'),value:config.record.uri || '',hidden: !config.record.uri_override,anchor: '100%'});
 
 		return fields;
 	}
