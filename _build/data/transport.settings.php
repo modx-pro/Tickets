@@ -123,7 +123,7 @@ $tmp = array(
 	,'section_content_default' => array(
 		'value' => "[[!pdoPage?\n\t&element=`getTickets`\n]]\n\n[[!+page.nav]]"
 		,'xtype' => 'textarea'
-		,'area' => 'tickets.main'
+		,'area' => 'tickets.section'
 	)
 	,'ticket_hidemenu_force' => array(
 		'value' => true
@@ -131,6 +131,16 @@ $tmp = array(
 		,'area' => 'tickets.ticket'
 	)
 	,'ticket_isfolder_force' => array(
+		'value' => true
+		,'xtype' => 'combo-boolean'
+		,'area' => 'tickets.ticket'
+	)
+	,'section_id_as_alias' => array(
+		'value' => false
+		,'xtype' => 'combo-boolean'
+		,'area' => 'tickets.section'
+	)
+	,'ticket_id_as_alias' => array(
 		'value' => true
 		,'xtype' => 'combo-boolean'
 		,'area' => 'tickets.ticket'

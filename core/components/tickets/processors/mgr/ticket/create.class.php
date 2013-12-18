@@ -18,10 +18,8 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	private $publishedon = 0;
 	private $publishedby = 0;
 
-	/**
-	 * {@inheritDoc}
-	 * @return mixed
-	 */
+
+	/** {@inheritDoc} */
 	public function beforeSet() {
 		$published = $this->getProperty('published');
 		$createdby = $this->getProperty('createdby');
@@ -83,25 +81,34 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		return $beforeSet;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @return string
-	 */
+
+	/** {@inheritDoc} */
 	public function prepareAlias() {
 		parent::prepareAlias();
+
+		$found = false;
+		$alias = 'empty-resource-alias';
 
 		foreach ($this->modx->error->errors as $k => $v) {
 			if ($v['id'] == 'alias') {
 				unset($this->modx->error->errors[$k]);
-				$this->setProperty('alias', 'emptyresourcealias');
+				$found = true;
+				break;
 			}
 		}
+
+		if ($found || $this->workingContext->getOption('tickets.ticket_id_as_alias')) {
+			$this->setProperty('alias', $alias);
+		}
+		else {
+			$alias = parent::prepareAlias();
+		}
+
+		return $alias;
 	}
 
-	/**
-	 * Make sure parent exists and user can add_children to the parent
-	 * @return boolean|string
-	 */
+
+	/** {@inheritDoc} */
 	public function checkParentPermissions() {
 		$parent = null;
 		$parentId = intval($this->getProperty('parent'));
@@ -124,17 +131,15 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @return mixed
-	 */
+
+	/** {@inheritDoc} */
 	public function afterSave() {
 		$this->object->fromArray(array(
 			'published' => $this->published
 			,'publishedon' => $this->published ? $this->publishedon : 0
 			,'publishedby' => $this->published ? $this->publishedby : 0
 		));
-		if ($this->object->alias == 'emptyresourcealias') {
+		if ($this->object->alias == 'empty-resource-alias') {
 			$this->object->set('alias', $this->object->id);
 		}
 		$this->object->save();
@@ -147,22 +152,21 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		return parent::afterSave();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @return void
-	 */
+
+	/** {@inheritDoc} */
 	public function clearCache() {
-		/** @var TicketsSection $section */
-		if ($section = $this->modx->getObject('TicketsSection', $this->object->parent)) {
-			$section->clearCache();
+		$clear = false;
+		/* @var TicketsSection $category */
+		if ($category = $this->object->getOne('Section')) {
+			$category->clearCache();
+			$clear = true;
 		}
+
+		return $clear;
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 * @return array|mixed
-	 */
+	/** {@inheritDoc} */
 	public function addTemplateVariables() {
 		$properties = $this->getProperties();
 		$fields = array_keys($this->modx->getFieldMeta($this->classKey));

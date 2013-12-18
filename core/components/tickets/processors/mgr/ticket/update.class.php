@@ -19,10 +19,8 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	private $publishedby = 0;
 	private $updatepubdate = 0;
 
-	/**
-	 * {@inheritDoc}
-	 * @return mixed
-	 */
+
+	/** {@inheritDoc} */
 	public function beforeSet() {
 		if ($this->object->createdby != $this->modx->user->id && !$this->modx->hasPermission('edit_document')) {
 			return $this->modx->lexicon('ticket_err_wrong_user');
@@ -100,24 +98,32 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		return $beforeSet;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @return string
-	 */
+
+	/** {@inheritDoc} */
 	public function checkFriendlyAlias() {
 		parent::checkFriendlyAlias();
+
+		$found = false;
 		foreach ($this->modx->error->errors as $k => $v) {
 			if ($v['id'] == 'alias') {
 				unset($this->modx->error->errors[$k]);
-				$this->setProperty('alias', $this->object->id);
+				$found = true;
 			}
 		}
+
+		if ($found || $this->workingContext->getOption('tickets.ticket_id_as_alias')) {
+			$alias = $this->object->id;
+			$this->setProperty('alias', $alias);
+		}
+		else {
+			$alias = parent::checkFriendlyAlias();
+		}
+
+		return $alias;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @return mixed
-	 */
+
+	/** {@inheritDoc} */
 	public function afterSave() {
 		$this->object->fromArray(array(
 			'published' => $this->published
@@ -130,10 +136,8 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		return parent::afterSave();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @return void
-	 */
+
+	/** {@inheritDoc} */
 	public function clearCache() {
 		$results = $this->modx->cacheManager->generateContext($this->object->context_key);
 		$this->modx->context->resourceMap = $results['resourceMap'];
@@ -146,10 +150,8 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @return array|mixed
-	 */
+
+	/** {@inheritDoc} */
 	public function saveTemplateVariables() {
 		$properties = $this->getProperties();
 		$fields = array_keys($this->modx->getFieldMeta($this->classKey));

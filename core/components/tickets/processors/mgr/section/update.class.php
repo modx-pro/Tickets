@@ -14,10 +14,39 @@ class TicketsSectionUpdateProcessor extends modResourceUpdateProcessor {
 	public $object;
 	public $classKey = 'TicketsSection';
 
+
+	/** {@inheritDoc} */
+	public function initialize() {
+		$primaryKey = $this->getProperty($this->primaryKeyField,false);
+		if (empty($primaryKey)) return $this->modx->lexicon($this->objectType.'_err_ns');
+
+		if (!$this->modx->getCount($this->classKey, array('id' => $primaryKey, 'class_key' => $this->classKey)) && $res = $this->modx->getObject('modResource', $primaryKey)) {
+			$res->set('class_key', $this->classKey);
+			$res->save();
+		}
+
+		return parent::initialize();
+	}
+
+
+	/** {@inheritDoc} */
+	public function checkFriendlyAlias() {
+		if ($this->workingContext->getOption('tickets.section_id_as_alias')) {
+			$alias = $this->object->id;
+			$this->setProperty('alias', $alias);
+		}
+		else {
+			$alias = parent::checkFriendlyAlias();
+		}
+
+		return $alias;
+	}
+
+
+	/** {@inheritDoc} */
 	public function beforeSet() {
 		$this->setProperties(array(
-			'hide_children_in_tree' => 1
-			,'isfolder' => 1
+			'isfolder' => 1
 		));
 		return parent::beforeSet();
 	}

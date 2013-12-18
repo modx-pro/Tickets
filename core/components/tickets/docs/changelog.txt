@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.2.4 beta
+==========
+- Added two system settings: section_id_as_alias and ticket_id_as_alias.
+
 1.2.3 pl3
 ==========
 - Fixed requirement of TicketThread in snippet TicketLatest for showing last tickets.
