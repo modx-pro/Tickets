@@ -18,7 +18,7 @@
 
 	<div class="form-actions">
 		<input type="hidden" name="tid" value="[[+id]]" />
-		<input type="button" class="btn" value="[[%ticket_preview]]" onclick="Tickets.ticket.preview(this.form, this);"/>
+		<input type="button" class="btn" value="[[%ticket_preview]]" onclick="return Tickets.ticket.preview(this.form, this);"/>
 		<input type="submit" class="btn btn-primary" value="[[%ticket_save]]" />&nbsp;&nbsp;
 		<label class="checkbox" for="ticket-publish"><input type="checkbox" name="published" value="1" [[+published:is=`1`:then=`checked`]] id="ticket-publish" /> [[%ticket_publish]]</label>
 	</div>
