@@ -106,6 +106,7 @@ if (!empty($rows) && is_array($rows)) {
 		}
 		$row['date_ago'] = $Tickets->dateFormat($row['createdon']);
 
+		$row['idx'] = $pdoFetch->idx++;
 		// Processing chunk
 		$tpl = $pdoFetch->defineChunk($row);
 		$output[] = empty($tpl)
