@@ -6,41 +6,12 @@ $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_
 $pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
 $pdoFetch->addTime('pdoTools loaded.');
 
+if (isset($parents) && $parents === '') {
+	$scriptProperties['parents'] = $modx->resource->id;
+}
+
 $class = 'TicketsSection';
 $where = array('class_key' => $class);
-if (empty($showUnpublished)) {$where['published'] = 1;}
-if (empty($showHidden)) {$where['hidemenu'] = 0;}
-if (empty($showDeleted)) {$where['deleted'] = 0;}
-
-// Filter by ids
-if (!empty($resources)) {
-	$resources = array_map('trim', explode(',', $resources));
-	$in = $out = array();
-	foreach ($resources as $v) {
-		if (!is_numeric($v)) {continue;}
-		if ($v < 0) {$out[] = abs($v);}
-		else {$in[] = $v;}
-	}
-	if (!empty($in)) {$where['id:IN'] = $in;}
-	if (!empty($out)) {$where['id:NOT IN'] = $out;}
-}
-// Filter by parents
-else {
-	if (empty($parents) && $parents != '0') {$parents = $modx->resource->id;}
-	if (!empty($parents) && $parents > 0) {
-		$pids = array_map('trim', explode(',', $parents));
-		$parents = $pids;
-		if (!empty($depth) && $depth > 0) {
-			foreach ($pids as $v) {
-				if (!is_numeric($v)) {continue;}
-				$parents = array_merge($parents, $modx->getChildIds($v, $depth));
-			}
-		}
-		if (!empty($parents)) {
-			$where[$class.'.parent:IN'] = $parents;
-		}
-	}
-}
 
 // Adding custom where parameters
 if (!empty($scriptProperties['where'])) {
@@ -54,36 +25,30 @@ $pdoFetch->addTime('"Where" expression built.');
 
 // Joining tables
 $leftJoin = array(
-		'{"class":"Ticket","alias":"Ticket","on":"Ticket.parent=TicketsSection.id AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key=\'Ticket\'"}'
-		,'{"class":"TicketView","alias":"View","on":"Ticket.id=View.parent"}'
-		//,'{"class":"TicketVote","alias":"Vote","on":"Ticket.id=Vote.parent AND Vote.class=\'Ticket\'"}'
+	'Ticket' => array('class' => 'Ticket', 'on' => 'Ticket.parent=TicketsSection.id AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key="Ticket"'),
+	'View' => array('class' => 'TicketView', 'on' => 'Ticket.id=View.parent'),
+	//'TicketVote' => array('class' => 'TicketVote', 'on' => 'icket.id=Vote.parent AND Vote.class="Ticket"'),
 );
 
 // Fields to select
-$resourceColumns = !empty($includeContent) ?  $modx->getSelectColumns($class, $class) : $modx->getSelectColumns($class, $class, '', array('content'), true);
 $select = array(
-	'"TicketsSection":"'.$resourceColumns.'"'
-	,'"Ticket":"COUNT(DISTINCT `Ticket`.`id`) as `tickets`"'
-	//,'"Vote":"SUM(DISTINCT `Vote`.`value`) as `votes`"'
-	,'"View":"COUNT(DISTINCT `View`.`parent`, `View`.`uid`) as `views`"'
+	'TicketsSection' => !empty($includeContent) ?  $modx->getSelectColumns($class, $class) : $modx->getSelectColumns($class, $class, '', array('content'), true)
+	,'Ticket' => 'COUNT(DISTINCT `Ticket`.`id`) as `tickets`'
+	,'View' => 'COUNT(DISTINCT `View`.`parent`, `View`.`uid`) as `views`'
+	//,'Vote' => 'SUM(DISTINCT `Vote`.`value`) as `votes`'
 );
 
 $default = array(
 	'class' => $class
 	,'where' => $modx->toJSON($where)
-	,'leftJoin' => '['.implode(',',$leftJoin).']'
-	,'select' => '{'.implode(',',$select).'}'
-	,'groupby' => '`'.$class.'`.`id`'
+	,'leftJoin' => $modx->toJSON($leftJoin)
+	,'select' => $modx->toJSON($select)
+	,'groupby' => $class.'.id'
 	,'sortby' => 'views'
 	,'sortdir' => 'DESC'
 	,'return' => 'data'
 	,'nestedChunkPrefix' => 'tickets_'
 );
-
-if (!empty($in) && (empty($scriptProperties['sortby']) || $scriptProperties['sortby'] == 'id')) {
-	$scriptProperties['sortby'] = "find_in_set(`$class`.`id`,'".implode(',', $in)."')";
-	$scriptProperties['sortdir'] = '';
-}
 
 // Merge all properties and run!
 $pdoFetch->setConfig(array_merge($default, $scriptProperties));
@@ -95,15 +60,18 @@ $output = array();
 if (!empty($rows) && is_array($rows)) {
 	foreach ($rows as $k => $row) {
 		// Processing main fields
-		$q = $modx->newQuery('TicketThread', array('closed' => 0, 'deleted' => 0));
-		$q->innerJoin('Ticket', 'Ticket', 'Ticket.id = TicketThread.resource AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key="Ticket" AND Ticket.parent='.$row['id']);
-		$q->select('SUM(`comments`)');
-		$tstart = microtime(true);
-		if ($q->prepare() && $q->stmt->execute()) {
-			$modx->executedQueries++;
-			$modx->queryTime += microtime(true) - $tstart;
-			$row['comments'] = $q->stmt->fetch(PDO::FETCH_COLUMN);
-		}
+		$add = $pdoFetch->getObject('TicketThread', array('closed' => 0, 'deleted' => 0), array(
+			'innerJoin' => array(
+				'Ticket' => array('class' => 'Ticket', 'on' => 'Ticket.id = TicketThread.resource AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key="Ticket" AND Ticket.parent='.$row['id']),
+			),
+			'select' => array(
+				'TicketThread' => 'SUM(TicketThread.comments) as `comments`'
+			)
+		));
+
+		$row['comments'] = !empty($add)
+			? $add['comments']
+			: 0;
 		$row['date_ago'] = $Tickets->dateFormat($row['createdon']);
 
 		$row['idx'] = $pdoFetch->idx++;
@@ -120,14 +88,36 @@ if (!empty($rows) && is_array($rows)) {
 	}
 }
 
+$log = '';
 if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
-	$output .= '<pre class="getSectionsLog">' . print_r($pdoFetch->getTime(), 1) . '</pre>';
+	$log .= '<pre class="getSectionsLog">' . print_r($pdoFetch->getTime(), 1) . '</pre>';
 }
 
 // Return output
-if (!empty($toPlaceholder)) {
-	$modx->setPlaceholder($toPlaceholder, $output);
+if (!empty($returnIds)) {
+	$modx->setPlaceholder('pdoResources.log', $log);
+	if (!empty($toPlaceholder)) {
+		$modx->setPlaceholder($toPlaceholder, $output);
+	}
+	else {
+		return $output;
+	}
+}
+elseif (!empty($toSeparatePlaceholders)) {
+	$output['log'] = $log;
+	$modx->setPlaceholders($output, $toSeparatePlaceholders);
 }
 else {
-	return $output;
+	$output .= $log;
+
+	if (!empty($tplWrapper) && (!empty($wrapIfEmpty) || !empty($output))) {
+		$output = $pdoFetch->getChunk($tplWrapper, array('output' => $output), $pdoFetch->config['fastMode']);
+	}
+
+	if (!empty($toPlaceholder)) {
+		$modx->setPlaceholder($toPlaceholder, $output);
+	}
+	else {
+		return $output;
+	}
 }

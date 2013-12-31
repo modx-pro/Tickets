@@ -5,6 +5,7 @@ Changelog for Tickets.
 - Added two system settings: section_id_as_alias and ticket_id_as_alias.
 - Added "uri_override" checkbox.
 - Improved chunks for working on iOS.
+- Improved snippets getTickets and getTicketsSection.
 - [#54] Field idx in TicketsSection.
 
 1.2.3 pl3
