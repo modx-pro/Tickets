@@ -6,6 +6,7 @@ Changelog for Tickets.
 - Added "uri_override" checkbox.
 - Improved chunks for working on iOS.
 - Improved snippets getTickets and getTicketsSection.
+- Ability to update chunks on package upgrade.
 - [#54] Field idx in TicketsSection.
 
 1.2.3 pl3

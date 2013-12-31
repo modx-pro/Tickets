@@ -12,11 +12,11 @@
 		</div>
 	</div>
 	<div class="comment-reply">
-		<a href="#reply" ontouchstart="return Tickets.forms.reply([[+id]]);" onclick="return Tickets.forms.reply([[+id]]);">[[%ticket_comment_reply]]</a>
+		<a href="#reply" ontouchend="return Tickets.forms.reply([[+id]]);" onclick="return Tickets.forms.reply([[+id]]);">[[%ticket_comment_reply]]</a>
 		[[+comment_edit_link]]
 	</div>
 	<ol class="comments-list">[[+children]]</ol>
 </li>
-<!--tickets_comment_edit_link <a href="#edit" ontouchstart="return Tickets.forms.edit([[+id]]);" onclick="return Tickets.forms.edit([[+id]]);">[[%ticket_comment_edit]]</a>-->
+<!--tickets_comment_edit_link <a href="#edit" ontouchend="return Tickets.forms.edit([[+id]]);" onclick="return Tickets.forms.edit([[+id]]);">[[%ticket_comment_edit]]</a>-->
 <!--tickets_comment_was_edited <span class="ticket-comment-edited">([[%ticket_comment_was_edited]])</span></a>-->
 <!--tickets_comment_new  ticket-comment-new-->

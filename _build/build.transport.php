@@ -258,15 +258,15 @@ $builder->putVehicle($vehicle);
 
 /* now pack in the license file, readme and setup options */
 $package_attributes = array(
-	'changelog' => file_get_contents($sources['docs'] . 'changelog.txt')
-	,'license' => file_get_contents($sources['docs'] . 'license.txt')
-	,'readme' => file_get_contents($sources['docs'] . 'readme.txt')
-);
-if (file_exists($sources['build'].'setup.options.php')) {
-	$package_attributes['setup-options'] = array(
+	'changelog' => file_get_contents($sources['docs'] . 'changelog.txt'),
+	'license' => file_get_contents($sources['docs'] . 'license.txt'),
+	'readme' => file_get_contents($sources['docs'] . 'readme.txt'),
+	'chunks' => $BUILD_CHUNKS,
+	'setup-options' => array(
 		'source' => $sources['build'].'setup.options.php',
-	);
-}
+	),
+);
+
 $builder->setPackageAttributes($package_attributes);
 $modx->log(modX::LOG_LEVEL_INFO,'Added package attributes and setup options.');
 
