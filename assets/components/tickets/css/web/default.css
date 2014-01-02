@@ -1,15 +1,14 @@
 @import url("./lib/jquery.jgrowl.css");
 
-#ticket-preview-placeholder {
-	background: #fff;
-	border: 5px solid #AAA;
-	padding: 5px;
-	display: none;
-	margin: 10px 0;
-}
-
+/* Ticket form */
+#ticketForm {max-width: 800px;}
+#ticketForm #ticket-sections {max-width: 400px;}
+#ticketForm .error {color: brown;}
+#ticket-preview-placeholder {background: #fff; outline: 5px solid #AAA; padding: 5px; display: none; margin: 10px 0; overflow: hidden;}
+.form-actions {margin-top: 10px; padding-top: 10px; border-top: 1px solid #e3e3e3;}
 .form-actions .checkbox {display:inline-block;}
 
+/* Comments */
 .comments {position:relative;overflow:hidden;}
 .ticket-comment {list-style-type: none;margin-top:20px;}
 .ticket-avatar {display:inline-block;}
@@ -24,68 +23,33 @@
 .ticket-comment-dot {width:500px;height:5px;right:1px;top:9px;position:absolute;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAFCAYAAACw/UeDAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUTDRYgxxbUHAAAAFVJREFUGNO1kbENACEMxBwKJCRmICOw/xgZIaxAgZSGb34E4gVOPsNPRFySEAAzu2stxhjMOeX1SImI6+703nF3zjnPjUqtVVSVvTeqSmtNsm5LbfIBwCcf3dkm2FsAAAAASUVORK5CYII=) repeat-x 100% 0;}
 
 .ticket-comment-text {margin-top: 5px;}
-.ticket-reply-link a {font-size: 0.8em; text-decoration: none; border-bottom-style: dashed; border-bottom-width: 1px;}
+.ticket-reply-link a {font-size: 0.8em; text-decoration: none; border-bottom: 1px dashed;}
 
 #comment-editor {width: 99%}
+#comment-preview-placeholder {background: #fff;border: 5px solid #AAA;padding: 5px;display: none;margin: 10px 0;}
 
-#comment-preview-placeholder {
-	background: #fff;
-	border: 5px solid #AAA;
-	padding: 5px;
-	display: none;
-	margin: 10px 0;
-	/*white-space: pre-wrap;*/
-}
+/* Messages */
+.tickets-message-success  {background-color: green !important;}
+.tickets-message-error  {background-color: brown !important;}
+.tickets-message-info  {background-color: black !important;}
 
-.form-actions .checkbox {display:inline-block;}
+/* Panel with spinner */
+#comments-tpanel {width:32px;display: none;position:fixed;right:0;top:50%;margin-top: -16px;}
 
 #tpanel {width:32px;position:fixed;top:50%;opacity:0.5;background: #AAA;}
 #tpanel:hover{opacity:1;}
+
 #tpanel .change{color:#666;font-size:12px;text-decoration:none;padding:0 10px;position:absolute;left:0;top:-15px}
 #tpanel .divider{border-top: solid 1px #5c5c5c;border-bottom: solid 1px #dddddd;width: 28px;height: 0px;margin:0 auto;}
 #tpanel .refresh{display:block;background:url("../../img/web/refresh.gif") no-repeat left top;width:28px;margin:2px;height:28px;background-size:32px;}
 #tpanel .refresh.loading{background:url("../../img/web/loading.gif") no-repeat left top;background-size:32px;}
 #tpanel .new{text-decoration:none;display: block;color:#fff;font-size:12px;padding:0;padding-top:4px;padding-bottom:6px;width:34px;text-align:center;}
 
-.tickets-message-success  {background-color: green !important;}
-.tickets-message-error  {background-color: brown !important;}
-.tickets-message-info  {background-color: black !important;}
-
-.ticket-comment-new .ticket-comment-header {background-color: #f5f5dc;}
-#comments-tpanel {
-	width:32px;
-	display: none;
-	position:fixed;
-	right:0;
-	top:50%;
-	margin-top: -16px;
-}
-
-#tpanel-refresh {
-	opacity: .5;
-	width: 32px;
-	height: 32px;
-	background-image: url('../../img/web/refresh.gif');
-	background-size: 32px;
-	cursor: pointer;
-}
+#tpanel-refresh {opacity: .5;width: 32px;height: 32px;background-image: url('../../img/web/refresh.gif');background-size: 32px;cursor: pointer;}
 #tpanel-refresh:hover {opacity: 1;}
-#tpanel-refresh.loading {
-	opacity: 1;
-	background-image: url('../../img/web/loading.gif');
-	cursor: default;
-}
+#tpanel-refresh.loading {opacity: 1;background-image: url('../../img/web/loading.gif');cursor: default;}
 
-#tpanel-new {
-	margin-top: 2px;
-	border-top: solid 1px #efefef;
-	text-align: center;
-	color: darkgreen;
-	cursor: pointer;
-}
+#tpanel-new {margin-top: 2px;border-top: solid 1px #efefef;text-align: center;color: darkgreen;cursor: pointer;}
 
-.ticket-footer {
-	margin-top: 25px;
-	padding-top: 10px;
-	border-top: 1px solid #efefef;
-}
+/* Unseen comment */
+.ticket-comment-new .ticket-comment-header {background-color: #f5f5dc;}

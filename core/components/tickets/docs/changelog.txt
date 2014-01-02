@@ -2,16 +2,17 @@ Changelog for Tickets.
 
 1.2.4 rc
 ==========
-- Added two system settings: section_id_as_alias and ticket_id_as_alias.
+- Added two system settings: "section_id_as_alias" and "ticket_id_as_alias".
 - Added "uri_override" checkbox.
-- Improved chunks for working on iOS.
 - Improved snippets getTickets and getTicketsSection.
+- Improved snippet "TicketForm" - see new properties.
+- Improved chunks for working on iOS.
+- Updated chunks for Bootstrap 3.
 - Ability to update chunks on package upgrade.
+- Removed chunk "tpl.Tickets.sections.row".
 - Fixed placeholder [[+children]] when fastMode = 0 in TicketComments.
 - Ability to move comment from one thread to another.
 - Improved check of users authentication.
-- Removed chunk "tpl.Tickets.sections.row".
-- Improved snippet "TicketForm" - see new properties.
 - [#54] Field idx in TicketsSection.
 - [#47] Auto hide "new comment" button.
 - [#43] Parameter &redirectUnpublished in TicketForm.

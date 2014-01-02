@@ -109,7 +109,7 @@ var Tickets = {
 							for (var i in response.data) {
 								if (response.data.hasOwnProperty(i)) {
 									var input = $(form).find('[name="'+ i + '"]');
-									input.parents('label').find('.error').text(response.data[i]);
+									input.parent().find('.error').text(response.data[i]);
 								}
 							}
 						}
@@ -171,7 +171,6 @@ var Tickets = {
 						Tickets.forms.comment(false);
 						$('#comment-preview-placeholder').html('').hide();
 						$('#comment-editor',form).val('');
-						$(form).hide();
 						$('.ticket-comment .comment-reply a').show();
 
 						// autoPublish = 0
