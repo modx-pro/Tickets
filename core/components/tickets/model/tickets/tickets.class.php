@@ -278,6 +278,9 @@ class Tickets {
 				: $data['parent'];
 		}
 		$redirect = $this->modx->makeUrl($id,'','','full');
+		if (empty($redirect)) {
+			$redirect = $this->modx->getOption('site_url');
+		}
 
 		return $this->success('', array('redirect' => $redirect));
 	}
