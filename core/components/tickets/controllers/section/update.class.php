@@ -40,10 +40,11 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
 		$this->addJavascript($mgrUrl.'assets/modext/widgets/resource/modx.panel.resource.js');
 		$this->addJavascript($mgrUrl.'assets/modext/sections/resource/update.js');
 		$this->addJavascript($ticketsJsUrl.'tickets.js');
-		$this->addJavascript($ticketsJsUrl.'section/section.common.js');
-		$this->addJavascript($ticketsJsUrl.'section/section.grid.js');
-		$this->addJavascript($ticketsJsUrl.'comment/comments.common.js');
-		$this->addJavascript($ticketsJsUrl.'comment/comments.grid.js');
+		$this->addLastJavascript($ticketsJsUrl.'misc/utils.js');
+		$this->addLastJavascript($ticketsJsUrl.'section/section.common.js');
+		$this->addLastJavascript($ticketsJsUrl.'section/section.grid.js');
+		$this->addLastJavascript($ticketsJsUrl.'comment/comments.common.js');
+		$this->addLastJavascript($ticketsJsUrl.'comment/comments.grid.js');
 		$this->addLastJavascript($ticketsJsUrl.'section/update.js');
 		$this->addHtml('
 		<script type="text/javascript">

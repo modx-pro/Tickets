@@ -158,32 +158,16 @@
 	clear: both;
 }
 
-.tickets-section-list-item, .tickets-user-list-item {
-	font:normal 11px tahoma, arial, helvetica, sans-serif;
-	padding:3px 10px 3px 10px;
-	border:1px solid #fff;
-	border-bottom:1px solid #eeeeee;
-	white-space:normal;
-	color:#555;
-	cursor: pointer;
-}
-.tickets-section-list-item:hover, .tickets-user-list-item:hover {
-	background: #efefef;
+.tickets-list-item {
+	padding: 5px;
 }
 
-.tickets-section-list-item h3, .tickets-user-list-item h3 {
+.tickets-list-item .parents {
 	display:block;
-	font:inherit;
-	font-weight:bold;
-	font-size: 1.1em;
-	line-height: 1.1em;
+	color:#555555;
+	font-size: .9em;
 }
-
-.tickets-section-list-item .parents {
-	display:block;
-	font:inherit;
-	font-weight:normal;
-	color:#555;
-	font-size: 1em;
-	line-height: 1em;
+.tickets-list-item .id {
+	font-size: .8em;
+	color: #555555;
 }

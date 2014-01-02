@@ -96,6 +96,8 @@ $_lang['ticket_preview'] = 'Предпросмотр';
 $_lang['ticket_save'] = 'Отправить';
 $_lang['ticket_read_more'] = 'Читать дальше';
 
+$_lang['ticket_thread'] = 'Ветка комментариев';
+$_lang['ticket_thread_name'] = 'Имя ветки';
 $_lang['ticket_thread_intro'] = 'Комментарии, сгруппированные по веткам. Обычно, одна ветвь - это комментарии одной страницы.';
 $_lang['ticket_thread_createdon'] = 'Создана';
 $_lang['ticket_thread_editedon'] = 'Изменена';

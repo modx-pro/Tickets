@@ -13,7 +13,8 @@ class TicketsHomeManagerController extends TicketsMainController {
 		$this->addJavascript($this->Tickets->config['jsUrl'].'mgr/comment/comments.grid.js');
 		$this->addJavascript($this->Tickets->config['jsUrl'].'mgr/thread/thread.grid.js');
 		$this->addJavascript($this->Tickets->config['jsUrl'].'mgr/thread/thread.panel.js');
-		$this->addJavascript($this->Tickets->config['jsUrl'].'mgr/home.js');
+		$this->addLastJavascript($this->Tickets->config['jsUrl'].'mgr/misc/utils.js');
+		$this->addLastJavascript($this->Tickets->config['jsUrl'].'mgr/home.js');
 		$this->addHtml('<script type="text/javascript">
 		Ext.onReady(function() {
 			MODx.load({xtype: "tickets-page-home"});

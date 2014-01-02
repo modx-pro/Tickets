@@ -10,7 +10,10 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 	public $permission = 'update_document';
 	public $beforeSaveEvent = 'OnBeforeCommentSave';
 	public $afterSaveEvent = 'OnCommentSave';
+	protected $old_thread = 0;
 
+
+	/** {@inheritDoc} */
 	public function beforeSet() {
 		if (!$this->getProperty('name')) {
 			$this->unsetProperty('name');
@@ -22,9 +25,20 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 			return $this->modx->lexicon('ticket_err_empty_comment');
 		}
 
+		$this->old_thread = $this->object->get('thread');
+		$parent = $this->getProperty('parent');
+		// New parent is in other thread
+		if ($parent != 0 && $parent != $this->object->get('parent')) {
+			if ($parent = $this->modx->getObject('TicketComment', $this->getProperty('parent'))) {
+				$this->setProperty('thread', $parent->get('thread'));
+			}
+		}
+
 		return parent::beforeSet();
 	}
 
+
+	/** {@inheritDoc} */
 	public function beforeSave() {
 		$text = $this->getProperty('text');
 
@@ -38,8 +52,16 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 		return parent::beforeSave();
 	}
 
+
+	/** {@inheritDoc} */
 	public function afterSave() {
-		$this->object->clearTicketCache();
+		$new_thread = $this->object->get('thread');
+		if ($this->old_thread != $new_thread) {
+			$this->object->changeThread($this->old_thread, $new_thread);
+		}
+		else {
+			$this->object->clearTicketCache();
+		}
 
 		return parent::afterSave();
 	}

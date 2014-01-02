@@ -90,6 +90,8 @@ $_lang['ticket_preview'] = 'Перегляд';
 $_lang['ticket_save'] = 'Відправити';
 $_lang['ticket_read_more'] = 'Читати далі';
 
+$_lang['ticket_thread'] = 'Гілка коментарів';
+$_lang['ticket_thread_name'] = 'Ім`я гілки';
 $_lang['ticket_thread_intro'] = 'Комментарі, що сгруповані за гілками. Звичайно, одна гілка - це коментарі однієї сторінки.';
 $_lang['ticket_thread_createdon'] = 'Створена';
 $_lang['ticket_thread_editedon'] = 'Змінена';

@@ -7,8 +7,9 @@ Changelog for Tickets.
 - Improved chunks for working on iOS.
 - Improved snippets getTickets and getTicketsSection.
 - Ability to update chunks on package upgrade.
-- [#54] Field idx in TicketsSection.
 - Fixed placeholder [[+children]] when fastMode = 0 in TicketComments.
+- Ability to move comment from one thread to another.
+- [#54] Field idx in TicketsSection.
 
 1.2.3 pl3
 ==========

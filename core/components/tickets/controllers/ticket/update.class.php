@@ -40,11 +40,11 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 		$this->addJavascript($mgrUrl.'assets/modext/widgets/resource/modx.panel.resource.js');
 		$this->addJavascript($mgrUrl.'assets/modext/sections/resource/update.js');
 		$this->addJavascript($ticketsJsUrl.'tickets.js');
-		$this->addJavascript($ticketsJsUrl.'comment/comments.common.js');
-		$this->addJavascript($ticketsJsUrl.'comment/comments.grid.js');
-		$this->addLastJavascript($ticketsJsUrl.'ticket/widgets.js');
+		$this->addLastJavascript($ticketsJsUrl.'misc/utils.js');
 		$this->addLastJavascript($ticketsJsUrl.'ticket/ticket.common.js');
 		$this->addLastJavascript($ticketsJsUrl.'ticket/update.js');
+		$this->addLastJavascript($ticketsJsUrl.'comment/comments.common.js');
+		$this->addLastJavascript($ticketsJsUrl.'comment/comments.grid.js');
 		if (is_null($this->resourceArray['properties'])) {
 			$this->resourceArray['properties'] = array();
 		}

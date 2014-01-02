@@ -255,6 +255,7 @@ Ext.extend(Tickets.window.UpdateComment,MODx.Window,{
 			//{xtype:'textfield', fieldLabel: _('ticket_comment_name'), name: 'name', id:'tickets-'+this.ident+'-name',anchor: '99%'}
 			//,{xtype:'textfield', fieldLabel: _('ticket_comment_email'), name: 'email', id:'tickets-'+this.ident+'-email',anchor: '99%'}
 			{xtype:'numberfield', fieldLabel: _('ticket_comment_parent'), name: 'parent', id:'tickets-'+this.ident+'-parent',anchor: '50%'}
+			,{xtype:'tickets-combo-thread', fieldLabel: _('ticket_thread'), name: 'thread', id:'tickets-'+this.ident+'-thread',anchor: '75%'}
 		];
 	}
 

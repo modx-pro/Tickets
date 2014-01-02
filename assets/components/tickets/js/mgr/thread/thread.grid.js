@@ -12,10 +12,10 @@ Tickets.grid.Threads = function(config) {
 		,remoteSort: true
 		,columns: [
 			{header: _('id'),dataIndex: 'id',width: 50, sortable: true}
-			,{header: _('ticket_thread_resource'),dataIndex: 'resource',width: 50, sortable: true}
-			,{header: _('name'),dataIndex: 'name',width: 200, sortable: true}
-			,{header: _('ticket_thread_createdon'),dataIndex: 'createdon',width: 200, sortable: true}
-			,{header: _('ticket_thread_comments'),dataIndex: 'comments',width: 50, sortable: true}
+			,{header: _('ticket_thread_resource'),dataIndex: 'resource',width: 100, sortable: true}
+			,{header: _('ticket_thread_name'),dataIndex: 'name',width: 200, sortable: true}
+			,{header: _('ticket_thread_createdon'),dataIndex: 'createdon',width: 100, sortable: true}
+			,{header: _('ticket_thread_comments'),dataIndex: 'comments',width: 100, sortable: true}
 			,{header: _('ticket'),dataIndex: 'pagetitle', width: 100, renderer: this.renderResourceLink}
 		]
 		,tbar: ['->'

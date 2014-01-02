@@ -96,6 +96,8 @@ $_lang['ticket_preview'] = 'Preview';
 $_lang['ticket_save'] = 'Submit';
 $_lang['ticket_read_more'] = 'Read more';
 
+$_lang['ticket_thread'] = 'Comments thread';
+$_lang['ticket_thread_name'] = 'Thread name';
 $_lang['ticket_thread_intro'] = 'Comments that are grouped on threads. Usually, one thread is the all comments of the one page.';
 $_lang['ticket_thread_createdon'] = 'Created on';
 $_lang['ticket_thread_editedon'] = 'Edited on';
