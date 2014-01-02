@@ -125,7 +125,7 @@ if (!empty($rows) && is_array($rows)) {
 		$rows = array_reverse($rows);
 	}
 
-	$tpl = ($modx->user->isAuthenticated() && !$thread->get('closed')) ? $tplCommentAuth : $tplCommentGuest;
+	$tpl = ($modx->user->isAuthenticated($modx->context->key) && !$thread->get('closed')) ? $tplCommentAuth : $tplCommentGuest;
 	foreach ($rows as $row) {
 		$output[] = $Tickets->templateNode($row, $tpl);
 	}
@@ -143,7 +143,7 @@ $commentsThread = $pdoFetch->getChunk($Tickets->config['tplComments'], array(
 	,'subscribed' => $thread->isSubscribed()
 ));
 
-$form = !$modx->user->isAuthenticated()
+$form = !$modx->user->isAuthenticated($modx->context->key)
 	? $Tickets->getChunk($Tickets->config['tplLoginToComment'])
 	: $Tickets->getChunk($Tickets->config['tplCommentForm'], array('thread' => $scriptProperties['thread']));
 

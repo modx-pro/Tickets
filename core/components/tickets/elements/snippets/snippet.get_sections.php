@@ -69,7 +69,7 @@ if (!empty($rows) && is_array($rows)) {
 			)
 		));
 
-		$row['comments'] = !empty($add)
+		$row['comments'] = !empty($add['comments'])
 			? $add['comments']
 			: 0;
 		$row['date_ago'] = $Tickets->dateFormat($row['createdon']);

@@ -9,6 +9,7 @@ Changelog for Tickets.
 - Ability to update chunks on package upgrade.
 - Fixed placeholder [[+children]] when fastMode = 0 in TicketComments.
 - Ability to move comment from one thread to another.
+- Improved check of users authentication.
 - [#54] Field idx in TicketsSection.
 - [#43] Parameter &redirectUnpublished in TicketForm.
 

@@ -118,7 +118,7 @@ class Tickets {
 							,actionUrl: "'.$this->config['actionUrl'].'"
 							,formBefore: '.$formBefore.'
 							,close_all_message: "'.$this->modx->lexicon('tickets_message_close_all').'"
-							,tpanel: '.($this->modx->user->isAuthenticated() ? 1 : 0).'
+							,tpanel: '.($this->modx->user->isAuthenticated($this->modx->context->key) ? 1 : 0).'
 							,thread_depth: '.$this->config['depth'].'
 							,'.$editorConfig.'
 						};
@@ -400,7 +400,7 @@ class Tickets {
 	 * @return array
 	 */
 	public function getNewComments($name) {
-		if (!$this->modx->user->isAuthenticated()) {
+		if (!$this->modx->user->isAuthenticated($this->modx->context->key)) {
 			return $this->error($this->modx->lexicon('access_denied'));
 		}
 		else if ($thread = $this->modx->getObject('TicketThread', array('name' => $name))) {
@@ -532,7 +532,7 @@ class Tickets {
 		// Processing comment and selecting needed template
 		$node = $this->prepareComment($node);
 		if (empty($tpl)) {
-			$tpl = $this->modx->user->isAuthenticated() ? $this->config['tplCommentAuth'] : $this->config['tplCommentGuest'];
+			$tpl = $this->modx->user->isAuthenticated($this->modx->context->key) ? $this->config['tplCommentAuth'] : $this->config['tplCommentGuest'];
 		}
 		if ($node['deleted']) {
 			$tpl = $this->config['tplCommentDeleted'];
@@ -726,7 +726,7 @@ class Tickets {
 	 * @return array
 	 */
 	public function Subscribe($name) {
-		if (!$this->modx->user->isAuthenticated()) {
+		if (!$this->modx->user->isAuthenticated($this->modx->context->key)) {
 			return $this->error('ticket_err_access_denied');
 		}
 		/* @var TicketThread $thread */
@@ -910,7 +910,7 @@ class Tickets {
 	 * @return void
 	 */
 	public function logView($resource) {
-		if ($this->modx->user->isAuthenticated() && $this->modx->user->id && $this->modx->getCount('modResource', $resource)) {
+		if ($this->modx->user->isAuthenticated($this->modx->context->key) && $this->modx->user->id && $this->modx->getCount('modResource', $resource)) {
 			$table = $this->modx->getTableName('TicketView');
 			$timestamp = date('Y-m-d H:i:s');
 			$sql = "INSERT INTO {$table} (`uid`,`parent`,`timestamp`) VALUES ({$this->modx->user->id},{$resource},'{$timestamp}') ON DUPLICATE KEY UPDATE `timestamp` = '{$timestamp}'";
