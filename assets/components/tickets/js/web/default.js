@@ -13,12 +13,23 @@ var Tickets = {
 		if(!jQuery().sisyphus) {
 			document.write('<script src="'+TicketsConfig.jsUrl+'lib/jquery.sisyphus.min.js"><\/script>');
 		}
+
+		$(document).on('click', '#comment-preview-placeholder a', function() {
+			return false;
+		});
+		$(document).on('change', '#comments-subscribe', function() {
+			Tickets.comment.subscribe();
+		});
+
+		$(document).on('submit', '#ticketForm', function() {
+			Tickets.ticket.save(this, $(this).find('[type="submit"]')[0]);
+			return false;
+		});
+
 		$(document).ready(function() {
 			if (TicketsConfig.enable_editor == true) {
 				$('#ticket-editor').markItUp(TicketsConfig.editor.ticket);
 			}
-		});
-		$(document).ready(function() {
 			if (TicketsConfig.enable_editor == true) {
 				$('#comment-editor').markItUp(TicketsConfig.editor.comment);
 				$.jGrowl.defaults.closerTemplate = '<div>[ '+TicketsConfig.close_all_message+' ]</div>';
@@ -27,18 +38,11 @@ var Tickets = {
 			$('#comment-total, .comments-count').text(count);
 
 			$("#ticketForm.create").sisyphus();
-		});
-		$(document).on('click', '#comment-preview-placeholder a', function() {
-			return false;
-		});
 
-		$(document).on('change', '#comments-subscribe', function() {
-			Tickets.comment.subscribe();
-		});
-
-		$(document).on('submit', '#ticketForm', function() {
-			Tickets.ticket.save(this, $(this).find('[type="submit"]')[0]);
-			return false;
+			// Auto hide new comment button
+			if ($('#comment-form').is(':visible')) {
+				$('#comment-new-link').hide();
+			}
 		});
 	}
 
@@ -277,9 +281,10 @@ var Tickets = {
 
 	,forms: {
 		reply: function(comment_id) {
+			$('#comment-new-link').show();
+
 			clearInterval(window.timer);
 			var form = $('#comment-form');
-
 			$('.time', form).text('');
 			$('.ticket-comment .comment-reply a').show();
 
@@ -298,6 +303,8 @@ var Tickets = {
 		}
 
 		,comment: function(focus) {
+			$('#comment-new-link').hide();
+
 			var form = $('#comment-form');
 			if (focus !== false) {focus = true;}
 			clearInterval(window.timer);
