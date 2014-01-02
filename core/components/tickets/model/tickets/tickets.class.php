@@ -272,7 +272,11 @@ class Tickets {
 		}
 
 		$id = $response->response['object']['id'];
-		if (empty($data['published'])) {$id = $data['parent'];}
+		if (empty($data['published'])) {
+			$id = !empty($this->config['redirectUnpublished'])
+				? (int) $this->config['redirectUnpublished']
+				: $data['parent'];
+		}
 		$redirect = $this->modx->makeUrl($id,'','','full');
 
 		return $this->success('', array('redirect' => $redirect));

@@ -39,7 +39,6 @@ $_lang['tickets_prop_tplCommentForm'] = 'The add comment form. Can either be a c
 $_lang['tickets_prop_tplCommentAuth'] = 'Chunk for displaying comment for authorized user.';
 $_lang['tickets_prop_tplCommentGuest'] = 'Chunk for displaying comment for guests.';
 $_lang['tickets_prop_tplCommentDeleted'] = 'Chunk for displaying deleted comment.';
-$_lang['tickets_prop_tplComment'] = 'Chunk for the comment itself.';
 $_lang['tickets_prop_tplComments'] = 'Chunk for the outer wrapper for comments.';
 $_lang['tickets_prop_tplLoginToComment'] = 'Chunk  for guests with requirement of authorization.';
 $_lang['tickets_prop_tplCommentEmailOwner'] = 'Chunk for notification of new comments of ticket owner.';
@@ -58,3 +57,4 @@ $_lang['tickets_prop_gravatarUrl'] = 'The URL of Gravatar';
 
 $_lang['tickets_prop_allowedFields'] = 'Fields of the ticket, which allowed to fill the user. You can specify the names of the TVs.';
 $_lang['tickets_prop_requiredFields'] = 'The required fields of the ticket, which the user must fill in to send the form.';
+$_lang['tickets_prop_redirectUnpublished'] = 'Вы можете указать, на какой документ отправлять пользователя при создании неопубликованного тикета.';

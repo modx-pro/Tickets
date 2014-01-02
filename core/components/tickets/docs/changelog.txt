@@ -10,6 +10,7 @@ Changelog for Tickets.
 - Fixed placeholder [[+children]] when fastMode = 0 in TicketComments.
 - Ability to move comment from one thread to another.
 - [#54] Field idx in TicketsSection.
+- [#43] Parameter &redirectUnpublished in TicketForm.
 
 1.2.3 pl3
 ==========

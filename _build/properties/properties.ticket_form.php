@@ -31,6 +31,10 @@ $tmp = array(
 		'type' => 'textfield'
 		,'value' => 'parent,pagetitle,content'
 	)
+	,'redirectUnpublished' => array(
+		'type' => 'numberfield'
+		,'value' => 0
+	)
 );
 
 foreach ($tmp as $k => $v) {
