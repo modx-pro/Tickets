@@ -87,7 +87,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		parent::prepareAlias();
 
 		$found = false;
-		$alias = 'empty_resource_alias';
+		$alias = 'empty';
 
 		foreach ($this->modx->error->errors as $k => $v) {
 			if ($v['id'] == 'alias') {
@@ -139,7 +139,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			,'publishedon' => $this->published ? $this->publishedon : 0
 			,'publishedby' => $this->published ? $this->publishedby : 0
 		));
-		if ($this->object->alias == 'empty_resource_alias') {
+		if ($this->object->alias == 'empty') {
 			$this->object->set('alias', $this->object->id);
 		}
 		$this->object->save();
