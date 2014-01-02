@@ -12,7 +12,13 @@ $pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/
 $pdoFetch->addTime('pdoTools loaded.');
 
 if (empty($action)) {$action = 'comments';}
-$where = ($action == 'tickets') ? array('class_key' => 'Ticket') : array();
+if ($action == 'tickets' && $scriptProperties['tpl'] == 'tpl.Tickets.comment.latest') {
+	$scriptProperties['tpl'] = 'tpl.Tickets.ticket.latest';
+}
+$action = strtolower($action);
+$where = $action == 'tickets'
+	? array('class_key' => 'Ticket')
+	: array();
 
 if (empty($showUnpublished)) {$where['Ticket.published'] = 1;}
 if (empty($showHidden)) {$where['Ticket.hidemenu'] = 0;}
@@ -94,7 +100,7 @@ if ($action == 'comments') {
 	$groupby = empty($user) ? 'Ticket.id' : 'TicketComment.id';
 	$where['TicketComment.deleted'] = 0;
 }
-else if ($action == 'tickets') {
+elseif ($action == 'tickets') {
 	$resourceColumns = !empty($includeContent) ?  $modx->getSelectColumns('Ticket', 'Ticket') : $modx->getSelectColumns('Ticket', 'Ticket', '', array('content'), true);
 	$class = 'Ticket';
 	$innerJoin = array();
