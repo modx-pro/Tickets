@@ -540,6 +540,7 @@ class Tickets {
 		}
 		elseif ($node['createdby'] == $this->modx->user->id && (time() - strtotime($node['createdon']) <= $this->config['commentEditTime'])) {
 			$node['comment_edit_link'] = true;
+			$node['children'] = '';
 		}
 		else {
 			$node['children'] = '';
