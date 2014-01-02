@@ -4,7 +4,7 @@
 define('PKG_NAME','Tickets');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
 define('PKG_VERSION','1.2.4');
-define('PKG_RELEASE','beta');
+define('PKG_RELEASE','rc');
 define('PKG_AUTO_INSTALL', true);
 
 
@@ -48,4 +48,11 @@ define('BUILD_CHUNK_STATIC', false);
 define('BUILD_SNIPPET_STATIC', false);
 define('BUILD_PLUGIN_STATIC', false);
 
-$BUILD_RESOLVERS = array('tables','thread','policy','actionfields','setup');
+$BUILD_RESOLVERS = array(
+	'tables',
+	'thread',
+	'policy',
+	'actionfields',
+	'update',
+	'setup',
+);

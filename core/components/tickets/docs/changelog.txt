@@ -9,7 +9,7 @@ Changelog for Tickets.
 - Improved chunks for working on iOS.
 - Updated chunks for Bootstrap 3.
 - Ability to update chunks on package upgrade.
-- Removed chunk "tpl.Tickets.sections.row".
+- Removed chunk "tpl.Tickets.form.section.row".
 - Fixed placeholder [[+children]] when fastMode = 0 in TicketComments.
 - Ability to move comment from one thread to another.
 - Improved check of users authentication.
