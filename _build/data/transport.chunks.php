@@ -27,7 +27,6 @@ $tmp = array(
 	,'tpl.Tickets.comment.email.bcc' => 'comment_email_bcc'
 
 	,'tpl.Tickets.list.row' => 'ticket_list_row'
-	,'tpl.Tickets.sections.row' => 'ticket_sections_row'
 );
 
 // Save chunks for setup options

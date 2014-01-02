@@ -20,6 +20,24 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 			,'published' => 1
 			,'deleted' => 0
 		));
+
+		$sortby = $this->getProperty('sortby');
+		$sortdir = $this->getProperty('sortdir');
+		if ($sortby && $sortdir) {
+			$c->sortby($sortby, $sortdir);
+		}
+
+		if ($parents = $this->getProperty('parents')) {
+			$depth = $this->getProperty('depth', 10);
+			$parents = array_map('trim', explode(',', $parents));
+			foreach ($parents as $pid) {
+				$parents = array_merge($parents, $this->modx->getParentIds($pid, $depth));
+			}
+			if (!empty($parents)) {
+				$c->where(array('parent:IN' => $parents));
+			}
+		}
+
 		return $c;
 	}
 
@@ -36,12 +54,16 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 			$pid = $current->get('parent');
 		}
 
+		$permissions = $this->getProperty('permissions');
 		$this->currentIndex = 0;
 		/** @var xPDOObject|modAccessibleObject $object */
 		foreach ($data['results'] as $object) {
-			if ($object instanceof modAccessibleObject && !$object->checkPolicy('section_add_children') && $object->id != $pid) {
-				continue;
+			if (!empty($permissions)) {
+				if ($object instanceof modAccessibleObject && !$object->checkPolicy('section_add_children') && $object->id != $pid) {
+					continue;
+				}
 			}
+
 			$objectArray = $this->prepareRow($object);
 			if (!empty($objectArray) && is_array($objectArray)) {
 				$list[] = $objectArray;

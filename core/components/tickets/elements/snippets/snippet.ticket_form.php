@@ -47,7 +47,13 @@ else {
 
 // Get available sections for ticket create
 $data['sections'] = '';
-$response = $Tickets->runProcessor('web/section/getlist');
+$response = $Tickets->runProcessor('web/section/getlist', array(
+	'parents' => $scriptProperties['parents'],
+	'permissions' => $scriptProperties['permissions'],
+	'sortby' => !empty($scriptProperties['sortby']) ? $scriptProperties['sortby'] : 'pagetitle',
+	'sortdir' => !empty($scriptProperties['sortdir']) ? $scriptProperties['sortdir'] : 'asc',
+	'depth' => isset($scriptProperties['depth']) ? $scriptProperties['depth'] : 10,
+));
 $response = $modx->fromJSON($response->response);
 
 foreach ($response['results'] as $v) {

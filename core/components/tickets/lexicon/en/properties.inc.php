@@ -57,4 +57,8 @@ $_lang['tickets_prop_gravatarUrl'] = 'The URL of Gravatar';
 
 $_lang['tickets_prop_allowedFields'] = 'Fields of the ticket, which allowed to fill the user. You can specify the names of the TVs.';
 $_lang['tickets_prop_requiredFields'] = 'The required fields of the ticket, which the user must fill in to send the form.';
-$_lang['tickets_prop_redirectUnpublished'] = 'Вы можете указать, на какой документ отправлять пользователя при создании неопубликованного тикета.';
+$_lang['tickets_prop_redirectUnpublished'] = 'You can specify what document to send the user when creating unpublished ticket.';
+$_lang['tickets_prop_sections_parents'] = 'There is all sections are displayed by default, but you can limit them, specifying comma-separated list of particular parents.';
+$_lang['tickets_prop_sections_permissions'] = 'Checking publishing rights section. By default is checked permission "section_add_children".';
+$_lang['tickets_prop_sections_sortby'] = 'Field to sort the list of sections.';
+$_lang['tickets_prop_sections_sortdir'] = 'Sort direction for the list of sections.';

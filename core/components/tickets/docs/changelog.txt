@@ -10,7 +10,10 @@ Changelog for Tickets.
 - Fixed placeholder [[+children]] when fastMode = 0 in TicketComments.
 - Ability to move comment from one thread to another.
 - Improved check of users authentication.
+- Removed chunk "tpl.Tickets.sections.row".
+- Improved snippet "TicketForm" - see new properties.
 - [#54] Field idx in TicketsSection.
+- [#47] Auto hide "new comment" button.
 - [#43] Parameter &redirectUnpublished in TicketForm.
 
 1.2.3 pl3
