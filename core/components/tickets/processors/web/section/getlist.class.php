@@ -31,7 +31,7 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 			$depth = $this->getProperty('depth', 10);
 			$parents = array_map('trim', explode(',', $parents));
 			foreach ($parents as $pid) {
-				$parents = array_merge($parents, $this->modx->getParentIds($pid, $depth));
+				$parents = array_merge($parents, $this->modx->getChildIds($pid, $depth));
 			}
 			if (!empty($parents)) {
 				$c->where(array('parent:IN' => $parents));
