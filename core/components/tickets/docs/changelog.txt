@@ -4,6 +4,7 @@ Changelog for Tickets.
 ==========
 - Improved update chunks on package upgrade.
 - Fixed word "Array" when no tickets in section.
+- Added requirement of pdoTools 1.9.x.
 
 1.2.4 rc1
 ==========
