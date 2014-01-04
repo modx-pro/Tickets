@@ -46,9 +46,7 @@ foreach ($tmp as $k => $v) {
 
 	$chunks[] = $chunk;
 
-	$BUILD_CHUNKS[$k] = array(
-		'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/chunk.'.$v.'.tpl'),
-	);
+	$BUILD_CHUNKS[$k] = file_get_contents($sources['source_core'].'/elements/chunks/chunk.'.$v.'.tpl');
 }
 
 ksort($BUILD_CHUNKS);

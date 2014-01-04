@@ -18,12 +18,8 @@ if ($object->xpdo) {
 		case xPDOTransport::ACTION_UPGRADE:
 			if (!empty($options['chunks']) && !empty($options['update_chunks'])) {
 				foreach ($options['update_chunks'] as $v) {
-					if (isset($options['chunks'][$v])) {
-
-						if (!$chunk = $modx->getObject('modChunk', array('name' => $v))) {
-							$chunk = $modx->newObject('modChunk');
-						}
-						$chunk->fromArray($options['chunks'][$v], '', true, true);
+					if (!empty($options['chunks'][$v]) && $chunk = $modx->getObject('modChunk', array('name' => $v))) {
+						$chunk->set('snippet', $options['chunks'][$v]);
 						$chunk->save();
 						$modx->log(modX::LOG_LEVEL_INFO, 'Updated chunk "<b>'.$v.'</b>"');
 					}
