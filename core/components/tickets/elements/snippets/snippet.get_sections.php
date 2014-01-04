@@ -81,12 +81,10 @@ if (!empty($rows) && is_array($rows)) {
 			? '<pre>'.$pdoFetch->getChunk('', $row).'</pre>'
 			: $pdoFetch->getChunk($tpl, $row, $pdoFetch->config['fastMode']);
 	}
-	$pdoFetch->addTime('Returning processed chunks');
-	if (empty($outputSeparator)) {$outputSeparator = "\n";}
-	if (!empty($output)) {
-		$output = implode($outputSeparator, $output);
-	}
 }
+$pdoFetch->addTime('Returning processed chunks');
+if (empty($outputSeparator)) {$outputSeparator = "\n";}
+$output = implode($outputSeparator, $output);
 
 $log = '';
 if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {

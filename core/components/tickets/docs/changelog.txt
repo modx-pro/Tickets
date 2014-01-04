@@ -3,6 +3,7 @@ Changelog for Tickets.
 1.2.4 rc2
 ==========
 - Improved update chunks on package upgrade.
+- Fixed word "Array" when no tickets in section.
 
 1.2.4 rc1
 ==========
