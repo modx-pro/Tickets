@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.2.4 rc2
+==========
+- Improved update chunks on package upgrade.
+
 1.2.4 rc1
 ==========
 - Added two system settings: "section_id_as_alias" and "ticket_id_as_alias".
