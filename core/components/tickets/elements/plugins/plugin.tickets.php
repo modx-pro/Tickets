@@ -1,23 +1,24 @@
 <?php
 
 switch($modx->event->name) {
+
 	case 'OnManagerPageInit':
 		$cssFile = $modx->getOption('tickets.assets_url',null,$modx->getOption('assets_url').'components/tickets/').'css/mgr/tickets.css';
 		$modx->regClientCSS($cssFile);
-	break;
+		break;
 
 	case 'OnSiteRefresh':
 		if ($modx->cacheManager->refresh(array('default/tickets' => array()))) {
 			$modx->log(modX::LOG_LEVEL_INFO, $modx->lexicon('refresh_default').': Tickets');
 		}
-	break;
+		break;
 
 	case 'OnDocFormRender':
 		if ($resource->class_key == "TicketsSection") {
 			/* @var TicketsSection $resource */
 			$resource->set('syncsite', 0);
 		}
-	break;
+		break;
 
 	case 'OnDocFormSave':
 		/* @var Ticket $resource */
@@ -30,12 +31,12 @@ switch($modx->event->name) {
 				$resource->clearCache();
 			}
 		}
-	break;
+		break;
 
 	case 'OnWebPagePrerender':
 		$output = & $modx->resource->_output;
 		$output = str_replace(array('{{{{{','}}}}}'), array('[',']'), $output);
-	break;
+		break;
 
 	case 'OnPageNotFound':
 		// It is working only with friendly urls enabled
@@ -56,11 +57,17 @@ switch($modx->event->name) {
 				}
 			}
 		}
-	break;
+		break;
 
 	case 'OnWebPageComplete':
 		$Tickets = $modx->getService('tickets');
 		$Tickets->logView($modx->resource->id);
-	break;
+		break;
+
+	case 'OnEmptyTrash':
+		if (!empty($ids)) {
+			$modx->removeCollection('TicketThread', array('resource:IN' => $ids));
+		}
+		break;
 
 }

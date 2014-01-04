@@ -6,13 +6,14 @@ $tmp = array(
 		'file' => 'tickets'
 		,'description' => ''
 		,'events' => array(
-			'OnDocFormSave'
-			,'OnSiteRefresh'
-			,'OnManagerPageInit'
-			,'OnDocFormRender'
-			,'OnWebPagePrerender'
-			,'OnPageNotFound'
-			,'OnWebPageComplete'
+			'OnDocFormSave',
+			'OnSiteRefresh',
+			'OnManagerPageInit',
+			'OnDocFormRender',
+			'OnWebPagePrerender',
+			'OnPageNotFound',
+			'OnWebPageComplete',
+			'OnEmptyTrash',
 		)
 	)
 );
