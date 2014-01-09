@@ -19,14 +19,28 @@ $modx->error->message = null;
 $ctx = !empty($_REQUEST['ctx']) ? $_REQUEST['ctx'] : 'web';
 if ($ctx != 'web') {$modx->switchContext($ctx);}
 
+// Get properties
 $properties = array();
 /* @var TicketThread $thread */
 if (!empty($_REQUEST['thread']) && $thread = $modx->getObject('TicketThread', array('name' => $_REQUEST['thread']))) {
 	$properties = $thread->get('properties');
 }
-else if (!empty($_SESSION['TicketForm'])) {
+elseif (!empty($_SESSION['TicketForm'])) {
 	$properties = $_SESSION['TicketForm'];
 }
+
+// Switch context
+$context = 'web';
+if (!empty($thread) && $thread->resource && $resource = $thread->getOne('Resource')) {
+	$context = $resource->get('context_key');
+}
+elseif (!empty($_REQUEST['parent']) && $resource = $modx->getObject('modResource', $_REQUEST['parent'])) {
+	$context = $resource->get('context_key');
+}
+if ($context != 'web') {
+	$modx->switchContext($context);
+}
+
 /* @var Tickets $Tickets */
 define('MODX_ACTION_MODE', true);
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/', $properties);

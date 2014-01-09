@@ -62,3 +62,4 @@ $_lang['tickets_prop_sections_parents'] = 'There is all sections are displayed b
 $_lang['tickets_prop_sections_permissions'] = 'Checking publishing rights section. By default is checked permission "section_add_children".';
 $_lang['tickets_prop_sections_sortby'] = 'Field to sort the list of sections.';
 $_lang['tickets_prop_sections_sortdir'] = 'Sort direction for the list of sections.';
+$_lang['tickets_prop_sections_context'] = 'Comma separated list of contexts to search sections.';

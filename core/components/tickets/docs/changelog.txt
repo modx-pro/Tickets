@@ -7,6 +7,8 @@ Changelog for Tickets.
 - Added requirement of pdoTools 1.9.x.
 - Thread and comments are removed along with the page.
 - Added aggregate relationship "Resource" for TicketThread.
+- Added parameter "context" in snippet "TicketForm".
+- Action.php works with respect to contexts.
 
 1.2.4 rc1
 ==========

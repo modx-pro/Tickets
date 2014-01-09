@@ -60,6 +60,11 @@ $tmp = array(
 		'value' => 'ASC',
 		'desc' => 'tickets_prop_sections_sortdir'
 	),
+	'context' => array(
+		'type' => 'textfield',
+		'value' => '',
+		'desc' => 'tickets_prop_sections_context',
+	)
 
 );
 

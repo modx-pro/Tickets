@@ -15,10 +15,13 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 	 * @return xPDOQuery
 	 */
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
+		$context = array_map('trim', explode(',', $this->getProperty('context', $this->modx->context->key)));
+
 		$c->where(array(
 			'class_key' => 'TicketsSection'
 			,'published' => 1
 			,'deleted' => 0
+			,'context_key:IN' => $context
 		));
 
 		$sortby = $this->getProperty('sortby');

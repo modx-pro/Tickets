@@ -53,6 +53,7 @@ $response = $Tickets->runProcessor('web/section/getlist', array(
 	'sortby' => !empty($scriptProperties['sortby']) ? $scriptProperties['sortby'] : 'pagetitle',
 	'sortdir' => !empty($scriptProperties['sortdir']) ? $scriptProperties['sortdir'] : 'asc',
 	'depth' => isset($scriptProperties['depth']) ? $scriptProperties['depth'] : 10,
+	'context' => !empty($scriptProperties['context']) ? $scriptProperties['context'] : $modx->context->key,
 ));
 $response = $modx->fromJSON($response->response);
 
