@@ -1,11 +1,12 @@
 Changelog for Tickets.
 
-1.2.4 rc2
+1.2.4 rc3
 ==========
 - Improved update chunks on package upgrade.
 - Fixed word "Array" when no tickets in section.
 - Added requirement of pdoTools 1.9.x.
 - Thread and comments are removed along with the page.
+- Added aggregate relationship "Resource" for TicketThread.
 
 1.2.4 rc1
 ==========

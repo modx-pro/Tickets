@@ -230,5 +230,13 @@ $xpdo_meta_map['TicketThread']= array (
       'cardinality' => 'one',
       'owner' => 'foreign',
     ),
+    'Resource' => 
+    array (
+      'class' => 'modResource',
+      'local' => 'resource',
+      'foreign' => 'id',
+      'cardinality' => 'one',
+      'owner' => 'foreign',
+    ),
   ),
 );
