@@ -1,6 +1,6 @@
 Changelog for Tickets.
 
-1.2.4 rc3
+1.2.4 rc4
 ==========
 - Improved update chunks on package upgrade.
 - Fixed word "Array" when no tickets in section.
@@ -9,6 +9,7 @@ Changelog for Tickets.
 - Added aggregate relationship "Resource" for TicketThread.
 - Added parameter "context" in snippet "TicketForm".
 - Action.php works with respect to contexts.
+- Fixed web/sections/getlist processor.
 
 1.2.4 rc1
 ==========

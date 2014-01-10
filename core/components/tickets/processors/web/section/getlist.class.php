@@ -9,6 +9,7 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 	public $classKey = 'TicketsSection';
 	public $defaultSortField = 'pagetitle';
 	public $defaultSortDirection  = 'ASC';
+	private $current_category = 0;
 
 	/**
 	 * {@inheritDoc}
@@ -30,13 +31,21 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 			$c->sortby($sortby, $sortdir);
 		}
 
+		if (!empty($_REQUEST['tid']) && $tmp = $this->modx->getObject('Ticket', (integer) $_REQUEST['tid'])) {
+			$this->current_category = $tmp->get('parent');
+		}
+
 		if ($parents = $this->getProperty('parents')) {
-			$depth = $this->getProperty('depth', 10);
+			$depth = $this->getProperty('depth', 0);
 			$parents = array_map('trim', explode(',', $parents));
 			foreach ($parents as $pid) {
 				$parents = array_merge($parents, $this->modx->getChildIds($pid, $depth));
 			}
-			if (!empty($parents)) {
+
+			if (!empty($parents) && !empty($this->current_category)) {
+				$c->where(array('parent:IN' => $parents, 'OR:id:=' => $this->current_category));
+			}
+			else {
 				$c->where(array('parent:IN' => $parents));
 			}
 		}
@@ -52,17 +61,12 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 		$list = array();
 		$list = $this->beforeIteration($list);
 
-		$pid = 0;
-		if (!empty($_REQUEST['tid']) && $current = $this->modx->getObject('Ticket', (integer) $_REQUEST['tid'])) {
-			$pid = $current->get('parent');
-		}
-
 		$permissions = $this->getProperty('permissions');
 		$this->currentIndex = 0;
 		/** @var xPDOObject|modAccessibleObject $object */
 		foreach ($data['results'] as $object) {
 			if (!empty($permissions)) {
-				if ($object instanceof modAccessibleObject && !$object->checkPolicy('section_add_children') && $object->id != $pid) {
+				if ($object instanceof modAccessibleObject && !$object->checkPolicy('section_add_children') && $object->id != $this->current_category) {
 					continue;
 				}
 			}
