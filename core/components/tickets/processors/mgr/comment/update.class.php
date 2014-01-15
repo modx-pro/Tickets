@@ -6,10 +6,9 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 	public $objectType = 'TicketComment';
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets:default');
-	//public $permission = 'comment_save';
-	public $permission = 'update_document';
 	public $beforeSaveEvent = 'OnBeforeCommentSave';
 	public $afterSaveEvent = 'OnCommentSave';
+	public $permission = 'comment_save';
 	protected $old_thread = 0;
 
 

@@ -1,6 +1,6 @@
 Changelog for Tickets.
 
-1.2.4 rc4
+1.2.4 rc5
 ==========
 - Improved update chunks on package upgrade.
 - Fixed word "Array" when no tickets in section.
@@ -10,6 +10,7 @@ Changelog for Tickets.
 - Added parameter "context" in snippet "TicketForm".
 - Action.php works with respect to contexts.
 - Fixed web/sections/getlist processor.
+- Changed permission in mgr/comment/update from "update_document" to "comment_save".
 
 1.2.4 rc1
 ==========
