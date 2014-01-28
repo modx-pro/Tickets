@@ -97,6 +97,16 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 
 		mlf.push({
 			xtype: 'textarea'
+			,fieldLabel: _('resource_description')
+			,description: '<b>[[*description]]</b><br />'+_('resource_description_help')
+			,name: 'description'
+			,id: 'modx-resource-description'
+			,anchor: '100%'
+			,value: config.record.description || ''
+		});
+
+		mlf.push({
+			xtype: 'textarea'
 			,fieldLabel: _('resource_summary')
 			,description: '<b>[[*introtext]]</b><br />'+_('resource_summary_help')
 			,name: 'introtext'
