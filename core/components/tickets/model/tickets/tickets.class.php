@@ -298,22 +298,29 @@ class Tickets {
 	public function previewComment($data = array()) {
 		$comment = $this->modx->newObject('TicketComment', array(
 			'text' => $this->Jevix($data['text'], 'Comment')
-			,'fullname' => $this->modx->user->Profile->get('fullname')
-			,'email' => $this->modx->user->Profile->get('email')
 			,'createdon' => date('Y-m-d H:i:s')
-			,'createdby' => $this->modx->user->get('id')
+			,'createdby' => $this->modx->user->id
 			,'resource' => $this->config['resource']
 			,'mode' => 'preview'
 		));
 		$comment->set('id', 0);
+		$comment = $comment->toArray();
 
-		$preview = $this->templateNode($comment->toArray(), $this->config['tplCommentGuest']);
+		/** @var modUser $user */
+		if ($user = $this->modx->getObject('modUser', $this->modx->user->id)) {
+			/** @var modUserProfile $profile */
+			$profile = $this->modx->user->Profile;
+			$comment = array_merge($profile->toArray(), $user->toArray(), $comment);
+		}
+
+		$preview = $this->templateNode($comment, $this->config['tplCommentGuest']);
+		$preview = preg_replace('/\[\[.*?\]\]/', '', $preview);
 		return $this->success('', array('preview' => $preview));
 	}
 
 
 	/**
-	 * Returns sanitized preview of Comment
+	 * Create or update Comment
 	 *
 	 * @param array $data section, pagetitle, comment, etc
 	 *
@@ -339,9 +346,11 @@ class Tickets {
 			$comment['new_parent'] = $data['parent'];
 			$comment['resource'] = $this->config['resource'];
 
-			if ($profile = $this->modx->getObject('modUserProfile', array('internalKey' => $comment['createdby']))) {
-				$profile = $profile->toArray();
-				$comment = array_merge($profile, $comment);
+			/** @var modUser $user */
+			if ($user = $this->modx->getObject('modUser', $comment['createdby'])) {
+				/** @var modUserProfile $profile */
+				$profile = $user->getOne('Profile');
+				$comment = array_merge($profile->toArray(), $user->toArray(), $comment);
 			}
 
 			if (empty($data['id'])) {
@@ -352,6 +361,7 @@ class Tickets {
 				$this->modx->cacheManager->delete('tickets/latest.comments');
 				$this->modx->cacheManager->delete('tickets/latest.tickets');
 				$comment = $this->templateNode($comment, $this->config['tplCommentAuth']);
+				$comment = preg_replace('/\[\[.*?\]\]/', '', $comment);
 				return $this->success('', $comment);
 			}
 			else {
