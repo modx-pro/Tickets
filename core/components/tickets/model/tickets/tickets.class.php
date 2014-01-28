@@ -232,6 +232,7 @@ class Tickets {
 			$fields['id'] = (integer) $data['tid'];
 			if ($ticket = $this->modx->getObject('Ticket', array('class_key' => 'Ticket', 'id' => $fields['id']))) {
 				$fields['context_key'] = $ticket->get('context_key');
+				$fields['alias'] = $ticket->get('alias');
 				$response = $this->modx->runProcessor('resource/update', $fields);
 			}
 			else {
