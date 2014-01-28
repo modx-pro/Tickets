@@ -6,16 +6,16 @@ $xpdo_meta_map['TicketVote']= array (
   'extends' => 'xPDOObject',
   'fields' => 
   array (
-    'parent' => 0,
-    'ip' => '0.0.0.0',
-    'value' => NULL,
+    'id' => 0,
+    'class' => NULL,
+    'value' => 1,
     'createdon' => NULL,
     'createdby' => 0,
-    'class' => NULL,
+    'ip' => '0.0.0.0',
   ),
   'fieldMeta' => 
   array (
-    'parent' => 
+    'id' => 
     array (
       'dbtype' => 'int',
       'precision' => '10',
@@ -25,21 +25,20 @@ $xpdo_meta_map['TicketVote']= array (
       'default' => 0,
       'index' => 'pk',
     ),
-    'ip' => 
+    'class' => 
     array (
       'dbtype' => 'varchar',
-      'precision' => '16',
+      'precision' => '100',
       'phptype' => 'string',
-      'null' => false,
-      'default' => '0.0.0.0',
+      'index' => 'pk',
     ),
     'value' => 
     array (
       'dbtype' => 'tinyint',
       'precision' => '1',
-      'attributes' => 'unsigned',
       'phptype' => 'integer',
       'null' => false,
+      'default' => 1,
     ),
     'createdon' => 
     array (
@@ -58,12 +57,13 @@ $xpdo_meta_map['TicketVote']= array (
       'default' => 0,
       'index' => 'pk',
     ),
-    'class' => 
+    'ip' => 
     array (
       'dbtype' => 'varchar',
-      'precision' => '100',
+      'precision' => '16',
       'phptype' => 'string',
-      'index' => 'pk',
+      'null' => true,
+      'default' => '0.0.0.0',
     ),
   ),
   'indexes' => 
@@ -76,13 +76,19 @@ $xpdo_meta_map['TicketVote']= array (
       'type' => 'BTREE',
       'columns' => 
       array (
-        'parent' => 
+        'id' => 
         array (
           'length' => '',
           'collation' => 'A',
           'null' => false,
         ),
         'createdby' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+        'class' => 
         array (
           'length' => '',
           'collation' => 'A',
@@ -105,17 +111,6 @@ $xpdo_meta_map['TicketVote']= array (
           'null' => false,
         ),
       ),
-    ),
-  ),
-  'aggregates' => 
-  array (
-    'Ticket' => 
-    array (
-      'class' => 'Ticket',
-      'local' => 'parent',
-      'foreign' => 'id',
-      'cardinality' => 'one',
-      'owner' => 'foreign',
     ),
   ),
 );

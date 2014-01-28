@@ -1,25 +1,30 @@
 <?php
-/* @var array $scriptProperties */
-if (empty($scriptProperties['thread']) && !empty($modx->resource)) {$scriptProperties['thread'] = 'resource-'.$modx->resource->id;}
-$scriptProperties = array_merge(array(
-	'resource' => $modx->resource->id
-	,'snippetPrepareComment' => $modx->getOption('tickets.snippet_prepare_comment')
-	,'commentEditTime' => $modx->getOption('tickets.comment_edit_time', null, 180)
-), $scriptProperties);
+/** @var array $scriptProperties */
+if (empty($thread))$scriptProperties['thread'] = $modx->getOption('thread', $scriptProperties, 'resource-'.$modx->resource->id, true);
+$scriptProperties['resource'] = $modx->resource->id;
+$scriptProperties['snippetPrepareComment'] = $modx->getOption('tickets.snippet_prepare_comment');
+$scriptProperties['commentEditTime'] = $modx->getOption('tickets.comment_edit_time', null, 180);
 
 if (!isset($depth)) {$depth = 0;}
-if (!isset($tplCommentAuth)) {$tplCommentAuth = 'tpl.Tickets.comment.one.auth';}
-if (!isset($tplCommentGuest)) {$tplCommentGuest = 'tpl.Tickets.comment.one.guest';}
+if (empty($tplComments)) {$tplComments = 'tpl.Tickets.comment.wrapper';}
+if (empty($tplCommentForm)) {$tplCommentForm = 'tpl.Tickets.comment.form';}
+if (empty($tplCommentAuth)) {$tplCommentAuth = 'tpl.Tickets.comment.one.auth';}
+if (empty($tplCommentGuest)) {$tplCommentGuest = 'tpl.Tickets.comment.one.guest';}
+if (empty($tplLoginToComment)) {$tplLoginToComment = 'tpl.Tickets.comment.login';}
+if (empty($outputSeparator)) {$outputSeparator = "\n";}
 
-/* @var Tickets $Tickets */
+/** @var Tickets $Tickets */
 $Tickets = $modx->getService('tickets ','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
-/* @var pdoFetch $pdoFetch */
-$pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
-$pdoFetch->addTime('pdoTools loaded.');
+/** @var pdoFetch $pdoFetch */
+$fqn = $modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
+if (!$pdoClass = $modx->loadClass($fqn, '', false, true)) {return false;}
+$pdoFetch = new $pdoClass($modx, $scriptProperties);
+$pdoFetch->addTime('pdoTools loaded');
 
-/* @var TicketThread $thread */
+// Prepare Ticket Thread
+/** @var TicketThread $thread */
 if (!$thread = $modx->getObject('TicketThread', array('name' => $scriptProperties['thread']))) {
 	$thread = $modx->newObject('TicketThread');
 	$thread->fromArray(array(
@@ -30,125 +35,122 @@ if (!$thread = $modx->getObject('TicketThread', array('name' => $scriptPropertie
 		,'subscribers' => array($modx->resource->get('createdby'))
 	));
 }
-else if ($thread->get('deleted')) {
+elseif ($thread->get('deleted')) {
 	return $modx->lexicon('ticket_thread_err_deleted');
 }
 // Migrate authors to subscription system
 if (!is_array($thread->get('subscribers'))) {
 	$thread->set('subscribers', array($modx->resource->get('createdby')));
 }
-
-$scriptProperties['resource'] = $modx->resource->id;
 $thread->set('properties', $scriptProperties);
 $thread->save();
 
+// Prepare query to db
 $class = 'TicketComment';
 $where = array();
 if (empty($showUnpublished)) {$where['published'] = 1;}
 
-// Adding custom where parameters
-if (!empty($scriptProperties['where'])) {
-	$tmp = $modx->fromJSON($scriptProperties['where']);
-	if (is_array($tmp)) {
-		$where = array_merge($where, $tmp);
-	}
-}
-unset($scriptProperties['where']);
-$pdoFetch->addTime('"Where" expression built.');
-
 // Joining tables
 $innerJoin = array(
-	'{"class":"TicketThread","alias":"Thread","on":"Thread.id=TicketComment.thread AND Thread.name=\''.$thread->get('name').'\'"}'
+	'Thread' => array(
+		'class' => 'TicketThread',
+		'on' => '`Thread`.`id` = `TicketComment`.`thread` AND `Thread`.`name` = "'.$thread->get('name').'"'
+	)
 );
 $leftJoin = array(
-	'{"class":"modUser","alias":"User","on":"User.id=TicketComment.createdby"}'
-	,'{"class":"modUserProfile","alias":"Profile","on":"Profile.internalKey=User.id"}'
+	'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `TicketComment`.`createdby`'),
+	'Profile' => array('class' => 'modUserProfile', 'on' => '`Profile`.`internalKey` = `TicketComment`.`createdby`'),
 );
-
+if ($modx->user->id) {
+	$leftJoin['Vote'] = array(
+		'class' => 'TicketVote',
+		'on' => '`Vote`.`id` = `TicketComment`.`id` AND `Vote`.`class` = "TicketComment" AND `Vote`.`createdby` = '.$modx->user->id
+	);
+}
 // Fields to select
 $select = array(
-	'"Comment":"'.$modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true).'"'
-	,'"Thread":"'.$modx->getSelectColumns('TicketThread', 'Thread', '', array('resource')).'"'
-	,'"User":"'.$modx->getSelectColumns('modUser', 'User', '', array('username')).'"'
-	,'"Profile":"'.$modx->getSelectColumns('modUserProfile', 'Profile', '', array('id'), true).'"'
+	'TicketComment' => $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true) . ', `parent` as `new_parent`, `rating` as `rating_total`',
+	'Thread' => '`Thread`.`resource`',
+	'User' => '`User`.`username`',
+	'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id'), true),
 );
+if ($modx->user->id) {
+	$select['Vote'] = '`Vote`.`value` as `vote`';
+}
+
+// Add custom parameters
+foreach (array('where','select','leftJoin','innerJoin') as $v) {
+	if (!empty($scriptProperties[$v])) {
+		$tmp = $modx->fromJSON($scriptProperties[$v]);
+		if (is_array($tmp)) {
+			$$v = array_merge($$v, $tmp);
+		}
+	}
+	unset($scriptProperties[$v]);
+}
+$pdoFetch->addTime('Conditions prepared');
 
 $default = array(
-	'class' => $class
-	,'where' => $modx->toJSON($where)
-	,'innerJoin' => '['.implode(',',$innerJoin).']'
-	,'leftJoin' => '['.implode(',',$leftJoin).']'
-	,'select' => '{'.implode(',',$select).'}'
-	,'sortby' => 'id'
-	,'sortdir' => 'ASC'
-	,'limit' => 0
-	,'fastMode' => true
-	,'return' => 'sql'
-	,'nestedChunkPrefix' => 'tickets_'
+	'class' => $class,
+	'where' => $modx->toJSON($where),
+	'innerJoin' => $modx->toJSON($innerJoin),
+	'leftJoin' => $modx->toJSON($leftJoin),
+	'select' => $modx->toJSON($select),
+	'sortby' => $class.'.id',
+	'sortdir' => 'ASC',
+	'limit' => 0,
+	'fastMode' => true,
+	'return' => 'data',
+	'nestedChunkPrefix' => 'tickets_',
 );
 
 // Merge all properties and run!
-$pdoFetch->setConfig(array_merge($default, $scriptProperties));
-$pdoFetch->addTime('Query parameters are prepared.');
-$sql = $pdoFetch->run();
-
-/* @var PDOStatement $q*/
-$q = $modx->prepare($sql);
-$pdoFetch->addTime('SQL prepared <small>"'.$q->queryString.'"</small>');
-if (!$q->execute()) {
-	$modx->log(modX::LOG_LEVEL_INFO, '[pdoTools] '.$sql);
-	$errors = $q->errorInfo();
-	$modx->log(modX::LOG_LEVEL_ERROR, '[pdoTools] Error '.$errors[0].': '.$errors[2]);
-}
-$pdoFetch->addTime('SQL executed.');
-
-$q2 = $modx->prepare("SELECT FOUND_ROWS();");
-$q2->execute();
-$total = $q2->fetch(PDO::FETCH_COLUMN);
-$pdoFetch->addTime('Total rows: <b>'.$total.'</b>');
-
-$rows = array();
-while ($row = $q->fetch(PDO::FETCH_ASSOC))  {
-	$row['level'] = 0;
-	$row['new_parent'] = $row['parent'];
-	$rows[$row['id']] = $row;
-}
-$pdoFetch->addTime('Rows fetched');
+$pdoFetch->setConfig(array_merge($default, $scriptProperties), false);
+$pdoFetch->addTime('Query parameters prepared.');
+$rows = $pdoFetch->run();
 
 // Processing rows
 $output = $commentsThread = null;
 if (!empty($rows) && is_array($rows)) {
 	$tmp = array();
+	$i = 1;
+	foreach ($rows as $row)  {
+		$row['idx'] = $i ++;
+		$tmp[$row['id']] = $row;
+	}
+	$rows = $thread->buildTree($tmp, $depth);
+	unset($tmp, $i);
 
-	$rows = $thread->buildTree($rows, $depth);
 	if (!empty($formBefore)) {
 		$rows = array_reverse($rows);
 	}
 
-	$tpl = ($modx->user->isAuthenticated($modx->context->key) && !$thread->get('closed')) ? $tplCommentAuth : $tplCommentGuest;
+	$tpl = ($modx->user->isAuthenticated($modx->context->key) && !$thread->get('closed'))
+		? $tplCommentAuth
+		: $tplCommentGuest;
 	foreach ($rows as $row) {
 		$output[] = $Tickets->templateNode($row, $tpl);
 	}
 
 	$pdoFetch->addTime('Returning processed chunks');
-	if (empty($outputSeparator)) {$outputSeparator = "\n";}
-	if (!empty($output)) {
-		$output = implode($outputSeparator, $output);
-	}
+	$output = implode($outputSeparator, $output);
 }
 
-$commentsThread = $pdoFetch->getChunk($Tickets->config['tplComments'], array(
-	'total' => $total
+$commentsThread = $pdoFetch->getChunk($tplComments, array(
+	'total' => $modx->getPlaceholder($pdoFetch->config['totalVar'])
 	,'comments' => $output
 	,'subscribed' => $thread->isSubscribed()
 ));
 
 $form = !$modx->user->isAuthenticated($modx->context->key)
-	? $Tickets->getChunk($Tickets->config['tplLoginToComment'])
-	: $Tickets->getChunk($Tickets->config['tplCommentForm'], array('thread' => $scriptProperties['thread']));
-
-$commentForm = $thread->get('closed') ? $modx->lexicon('ticket_thread_err_closed') : $form;
-$output = (!empty($formBefore)) ? $commentForm . $commentsThread : $commentsThread . $commentForm;
+	? $pdoFetch->getChunk($tplLoginToComment)
+	: $pdoFetch->getChunk($tplCommentForm, array('thread' => $scriptProperties['thread']));
+$commentForm = $thread->get('closed')
+	? $modx->lexicon('ticket_thread_err_closed')
+	: $form;
+$output = !empty($formBefore)
+	? $commentForm . $commentsThread
+	: $commentsThread . $commentForm;
 
 if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
 	$output .= '<pre class="CommentsLog">' . print_r($pdoFetch->getTime(), 1) . '</pre>';

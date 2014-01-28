@@ -40,21 +40,10 @@ class TicketThread extends xPDOSimpleObject {
 
 
 	public function buildTree($comments = array(), $depth = 0) {
-		if (!$this->get('comment_last') && $key = key(array_slice($comments, -1, 1, true))) {
-			$comment = $comments[$key];
-			$this->fromArray(array(
-				'comment_last' => $key
-				,'comment_time' => $comment['createdon']
-			));
-			$this->save();
-		}
 		// Thank to Agel_Nash for the idea about how to limit comments by depth
 		$tree = array();
 		foreach ($comments as $id => &$row) {
 			$row['has_children'] = $row['level'] = 0;
-			if (!empty($row['properties']) && is_string($row['properties'])) {
-				$row['properties'] = $this->xpdo->fromJSON($row['properties']);
-			}
 
 			if (empty($row['parent'])) {
 				$tree[$id] = &$row;

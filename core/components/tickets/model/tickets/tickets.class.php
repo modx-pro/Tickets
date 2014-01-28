@@ -341,10 +341,11 @@ class Tickets {
 			return $this->error($response->getMessage());
 		}
 		else {
-			$comment = $response->response['object'];
+			$comment = $response->getObject();
 			$comment['mode'] = 'save';
 			$comment['new_parent'] = $data['parent'];
 			$comment['resource'] = $this->config['resource'];
+			$comment['vote'] = '';
 
 			/** @var modUser $user */
 			if ($user = $this->modx->getObject('modUser', $comment['createdby'])) {
@@ -371,6 +372,39 @@ class Tickets {
 	}
 
 
+	public function voteComment($id, $value = 1) {
+		$data = array('id' => $id, 'value' => $value);
+
+		/** @var modProcessorResponse $response */
+		if (!empty($id) && !empty($value)) {
+			$response = $this->runProcessor('web/comment/vote', $data);
+			if ($response->isError()) {
+				return $this->error($response->getMessage());
+			}
+			else {
+				$data = $response->getObject();
+				$data['title'] = $this->modx->lexicon('ticket_rating_total')
+					. " {$data['rating']}: ↑{$data['rating_plus']} "
+					. $this->modx->lexicon('ticket_rating_and')
+					. " ↓{$data['rating_minus']}";
+				if ($data['rating'] > 0) {
+					$data['rating'] = '+'.$data['rating'];
+					$data['status'] = 1;
+				}
+				elseif ($data['rating'] < 0) {
+					$data['status'] = -1;
+				}
+				else {
+					$data['status'] = 0;
+				}
+				return $this->success('', $data);
+			}
+		}
+
+		return $this->error('tickets_err_unknown');
+	}
+
+
 	/**
 	 * Returns Comment for edit by its author
 	 *
@@ -384,7 +418,7 @@ class Tickets {
 			return $this->error($response->getMessage());
 		}
 
-		$comment = $response->response['object'];
+		$comment = $response->getObject();
 		$time = time() - strtotime($comment['createdon']);
 		$time_limit = $this->config['commentEditTime'];
 
@@ -531,6 +565,32 @@ class Tickets {
 			foreach ($node['children'] as $v) {
 				$children .= $this->templateNode($v, $tpl);
 			}
+		}
+
+		// Handling votes
+		if (array_key_exists('vote', $node)) {
+			if (!$this->modx->user->id || $this->modx->user->id == $node['createdby']) {
+				$node['cant_vote'] = 1;
+			}
+			elseif (empty($node['vote'])) {
+				$node['can_vote'] = 1;
+			}
+			elseif ($node['vote'] > 0) {
+				$node['voted_plus'] = 1;
+				$node['cant_vote'] = 1;
+			}
+			elseif ($node['vote'] < 0) {
+				$node['voted_minus'] = 1;
+				$node['cant_vote'] = 1;
+			}
+		}
+
+		if ($node['rating'] > 0) {
+			$node['rating'] = '+'.$node['rating'];
+			$node['rating_positive'] = 1;
+		}
+		elseif ($node['rating'] < 0) {
+			$node['rating_negative'] = 1;
 		}
 
 		// Checking comment novelty

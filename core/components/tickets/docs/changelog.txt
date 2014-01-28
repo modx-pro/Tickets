@@ -5,6 +5,8 @@ Changelog for Tickets.
 - [#57] Added more user placeholders to preview and create comment.
 - [#56] Added field "description".
 - [#55] Fixed changing of alias when user edit ticket from frontend.
+- Added placeholder [[+idx]] to comments.
+- Added rating of comments.
 
 1.2.4 rc5
 ==========

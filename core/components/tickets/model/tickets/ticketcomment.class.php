@@ -103,4 +103,33 @@ class TicketComment extends xPDOSimpleObject {
 		return false;
 	}
 
+
+	/**
+	 * Update comment rating
+	 *
+	 * @return array
+	 */
+	public function updateRating() {
+		$votes = array('rating' => 0, 'rating_plus' => 0, 'rating_minus' => 0);
+
+		$q = $this->xpdo->newQuery('TicketVote', array('id' => $this->id, 'class' => 'TicketComment'));
+		$q->innerJoin('modUser', 'modUser', '`modUser`.`id` = `TicketVote`.`createdby`');
+		$q->select('value');
+		if ($q->prepare() && $q->stmt->execute()) {
+			while ($value = $q->stmt->fetch(PDO::FETCH_COLUMN)) {
+				$votes['rating'] += $value;
+				if ($value > 0) {
+					$votes['rating_plus'] += $value;
+				}
+				else {
+					$votes['rating_minus'] += $value;
+				}
+			}
+			$this->fromArray($votes);
+			$this->save();
+		}
+
+		return $votes;
+	}
+
 }

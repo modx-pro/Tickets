@@ -13,6 +13,9 @@ $xpdo_meta_map['TicketComment']= array (
     'name' => '',
     'email' => '',
     'ip' => '0.0.0.0',
+    'rating' => 0,
+    'rating_plus' => 0,
+    'rating_minus' => 0,
     'createdon' => NULL,
     'createdby' => 0,
     'editedon' => NULL,
@@ -80,6 +83,30 @@ $xpdo_meta_map['TicketComment']= array (
       'phptype' => 'string',
       'null' => false,
       'default' => '0.0.0.0',
+    ),
+    'rating' => 
+    array (
+      'dbtype' => 'smallint',
+      'precision' => '5',
+      'phptype' => 'integer',
+      'null' => true,
+      'default' => 0,
+    ),
+    'rating_plus' => 
+    array (
+      'dbtype' => 'smallint',
+      'precision' => '5',
+      'phptype' => 'integer',
+      'null' => true,
+      'default' => 0,
+    ),
+    'rating_minus' => 
+    array (
+      'dbtype' => 'smallint',
+      'precision' => '5',
+      'phptype' => 'integer',
+      'null' => true,
+      'default' => 0,
     ),
     'createdon' => 
     array (
@@ -217,6 +244,22 @@ $xpdo_meta_map['TicketComment']= array (
         ),
       ),
     ),
+    'rating' => 
+    array (
+      'alias' => 'rating',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'rating' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
   ),
   'composites' => 
   array (
@@ -232,9 +275,16 @@ $xpdo_meta_map['TicketComment']= array (
     array (
       'class' => 'TicketVote',
       'local' => 'id',
-      'foreign' => 'parent',
+      'foreign' => 'id',
       'cardinality' => 'many',
       'owner' => 'local',
+      'criteria' => 
+      array (
+        'local' => 
+        array (
+          'class' => 'TicketComment',
+        ),
+      ),
     ),
   ),
   'aggregates' => 

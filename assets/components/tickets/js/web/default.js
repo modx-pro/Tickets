@@ -420,6 +420,52 @@ Tickets.Message = {
 	}
 };
 
+Tickets.Vote = {
+
+	comment: {
+		options: {
+			active: 'active'
+			,inactive: 'inactive'
+			,voted: 'voted'
+			,rating: 'rating'
+			,positive: 'positive'
+			,negative: 'negative'
+		}
+		,vote: function(link, id, value) {
+			link = $(link);
+			var parent = link.parent();
+			var options = this.options;
+			var rating = parent.find('.' + options.rating);
+			if (parent.hasClass(options.inactive)) {
+				return false;
+			}
+
+			$.post(TicketsConfig.actionUrl, {action: 'comment/vote', id: id, value: value}, function(response) {
+				if (response.success) {
+					link.addClass(options.voted);
+					parent.removeClass(options.active).addClass(options.inactive)
+					rating.text(response.data.rating).attr('title', response.data.title);
+
+					rating.removeClass(options.positive + ' ' + options.negative);
+					if (response.data.status == 1) {
+						rating.addClass(options.positive);
+					}
+					else if (response.data.status == -1) {
+						rating.addClass(options.negative);
+					}
+				}
+				else {
+					Tickets.Message.error(response.message);
+				}
+			}, 'json');
+
+			return true;
+		}
+
+	}
+
+};
+
 
 Tickets.tpanel = {
 	wrapper: $('#comments-tpanel')

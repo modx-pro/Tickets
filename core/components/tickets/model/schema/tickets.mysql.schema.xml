@@ -6,9 +6,13 @@
 
 	<object class="Ticket" extends="modResource">
 		<aggregate alias="Section" class="TicketsSection" local="parent" foreign="id" cardinality="one" owner="foreign" />
-		<composite alias="Votes" class="TicketVote" local="id" foreign="parent" cardinality="many" owner="local" />
 		<composite alias="Views" class="TicketView" local="id" foreign="parent" cardinality="many" owner="local" />
 		<composite alias="Threads" class="TicketThread" local="id" foreign="resource" cardinality="many" owner="local" />
+		<composite alias="Votes" class="TicketVote" local="id" foreign="id" cardinality="many" owner="local">
+			<criteria target="local"><![CDATA[
+			{"class":"Ticket"}
+			]]></criteria>
+		</composite>
 	</object>
 
 	<object class="TicketComment" table="tickets_comments" extends="xPDOSimpleObject">
@@ -20,6 +24,9 @@
 		<field key="name" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
 		<field key="email" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
 		<field key="ip" dbtype="varchar" precision="16" phptype="string" null="false" default="0.0.0.0" />
+		<field key="rating" dbtype="smallint" precision="5" phptype="integer" null="true" default="0" />
+		<field key="rating_plus" dbtype="smallint" precision="5" phptype="integer" null="true" default="0" />
+		<field key="rating_minus" dbtype="smallint" precision="5" phptype="integer" null="true" default="0" />
 
 		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="createdby" dbtype="integer" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
@@ -46,12 +53,19 @@
 		<index alias="published" name="published" primary="false" unique="false" type="BTREE">
 			<column key="published" length="" collation="A" null="false" />
 		</index>
+		<index alias="rating" name="rating" primary="false" unique="false" type="BTREE">
+			<column key="rating" length="" collation="A" null="false" />
+		</index>
 
 		<aggregate alias="User" class="modUser" local="author" foreign="id" cardinality="one" owner="foreign" />
 		<aggregate alias="Thread" class="TicketThread" local="thread" foreign="id" cardinality="one" owner="foreign" />
 		<aggregate alias="Parent" class="TicketComment" local="parent" foreign="id" cardinality="one" owner="foreign" />
 		<composite alias="Children" class="TicketComment" local="id" foreign="parent" cardinality="many" owner="local" />
-		<composite alias="Votes" class="TicketVote" local="id" foreign="parent" cardinality="many" owner="local" />
+		<composite alias="Votes" class="TicketVote" local="id" foreign="id" cardinality="many" owner="local">
+			<criteria target="local"><![CDATA[
+			{"class":"TicketComment"}
+			]]></criteria>
+		</composite>
 	</object>
 
 	<object class="TicketThread" table="tickets_threads" extends="xPDOSimpleObject">
@@ -96,24 +110,22 @@
 	</object>
 
 	<object class="TicketVote" table="tickets_votes" extends="xPDOObject">
-		<field key="parent" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
-		<field key="ip" dbtype="varchar" precision="16" phptype="string" null="false" default="0.0.0.0" />
-		<field key="value" dbtype="tinyint" precision="1" attributes="unsigned" phptype="integer" null="false" />
+		<field key="id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
+		<field key="class" dbtype="varchar" precision="100" phptype="string" index="pk" />
+		<field key="value" dbtype="tinyint" precision="1" phptype="integer" null="false" default="1" />
 
 		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" index="index" />
 		<field key="createdby" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
-
-		<field key="class" dbtype="varchar" precision="100" phptype="string" index="pk" />
+		<field key="ip" dbtype="varchar" precision="16" phptype="string" null="true" default="0.0.0.0" />
 
 		<index alias="unique_key" name="unique_key" primary="true" unique="true" type="BTREE">
-			<column key="parent" length="" collation="A" null="false" />
+			<column key="id" length="" collation="A" null="false" />
 			<column key="createdby" length="" collation="A" null="false" />
+			<column key="class" length="" collation="A" null="false" />
 		</index>
 		<index alias="createdon" name="createdon" primary="false" unique="false" type="BTREE">
 			<column key="createdon" length="" collation="A" null="false" />
 		</index>
-
-		<aggregate alias="Ticket" class="Ticket" local="parent" foreign="id" cardinality="one" owner="foreign" />
 	</object>
 
 	<object class="TicketView" table="tickets_views" extends="xPDOObject">

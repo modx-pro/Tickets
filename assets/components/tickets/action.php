@@ -52,6 +52,7 @@ switch ($action) {
 	case 'comment/get': $response = $Tickets->getComment($_POST['id']); break;
 	case 'comment/getlist': $response = $Tickets->getNewComments($_POST['thread']); break;
 	case 'comment/subscribe': $response = $Tickets->Subscribe($_POST['thread']); break;
+	case 'comment/vote': $response = $Tickets->voteComment($_POST['id'], $_POST['value']); break;
 	case 'ticket/preview': $response = $Tickets->previewTicket($_POST); break;
 	case 'ticket/save': $response = $Tickets->saveTicket($_POST); break;
 	case 'ticket/update': $response = $Tickets->saveTicket($_POST); break;

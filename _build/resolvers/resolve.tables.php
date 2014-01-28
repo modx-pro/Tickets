@@ -18,9 +18,14 @@ if ($object->xpdo) {
 			$manager = $modx->getManager();
 			$manager->createObjectContainer('TicketComment');
 			$manager->createObjectContainer('TicketThread');
-			$manager->createObjectContainer('TicketVote');
 			$manager->createObjectContainer('TicketView');
 			$manager->createObjectContainer('TicketQueue');
+
+			$tmp = $modx->getFieldMeta('TicketComment');
+			if (isset($tmp['parent']) && !$modx->getCount('TicketVote')) {
+				$manager->removeObjectContainer('TicketVote');
+				$manager->createObjectContainer('TicketVote');
+			}
 
 			if ($modx instanceof modX) {
 				$modx->addExtensionPackage('tickets', '[[++core_path]]components/tickets/model/');
@@ -30,20 +35,24 @@ if ($object->xpdo) {
 			$modx->setLogLevel(xPDO::LOG_LEVEL_FATAL);
 
 			$manager->addField('TicketThread', 'comment_last');
-			$manager->addField('TicketThread', 'comment_time');
-			$manager->addField('TicketThread', 'comments');
-			$manager->addField('TicketThread', 'closed');
 			$manager->addIndex('TicketThread', 'comment_last');
+			$manager->addField('TicketThread', 'comment_time');
 			$manager->addIndex('TicketThread', 'comment_time');
+			$manager->addField('TicketThread', 'comments');
 			$manager->addIndex('TicketThread', 'comments');
+			$manager->addField('TicketThread', 'closed');
 			$manager->addIndex('TicketThread', 'closed');
 
 			$manager->addField('TicketComment', 'raw');
-			$manager->addField('TicketComment', 'published');
 			$manager->addField('TicketComment', 'properties');
+			$manager->addField('TicketComment', 'published');
 			$manager->addIndex('TicketComment', 'published');
+			$manager->addField('TicketComment', 'rating');
+			$manager->addIndex('TicketComment', 'rating');
+			$manager->addField('TicketComment', 'rating_plus');
+			$manager->addField('TicketComment', 'rating_minus');
 
-			$modx->setLogLevel($level);
+		$modx->setLogLevel($level);
 		break;
 
 		case xPDOTransport::ACTION_UNINSTALL:

@@ -4,23 +4,25 @@ $templates = array();
 
 $tmp = array(
 	'TicketsUserPolicyTemplate' => array(
-		'description' => 'A policy for miniShop2 managers.'
-		,'template_group' => 1
-		,'permissions' => array(
-			'ticket_delete' => array()
-			,'ticket_publish' => array()
-			,'ticket_save' => array()
-			,'comment_save' => array()
-			,'ticket_view_private' => array()
-		)
+		'description' => 'A policy for miniShop2 managers.',
+		'template_group' => 1,
+		'permissions' => array(
+			'ticket_delete' => array(),
+			'ticket_publish' => array(),
+			'ticket_save' => array(),
+			'ticket_view_private' => array(),
+			'ticket_vote' => array(),
+			'comment_save' => array(),
+			'comment_vote' => array(),
+		),
 	)
 	,'TicketsSectionPolicyTemplate' => array(
-		'description' => 'A policy for miniShop2 managers.'
-		,'template_group' => 3
-		,'permissions' => array(
-			'section_add_children' => array()
-		)
-	)
+		'description' => 'A policy for miniShop2 managers.',
+		'template_group' => 3,
+		'permissions' => array(
+			'section_add_children' => array(),
+		),
+	),
 );
 
 foreach ($tmp as $k => $v) {

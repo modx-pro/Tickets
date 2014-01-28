@@ -29,6 +29,7 @@ $_lang['ticket_create_here'] = 'Create ticket';
 $_lang['ticket_no_comments'] = 'This page has no comments. You can be a trailblazer.';
 $_lang['tickets_message_close_all'] = 'close all';
 $_lang['err_no_jevix'] = 'Snippet Jevix is required for proper work. You need to install it from MODX repository.';
+$_lang['tickets_err_unknown'] = 'An unknown error occurred.';
 $_lang['ticket_err_id'] = 'The ticket with specified id = [[+id]] not found.';
 $_lang['ticket_err_wrong_user'] = 'You trying to update a ticket that is not yours.';
 $_lang['ticket_err_no_auth'] = 'You need to login to create a ticket.';
@@ -76,6 +77,9 @@ $_lang['ticket_comment_err_wrong_user'] = 'You trying to update a comment that i
 $_lang['ticket_comment_err_no_time'] = 'Time for editing a comment is ended.';
 $_lang['ticket_comment_err_has_replies'] = 'This comment already has replies, so you cannot change it.';
 $_lang['ticket_comment_err_parent'] = 'You are trying to reply to not existing comment.';
+$_lang['ticket_comment_err_comment'] = 'This comment does not exist.';
+$_lang['ticket_comment_err_vote_own'] = 'You cannot vote for your own comment.';
+$_lang['ticket_comment_err_vote_already'] = 'You have already voted for this comment.';
 
 $_lang['ticket_publishedon'] = 'Published On';
 $_lang['ticket_pagetitle'] = 'Title';
@@ -132,3 +136,8 @@ $_lang['ticket_comment_email_reply'] = 'Reply to your comment for ticket "[[+pag
 $_lang['ticket_comment_email_subscription'] = 'New comment for ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_email_bcc'] = 'New comment for ticket "[[+pagetitle]]"';
 $_lang['ticket_email_bcc'] = 'New ticket on site - "[[+pagetitle]]"';
+
+$_lang['ticket_like'] = 'Like';
+$_lang['ticket_dislike'] = 'Dislike';
+$_lang['ticket_rating_total'] = 'Total';
+$_lang['ticket_rating_and'] = 'and';

@@ -11,14 +11,6 @@ $xpdo_meta_map['Ticket']= array (
   ),
   'composites' => 
   array (
-    'Votes' => 
-    array (
-      'class' => 'TicketVote',
-      'local' => 'id',
-      'foreign' => 'parent',
-      'cardinality' => 'many',
-      'owner' => 'local',
-    ),
     'Views' => 
     array (
       'class' => 'TicketView',
@@ -34,6 +26,21 @@ $xpdo_meta_map['Ticket']= array (
       'foreign' => 'resource',
       'cardinality' => 'many',
       'owner' => 'local',
+    ),
+    'Votes' => 
+    array (
+      'class' => 'TicketVote',
+      'local' => 'id',
+      'foreign' => 'id',
+      'cardinality' => 'many',
+      'owner' => 'local',
+      'criteria' => 
+      array (
+        'local' => 
+        array (
+          'class' => 'Ticket',
+        ),
+      ),
     ),
   ),
   'aggregates' => 
