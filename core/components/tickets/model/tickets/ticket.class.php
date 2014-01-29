@@ -425,7 +425,12 @@ class Ticket extends modResource {
 				}
 			}
 			$tmp = $this->get('properties');
-			$this->_properties = array_merge($tmp, $votes);
+			if (!is_array($tmp)) {
+				$this->_properties = $votes;
+			}
+			else {
+				$this->_properties = array_merge($tmp, $votes);
+			}
 			$this->set('properties', $this->_properties);
 			$this->save();
 		}

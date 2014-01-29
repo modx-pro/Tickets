@@ -99,6 +99,9 @@ if (!empty($rows) && is_array($rows)) {
 				$row[$field] = str_replace(array('[',']'), array('&#91;','&#93;'), $value);
 			}
 		}
+		if (!is_array($properties)) {
+			$properties = array();
+		}
 
 		// Handle rating
 		$row['rating'] = $row['rating_total'] = array_key_exists('rating', $properties) ? $properties['rating'] : 0;
