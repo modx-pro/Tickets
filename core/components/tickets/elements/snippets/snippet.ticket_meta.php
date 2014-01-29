@@ -66,15 +66,14 @@ if (!empty($getSection)) {
 	}
 }
 if (!empty($getUser)) {
-	$fields1 = $modx->getFieldMeta('modUserProfile');
-	$fields2 = $modx->getFieldMeta('modUser');
+	$fields = $modx->getFieldMeta('modUserProfile');
 	$user = $pdoFetch->getObject('modUserProfile', array('internalKey' => $ticket->createdby), array(
 		'innerJoin' => array(
 			'modUser' => array('class' => 'modUser', 'on' => '`modUserProfile`.`internalKey` = `modUser`.`id`')
 		),
 		'select' => array(
-			'modUserProfile' => implode(',', array_keys($fields1)),
-			'modUser' => implode(',', array_keys($fields2)),
+			'modUserProfile' => implode(',', array_keys($fields)),
+			'modUser' => 'username',
 		)
 	));
 
