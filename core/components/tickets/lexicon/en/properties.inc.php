@@ -63,3 +63,7 @@ $_lang['tickets_prop_sections_permissions'] = 'Checking publishing rights sectio
 $_lang['tickets_prop_sections_sortby'] = 'Field to sort the list of sections.';
 $_lang['tickets_prop_sections_sortdir'] = 'Sort direction for the list of sections.';
 $_lang['tickets_prop_sections_context'] = 'Comma separated list of contexts to search sections.';
+
+$_lang['tickets_prop_meta_tpl'] = 'Chunk for templating information about a ticket.';
+$_lang['tickets_prop_getSection'] = 'Make additional query in the DB to obtain the parent section?';
+$_lang['tickets_prop_getUser'] = 'Make additional query in the DB to obtain a profile of the author?';

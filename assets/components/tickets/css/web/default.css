@@ -25,19 +25,6 @@
 .ticket-comment-text {margin-top: 5px;}
 .ticket-reply-link a {font-size: 0.8em; text-decoration: none; border-bottom: 1px dashed;}
 
-.ticket-comment-rating {float: right; color: #555;}
-.ticket-comment-rating.active .vote {cursor: pointer;}
-
-.ticket-comment-rating.active .vote.plus:hover,
-.ticket-comment-rating.inactive .vote.plus.voted,
-.ticket-comment-rating .rating.positive {color: green;}
-
-.ticket-comment-rating.active .vote.minus:hover,
-.ticket-comment-rating.inactive .vote.minus.voted,
-.ticket-comment-rating .rating.negative {color: red;}
-
-.ticket-comment-rating.inactive {color: #AAA;}
-
 #comment-editor {width: 99%}
 #comment-preview-placeholder {background: #fff;border: 5px solid #AAA;padding: 5px;display: none;margin: 10px 0;}
 
@@ -66,3 +53,47 @@
 
 /* Unseen comment */
 .ticket-comment-new .ticket-comment-header {background-color: #f5f5dc;}
+
+
+/* Rating and vote */
+.ticket-comment-rating {float: right; color: #555;}
+
+.ticket-rating.active .vote,
+.ticket-comment-rating.active .vote {
+	cursor: pointer;
+}
+
+.ticket-rating.active .vote.plus:hover,
+.ticket-rating.inactive .vote.plus.voted,
+.ticket-rating .rating.positive,
+.ticket-comment-rating.active .vote.plus:hover,
+.ticket-comment-rating.inactive .vote.plus.voted,
+.ticket-comment-rating .rating.positive {
+	color: green;
+}
+
+.ticket-rating.active .vote.minus:hover,
+.ticket-rating.inactive .vote.minus.voted,
+.ticket-rating .rating.negative,
+.ticket-comment-rating.active .vote.minus:hover,
+.ticket-comment-rating.inactive .vote.minus.voted,
+.ticket-comment-rating .rating.negative {
+	color: red;
+}
+
+.ticket-rating.inactive,
+.ticket-comment-rating.inactive {
+	color: #AAA;
+}
+
+.ticket-rating.active .vote.refrain:hover {
+	opacity: .7;
+}
+
+/* Ticket meta*/
+.ticket-meta {
+	margin: 20px 0;
+	padding: 20px 0;
+	border-top: 1px solid #d3d3d3;
+	border-bottom: 1px solid #d3d3d3;
+}

@@ -8,7 +8,7 @@ $xpdo_meta_map['TicketVote']= array (
   array (
     'id' => 0,
     'class' => NULL,
-    'value' => 1,
+    'value' => 0,
     'createdon' => NULL,
     'createdby' => 0,
     'ip' => '0.0.0.0',
@@ -38,7 +38,7 @@ $xpdo_meta_map['TicketVote']= array (
       'precision' => '1',
       'phptype' => 'integer',
       'null' => false,
-      'default' => 1,
+      'default' => 0,
     ),
     'createdon' => 
     array (

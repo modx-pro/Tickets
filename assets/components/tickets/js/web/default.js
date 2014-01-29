@@ -35,7 +35,7 @@ var Tickets = {
 				$.jGrowl.defaults.closerTemplate = '<div>[ '+TicketsConfig.close_all_message+' ]</div>';
 			}
 			var count = $('.ticket-comment').size();
-			$('#comment-total, .comments-count').text(count);
+			$('#comment-total, .ticket-comments-count').text(count);
 
 			$("#ticketForm.create").sisyphus();
 
@@ -205,7 +205,7 @@ var Tickets = {
 					}
 				}
 				var count = $('.ticket-comment').size();
-				$('#comment-total').text(count);
+				$('#comment-total, .ticket-comments-count').text(count);
 
 				Tickets.tpanel.stop();
 			}, 'json');
@@ -420,6 +420,7 @@ Tickets.Message = {
 	}
 };
 
+
 Tickets.Vote = {
 
 	comment: {
@@ -427,6 +428,7 @@ Tickets.Vote = {
 			active: 'active'
 			,inactive: 'inactive'
 			,voted: 'voted'
+			,vote: 'vote'
 			,rating: 'rating'
 			,positive: 'positive'
 			,negative: 'negative'
@@ -443,7 +445,8 @@ Tickets.Vote = {
 			$.post(TicketsConfig.actionUrl, {action: 'comment/vote', id: id, value: value}, function(response) {
 				if (response.success) {
 					link.addClass(options.voted);
-					parent.removeClass(options.active).addClass(options.inactive)
+					parent.removeClass(options.active).addClass(options.inactive);
+					parent.find('.' + options.vote).removeAttr('onclick').removeAttr('ontouchend');
 					rating.text(response.data.rating).attr('title', response.data.title);
 
 					rating.removeClass(options.positive + ' ' + options.negative);
@@ -461,9 +464,49 @@ Tickets.Vote = {
 
 			return true;
 		}
-
 	}
+	,ticket: {
+		options: {
+			active: 'active'
+			,inactive: 'inactive'
+			,voted: 'voted'
+			,vote: 'vote'
+			,rating: 'rating'
+			,positive: 'positive'
+			,negative: 'negative'
+		}
+		,vote: function(link, id, value) {
+			link = $(link);
+			var parent = link.parent();
+			var options = this.options;
+			var rating = parent.find('.' + options.rating);
+			if (parent.hasClass(options.inactive)) {
+				return false;
+			}
 
+			$.post(TicketsConfig.actionUrl, {action: 'ticket/vote', id: id, value: value}, function(response) {
+				if (response.success) {
+					link.addClass(options.voted);
+					parent.removeClass(options.active).addClass(options.inactive);
+					parent.find('.' + options.vote).removeAttr('onclick').removeAttr('ontouchend');
+					rating.text(response.data.rating).attr('title', response.data.title).removeClass(options.vote);
+
+					rating.removeClass(options.positive + ' ' + options.negative);
+					if (response.data.status == 1) {
+						rating.addClass(options.positive);
+					}
+					else if (response.data.status == -1) {
+						rating.addClass(options.negative);
+					}
+				}
+				else {
+					Tickets.Message.error(response.message);
+				}
+			}, 'json');
+
+			return true;
+		}
+	}
 };
 
 

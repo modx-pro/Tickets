@@ -2,9 +2,13 @@
 /* @var array $scriptProperties */
 /* @var Tickets $Tickets */
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
-/* @var pdoFetch $pdoFetch */
-$pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
-$pdoFetch->addTime('pdoTools loaded.');
+$Tickets->initialize($modx->context->key);
+
+/** @var pdoFetch $pdoFetch */
+$fqn = $modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
+if (!$pdoClass = $modx->loadClass($fqn, '', false, true)) {return false;}
+$pdoFetch = new $pdoClass($modx, $scriptProperties);
+$pdoFetch->addTime('pdoTools loaded');
 
 if (isset($parents) && $parents === '') {
 	$scriptProperties['parents'] = $modx->resource->id;
@@ -28,30 +32,42 @@ if (!empty($user)) {
 	else if (!empty($user_username)) {$where['User.username:IN'] = $user_username;}
 }
 
-// Adding custom where parameters
-if (!empty($scriptProperties['where'])) {
-	$tmp = $modx->fromJSON($scriptProperties['where']);
-	if (is_array($tmp)) {
-		$where = array_merge($where, $tmp);
-	}
-}
-unset($scriptProperties['where']);
-$pdoFetch->addTime('"Where" expression built.');
-
 // Joining tables
 $leftJoin = array(
-	'Section' => array('class' => 'TicketsSection', 'on' => 'Section.id=Ticket.parent'),
-	'User' => array('class' => 'modUser', 'on' => 'User.id=Ticket.createdby'),
-	'Profile' => array('class' => 'modUserProfile', 'on' => 'Profile.internalKey=User.id'),
+	'Section' => array('class' => 'TicketsSection', 'on' => '`Section`.`id` = `Ticket`.`parent`'),
+	'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `Ticket`.`createdby`'),
+	'Profile' => array('class' => 'modUserProfile', 'on' => '`Profile`.`internalKey` = `User`.`id`'),
 );
-
+if ($modx->user->id) {
+	$leftJoin['Vote'] = array(
+		'class' => 'TicketVote',
+		'on' => '`Vote`.`id` = `Ticket`.`id` AND `Vote`.`class` = "Ticket" AND `Vote`.`createdby` = '.$modx->user->id
+	);
+}
 // Fields to select
 $select = array(
 	'Section' => $modx->getSelectColumns('TicketsSection', 'Section', 'section.', array('content'), true),
 	'User' => $modx->getSelectColumns('modUser', 'User', '', array('username')),
 	'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id'), true),
-	'Ticket' => !empty($includeContent) ?  $modx->getSelectColumns($class, $class) : $modx->getSelectColumns($class, $class, '', array('content'), true),
+	'Ticket' => !empty($includeContent)
+		? $modx->getSelectColumns($class, $class)
+		: $modx->getSelectColumns($class, $class, '', array('content'), true),
 );
+if ($modx->user->id) {
+	$select['Vote'] = '`Vote`.`value` as `vote`';
+}
+$pdoFetch->addTime('Conditions prepared');
+
+// Add custom parameters
+foreach (array('where','select','leftJoin','innerJoin') as $v) {
+	if (!empty($scriptProperties[$v])) {
+		$tmp = $modx->fromJSON($scriptProperties[$v]);
+		if (is_array($tmp)) {
+			$$v = array_merge($$v, $tmp);
+		}
+	}
+	unset($scriptProperties[$v]);
+}
 
 $default = array(
 	'class' => $class
@@ -74,6 +90,7 @@ $rows = $pdoFetch->run();
 $output = array();
 if (!empty($rows) && is_array($rows)) {
 	foreach ($rows as $k => $row) {
+		// Handle properties
 		$properties = is_string($row['properties'])
 			? $modx->fromJSON($row['properties'])
 			: $row['properties'];
@@ -83,18 +100,51 @@ if (!empty($rows) && is_array($rows)) {
 			}
 		}
 
+		// Handle rating
+		$row['rating'] = $row['rating_total'] = array_key_exists('rating', $properties) ? $properties['rating'] : 0;
+		$row['rating_plus'] = array_key_exists('rating_plus', $properties) ? $properties['rating_plus'] : 0;
+		$row['rating_minus'] = array_key_exists('rating_minus', $properties) ? $properties['rating_minus'] : 0;
+		if ($row['rating'] > 0) {
+			$row['rating'] = '+'.$row['rating'];
+			$row['rating_positive'] = 1;
+		}
+		elseif ($row['rating'] < 0) {
+			$row['rating_negative'] = 1;
+		}
+
+		if (!$modx->user->id || $modx->user->id == $row['createdby']) {
+			$row['cant_vote'] = 1;
+		}
+		elseif (array_key_exists('vote', $row)) {
+			if ($row['vote'] == '') {
+				$row['can_vote'] = 1;
+			}
+			elseif ($row['vote'] > 0) {
+				$row['voted_plus'] = 1;
+				$row['cant_vote'] = 1;
+			}
+			elseif ($row['vote'] < 0) {
+				$row['voted_minus'] = 1;
+				$row['cant_vote'] = 1;
+			}
+			else {
+				$row['voted_none'] = 1;
+				$row['cant_vote'] = 1;
+			}
+		}
+		$row['active'] = (integer) !empty($row['can_vote']);
+		$row['inactive'] = (integer) !empty($row['cant_vote']);
+
 		// Adding fields to row
 		$additional_fields = $pdoFetch->getObject('Ticket', $row['id'], array(
 			'leftJoin' => array(
-				'View' => array('class' => 'TicketView', 'on' => 'Ticket.id=View.parent'),
-				'LastView' => array('class' => 'TicketView', 'on' => 'Ticket.id=LastView.parent AND LastView.uid = '.$modx->user->id),
-				//'Vote' => array('class' => 'TicketVote', 'on' => 'Ticket.id=Vote.parent AND Vote.class="Ticket"'),
-				'Thread' => array('class' => 'TicketThread', 'on' => 'Thread.resource=Ticket.id  AND Thread.closed=0 AND Thread.deleted=0'),
+				'View' => array('class' => 'TicketView', 'on' => '`Ticket`.`id` = `View`.`parent`'),
+				'LastView' => array('class' => 'TicketView', 'on' => '`Ticket`.`id` = `LastView`.`parent` AND `LastView`.`uid` = '.$modx->user->id),
+				'Thread' => array('class' => 'TicketThread', 'on' => '`Thread`.`resource` = `Ticket`.`id`  AND `Thread`.`closed` = 0 AND `Thread`.`deleted` = 0'),
 			),
 			'select' => array(
 				'View' => 'COUNT(DISTINCT `View`.`uid`) as `views`',
 				'LastView' => '`LastView`.`timestamp` as `new_comments`',
-				//'Vote' => 'SUM(`Vote`.`value`) AS `votes`',
 				'Thread' => '`Thread`.`id` as `thread`',
 			),
 			'groupby' => $class.'.id'

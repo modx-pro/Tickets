@@ -32,7 +32,6 @@
 <!--tickets_comment_edit_link <a href="#edit" onclick="return Tickets.forms.edit([[+id]]);" ontouchend="return Tickets.forms.edit([[+id]]);">[[%ticket_comment_edit]]</a>-->
 <!--tickets_comment_was_edited <span class="ticket-comment-edited">([[%ticket_comment_was_edited]])</span></a>-->
 <!--tickets_comment_new  ticket-comment-new-->
-
 <!--tickets_can_vote  active-->
 <!--tickets_cant_vote  inactive-->
 <!--tickets_rating_positive  positive-->

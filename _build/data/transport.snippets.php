@@ -8,6 +8,7 @@ $tmp = array(
 	'TicketForm' => 'ticket_form'
 	,'TicketComments' => 'comments'
 	,'TicketLatest' => 'ticket_latest'
+	,'TicketMeta' => 'ticket_meta'
 	,'getTickets' => 'get_tickets'
 	,'getTicketsSections' => 'get_sections'
 );

@@ -41,6 +41,9 @@ $_lang['ticket_err_form'] = 'Form contains errors. Please, fix it.';
 $_lang['ticket_err_empty_comment'] = 'Comment can not be empty.';
 $_lang['ticket_err_deleted_comment'] = 'You trying to edit the deleted comment.';
 $_lang['ticket_err_unpublished_comment'] = 'This comment was not published.';
+$_lang['ticket_err_ticket'] = 'The specified ticket does not exist.';
+$_lang['ticket_err_vote_own'] = 'You cannot vote for your ticket.';
+$_lang['ticket_err_vote_already'] = 'You have already voted for this ticket.';
 $_lang['ticket_unpublished_comment'] = 'Your comment will be published after moderation.';
 $_lang['permission_denied'] = 'You do not have permissions for this action.';
 $_lang['field_required'] = 'This field is required.';
@@ -139,5 +142,6 @@ $_lang['ticket_email_bcc'] = 'New ticket on site - "[[+pagetitle]]"';
 
 $_lang['ticket_like'] = 'Like';
 $_lang['ticket_dislike'] = 'Dislike';
+$_lang['ticket_refrain'] = 'See ratings';
 $_lang['ticket_rating_total'] = 'Total';
 $_lang['ticket_rating_and'] = 'and';

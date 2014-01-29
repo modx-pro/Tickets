@@ -7,9 +7,11 @@ if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.'.$c
 /* @var Tickets $Tickets */
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
-/* @var pdoFetch $pdoFetch */
-$pdoFetch = $modx->getService('pdofetch','pdoFetch', MODX_CORE_PATH.'components/pdotools/model/pdotools/',$scriptProperties);
-$pdoFetch->addTime('pdoTools loaded.');
+/** @var pdoFetch $pdoFetch */
+$fqn = $modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
+if (!$pdoClass = $modx->loadClass($fqn, '', false, true)) {return false;}
+$pdoFetch = new $pdoClass($modx, $scriptProperties);
+$pdoFetch->addTime('pdoTools loaded');
 
 if (empty($action)) {$action = 'comments';}
 if ($action == 'tickets' && $scriptProperties['tpl'] == 'tpl.Tickets.comment.latest') {

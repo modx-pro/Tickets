@@ -287,6 +287,48 @@ class Tickets {
 	}
 
 
+
+	/**
+	 * Vote for ticket
+	 *
+	 * @param $id
+	 * @param int $value
+	 *
+	 * @return array|string
+	 */
+	public function voteTicket($id, $value = 1) {
+		$data = array('id' => $id, 'value' => $value);
+
+		/** @var modProcessorResponse $response */
+		if (!empty($id)) {
+			$response = $this->runProcessor('web/ticket/vote', $data);
+			if ($response->isError()) {
+				return $this->error($response->getMessage());
+			}
+			else {
+				$data = $response->getObject();
+				$data['title'] = $this->modx->lexicon('ticket_rating_total')
+					. " {$data['rating']}: ↑{$data['rating_plus']} "
+					. $this->modx->lexicon('ticket_rating_and')
+					. " ↓{$data['rating_minus']}";
+				if ($data['rating'] > 0) {
+					$data['rating'] = '+'.$data['rating'];
+					$data['status'] = 1;
+				}
+				elseif ($data['rating'] < 0) {
+					$data['status'] = -1;
+				}
+				else {
+					$data['status'] = 0;
+				}
+				return $this->success('', $data);
+			}
+		}
+
+		return $this->error('tickets_err_unknown');
+	}
+
+
 	/**
 	 * Returns sanitized preview of Comment
 	 *
@@ -372,6 +414,14 @@ class Tickets {
 	}
 
 
+	/**
+	 * Vote for comment
+	 *
+	 * @param $id
+	 * @param int $value
+	 *
+	 * @return array|string
+	 */
 	public function voteComment($id, $value = 1) {
 		$data = array('id' => $id, 'value' => $value);
 

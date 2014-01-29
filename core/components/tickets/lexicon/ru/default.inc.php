@@ -28,7 +28,7 @@ $_lang['ticket_create_here'] = 'Создать тикет';
 
 $_lang['ticket_no_comments'] = 'На этой странице еще нет комментариев. Вы можете написать первый.';
 $_lang['err_no_jevix'] = 'Для работы необходим сниппет Jevix. Вы должны установить его из репозитория MODX.';
-$_lang['tickets_err_unknown'] = 'Відбулася невідома помилка.';
+$_lang['tickets_err_unknown'] = 'Произошла неизвестная ошибка.';
 $_lang['tickets_message_close_all'] = 'закрыть все';
 $_lang['ticket_err_id'] = 'Тикет с указанным id = [[+id]] не найден.';
 $_lang['ticket_err_wrong_user'] = 'Вы пытаетесь обновить тикет, который вам не принадлежит.';
@@ -41,6 +41,9 @@ $_lang['ticket_err_form'] = 'В форме содержатся ошибки. П
 $_lang['ticket_err_empty_comment'] = 'Комментарий не может быть пустым.';
 $_lang['ticket_err_deleted_comment'] = 'Вы пытаетесь отредактировать удалённый комментарий.';
 $_lang['ticket_err_unpublished_comment'] = 'Этот комментарий еще не был опубликован.';
+$_lang['ticket_err_ticket'] = 'Указанный тикет не существует.';
+$_lang['ticket_err_vote_own'] = 'Вы не можете голосовать за свой тикет.';
+$_lang['ticket_err_vote_already'] = 'Вы уже голосовали за этот тикет.';
 $_lang['ticket_unpublished_comment'] = 'Ваш комментарий будет опубликован после проверки.';
 $_lang['permission_denied'] = 'У вас недостаточно прав для этого действия.';
 $_lang['field_required'] = 'Это поле обязательно.';
@@ -139,5 +142,6 @@ $_lang['ticket_email_bcc'] = 'Новый тикет у вас на сайте - 
 
 $_lang['ticket_like'] = 'Нравится';
 $_lang['ticket_dislike'] = 'Не нравится';
+$_lang['ticket_refrain'] = 'Посмотреть рейтинг';
 $_lang['ticket_rating_total'] = 'Всего';
 $_lang['ticket_rating_and'] = 'и';

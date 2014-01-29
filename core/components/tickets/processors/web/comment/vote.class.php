@@ -10,6 +10,7 @@ class TicketCommentVoteProcessor extends modObjectCreateProcessor {
 	public $permission = 'comment_vote';
 
 
+	/** {@inheritDoc} */
 	public function beforeSet() {
 		$id = $this->getProperty('id');
 
@@ -27,6 +28,7 @@ class TicketCommentVoteProcessor extends modObjectCreateProcessor {
 	}
 
 
+	/** {@inheritDoc} */
 	public function beforeSave() {
 		$this->modx->getRequest();
 		$ip = $this->modx->request->getClientIp();
@@ -34,9 +36,9 @@ class TicketCommentVoteProcessor extends modObjectCreateProcessor {
 		$value = $this->getProperty('value');
 		$value = $value > 0 ? 1 : -1;
 
-		$this->object->set('value', $value);
-		$this->object->set('class', 'TicketComment');
 		$this->object->set('id', $this->comment->id);
+		$this->object->set('class', 'TicketComment');
+		$this->object->set('value', $value);
 		$this->object->set('ip', $ip['ip']);
 		$this->object->set('createdon', date('Y-m-d H:i:s'));
 		$this->object->set('createdby', $this->modx->user->id);
@@ -45,6 +47,7 @@ class TicketCommentVoteProcessor extends modObjectCreateProcessor {
 	}
 
 
+	/** {@inheritDoc} */
 	public function cleanup() {
 		$rating = $this->comment->updateRating();
 

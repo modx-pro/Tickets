@@ -63,3 +63,7 @@ $_lang['tickets_prop_sections_permissions'] = 'Перевірка прав на 
 $_lang['tickets_prop_sections_sortby'] = 'Поле для сортування списку розділів.';
 $_lang['tickets_prop_sections_sortdir'] = 'Напрям сортування списку розділів.';
 $_lang['tickets_prop_sections_context'] = 'Список контекстів для пошуку секцій, через кому.';
+
+$_lang['tickets_prop_meta_tpl'] = 'Чанк оформлення інформації про тикеті.';
+$_lang['tickets_prop_getSection'] = 'Зробити додатковий запит до БД для отримання батьківського секції?';
+$_lang['tickets_prop_getUser'] = 'Зробити додатковий запит до БД для отримання профілю автора?';

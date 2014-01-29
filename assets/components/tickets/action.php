@@ -56,6 +56,7 @@ switch ($action) {
 	case 'ticket/preview': $response = $Tickets->previewTicket($_POST); break;
 	case 'ticket/save': $response = $Tickets->saveTicket($_POST); break;
 	case 'ticket/update': $response = $Tickets->saveTicket($_POST); break;
+	case 'ticket/vote': $response = $Tickets->voteTicket($_POST['id'], $_POST['value']); break;
 	default:
 		$message = $_REQUEST['action'] != $action ? 'tickets_err_register_globals' : 'tickets_err_unknown';
 		$response = $modx->toJSON(array('success' => false, 'message' => $modx->lexicon($message)));
