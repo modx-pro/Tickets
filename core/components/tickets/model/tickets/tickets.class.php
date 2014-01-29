@@ -616,6 +616,7 @@ class Tickets {
 				$children .= $this->templateNode($v, $tpl);
 			}
 		}
+		$node['has_parent'] = !empty($node['parent']);
 
 		// Handling votes
 		if (array_key_exists('vote', $node)) {

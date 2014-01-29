@@ -44,6 +44,27 @@ var Tickets = {
 				$('#comment-new-link').hide();
 			}
 		});
+
+		// Link to parent comment
+		$('#comments').on('click touchend', '.ticket-comment-up a', function() {
+			var id = $(this).data('id');
+			var parent = $(this).data('parent');
+			if (parent && id) {
+				Tickets.utils.goto('comment-' + parent);
+				$('#comment-' + parent + ' .ticket-comment-down:lt(1)').show().find('a').attr('data-child', id);
+			}
+			return false;
+		});
+
+		// Link to child comment
+		$('#comments').on('click touchend', '.ticket-comment-down a', function() {
+			var child = $(this).data('child');
+			if (child) {
+				Tickets.utils.goto('comment-' + child);
+			}
+			$(this).attr('data-child', '').parent().hide();
+			return false;
+		});
 	}
 
 	,ticket: {

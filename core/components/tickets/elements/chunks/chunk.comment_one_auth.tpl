@@ -7,6 +7,9 @@
 			<span class="ticket-comment-createdon">[[+date_ago]]</span>[[+comment_was_edited]]
 			<span class="ticket-comment-link"><a href="[[+url]]#comment-[[+id]]">#</a></span>
 
+			[[+has_parent]]
+			<span class="ticket-comment-down"><a href="#" data-child="">&darr;</a></span>
+
 			<span class="ticket-comment-rating[[+can_vote]][[+cant_vote]]">
 				<span class="rating[[+rating_positive]][[+rating_negative]]" title="[[%ticket_rating_total]] [[+rating_total]]: ↑[[+rating_plus]] [[%ticket_rating_and]] ↓[[+rating_minus]]">
 					[[+rating]]
@@ -38,3 +41,4 @@
 <!--tickets_rating_negative  negative-->
 <!--tickets_voted_plus  voted-->
 <!--tickets_voted_minus  voted-->
+<!--tickets_has_parent <span class="ticket-comment-up"><a href="[[+url]]#comment-[[+parent]]" data-id="[[+id]]" data-parent="[[+parent]]">&uarr;</a></span>-->

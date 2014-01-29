@@ -9,6 +9,7 @@ Changelog for Tickets.
 - Added rating of comments.
 - Added rating of tickets.
 - Added new snippet TicketMeta.
+- Added moving to the parent comment and back.
 
 1.2.4 rc5
 ==========

@@ -24,6 +24,7 @@
 
 .ticket-comment-text {margin-top: 5px;}
 .ticket-reply-link a {font-size: 0.8em; text-decoration: none; border-bottom: 1px dashed;}
+.ticket-comment-down {display: none;}
 
 #comment-editor {width: 99%}
 #comment-preview-placeholder {background: #fff;border: 5px solid #AAA;padding: 5px;display: none;margin: 10px 0;}
