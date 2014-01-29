@@ -415,7 +415,8 @@ class Ticket extends modResource {
 		if ($q->prepare() && $q->stmt->execute()) {
 			$this->xpdo->startTime += microtime(true) - $tstart;
 			$this->xpdo->executedQueries ++;
-			while ($value = $q->stmt->fetch(PDO::FETCH_COLUMN)) {
+			$rows = $q->stmt->fetchAll(PDO::FETCH_COLUMN);
+			foreach ($rows as $value) {
 				$votes['rating'] += $value;
 				if ($value > 0) {
 					$votes['rating_plus'] += $value;
