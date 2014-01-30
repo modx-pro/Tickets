@@ -7,6 +7,7 @@ if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.'.$c
 /* @var Tickets $Tickets */
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
+
 /** @var pdoFetch $pdoFetch */
 $fqn = $modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
 if (!$pdoClass = $modx->loadClass($fqn, '', false, true)) {return false;}
@@ -69,79 +70,87 @@ else {
 	}
 }
 
-// Adding custom where parameters
-if (!empty($scriptProperties['where'])) {
-	$tmp = $modx->fromJSON($scriptProperties['where']);
-	if (is_array($tmp)) {
-		$where = array_merge($where, $tmp);
-	}
-}
-unset($scriptProperties['where']);
-$pdoFetch->addTime('"Where" expression built.');
-
 // Joining tables
 if ($action == 'comments') {
-	$resourceColumns = !empty($includeContent) ?  $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.') : $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.', array('content'), true);
-	$commentColumns = !empty($includeContent) ?  $modx->getSelectColumns('TicketComment', 'TicketComment') : $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text','raw'), true);
 	$class = 'TicketComment';
-	$innerJoin = array(
-		empty($user)
-			? '{"class":"TicketThread","alias":"Thread","on":"TicketComment.id=Thread.comment_last AND Thread.closed=0 AND Thread.deleted=0"}'
-			: '{"class":"TicketThread","alias":"Thread","on":"TicketComment.thread=Thread.id AND Thread.closed=0 AND Thread.deleted=0"}'
-		,'{"class":"modResource","alias":"Ticket","on":"Ticket.id=Thread.resource"}'
-	);
+
+	$innerJoin = array();
+	$innerJoin['Thread'] = empty($user)
+		? array('class' => 'TicketThread', 'on' => '`TicketComment`.`id` = `Thread`.`comment_last` AND `Thread`.`closed` = 0 AND `Thread`.`deleted` = 0')
+		: array('class' => 'TicketThread', 'on' => '`TicketComment`.`thread` = `Thread`.`id` AND `Thread`.`closed` = 0 AND `Thread`.`deleted` = 0');
+	$innerJoin['Ticket'] = array('class' => 'Ticket', 'on' => '`Ticket`.`id` = `Thread`.`resource`');
+
 	$leftJoin = array(
-		'{"class":"modResource","alias":"Section","on":"Section.id=Ticket.parent"}'
-		,'{"class":"modUser","alias":"User","on":"User.id=TicketComment.createdby"}'
-		,'{"class":"modUserProfile","alias":"Profile","on":"Profile.internalKey=User.id"}'
+		'Section' => array('class' => 'TicketsSection', 'on' => '`Section`.`id` = `Ticket`.`parent`'),
+		'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `TicketComment`.`createdby`'),
+		'Profile' => array('class' => 'modUserProfile', 'on' => '`Profile`.`internalKey` = `TicketComment`.`createdby`'),
 	);
+
 	$select = array(
-		'"TicketComment":"'.$commentColumns.'"'
-		,'"Ticket":"'.$resourceColumns.'"'
+		'TicketComment' => !empty($includeContent)
+				? $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true)
+				: $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text','raw'), true),
+		'Ticket' => !empty($includeContent)
+				? $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.')
+				: $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.', array('content'), true)
 	);
-	$groupby = empty($user) ? 'Ticket.id' : 'TicketComment.id';
+	$groupby = empty($user)
+		? '`Ticket`.`id`'
+		: '`TicketComment`.`id`';
 	$where['TicketComment.deleted'] = 0;
 }
 elseif ($action == 'tickets') {
-	$resourceColumns = !empty($includeContent) ?  $modx->getSelectColumns('Ticket', 'Ticket') : $modx->getSelectColumns('Ticket', 'Ticket', '', array('content'), true);
 	$class = 'Ticket';
+
 	$innerJoin = array();
 	$leftJoin = array(
-		'{"class":"TicketThread","alias":"Thread","on":"Thread.resource=Ticket.id AND Thread.closed=0 AND Thread.deleted=0"}'
-		,'{"class":"TicketsSection","alias":"Section","on":"Section.id=Ticket.parent"}'
-		,'{"class":"modUser","alias":"User","on":"User.id=Ticket.createdby"}'
-		,'{"class":"modUserProfile","alias":"Profile","on":"Profile.internalKey=User.id"}'
+		'Thread' => array('class' => 'TicketThread', 'on' => '`Thread`.`resource` = `Ticket`.`id` AND `Thread`.`closed` = 0 AND `Thread`.`deleted` = 0'),
+		'Section' => array('class' => 'TicketsSection', 'on' => '`Section`.`id` = `Ticket`.`parent`'),
+		'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `Ticket`.`createdby`'),
+		'Profile' => array('class' => 'modUserProfile', 'on' => '`Profile`.`internalKey` = `Ticket`.`createdby`'),
 	);
+
 	$select = array(
-		'"Ticket":"'.$resourceColumns.'"'
-		,'"Thread":"`Thread`.`id` as `thread`"'
+		'Ticket' => !empty($includeContent)
+				? $modx->getSelectColumns('Ticket', 'Ticket')
+				: $modx->getSelectColumns('Ticket', 'Ticket', '', array('content'), true),
+		'Thread' => '`Thread`.`id` as `thread`'
 	);
-	$groupby = 'Ticket.id';
+	$groupby = '`Ticket`.`id`';
 }
-else {return 'wrong action.';}
+else {
+	return 'Wrong action. You must use "ticket" or "comment".';
+}
 
 // Fields to select
-$sectionColumns = $modx->getSelectColumns('TicketsSection', 'Section', 'section.', array('content'), true);
-$userColumns = $modx->getSelectColumns('modUser', 'User', '', array('username'));
-$profileColumns = $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id'), true);
-
 $select = array_merge($select, array(
-	'"Section":"'.$sectionColumns.'"'
-	,'"User":"'.$userColumns.'"'
-	,'"Profile":"'.$profileColumns.'"'
+	'Section' => $modx->getSelectColumns('TicketsSection', 'Section', 'section.', array('content'), true),
+	'User' => $modx->getSelectColumns('modUser', 'User', '', array('username')),
+	'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id'), true),
 ));
 
+// Add custom parameters
+foreach (array('where','select','leftJoin','innerJoin') as $v) {
+	if (!empty($scriptProperties[$v])) {
+		$tmp = $modx->fromJSON($scriptProperties[$v]);
+		if (is_array($tmp)) {
+			$$v = array_merge($$v, $tmp);
+		}
+	}
+	unset($scriptProperties[$v]);
+}
+
 $default = array(
-	'class' => $class
-	,'where' => $modx->toJSON($where)
-	,'innerJoin' => '['.implode(',',$innerJoin).']'
-	,'leftJoin' => '['.implode(',',$leftJoin).']'
-	,'select' => '{'.implode(',',$select).'}'
-	,'sortby' => 'createdon'
-	,'sortdir' => 'DESC'
-	,'groupby' => $groupby
-	,'return' => 'data'
-	,'nestedChunkPrefix' => 'tickets_'
+	'class' => $class,
+	'where' => $modx->toJSON($where),
+	'innerJoin' => $modx->toJSON($innerJoin),
+	'leftJoin' => $modx->toJSON($leftJoin),
+	'select' => $modx->toJSON($select),
+	'sortby' => 'createdon',
+	'sortdir' => 'DESC',
+	'groupby' => $groupby,
+	'return' => 'data',
+	'nestedChunkPrefix' => 'tickets_',
 );
 
 // Merge all properties and run!
@@ -150,14 +159,13 @@ $pdoFetch->addTime('Query parameters are prepared.');
 $rows = $pdoFetch->run();
 
 // Processing rows
-$output = '';
+$output = array();
 if (!empty($rows) && is_array($rows)) {
 	foreach ($rows as $k => $row) {
-
 		// Processing main fields
 		$row['comments'] = $modx->getCount('TicketComment', array('thread' => $row['thread'], 'published' => 1));
-		$row['idx'] = $pdoFetch->idx++;
 
+		// Prepare row
 		if ($class == 'Ticket') {
 			$row['date_ago'] = $Tickets->dateFormat($row['createdon']);
 			$properties = is_string($row['properties'])
@@ -175,17 +183,16 @@ if (!empty($rows) && is_array($rows)) {
 		}
 
 		// Processing chunk
+		$row['idx'] = $pdoFetch->idx++;
 		$tpl = $pdoFetch->defineChunk($row);
-		$output[] = empty($tpl)
-			? '<pre>'.$pdoFetch->getChunk('', $row).'</pre>'
-			: $pdoFetch->getChunk($tpl, $row, $pdoFetch->config['fastMode']);
+		$output[] = !empty($tpl)
+			? $pdoFetch->getChunk($tpl, $row, $pdoFetch->config['fastMode'])
+			: $pdoFetch->getChunk('', $row);
 	}
 	$pdoFetch->addTime('Returning processed chunks');
-	if (empty($outputSeparator)) {$outputSeparator = "\n";}
-	if (!empty($output)) {
-		$output = implode($outputSeparator, $output);
-	}
 }
+if (empty($outputSeparator)) {$outputSeparator = "\n";}
+$output = implode($outputSeparator, $output);
 
 if (!empty($cacheKey)) {
 	$modx->cacheManager->set('tickets/latest.'.$cacheKey, $output, $cacheTime);
