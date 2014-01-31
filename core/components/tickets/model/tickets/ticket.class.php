@@ -24,6 +24,32 @@ class Ticket extends modResource {
 
 
 	/**
+	 * {@inheritDoc}
+	 * @return object|null
+	 */
+	public static function load(xPDO & $xpdo, $className, $criteria= null, $cacheFlag= true){
+		if (!is_object($criteria)) {
+			$criteria= $xpdo->getCriteria($className, $criteria, $cacheFlag);
+		}
+		$xpdo->addDerivativeCriteria($className, $criteria);
+		return parent::load($xpdo, $className, $criteria, $cacheFlag);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 * @return array
+	 */
+	public static function loadCollection(xPDO & $xpdo, $className, $criteria= null, $cacheFlag= true){
+		if (!is_object($criteria)) {
+			$criteria= $xpdo->getCriteria($className, $criteria, $cacheFlag);
+		}
+		$xpdo->addDerivativeCriteria($className, $criteria);
+		return parent::loadCollection($xpdo, $className, $criteria, $cacheFlag);
+	}
+
+
+	/**
 	 * Loads ticket properties
 	 */
 	private function _loadProperties() {
@@ -253,6 +279,7 @@ class Ticket extends modResource {
 		$array = array(
 			'comments' => $this->getCommentsCount(),
 			'views' => $this->getViewsCount(),
+			'rating' => $this->_properties['rating'],
 			'date_ago' => $this->getDateAgo(),
 		);
 		$array = array_merge($array, $this->getRating());

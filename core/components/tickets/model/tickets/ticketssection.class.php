@@ -23,11 +23,41 @@ class TicketsSection extends modResource {
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 * @return object|null
+	 */
+	public static function load(xPDO & $xpdo, $className, $criteria= null, $cacheFlag= true){
+		if (!is_object($criteria)) {
+			$criteria= $xpdo->getCriteria($className, $criteria, $cacheFlag);
+		}
+		$xpdo->addDerivativeCriteria($className, $criteria);
+		return parent::load($xpdo, $className, $criteria, $cacheFlag);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 * @return array
+	 */
+	public static function loadCollection(xPDO & $xpdo, $className, $criteria= null, $cacheFlag= true){
+		if (!is_object($criteria)) {
+			$criteria= $xpdo->getCriteria($className, $criteria, $cacheFlag);
+		}
+		$xpdo->addDerivativeCriteria($className, $criteria);
+		return parent::loadCollection($xpdo, $className, $criteria, $cacheFlag);
+	}
+
+
+	/** {@inheritDoc} */
 	public static function getControllerPath(xPDO &$modx) {
 		return $modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'controllers/section/';
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getContextMenuText() {
 		$this->xpdo->lexicon->load('tickets:default');
 		return array(
@@ -37,6 +67,9 @@ class TicketsSection extends modResource {
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getResourceTypeName() {
 		$this->xpdo->lexicon->load('tickets:default');
 		return $this->xpdo->lexicon('tickets_section');
@@ -81,11 +114,14 @@ class TicketsSection extends modResource {
 	 * {@inheritDoc}
 	 */
 	public function process() {
-		$this->xpdo->setPlaceholders($this->getVirtualFields());
+		//$this->xpdo->setPlaceholders($this->getVirtualFields());
 		return parent::process();
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getContent(array $options = array()) {
 		$content = parent::getContent($options);
 
@@ -112,16 +148,16 @@ class TicketsSection extends modResource {
 	}
 
 
-	/*
+	/**
 	 * Shorthand for getting virtual Ticket fields
 	 *
 	 * @return array $array Array with virtual fields
-	 * */
+	 */
 	function getVirtualFields() {
 		$array = array(
 			'comments' => $this->getCommentsCount()
 			,'views' => $this->getViewsCount()
-			,'votes' => $this->getVotesSum()
+			//,'votes' => $this->getVotesSum()
 			,'tickets' => $this->getTicketsCount()
 		);
 
@@ -129,11 +165,11 @@ class TicketsSection extends modResource {
 	}
 
 
-	/*
+	/**
 	 * Returns count of views of Tickets by users in this Section
 	 *
 	 * @return integer $count Total count of views
-	 * */
+	 */
 	public function getViewsCount() {
 		$q = $this->xpdo->newQuery('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
 		$q->leftJoin('TicketView','TicketView', "`TicketView`.`parent` = `Ticket`.`id`");
@@ -147,11 +183,11 @@ class TicketsSection extends modResource {
 	}
 
 
-	/*
+	/**
 	 * Returns count of comments to Tickets in this Section
 	 *
 	 * @return integer $count Total count of comment
-	 * */
+	 */
 	public function getCommentsCount() {
 		$q = $this->xpdo->newQuery('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
 		$q->leftJoin('TicketThread','TicketThread', "`TicketThread`.`resource` = `Ticket`.`id`");
@@ -166,14 +202,14 @@ class TicketsSection extends modResource {
 	}
 
 
-	/*
+	/**
 	 * Returns sum of votes to Tickets by users in this Section
 	 *
 	 * @return integer $count Total sum of votes
-	 * */
+	 */
 	public function getVotesSum() {
 		$q = $this->xpdo->newQuery('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
-		$q->leftJoin('TicketVote','TicketVote', "`TicketVote`.`parent` = `Ticket`.`id` AND `TicketVote`.`class` = 'Ticket'");
+		$q->leftJoin('TicketVote','TicketVote', "`TicketVote`.`id` = `Ticket`.`id` AND `TicketVote`.`class` = 'Ticket'");
 		$q->select('SUM(`TicketVote`.`value`) as `votes`');
 
 		$sum = 0;
@@ -184,11 +220,11 @@ class TicketsSection extends modResource {
 	}
 
 
-	/*
+	/**
 	 * Returns count of tickets in this Section
 	 *
 	 * @return integer $count Total sum of votes
-	 * */
+	 */
 	public function getTicketsCount() {
 		return $this->xpdo->getCount('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
 	}

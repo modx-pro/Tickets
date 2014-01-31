@@ -4,6 +4,7 @@ Changelog for Tickets.
 ==========
 - Improved snippet TicketLatest.
 - Improved clearing of cache right after ticket creation.
+- [#58] Fixed switching the document class from modDocument to Ticket.
 
 1.3.0 beta
 ==========

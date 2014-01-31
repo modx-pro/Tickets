@@ -20,6 +20,20 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	private $updatepubdate = 0;
 
 
+	/** {inheritDoc} */
+	public function initialize() {
+		$primaryKey = $this->getProperty($this->primaryKeyField,false);
+		if (empty($primaryKey)) return $this->modx->lexicon($this->objectType.'_err_ns');
+
+		if (!$this->modx->getCount($this->classKey, array('id' => $primaryKey, 'class_key' => $this->classKey)) && $res = $this->modx->getObject('modResource', $primaryKey)) {
+			$res->set('class_key', $this->classKey);
+			$res->save();
+		}
+
+		return parent::initialize();
+	}
+
+
 	/** {@inheritDoc} */
 	public function beforeSet() {
 		if ($this->object->createdby != $this->modx->user->id && !$this->modx->hasPermission('edit_document')) {
@@ -68,7 +82,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 				return $this->modx->lexicon('ticket_err_wrong_parent') . $this->modx->lexicon('ticket_err_access_denied');
 			}
 		}
-		else {
+		elseif ($this->modx->context->key != 'mgr') {
 			return $this->modx->lexicon('resource_err_nfs', array('id' => $this->getProperty('parent')));
 		}
 
@@ -139,10 +153,6 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 
 	/** {@inheritDoc} */
 	public function clearCache() {
-		$results = $this->modx->cacheManager->generateContext($this->object->context_key);
-		$this->modx->context->resourceMap = $results['resourceMap'];
-		$this->modx->context->aliasMap = $results['aliasMap'];
-
 		$this->object->clearCache();
 		/** @var TicketsSection $section */
 		if ($section = $this->modx->getObject('TicketsSection', $this->object->parent)) {
