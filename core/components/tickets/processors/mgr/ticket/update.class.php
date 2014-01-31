@@ -88,7 +88,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 
 		$this->setProperties(array(
 			'class_key' => 'Ticket'
-			,'show_in_tree' => 0
+			//,'show_in_tree' => 0
 			,'published' => 0
 			,'hidemenu' => $hidemenu
 			,'syncsite' => 0

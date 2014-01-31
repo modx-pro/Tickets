@@ -284,10 +284,10 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 			,published: {}
 			,private: {name: 'privateweb',boxLabel: _('ticket_private'),description: _('ticket_private_help')}
 			,richtext: {}
-			,hidemenu: {boxLabel: _('resource_hide_from_menus'),description: _('resource_hide_from_menus_help')}
-			//,show_in_tree: {}
-			,uri_override: {xtype:'xcheckbox', inputValue:1, checked:parseInt(config.record.uri_override), id: 'modx-resource-uri-override'}
+			,hidemenu: {boxLabel: _('resource_hide_from_menus'),description: '<b>[[*hidemenu]]</b><br/>' + _('resource_hide_from_menus_help')}
 			,isfolder: {boxLabel: _('resource_folder'),description: _('resource_folder_help')}
+			,show_in_tree: {boxLabel: _('ticket_show_in_tree'), xtype:'xcheckbox', inputValue:1, description: '<b>[[*show_in_tree]]</b><br/>' + _('ticket_show_in_tree_help'), checked:parseInt(config.record.properties.show_in_tree)}
+			,uri_override: {xtype:'xcheckbox', inputValue:1, checked:parseInt(config.record.uri_override), id: 'modx-resource-uri-override'}
 			,menutitle: {xtype: 'hidden', value: config.record.menutitle || ''}
 			,link_attributes: {xtype: 'hidden',name: 'link_attributes',id: 'modx-resource-link-attributes'}
 			,content_type: {xtype: 'hidden',name: 'content_type',id: 'modx-resource-content-type', value: MODx.config.default_content_type || 1}

@@ -10,6 +10,7 @@ require_once MODX_CORE_PATH.'components/tickets/processors/mgr/ticket/update.cla
 
 class Ticket extends modResource {
 	public $showInContextMenu = false;
+	public $allowChildrenResources = false;
 	private $_properties = array();
 
 

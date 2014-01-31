@@ -300,7 +300,7 @@ class TicketsSection extends modResource {
 		);
 
 		$node['menu'] = array('items' => $menu);
-		$node['hasChildren'] = false;
+		$node['hasChildren'] = true;
 		return $node;
 	}
 }

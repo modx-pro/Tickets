@@ -49,6 +49,8 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 			'disable_jevix' => $this->modx->getOption('tickets.disable_jevix_default', null, false),
 			'process_tags' => $this->modx->getOption('tickets.process_tags_default', null, false),
 		);
+		$this->resourceArray['show_in_tree'] = $this->context->getOption('tickets.ticket_show_in_tree_default', 0, $this->modx->_userConfig);
+		$this->resourceArray['show_in_tree'] = isset($this->resourceArray['show_in_tree']) && intval($this->resourceArray['show_in_tree']) == 1 ? true : false;
 
 		$this->addJavascript($mgrUrl.'assets/modext/util/datetime.js');
 		$this->addJavascript($mgrUrl.'assets/modext/widgets/element/modx.panel.tv.renders.js');

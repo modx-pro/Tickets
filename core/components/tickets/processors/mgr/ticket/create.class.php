@@ -62,14 +62,14 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		}
 
 		$properties = array(
-			'class_key' => 'Ticket'
-			,'show_in_tree' => 0
-			,'published' => 0
-			,'hidemenu' => $hidemenu
-			,'syncsite' => 0
-			,'isfolder' => $isfolder
-			,'introtext' => $introtext
-			,'createdby' => !empty($createdby) ? $createdby : $this->modx->user->id
+			'class_key' => 'Ticket',
+			'show_in_tree' => $this->modx->getOption('tickets.ticket_show_in_tree_default', null, false),
+			'published' => 0,
+			'hidemenu' => $hidemenu,
+			'syncsite' => 0,
+			'isfolder' => $isfolder,
+			'introtext' => $introtext,
+			'createdby' => !empty($createdby) ? $createdby : $this->modx->user->id,
 		);
 
 		$this->setProperties($properties);

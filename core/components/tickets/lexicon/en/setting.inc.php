@@ -20,6 +20,8 @@ $_lang['setting_tickets.ticket_isfolder_force'] = 'Force "isfolder"';
 $_lang['setting_tickets.ticket_isfolder_force_desc'] = 'Force parameter "isfolder" for tickets.';
 $_lang['setting_tickets.ticket_hidemenu_force'] = 'Force "hidemenu"';
 $_lang['setting_tickets.ticket_hidemenu_force_desc'] = 'Force parameter "hidemenu" for tickets.';
+$_lang['setting_tickets.ticket_show_in_tree_default'] = 'Show in the tree default';
+$_lang['setting_tickets.ticket_show_in_tree_default_desc'] = 'Enable this option and all the tickets were visible in the resource tree.';
 $_lang['setting_tickets.section_content_default'] = 'Default content for new tickets section';
 $_lang['setting_tickets.section_content_default_desc'] = ' Here you can specify the default content of new tickets section. By default it lists children tickets.';
 

@@ -46,7 +46,8 @@ class TicketsSectionUpdateProcessor extends modResourceUpdateProcessor {
 	/** {@inheritDoc} */
 	public function beforeSet() {
 		$this->setProperties(array(
-			'isfolder' => 1
+			'isfolder' => 1,
+			'hide_children_in_tree' => 0,
 		));
 		return parent::beforeSet();
 	}

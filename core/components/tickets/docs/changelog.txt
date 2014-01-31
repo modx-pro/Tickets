@@ -5,6 +5,9 @@ Changelog for Tickets.
 - Improved snippet TicketLatest.
 - Improved clearing of cache right after ticket creation.
 - [#58] Fixed switching the document class from modDocument to Ticket.
+- Added system setting "ticket_show_in_tree_default".
+- Changed some default system setting.
+- Added checkbox "show_in_tree" in the panel of Ticket.
 
 1.3.0 beta
 ==========

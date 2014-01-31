@@ -126,12 +126,17 @@ $tmp = array(
 		,'area' => 'tickets.section'
 	)
 	,'ticket_hidemenu_force' => array(
-		'value' => true
+		'value' => false
 		,'xtype' => 'combo-boolean'
 		,'area' => 'tickets.ticket'
 	)
 	,'ticket_isfolder_force' => array(
-		'value' => true
+		'value' => false
+		,'xtype' => 'combo-boolean'
+		,'area' => 'tickets.ticket'
+	)
+	,'ticket_show_in_tree_default' => array(
+		'value' => false
 		,'xtype' => 'combo-boolean'
 		,'area' => 'tickets.ticket'
 	)
@@ -141,7 +146,7 @@ $tmp = array(
 		,'area' => 'tickets.section'
 	)
 	,'ticket_id_as_alias' => array(
-		'value' => true
+		'value' => false
 		,'xtype' => 'combo-boolean'
 		,'area' => 'tickets.ticket'
 	)
