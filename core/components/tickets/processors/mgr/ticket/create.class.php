@@ -145,7 +145,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		$this->object->save();
 
 		// Updating resourceMap before OnDocSaveForm event
-		$results = $this->modx->cacheManager->generateContext($this->object->context_key);
+		$results = $this->modx->cacheManager->generateContext($this->object->context_key, array('cache_context_settings' => false));
 		$this->modx->context->resourceMap = $results['resourceMap'];
 		$this->modx->context->aliasMap = $results['aliasMap'];
 
@@ -161,6 +161,11 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$category->clearCache();
 			$clear = true;
 		}
+
+		/** @var xPDOFileCache $cache */
+		$cache = $this->modx->cacheManager->getCacheProvider($this->modx->getOption('cache_context_settings_key', null, 'context_settings'));
+		$key = $this->modx->context->getCacheKey();
+		$cache->delete($key);
 
 		return $clear;
 	}
