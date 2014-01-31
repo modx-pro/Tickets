@@ -157,7 +157,6 @@ class TicketsSection extends modResource {
 		$array = array(
 			'comments' => $this->getCommentsCount()
 			,'views' => $this->getViewsCount()
-			//,'votes' => $this->getVotesSum()
 			,'tickets' => $this->getTicketsCount()
 		);
 

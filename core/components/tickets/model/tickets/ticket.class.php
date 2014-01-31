@@ -279,7 +279,6 @@ class Ticket extends modResource {
 		$array = array(
 			'comments' => $this->getCommentsCount(),
 			'views' => $this->getViewsCount(),
-			'rating' => $this->_properties['rating'],
 			'date_ago' => $this->getDateAgo(),
 		);
 		$array = array_merge($array, $this->getRating());
