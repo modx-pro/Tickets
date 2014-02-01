@@ -37,6 +37,7 @@ class TicketCommentVoteProcessor extends modObjectCreateProcessor {
 		$value = $value > 0 ? 1 : -1;
 
 		$this->object->set('id', $this->comment->id);
+		$this->object->set('owner', $this->comment->createdby);
 		$this->object->set('class', 'TicketComment');
 		$this->object->set('value', $value);
 		$this->object->set('ip', $ip['ip']);

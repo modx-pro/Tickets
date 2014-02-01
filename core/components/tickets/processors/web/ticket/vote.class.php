@@ -46,6 +46,7 @@ class TicketVoteProcessor extends modObjectCreateProcessor {
 		}
 
 		$this->object->set('id', $this->ticket->id);
+		$this->object->set('owner', $this->ticket->createdby);
 		$this->object->set('class', 'Ticket');
 		$this->object->set('value', $value);
 		$this->object->set('ip', $ip['ip']);

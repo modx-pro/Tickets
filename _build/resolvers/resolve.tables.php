@@ -52,6 +52,9 @@ if ($object->xpdo) {
 			$manager->addField('TicketComment', 'rating_plus');
 			$manager->addField('TicketComment', 'rating_minus');
 
+			$manager->addField('TicketVote', 'owner');
+			$manager->addIndex('TicketVote', 'owner');
+
 		$modx->setLogLevel($level);
 		break;
 

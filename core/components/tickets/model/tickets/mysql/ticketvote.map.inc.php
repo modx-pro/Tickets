@@ -8,6 +8,7 @@ $xpdo_meta_map['TicketVote']= array (
   array (
     'id' => 0,
     'class' => NULL,
+    'owner' => 0,
     'value' => 0,
     'createdon' => NULL,
     'createdby' => 0,
@@ -31,6 +32,16 @@ $xpdo_meta_map['TicketVote']= array (
       'precision' => '100',
       'phptype' => 'string',
       'index' => 'pk',
+    ),
+    'owner' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'attributes' => 'unsigned',
+      'null' => false,
+      'default' => 0,
+      'index' => 'index',
     ),
     'value' => 
     array (
@@ -105,6 +116,22 @@ $xpdo_meta_map['TicketVote']= array (
       'columns' => 
       array (
         'createdon' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
+    'owner' => 
+    array (
+      'alias' => 'owner',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'owner' => 
         array (
           'length' => '',
           'collation' => 'A',

@@ -112,6 +112,7 @@
 	<object class="TicketVote" table="tickets_votes" extends="xPDOObject">
 		<field key="id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
 		<field key="class" dbtype="varchar" precision="100" phptype="string" index="pk" />
+		<field key="owner" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="index" />
 		<field key="value" dbtype="tinyint" precision="1" phptype="integer" null="false" default="0" />
 
 		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" index="index" />
@@ -125,6 +126,9 @@
 		</index>
 		<index alias="createdon" name="createdon" primary="false" unique="false" type="BTREE">
 			<column key="createdon" length="" collation="A" null="false" />
+		</index>
+		<index alias="owner" name="owner" primary="false" unique="false" type="BTREE">
+			<column key="owner" length="" collation="A" null="false" />
 		</index>
 	</object>
 
