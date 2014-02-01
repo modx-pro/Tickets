@@ -15,7 +15,6 @@
 </div>
 <!--tickets_can_vote <span class="vote rating" title="[[%ticket_refrain]]" onclick="return Tickets.Vote.ticket.vote(this, [[+id]], 0);" ontouchend="return Tickets.Vote.ticket.vote(this, [[+id]], 0);"><i class="glyphicon glyphicon-minus"></i></span>-->
 <!--tickets_cant_vote <span class="rating[[+rating_positive]][[+rating_negative]]" title="[[%ticket_rating_total]] [[+rating_total]]: ↑[[+rating_plus]] [[%ticket_rating_and]] ↓[[+rating_minus]]">[[+rating]]</span>-->
-<!--tickets_new_comments <span class="green">+[[+new_comments]]</span>-->
 <!--tickets_active  active-->
 <!--tickets_inactive  inactive-->
 <!--tickets_voted_plus  voted-->
