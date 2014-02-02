@@ -22,12 +22,12 @@ foreach ($tmp as $k => $v) {
 	/* @var modplugin $plugin */
 	$plugin = $modx->newObject('modPlugin');
 	$plugin->fromArray(array(
-		'name' => $k
-		,'description' => @$v['description']
-		,'plugincode' => getSnippetContent($sources['source_core'].'/elements/plugins/plugin.'.$v['file'].'.php')
-		,'static' => BUILD_PLUGIN_STATIC
-		,'source' => 1
-		,'static_file' => 'core/components/'.PKG_NAME_LOWER.'/elements/plugins/plugin.'.$v['file'].'.php'
+		'name' => $k,
+		'description' => @$v['description'],
+		'plugincode' => getSnippetContent($sources['source_core'].'/elements/plugins/plugin.'.$v['file'].'.php'),
+		'static' => BUILD_PLUGIN_STATIC,
+		'source' => 1,
+		'static_file' => 'core/components/'.PKG_NAME_LOWER.'/elements/plugins/plugin.'.$v['file'].'.php',
 	),'',true,true);
 
 	$events = array();

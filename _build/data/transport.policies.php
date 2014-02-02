@@ -4,25 +4,25 @@ $policies = array();
 
 $tmp = array(
 	'TicketUserPolicy' => array(
-		'description' => 'A policy for create and update Tickets.'
-		,'data' => array(
+		'description' => 'A policy for create and update Tickets.',
+		'data' => array(
 			'ticket_delete' => true,
 			'ticket_publish' => true,
 			'ticket_save' => true,
 			'ticket_vote' => true,
 			'comment_save' => true,
 			'comment_vote' => true,
-		)
-	)
-	,'TicketSectionPolicy' => array(
-		'description' => 'A policy for add tickets in section.'
-		,'data' => array(
-			'section_add_children' => true
-		)
-	)
-	,'TicketVipPolicy' => array(
-		'description' => 'A policy for create and update private Tickets.'
-		,'data' => array(
+		),
+	),
+	'TicketSectionPolicy' => array(
+		'description' => 'A policy for add tickets in section.',
+		'data' => array(
+			'section_add_children' => true,
+		),
+	),
+	'TicketVipPolicy' => array(
+		'description' => 'A policy for create and update private Tickets.',
+		'data' => array(
 			'ticket_delete' => true,
 			'ticket_publish' => true,
 			'ticket_save' => true,
@@ -30,8 +30,8 @@ $tmp = array(
 			'comment_save' => true,
 			'comment_vote' => true,
 			'ticket_view_private' => true,
-		)
-	)
+		),
+	),
 );
 
 foreach ($tmp as $k => $v) {
@@ -42,8 +42,8 @@ foreach ($tmp as $k => $v) {
 	/* @var $policy modAccessPolicy */
 	$policy = $modx->newObject('modAccessPolicy');
 	$policy->fromArray(array_merge(array(
-		'name' => $k
-		,'lexicon' => PKG_NAME_LOWER.':permissions'
+		'name' => $k,
+		'lexicon' => PKG_NAME_LOWER.':permissions',
 	), $v)
 	,'', true, true);
 

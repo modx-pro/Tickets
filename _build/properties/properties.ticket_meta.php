@@ -15,14 +15,14 @@ $tmp = array(
 	'getUser' => array(
 		'type' => 'combo-boolean',
 		'value' => true,
-	)
+	),
 );
 
 foreach ($tmp as $k => $v) {
 	$properties[$k] = array_merge(array(
-		'name' => $k
-		,'desc' => 'tickets_prop_'.$k
-		,'lexicon' => 'tickets:properties'
+		'name' => $k,
+		'desc' => 'tickets_prop_'.$k,
+		'lexicon' => 'tickets:properties',
 	), $v);
 }
 

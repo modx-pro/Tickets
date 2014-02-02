@@ -15,8 +15,8 @@ $tmp = array(
 			'comment_save' => array(),
 			'comment_vote' => array(),
 		),
-	)
-	,'TicketsSectionPolicyTemplate' => array(
+	),
+	'TicketsSectionPolicyTemplate' => array(
 		'description' => 'A policy for miniShop2 managers.',
 		'template_group' => 3,
 		'permissions' => array(
@@ -33,9 +33,9 @@ foreach ($tmp as $k => $v) {
 			/* @var modAccessPermission $event */
 			$permission = $modx->newObject('modAccessPermission');
 			$permission->fromArray(array_merge(array(
-					'name' => $k2
-					,'description' => $k2
-					,'value' => true
+					'name' => $k2,
+					'description' => $k2,
+					'value' => true,
 				), $v2)
 				,'', true, true);
 			$permissions[] = $permission;
@@ -45,8 +45,8 @@ foreach ($tmp as $k => $v) {
 	/* @var $template modAccessPolicyTemplate */
 	$template = $modx->newObject('modAccessPolicyTemplate');
 	$template->fromArray(array_merge(array(
-		'name' => $k
-		,'lexicon' => PKG_NAME_LOWER.':permissions'
+		'name' => $k,
+		'lexicon' => PKG_NAME_LOWER.':permissions'
 	),$v)
 	,'', true, true);
 
