@@ -1,5 +1,5 @@
 <li class="ticket-comment" id="comment-[[+id]]">
-	<div class="ticket-comment-body">
+	<div class="ticket-comment-body[[+bad]]">
 		<div class="ticket-comment-header">
 			<div class="ticket-comment-dot-wrapper"><div class="ticket-comment-dot"></div></div>
 			<img src="[[+avatar]]" class="ticket-avatar" alt="" />

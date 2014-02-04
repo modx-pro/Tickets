@@ -81,7 +81,7 @@ $tmp = array(
 	),
 	'comment_edit_time' => array(
 		'xtype' => 'numberfield',
-		'value' => 180,
+		'value' => 600,
 		'area' => 'tickets.comment',
 	),
 	'clear_cache_on_comment_save' => array(

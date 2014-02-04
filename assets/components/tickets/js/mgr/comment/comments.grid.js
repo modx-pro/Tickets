@@ -184,10 +184,15 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 	}
 
 	,renderUserLink: function(val,cell,row) {
-		var updateUser = MODx.action ? MODx.action['security/user/update'] : 'security/user/update';
-		var url = 'index.php?a='+updateUser+'&id='+row.data.createdby;
+		if (row.data.createdby) {
+			var updateUser = MODx.action ? MODx.action['security/user/update'] : 'security/user/update';
+			var url = 'index.php?a='+updateUser+'&id='+row.data.createdby;
 
-		return '<a href="' + url + '" target="_blank" class="resource-link">' + val + '</a>'
+			return '<a href="' + url + '" target="_blank" class="resource-link">' + val + '</a>'
+		}
+		else {
+			return val;
+		}
 	}
 
 });
@@ -220,26 +225,12 @@ Tickets.window.UpdateComment = function(config) {
 						columnWidth: .5
 						,border: false
 						,layout: 'form'
-						,items: this.getMainFields(config)
+						,items: this.getLeftFields(config)
 					},{
 						columnWidth: .5
 						,border: false
 						,layout: 'form'
-						,items: [{
-							layout: 'column'
-							,border: false
-							,items: [{
-								columnWidth: .5
-								,border: false
-								,layout: 'form'
-								,items: this.getCommentDates(config)
-							},{
-								columnWidth: .5
-								,border: false
-								,layout: 'form'
-								,items: this.getCommentMisc(config)
-							}]
-						}]
+						,items: this.getRightFields(config)
 					}]
 				}]
 			}]
@@ -250,27 +241,41 @@ Tickets.window.UpdateComment = function(config) {
 };
 Ext.extend(Tickets.window.UpdateComment,MODx.Window,{
 
-	getMainFields: function(config) {
+	getLeftFields: function(config) {
 		return [
-			//{xtype:'textfield', fieldLabel: _('ticket_comment_name'), name: 'name', id:'tickets-'+this.ident+'-name',anchor: '99%'}
-			//,{xtype:'textfield', fieldLabel: _('ticket_comment_email'), name: 'email', id:'tickets-'+this.ident+'-email',anchor: '99%'}
-			{xtype:'numberfield', fieldLabel: _('ticket_comment_parent'), name: 'parent', id:'tickets-'+this.ident+'-parent',anchor: '50%'}
+			{xtype:'textfield', fieldLabel: _('ticket_comment_name'), name: 'name', id:'tickets-'+this.ident+'-name',anchor: '99%',hidden: config.record.createdby ? 1 : 0}
+			,{xtype:'numberfield', fieldLabel: _('ticket_comment_parent'), name: 'parent', id:'tickets-'+this.ident+'-parent',anchor: '50%'}
 			,{xtype:'tickets-combo-thread', fieldLabel: _('ticket_thread'), name: 'thread', id:'tickets-'+this.ident+'-thread',anchor: '75%'}
 		];
 	}
 
-	,getCommentDates: function(config) {
+	,getRightFields: function(config) {
 		return [
-			{xtype:'displayfield', fieldLabel: _('ticket_comment_createdon'), name: 'createdon', id:'tickets-'+this.ident+'-createdon',anchor: '99%'}
-			,{xtype:'displayfield', fieldLabel: _('ticket_comment_editedon'), name: 'editedon', id:'tickets-'+this.ident+'-editedon',anchor: '99%'}
-			,{xtype:'displayfield', fieldLabel: _('ticket_comment_deletedon'), name: 'deletedon', id:'tickets-'+this.ident+'-deletedon',anchor: '99%', hidden: config.record.deleted ? 0 : 1}
+			{xtype:'textfield', fieldLabel: _('ticket_comment_email'), name: 'email', id:'tickets-'+this.ident+'-email',anchor: '99%',hidden: config.record.createdby ? 1 : 0}
+			,{
+				layout: 'column'
+				,border: false
+				,items: [{
+					columnWidth: .5
+					,border: false
+					,layout: 'form'
+					,items: [
+						{xtype:'xcheckbox', fieldLabel: _('ticket_comment_deleted'), name: 'deleted', id:'tickets-'+this.ident+'-deleted',anchor: '99%'}
+						,{xtype:'displayfield', fieldLabel: _('ticket_comment_createdon'), name: 'createdon', id:'tickets-'+this.ident+'-createdon',anchor: '99%'}
+					]
+				},{
+					columnWidth: .5
+					,border: false
+					,layout: 'form'
+					,items: [
+						{xtype:'displayfield', fieldLabel: 'IP', name: 'ip', id:'tickets-'+this.ident+'-ip',anchor: '99%'}
+						,{xtype:'displayfield', fieldLabel: _('ticket_comment_editedon'), name: 'editedon', id:'tickets-'+this.ident+'-editedon',anchor: '99%'}
+						//,{xtype:'displayfield', fieldLabel: _('ticket_comment_deletedon'), name: 'deletedon', id:'tickets-'+this.ident+'-deletedon',anchor: '99%', hidden: config.record.deleted ? 0 : 1}
+					]
+				}]
+			}
 		];
 	}
 
-	,getCommentMisc: function(config) {
-		return [
-			{xtype:'displayfield', fieldLabel: 'IP', name: 'ip', id:'tickets-'+this.ident+'-ip',anchor: '99%'}
-		];
-	}
 });
 Ext.reg('tickets-window-comment-update',Tickets.window.UpdateComment);

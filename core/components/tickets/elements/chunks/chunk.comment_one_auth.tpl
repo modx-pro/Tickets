@@ -1,5 +1,5 @@
 <li class="ticket-comment[[+comment_new]]" id="comment-[[+id]]" data-parent="[[+parent]]" data-newparent="[[+new_parent]]">
-	<div class="ticket-comment-body">
+	<div class="ticket-comment-body[[+guest]][[+bad]]">
 		<div class="ticket-comment-header">
 			<div class="ticket-comment-dot-wrapper"><div class="ticket-comment-dot"></div></div>
 			<img src="[[+avatar]]" class="ticket-avatar" alt="" />
@@ -41,4 +41,5 @@
 <!--tickets_rating_negative  negative-->
 <!--tickets_voted_plus  voted-->
 <!--tickets_voted_minus  voted-->
+<!--tickets_guest  ticket-comment-guest-->
 <!--tickets_has_parent <span class="ticket-comment-up"><a href="[[+url]]#comment-[[+parent]]" data-id="[[+id]]" data-parent="[[+parent]]">&uarr;</a></span>-->

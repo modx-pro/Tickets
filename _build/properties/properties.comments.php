@@ -32,6 +32,10 @@ $tmp = array(
 		'type' => 'textfield',
 		'value' => 'tpl.Tickets.comment.form',
 	),
+	'tplCommentFormGuest' => array(
+		'type' => 'textfield',
+		'value' => 'tpl.Tickets.comment.form.guest',
+	),
 	'tplCommentAuth' => array(
 		'type' => 'textfield',
 		'value' => 'tpl.Tickets.comment.one.auth',
@@ -80,6 +84,30 @@ $tmp = array(
 		'type' => 'numberfield',
 		'desc' => 'tickets_prop_commentsDepth',
 		'value' => 0,
+	),
+	'allowGuest' => array(
+		'type' => 'combo-boolean',
+		'value' => false,
+	),
+	'allowGuestEdit' => array(
+		'type' => 'combo-boolean',
+		'value' => true,
+	),
+	'allowGuestEmails' => array(
+		'type' => 'combo-boolean',
+		'value' => false,
+	),
+	'enableCaptcha' => array(
+		'type' => 'combo-boolean',
+		'value' => true,
+	),
+	'minCaptcha' => array(
+		'type' => 'numberfield',
+		'value' => 1,
+	),
+	'maxCaptcha' => array(
+		'type' => 'numberfield',
+		'value' => 10,
 	),
 );
 

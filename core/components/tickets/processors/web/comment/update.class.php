@@ -9,47 +9,112 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 	public $permission = 'comment_save';
 	public $beforeSaveEvent = 'OnBeforeCommentSave';
 	public $afterSaveEvent = 'OnCommentSave';
+	private $guest = false;
 
+
+	/** {@inheritDoc} */
+	public function checkPermissions() {
+		$this->guest = (boolean) $this->getProperty('allowGuest', false);
+
+		return !empty($this->permission) && !$this->guest
+			? $this->modx->hasPermission($this->permission)
+			: true;
+	}
+
+
+	/** {@inheritDoc} */
 	public function beforeSet() {
 		$time = time() - strtotime($this->object->get('createdon'));
+		$ip = $this->modx->request->getClientIp();
 
-		if ($this->object->get('createdby') != $this->modx->user->id) {
+		if (!$this->modx->getCount('TicketThread', array('name' => $this->getProperty('thread'), 'deleted' => 0, 'closed' => 0))) {
+			return $this->modx->lexicon('ticket_err_wrong_thread');
+		}
+		elseif ($this->modx->user->isAuthenticated($this->modx->context->key) && $this->object->get('createdby') != $this->modx->user->id) {
 			return $this->modx->lexicon('ticket_comment_err_wrong_user');
 		}
-		else if ($this->modx->getCount('TicketComment', array('parent' => $this->object->get('id')))) {
+		elseif (!$this->modx->user->isAuthenticated($this->modx->context->key)) {
+			if (!$this->getProperty('allowGuest') || !$this->getProperty('allowGuestEdit')) {
+				return $this->modx->lexicon('ticket_comment_err_guest_edit');
+			}
+			elseif ($this->object->get('ip') != $ip['ip']) {
+				return $this->modx->lexicon('ticket_comment_err_wrong_guest_ip');
+			}
+		}
+		elseif ($this->modx->getCount('TicketComment', array('parent' => $this->object->get('id')))) {
 			return $this->modx->lexicon('ticket_comment_err_has_replies');
 		}
-		else if ($time >= $this->modx->getOption('tickets.comment_edit_time', null, 180)) {
+		elseif ($time >= $this->modx->getOption('tickets.comment_edit_time', null, 600)) {
 			return $this->modx->lexicon('ticket_comment_err_no_time');
 		}
-		else if (!$text = $this->getProperty('text')) {
-			return $this->modx->lexicon('ticket_err_empty_comment');
-		}
-		else if ($this->object->get('deleted')) {
+		elseif ($this->object->get('deleted')) {
 			return $this->modx->lexicon('ticket_err_deleted_comment');
 		}
-		else if (!$this->object->get('published')) {
+		elseif (!$this->object->get('published')) {
 			return $this->modx->lexicon('ticket_err_unpublished_comment');
 		}
-		else {
-			$this->properties = array(
-				'text' => $text
-				,'raw' => $this->getProperty('raw')
-			);
+
+		// Required fields
+		$requiredFields = array_map('trim', explode(',', $this->getProperty('requiredFields', 'name,email')));
+		foreach ($requiredFields as $field) {
+			$value = $this->modx->stripTags(trim($this->getProperty($field)));
+			if (empty($value)) {
+				$value = $this->object->get($field);
+			}
+			if ($field == 'email' && !preg_match('/.+@.+\..+/i', $value)) {
+				$this->addFieldError($field, $this->modx->lexicon('ticket_comment_err_email'));
+			}
+			else {
+				if ($field == 'email') {$value = strtolower($value);}
+				$this->setProperty($field, $value);
+			}
 		}
+
+		if (!$text = trim($this->getProperty('text'))) {
+			return $this->modx->lexicon('ticket_comment_err_empty');
+		}
+
+		// Additional properties
+		$properties = $this->getProperties();
+		$add = array();
+		$meta = $this->modx->getFieldMeta('TicketComment');
+		foreach ($properties as $k => $v) {
+			if (!isset($meta[$k])) {
+				$add[$k] = $this->modx->stripTags($v);
+			}
+		}
+
+		$this->properties = array(
+			'text' => $text,
+			'raw' => $this->getProperty('raw'),
+			'name' => $this->getProperty('name'),
+			'email' => $this->getProperty('email'),
+			'properties' => !empty($add) ? $add : $this->object->get('properties'),
+		);
 
 		return parent::beforeSet();
 	}
 
+
+	/** {@inheritDoc} */
 	public function beforeSave() {
 		$this->object->fromArray(array(
-			'editedon' => time()
-			,'editedby' => $this->modx->user->id
+			'editedon' => time(),
+			'editedby' => $this->modx->user->isAuthenticated($this->modx->context->key)
+				? $this->modx->user->id
+				: 0,
 		));
+
+		if ($this->guest) {
+			$_SESSION['TicketComments']['name'] = $this->object->get('name');
+			$_SESSION['TicketComments']['email'] = $this->object->get('email');
+		}
 
 		return parent::beforeSave();
 	}
 
+
+	/** {@inheritDoc} */
 	public function afterSave() {
 		$this->object->clearTicketCache();
 		return parent::afterSave();

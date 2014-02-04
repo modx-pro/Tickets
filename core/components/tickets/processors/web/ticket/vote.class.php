@@ -14,7 +14,10 @@ class TicketVoteProcessor extends modObjectCreateProcessor {
 	public function beforeSet() {
 		$id = $this->getProperty('id');
 
-		if (!$this->ticket = $this->modx->getObject('Ticket', $id)) {
+		if (!$this->modx->user->isAuthenticated($this->modx->context->key)) {
+			return $this->modx->lexicon('permission_denied');
+		}
+		elseif (!$this->ticket = $this->modx->getObject('Ticket', $id)) {
 			return $this->modx->lexicon('ticket_err_ticket');
 		}
 		elseif ($this->ticket->createdby == $this->modx->user->id) {

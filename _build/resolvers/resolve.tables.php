@@ -55,6 +55,9 @@ if ($object->xpdo) {
 			$manager->addField('TicketVote', 'owner');
 			$manager->addIndex('TicketVote', 'owner');
 
+			$manager->addField('TicketQueue', 'email');
+			$manager->addIndex('TicketQueue', 'email');
+
 		$modx->setLogLevel($level);
 		break;
 

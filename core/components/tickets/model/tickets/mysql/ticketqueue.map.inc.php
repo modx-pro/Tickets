@@ -10,6 +10,7 @@ $xpdo_meta_map['TicketQueue']= array (
     'uid' => 0,
     'subject' => '',
     'body' => '',
+    'email' => '',
   ),
   'fieldMeta' => 
   array (
@@ -44,6 +45,14 @@ $xpdo_meta_map['TicketQueue']= array (
       'null' => true,
       'default' => '',
     ),
+    'email' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '255',
+      'phptype' => 'string',
+      'null' => true,
+      'default' => '',
+    ),
   ),
   'indexes' => 
   array (
@@ -56,6 +65,22 @@ $xpdo_meta_map['TicketQueue']= array (
       'columns' => 
       array (
         'uid' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
+    'email' => 
+    array (
+      'alias' => 'email',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'email' => 
         array (
           'length' => '',
           'collation' => 'A',

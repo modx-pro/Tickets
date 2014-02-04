@@ -1,6 +1,6 @@
 <?php
 /** @var array $scriptProperties */
-if (empty($thread))$scriptProperties['thread'] = $modx->getOption('thread', $scriptProperties, 'resource-'.$modx->resource->id, true);
+if (empty($thread)) {$scriptProperties['thread'] = $modx->getOption('thread', $scriptProperties, 'resource-'.$modx->resource->id, true);}
 $scriptProperties['resource'] = $modx->resource->id;
 $scriptProperties['snippetPrepareComment'] = $modx->getOption('tickets.snippet_prepare_comment');
 $scriptProperties['commentEditTime'] = $modx->getOption('tickets.comment_edit_time', null, 180);
@@ -8,13 +8,14 @@ $scriptProperties['commentEditTime'] = $modx->getOption('tickets.comment_edit_ti
 if (!isset($depth)) {$depth = 0;}
 if (empty($tplComments)) {$tplComments = 'tpl.Tickets.comment.wrapper';}
 if (empty($tplCommentForm)) {$tplCommentForm = 'tpl.Tickets.comment.form';}
+if (empty($tplCommentFormGuest)) {$tplCommentFormGuest = 'tpl.Tickets.comment.form.guest';}
 if (empty($tplCommentAuth)) {$tplCommentAuth = 'tpl.Tickets.comment.one.auth';}
 if (empty($tplCommentGuest)) {$tplCommentGuest = 'tpl.Tickets.comment.one.guest';}
 if (empty($tplLoginToComment)) {$tplLoginToComment = 'tpl.Tickets.comment.login';}
 if (empty($outputSeparator)) {$outputSeparator = "\n";}
 
 /** @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets ','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
+$Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 /** @var pdoFetch $pdoFetch */
@@ -28,16 +29,21 @@ $pdoFetch->addTime('pdoTools loaded');
 if (!$thread = $modx->getObject('TicketThread', array('name' => $scriptProperties['thread']))) {
 	$thread = $modx->newObject('TicketThread');
 	$thread->fromArray(array(
-		'name' => $scriptProperties['thread']
-		,'resource' => $modx->resource->id
-		,'createdby' => $modx->user->id
-		,'createdon' => date('Y-m-d H:i:s')
-		,'subscribers' => array($modx->resource->get('createdby'))
+		'name' => $scriptProperties['thread'],
+		'resource' => $modx->resource->id,
+		'createdby' => $modx->user->id,
+		'createdon' => date('Y-m-d H:i:s'),
+		'subscribers' => array($modx->resource->get('createdby')),
 	));
 }
 elseif ($thread->get('deleted')) {
 	return $modx->lexicon('ticket_thread_err_deleted');
 }
+// Prepare session for guests
+if (!empty($allowGuest) && !isset($_SESSION['TicketComments'])) {
+	$_SESSION['TicketComments'] = array('name' => '', 'email' => '', 'ids' => array());
+}
+
 // Migrate authors to subscription system
 if (!is_array($thread->get('subscribers'))) {
 	$thread->set('subscribers', array($modx->resource->get('createdby')));
@@ -61,7 +67,7 @@ $leftJoin = array(
 	'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `TicketComment`.`createdby`'),
 	'Profile' => array('class' => 'modUserProfile', 'on' => '`Profile`.`internalKey` = `TicketComment`.`createdby`'),
 );
-if ($modx->user->id) {
+if ($modx->user->isAuthenticated($modx->context->key)) {
 	$leftJoin['Vote'] = array(
 		'class' => 'TicketVote',
 		'on' => '`Vote`.`id` = `TicketComment`.`id` AND `Vote`.`class` = "TicketComment" AND `Vote`.`createdby` = '.$modx->user->id
@@ -72,9 +78,9 @@ $select = array(
 	'TicketComment' => $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true) . ', `parent` as `new_parent`, `rating` as `rating_total`',
 	'Thread' => '`Thread`.`resource`',
 	'User' => '`User`.`username`',
-	'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id'), true),
+	'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id','email'), true) . ',`Profile`.`email` as `user_email`',
 );
-if ($modx->user->id) {
+if ($modx->user->isAuthenticated($modx->context->key)) {
 	$select['Vote'] = '`Vote`.`value` as `vote`';
 }
 
@@ -125,7 +131,7 @@ if (!empty($rows) && is_array($rows)) {
 		$rows = array_reverse($rows);
 	}
 
-	$tpl = ($modx->user->isAuthenticated($modx->context->key) && !$thread->get('closed'))
+	$tpl = !$thread->get('closed') && ($modx->user->isAuthenticated($modx->context->key) || !empty($allowGuest))
 		? $tplCommentAuth
 		: $tplCommentGuest;
 	foreach ($rows as $row) {
@@ -137,14 +143,28 @@ if (!empty($rows) && is_array($rows)) {
 }
 
 $commentsThread = $pdoFetch->getChunk($tplComments, array(
-	'total' => $modx->getPlaceholder($pdoFetch->config['totalVar'])
-	,'comments' => $output
-	,'subscribed' => $thread->isSubscribed()
+	'total' => $modx->getPlaceholder($pdoFetch->config['totalVar']),
+	'comments' => $output,
+	'subscribed' => $thread->isSubscribed(),
 ));
 
-$form = !$modx->user->isAuthenticated($modx->context->key)
-	? $pdoFetch->getChunk($tplLoginToComment)
-	: $pdoFetch->getChunk($tplCommentForm, array('thread' => $scriptProperties['thread']));
+$pls = array('thread' => $scriptProperties['thread']);
+if (!$modx->user->isAuthenticated($modx->context->key) && empty($allowGuest)) {
+	$form = $pdoFetch->getChunk($tplLoginToComment);
+}
+elseif (!$modx->user->isAuthenticated($modx->context->key)) {
+	$pls['name'] = $_SESSION['TicketComments']['name'];
+	$pls['email'] = $_SESSION['TicketComments']['email'];
+	if (!empty($enableCaptcha)) {
+		$tmp = $Tickets->getCaptcha();
+		$pls['captcha'] = $modx->lexicon('ticket_comment_captcha', $tmp);
+	}
+	$form = $pdoFetch->getChunk($tplCommentFormGuest, $pls);
+}
+else {
+	$form = $pdoFetch->getChunk($tplCommentForm, $pls);
+}
+
 $commentForm = $thread->get('closed')
 	? $modx->lexicon('ticket_thread_err_closed')
 	: $form;
@@ -155,6 +175,8 @@ $output = !empty($formBefore)
 if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
 	$output .= '<pre class="CommentsLog">' . print_r($pdoFetch->getTime(), 1) . '</pre>';
 }
+
+$modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.formBefore = '. (integer) !empty($formBefore).';TicketsConfig.thread_depth = '. (integer) $depth.';</script>', true);
 
 // Return output
 if (!empty($toPlaceholder)) {

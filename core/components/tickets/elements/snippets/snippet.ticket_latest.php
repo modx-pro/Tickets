@@ -178,6 +178,11 @@ if (!empty($rows) && is_array($rows)) {
 			}
 		}
 		else {
+
+			if (empty($row['createdby'])) {
+				$row['fullname'] = $row['name'];
+				$row['guest'] = 1;
+			}
 			$row['resource'] = $row['ticket.id'];
 			$row = $Tickets->prepareComment($row);
 		}

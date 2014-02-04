@@ -10,9 +10,23 @@
 		<input type="hidden" name="id" value="0" />
 
 		<div class="form-group">
+			<label for="comment-name">[[%ticket_comment_name]]</label>
+			<input type="text" name="name" value="[[+name]]" id="comment-name" class="form-control" />
+			<span class="error"></span>
+		</div>
+
+		<div class="form-group">
+			<label for="comment-email">[[%ticket_comment_email]]</label>
+			<input type="text" name="email" value="[[+email]]" id="comment-email" class="form-control" />
+			<span class="error"></span>
+		</div>
+
+		<div class="form-group">
 			<label for="comment-editor"></label>
 			<textarea name="text" id="comment-editor" cols="30" rows="10" class="form-control">[[+comment]]</textarea>
 		</div>
+
+		[[+captcha]]
 
 		<div class="form-actions">
 			<input type="button" class="btn btn-default preview" value="[[%ticket_comment_preview]]" onclick="return Tickets.comment.preview(this.form, this);" title="Ctrl + Enter" />
@@ -21,3 +35,11 @@
 		</div>
 	</form>
 </div>
+
+<!--tickets_captcha
+<div class="form-group">
+	<label for="comment-captcha" id="comment-captcha">[[+captcha]]</label>
+	<input type="text" name="captcha" value="" id="comment-captcha" class="form-control" />
+	<span class="error"></span>
+</div>
+-->

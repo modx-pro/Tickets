@@ -1,6 +1,8 @@
 <form class="well create" method="post" action="" id="ticketForm">
 	<div id="ticket-preview-placeholder"></div>
 
+	<input type="hidden" name="published" value="1" />
+
 	<div class="form-group">
 		<label for="ticket-sections">[[%tickets_section]]</label>
 		<select name="parent" class="form-control" id="ticket-sections">[[+sections]]</select>
@@ -19,8 +21,7 @@
 	</div>
 
 	<div class="form-actions">
-		<input type="button" class="btn btn-default" value="[[%ticket_preview]]" onclick="return Tickets.ticket.preview(this.form, this);"/>
-		<input type="submit" class="btn btn-primary" value="[[%ticket_save]]" />&nbsp;&nbsp;
-		<label class="checkbox" for="ticket-publish"><input type="checkbox" name="published" value="1" [[+published:is=`1`:then=`checked`]] id="ticket-publish" /> [[%ticket_publish]]</label>
+		<input type="button" class="btn btn-default preview" value="[[%ticket_preview]]" onclick="return Tickets.ticket.preview(this.form, this);" title="Ctrl + Enter" />
+		<input type="submit" class="btn btn-primary submit" value="[[%ticket_save]]" title="Ctrl + Shift + Enter" />
 	</div>
 </form>

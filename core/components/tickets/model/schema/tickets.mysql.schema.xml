@@ -150,9 +150,13 @@
 		<field key="uid" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
 		<field key="subject" dbtype="varchar" precision="255" phptype="string" null="true" default="" />
 		<field key="body" dbtype="text" phptype="string" null="true" default="" />
+		<field key="email" dbtype="varchar" precision="255" phptype="string" null="true" default="" />
 
 		<index alias="uid" name="uid" primary="false" unique="false" type="BTREE">
 			<column key="uid" length="" collation="A" null="false" />
+		</index>
+		<index alias="email" name="email" primary="false" unique="false" type="BTREE">
+			<column key="email" length="" collation="A" null="false" />
 		</index>
 
 		<aggregate alias="User" class="modUser" local="uid" foreign="id" cardinality="one" owner="foreign" />

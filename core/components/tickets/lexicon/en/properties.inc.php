@@ -67,3 +67,10 @@ $_lang['tickets_prop_sections_context'] = 'Comma separated list of contexts to s
 $_lang['tickets_prop_meta_tpl'] = 'Chunk for templating information about a ticket.';
 $_lang['tickets_prop_getSection'] = 'Make additional query in the DB to obtain the parent section?';
 $_lang['tickets_prop_getUser'] = 'Make additional query in the DB to obtain a profile of the author?';
+
+$_lang['tickets_prop_allowGuest'] = 'Enable commenting for unauthorized users?';
+$_lang['tickets_prop_allowGuestEdit'] = 'Allow unauthorized users to edit their comments?';
+$_lang['tickets_prop_allowGuestEmails'] = 'Send to the guests email notifications about the replies?';
+$_lang['tickets_prop_enableCaptcha'] = 'Enable protection against spam for unauthorized users?';
+$_lang['tickets_prop_minCaptcha'] = 'The minimum number for generate spam-protecting code.';
+$_lang['tickets_prop_maxCaptcha'] = 'The maximum number for generate spam-protecting code.';

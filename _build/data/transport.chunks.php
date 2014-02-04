@@ -14,6 +14,7 @@ $tmp = array(
 	'tpl.Tickets.ticket.email.bcc' => 'ticket_email_bcc',
 
 	'tpl.Tickets.comment.form' => 'comment_form',
+	'tpl.Tickets.comment.form.guest' => 'comment_form_guest',
 	'tpl.Tickets.comment.one.auth' => 'comment_one_auth',
 	'tpl.Tickets.comment.one.guest' => 'comment_one_guest',
 	'tpl.Tickets.comment.one.deleted' => 'comment_one_deleted',

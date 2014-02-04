@@ -3,13 +3,14 @@
 /* Ticket form */
 #ticketForm {max-width: 800px;}
 #ticketForm #ticket-sections {max-width: 400px;}
-#ticketForm .error {color: brown;}
+#ticketForm .error, #comment-form .error {color: brown;}
 #ticket-preview-placeholder {background: #fff; outline: 5px solid #AAA; padding: 5px; display: none; margin: 10px 0; overflow: hidden;}
 .form-actions {margin-top: 10px; padding-top: 10px; border-top: 1px solid #e3e3e3;}
 .form-actions .checkbox {display:inline-block;}
 
 /* Comments */
 .comments {position:relative;overflow:hidden;}
+.comments-list {padding-left: 25px;}
 .ticket-comment {list-style-type: none;margin-top:20px;}
 .ticket-avatar {display:inline-block;}
 .ticket-comment-author {display:inline-block;font-weight:bold;margin-left: 10px;}
@@ -25,9 +26,23 @@
 .ticket-comment-text {margin-top: 5px;}
 .ticket-reply-link a {font-size: 0.8em; text-decoration: none; border-bottom: 1px dashed;}
 .ticket-comment-down {display: none;}
+/* Guest comment */
+.ticket-comment-guest .ticket-comment-author {color: #AAA;}
+/* Bad comments*/
+.ticket-comment .bad .ticket-comment-text {
+	-moz-transition: opacity 1s ease;
+	-o-transition: opacity 1s ease;
+	-webkit-transition: opacity 1s ease;
+}
+.ticket-comment .bad.bad5 .ticket-comment-text { opacity: 0.2;}
+.ticket-comment .bad.bad4 .ticket-comment-text { opacity: 0.35;}
+.ticket-comment .bad.bad3 .ticket-comment-text { opacity: 0.5;}
+.ticket-comment .bad.bad2 .ticket-comment-text { opacity: 0.65;}
+.ticket-comment .bad.bad1 .ticket-comment-text { opacity: 0.8;}
+.ticket-comment .bad.bad:hover .ticket-comment-text {opacity: 1;}
 
-#comment-editor {width: 99%}
-#comment-preview-placeholder {background: #fff;border: 5px solid #AAA;padding: 5px;display: none;margin: 10px 0;}
+#comment-editor {width: 99%; display:inline-block;}
+#comment-preview-placeholder {background: #fff;border: 5px solid #AAA;padding: 5px;display: none;margin: 10px 0;overflow:hidden;}
 
 /* Messages */
 .tickets-message-success  {background-color: green !important;}
@@ -58,6 +73,7 @@
 
 /* Rating and vote */
 .ticket-comment-rating {float: right; color: #555;}
+.ticket-rating .rating, .ticket-comment-rating .rating {font-weight: bold;}
 
 .ticket-rating.active .vote,
 .ticket-comment-rating.active .vote {

@@ -14,7 +14,10 @@ class TicketCommentVoteProcessor extends modObjectCreateProcessor {
 	public function beforeSet() {
 		$id = $this->getProperty('id');
 
-		if (!$this->comment = $this->modx->getObject('TicketComment', $id)) {
+		if (!$this->modx->user->isAuthenticated($this->modx->context->key)) {
+			return $this->modx->lexicon('permission_denied');
+		}
+		elseif (!$this->comment = $this->modx->getObject('TicketComment', $id)) {
 			return $this->modx->lexicon('ticket_comment_err_comment');
 		}
 		elseif ($this->comment->createdby == $this->modx->user->id) {

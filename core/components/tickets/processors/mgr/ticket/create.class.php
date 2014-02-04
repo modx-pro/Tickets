@@ -27,7 +27,9 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		if (!$this->publishedon = $this->getProperty('publishedon')) {$this->publishedon = time();}
 		if (!$this->publishedby = $this->getProperty('publishedby')) {$this->publishedby = $this->modx->user->id;}
 
-		foreach (array('parent','pagetitle','content') as $field) {
+		// Required fields
+		$requiredFields = array_map('trim', explode(',', $this->getProperty('requiredFields', 'parent,pagetitle,content')));
+		foreach ($requiredFields as $field) {
 			$value = trim($this->getProperty($field));
 			if (empty($value) && $this->modx->context->key != 'mgr') {
 				$this->addFieldError($field, $this->modx->lexicon('field_required'));
@@ -36,13 +38,17 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 				$this->setProperty($field, $value);
 			}
 		}
-
+		if (!$this->getProperty('content') && $this->modx->context->key != 'mgr') {
+			return $this->modx->lexicon('ticket_err_empty');
+		}
 		if (!$this->getProperty('template')) {
 			$this->setProperty('template', $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true));
 		}
 
 		$beforeSet = parent::beforeSet();
-		if ($this->hasErrors()) {return false;}
+		if ($this->hasErrors()) {
+			return $this->modx->lexicon('ticket_err_form');
+		}
 		if ($introtext = $this->getProperty('introtext')) {
 			$introtext = $this->object->Jevix($introtext);
 		}
@@ -50,15 +56,15 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$introtext = $this->object->getIntroText($this->getProperty('content'));
 		}
 
-		if (!$hidemenu = $this->modx->getOption('tickets.ticket_hidemenu_force', null, 1, true)) {
+		if (!$hidemenu = $this->modx->getOption('tickets.ticket_hidemenu_force', null, false)) {
 			$hidemenu = array_key_exists('hidemenu', $this->properties)
 				? $this->getProperty('hidemenu')
-				: $this->modx->getOption('hidemenu', null, false, true);
+				: $this->modx->getOption('hidemenu_default');
 		}
-		if (!$isfolder = $this->modx->getOption('tickets.ticket_isfolder_force', null, 1, true)) {
+		if (!$isfolder = $this->modx->getOption('tickets.ticket_isfolder_force', null, false)) {
 			$isfolder = array_key_exists('isfolder', $this->properties)
 				? $this->getProperty('isfolder')
-				: $isfolder = $this->modx->getOption('isfolder', null, false, true);
+				: false;
 		}
 
 		$properties = array(

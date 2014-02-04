@@ -7,26 +7,26 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 	public $defaultSortDirection = 'DESC';
 	private $resources = array();
 
+	
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
-
 		/* Get all comments by section */
 		if ($section = (integer) $this->getProperty('section')) {
 			if ($section = $this->modx->getObject('modResource', $section)) {
-				$parents = $this->modx->getChildIds($section->get('id'),1,array('context' => $section->get('context_key')));
+				$parents = $this->modx->getChildIds($section->get('id'), 1, array('context' => $section->get('context_key')));
 				if (!empty($parents)) {
 					$c->where(array('TicketThread.resource:IN' => $parents));
 				}
 			}
 		}
 		/* OR get all comments by threads list */
-		else if ($threads = $this->getProperty('threads')) {
-			if (!is_array($threads)) {$threads = explode(',',$threads);}
+		elseif ($threads = $this->getProperty('threads')) {
+			if (!is_array($threads)) {$threads = explode(',', $threads);}
 			if (!empty($threads)) {
 				$c->where(array('TicketComment.thread:IN' => $threads));
 			}
 		}
 		/* OR get all comments by tickets list */
-		else if ($parents = $this->getProperty('parents')) {
+		elseif ($parents = $this->getProperty('parents')) {
 			if (!is_array($parents)) {$parents = explode(',',$parents);}
 			if (!empty($parents)) {
 				$c->where(array('TicketThread.resource:IN' => $parents));
@@ -61,22 +61,20 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 		}
 
 
-		$c->select($this->modx->getSelectColumns('TicketComment','TicketComment'));
-		//$c->select('`TicketThread`.`resource`, `modResource`.`pagetitle`,`modResource`.`parent` AS `section`');
-		$c->select('`TicketThread`.`resource`');
 		$c->leftJoin('TicketThread','TicketThread','`TicketThread`.`id` = `TicketComment`.`thread`');
+		$c->leftJoin('modUserProfile', 'modUserProfile', '`TicketComment`.`createdby` = `modUserProfile`.`internalKey`');
+		//$c->select('`TicketThread`.`resource`, `modResource`.`pagetitle`,`modResource`.`parent` AS `section`');
+		$c->select($this->modx->getSelectColumns('TicketComment','TicketComment'));
+		$c->select('`TicketThread`.`resource`');
+		$c->select('`modUserProfile`.`fullname`');
 		//$c->leftJoin('modResource','modResource', '`TicketThread`.`resource` = `modResource`.`id`');
 
 		return $c;
 	}
 
+
 	public function prepareRow(xPDOObject $object) {
 		$comment = $object->toArray();
-		/*
-		if ($comment['deleted'] == 1) {
-			$comment['text'] = $this->modx->lexicon('ticket_comment_deleted_text');
-		}
-		*/
 		$resources = & $this->resources;
 		if (!array_key_exists($comment['resource'], $resources)) {
 			if ($resource = $this->modx->getObject('modResource', $comment['resource'])) {
@@ -96,9 +94,13 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 		$comment['createdon'] = $this->formatDate($comment['createdon']);
 		$comment['editedon'] = $this->formatDate($comment['editedon']);
 		$comment['deletedon'] = $this->formatDate($comment['deletedon']);
+		if (!empty($comment['fullname'])) {
+			$comment['name'] = $comment['fullname'];
+		}
 
 		return $comment;
 	}
+
 
 	public function formatDate($date = '') {
 		if (empty($date) || $date == '0000-00-00 00:00:00') {
