@@ -89,6 +89,9 @@ class Tickets {
 	 */
 	public function initialize($ctx = 'web', $scriptProperties = array()) {
 		$this->config = array_merge($this->config, $scriptProperties);
+		if (!$this->pdoTools) {$this->loadPdoTools();}
+		$this->pdoTools->setConfig($this->config);
+
 		$this->config['ctx'] = $ctx;
 		if (!empty($this->initialized[$ctx])) {
 			return true;
@@ -941,14 +944,14 @@ class Tickets {
 	 */
 	public function loadPdoTools() {
 		if (!is_object($this->pdoTools) || !($this->pdoTools instanceof pdoTools)) {
-			if ($this->modx->getService('pdoFetch')) {
-				$this->pdoTools = new pdoFetch($this->modx, $this->config);
+			/** @var pdoFetch $pdoFetch */
+			$fqn = $this->modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
+			if ($pdoClass = $this->modx->loadClass($fqn, '', false, true)) {
+				$this->pdoTools = new $pdoClass($this->modx, $this->config);
 			}
-			else {
-				return false;
-			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 
