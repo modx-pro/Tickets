@@ -91,6 +91,7 @@ $_lang['ticket_comment_err_empty'] = 'You forgot to write a comment.';
 $_lang['ticket_comment_err_email'] = 'You have specified an invalid email.';
 $_lang['ticket_comment_err_guest_edit'] = 'You are not allowed to edit comments.';
 $_lang['ticket_comment_err_captcha'] = 'Invalid code of protection against spam.';
+$_lang['ticket_comment_err_no_email'] = 'You need to specify the email in your account settings..';
 
 $_lang['ticket_publishedon'] = 'Published On';
 $_lang['ticket_pagetitle'] = 'Title';

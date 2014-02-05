@@ -43,6 +43,7 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 				$this->addFieldError($field, $this->modx->lexicon('field_required'));
 			}
 			elseif ($field == 'email' && !preg_match('/.+@.+\..+/i', $value)) {
+				$this->setProperty('email', '');
 				$this->addFieldError($field, $this->modx->lexicon('ticket_comment_err_email'));
 			}
 			else {
@@ -52,6 +53,9 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 		}
 		if (!$text = trim($this->getProperty('text'))) {
 			return $this->modx->lexicon('ticket_comment_err_empty');
+		}
+		if (!$this->getProperty('email') && $this->modx->user->isAuthenticated($this->modx->context->key)) {
+			return $this->modx->lexicon('ticket_comment_err_no_email');
 		}
 
 		// Additional properties

@@ -62,6 +62,7 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 				$value = $this->object->get($field);
 			}
 			if ($field == 'email' && !preg_match('/.+@.+\..+/i', $value)) {
+				$this->setProperty('email', '');
 				$this->addFieldError($field, $this->modx->lexicon('ticket_comment_err_email'));
 			}
 			else {
@@ -72,6 +73,9 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 
 		if (!$text = trim($this->getProperty('text'))) {
 			return $this->modx->lexicon('ticket_comment_err_empty');
+		}
+		if (!$this->getProperty('email') && $this->modx->user->isAuthenticated($this->modx->context->key)) {
+			return $this->modx->lexicon('ticket_comment_err_no_email');
 		}
 
 		// Additional properties
