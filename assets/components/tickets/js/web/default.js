@@ -14,21 +14,45 @@ var Tickets = {
 			document.write('<script src="'+TicketsConfig.jsUrl+'lib/jquery.sisyphus.min.js"><\/script>');
 		}
 
-		// Listeners
+		// Forms listeners
 		$(document).on('click', '#comment-preview-placeholder a', function() {
 			return false;
 		});
 		$(document).on('change', '#comments-subscribe', function() {
 			Tickets.comment.subscribe();
 		});
-		$(document).on('submit', '#ticketForm', function() {
+		$(document).on('submit', '#ticketForm', function(e) {
 			Tickets.ticket.save(this, $(this).find('[type="submit"]')[0]);
+			e.preventDefault();
 			return false;
 		});
-		$(document).on('submit', '#comment-form', function() {
+		$(document).on('submit', '#comment-form', function(e) {
 			Tickets.comment.save(this, $(this).find('[type="submit"]')[0]);
+			e.preventDefault();
 			return false;
 		});
+		// Preview and submit
+		$(document).on('click touchend', '#ticketForm .preview, #ticketForm .submit', function(e) {
+			if ($(this).hasClass('preview')) {
+				Tickets.ticket.preview(this.form, this);
+			}
+			else {
+				Tickets.ticket.save(this.form, this);
+			}
+			e.preventDefault();
+			return false;
+		});
+		$(document).on('click touchend', '#comment-form .preview, #comment-form .submit', function(e) {
+			if ($(this).hasClass('preview')) {
+				Tickets.comment.preview(this.form, this);
+			}
+			else {
+				Tickets.comment.save(this.form, this);
+			}
+			e.preventDefault();
+			return false;
+		});
+		// Hotkeys
 		$(document).on('keydown', '#ticketForm, #comment-form', function(e) {
 			if (e.keyCode == 13) {
 				if (e.shiftKey && (e.ctrlKey || e.metaKey)) {
@@ -38,6 +62,49 @@ var Tickets = {
 					$(this).find('input[type="button"].preview').click();
 				}
 			}
+		});
+		// Show and hide forms
+		$(document).on('click touchend', '#comment-new-link a', function(e) {
+			Tickets.forms.comment();
+			e.preventDefault();
+			return false;
+		});
+		$(document).on('click touchend', '.comment-reply a', function(e) {
+			var id = $(this).parents('.ticket-comment').data('id');
+			if ($(this).hasClass('reply')) {
+				Tickets.forms.reply(id);
+			}
+			else if ($(this).hasClass('edit')) {
+				Tickets.forms.edit(id);
+			}
+			e.preventDefault();
+			return false;
+		});
+		// Votes and rating
+		$(document).on('click touchend', '.ticket-comment-rating.active > .vote', function(e) {
+			var id = $(this).parents('.ticket-comment').data('id');
+			if ($(this).hasClass('plus')) {
+				Tickets.Vote.comment.vote(this, id, 1);
+			}
+			else if ($(this).hasClass('minus')) {
+				Tickets.Vote.comment.vote(this, id, -1);
+			}
+			e.preventDefault();
+			return false;
+		});
+		$(document).on('click touchend', '.ticket-rating.active > .vote', function(e) {
+			var id = $(this).parents('.ticket-meta').data('id');
+			if ($(this).hasClass('plus')) {
+				Tickets.Vote.ticket.vote(this, id, 1);
+			}
+			else if ($(this).hasClass('minus')) {
+				Tickets.Vote.ticket.vote(this, id, -1);
+			}
+			else {
+				Tickets.Vote.ticket.vote(this, id, 0);
+			}
+			e.preventDefault();
+			return false;
 		});
 		// --
 
@@ -483,7 +550,7 @@ Tickets.Vote = {
 				if (response.success) {
 					link.addClass(options.voted);
 					parent.removeClass(options.active).addClass(options.inactive);
-					parent.find('.' + options.vote).removeAttr('onclick').removeAttr('ontouchend');
+					parent.find('.' + options.vote);
 					rating.text(response.data.rating).attr('title', response.data.title);
 
 					rating.removeClass(options.positive + ' ' + options.negative);
@@ -525,7 +592,7 @@ Tickets.Vote = {
 				if (response.success) {
 					link.addClass(options.voted);
 					parent.removeClass(options.active).addClass(options.inactive);
-					parent.find('.' + options.vote).removeAttr('onclick').removeAttr('ontouchend');
+					parent.find('.' + options.vote);
 					rating.text(response.data.rating).attr('title', response.data.title).removeClass(options.vote);
 
 					rating.removeClass(options.positive + ' ' + options.negative);

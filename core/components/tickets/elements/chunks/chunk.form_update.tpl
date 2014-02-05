@@ -1,4 +1,4 @@
-<form class="well" method="post" action="" id="ticketForm">
+<form class="well update" method="post" action="" id="ticketForm">
 	<div id="ticket-preview-placeholder"></div>
 
 	<input type="hidden" name="tid" value="[[+id]]" />
@@ -22,7 +22,7 @@
 	</div>
 
 	<div class="form-actions">
-		<input type="button" class="btn btn-default preview" value="[[%ticket_preview]]" onclick="return Tickets.ticket.preview(this.form, this);" title="Ctrl + Enter" />
+		<input type="button" class="btn btn-default preview" value="[[%ticket_preview]]" title="Ctrl + Enter" />
 		<input type="submit" class="btn btn-primary submit" value="[[%ticket_save]]" title="Ctrl + Shift + Enter" />
 	</div>
 </form>

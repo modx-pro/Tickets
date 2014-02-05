@@ -1,5 +1,5 @@
 <h4 id="comment-new-link">
-	<a href="#reply" onclick="return Tickets.forms.comment();" class="btn btn-default">[[%ticket_comment_create]]</a>
+	<a href="#" class="btn btn-default">[[%ticket_comment_create]]</a>
 </h4>
 
 <div id="comment-form-placeholder">
@@ -15,7 +15,7 @@
 		</div>
 
 		<div class="form-actions">
-			<input type="button" class="btn btn-default preview" value="[[%ticket_comment_preview]]" onclick="return Tickets.comment.preview(this.form, this);" title="Ctrl + Enter" />
+			<input type="button" class="btn btn-default preview" value="[[%ticket_comment_preview]]" title="Ctrl + Enter" />
 			<input type="submit" class="btn btn-primary submit" value="[[%ticket_comment_save]]" title="Ctrl + Shift + Enter" />
 			<span class="time"></span>
 		</div>
