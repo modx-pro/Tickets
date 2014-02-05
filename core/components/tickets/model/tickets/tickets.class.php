@@ -738,7 +738,7 @@ class Tickets {
 		else {
 			$node['children'] = '';
 		}
-		$node['comment_was_edited'] = $node['editedby'] && $node['editedon'];
+		$node['comment_was_edited'] = (boolean) $node['editedon'];
 		$node['comment_new'] = $node['createdby'] != $this->modx->user->id && $this->last_view > 0 && strtotime($node['createdon']) > $this->last_view;
 
 		return $this->getChunk($tpl, $node, $this->config['fastMode']);
