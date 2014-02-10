@@ -49,7 +49,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		if (!$this->publishedby = $this->getProperty('publishedby')) {$this->publishedby = $this->modx->user->id;}
 
 		// Required fields
-		$requiredFields = array_map('trim', explode(',', $this->getProperty('requiredFields', 'parent,pagetitle,content')));
+		$requiredFields = $this->getProperty('requiredFields', array('parent','pagetitle','content'));
 		foreach ($requiredFields as $field) {
 			$value = trim($this->getProperty($field));
 			if (empty($value) && $this->modx->context->key != 'mgr') {

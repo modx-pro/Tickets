@@ -22,6 +22,7 @@ Changelog for Tickets.
 - Added anonymous comments.
 - Added simple math captcha for anonymous users.
 - Removed inline onclick events.
+- Fixed checking of "requiredFields" in TicketForm.
 
 1.2.4 rc5
 ==========

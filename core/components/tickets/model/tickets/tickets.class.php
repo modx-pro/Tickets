@@ -205,12 +205,10 @@ class Tickets {
 	 * @return array
 	 */
 	public function saveTicket($data = array()) {
-		$allowedFields = array_map('trim', explode(',', $this->config['allowedFields']));
-		$allowedFields = array_unique(array_merge($allowedFields, array('parent','pagetitle','content')));
-		/*
 		$requiredFields = array_map('trim', explode(',', $this->config['requiredFields']));
 		$requiredFields = array_unique(array_merge($requiredFields, array('parent','pagetitle','content')));
-		*/
+		$allowedFields = array_map('trim', explode(',', $this->config['allowedFields']));
+		$allowedFields = array_unique(array_merge($allowedFields, $requiredFields));
 
 		$fields = array();
 		foreach ($allowedFields as $field) {
@@ -223,6 +221,7 @@ class Tickets {
 			}
 		}
 
+		$fields['requiredFields'] = $requiredFields;
 		$fields['class_key'] = 'Ticket';
 		if (!empty($data['tid'])) {
 			$fields['id'] = (integer) $data['tid'];
