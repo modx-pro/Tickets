@@ -23,7 +23,7 @@
 
 		<div class="form-group">
 			<label for="comment-editor"></label>
-			<textarea name="text" id="comment-editor" cols="30" rows="10" class="form-control">[[+comment]]</textarea>
+			<textarea name="text" id="comment-editor" cols="30" rows="10" class="form-control"></textarea>
 		</div>
 
 		[[+captcha]]
