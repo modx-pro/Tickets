@@ -106,17 +106,6 @@ class Tickets {
 						$this->modx->regClientCSS(str_replace($config['pl'], $config['vl'], $css));
 					}
 
-					$enable_editor = (integer) $this->modx->getOption('tickets.enable_editor');
-					$editorConfig = 'enable_editor: '.$enable_editor.'';
-					if ($enable_editor) {
-						$this->modx->regClientScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
-						$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
-						$editorConfig .= '
-							,editor: {
-								ticket: '.$this->modx->getOption('tickets.editor_config.ticket').'
-								,comment: '.$this->modx->getOption('tickets.editor_config.comment').'
-							}';
-					}
 					$config_js = preg_replace(array('/^\n/', '/\t{6}/'), '', '
 						TicketsConfig = {
 							jsUrl: "'.$this->config['jsUrl'].'web/"
@@ -146,6 +135,18 @@ class Tickets {
 							'), true);
 							$this->modx->regClientScript(str_replace($config['pl'], $config['vl'], $js));
 						}
+					}
+
+					$enable_editor = (integer) $this->modx->getOption('tickets.enable_editor');
+					$editorConfig = 'enable_editor: '.$enable_editor.'';
+					if ($enable_editor) {
+						$this->modx->regClientScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
+						$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
+						$editorConfig .= '
+							,editor: {
+								ticket: '.$this->modx->getOption('tickets.editor_config.ticket').'
+								,comment: '.$this->modx->getOption('tickets.editor_config.comment').'
+							}';
 					}
 				}
 
