@@ -191,6 +191,8 @@ var Tickets = {
 					return true;
 				}
 				,success: function(response) {
+					$('#ticketForm.create').sisyphus().manuallyReleaseData();
+
 					if (response.success && response.data.redirect) {
 						document.location.href = response.data.redirect;
 					}
