@@ -131,7 +131,7 @@ if (!empty($rows) && is_array($rows)) {
 		$rows = array_reverse($rows);
 	}
 
-	$tpl = !$thread->get('closed') && ($modx->user->isAuthenticated($modx->context->key) || !empty($allowGuest))
+	$tpl = !$thread->get('closed') && ($modx->user->isAuthenticated($modx->context->key) || empty($allowGuest))
 		? $tplCommentAuth
 		: $tplCommentGuest;
 	foreach ($rows as $row) {
