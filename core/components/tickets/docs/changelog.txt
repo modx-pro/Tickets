@@ -1,6 +1,6 @@
 Changelog for Tickets.
 
-1.3.0 rc
+1.3.0 rc2
 ==========
 - [#59] Added changing of opacity of bad comments.
 - [#58] Fixed switching the document class from modDocument to Ticket.
@@ -24,6 +24,7 @@ Changelog for Tickets.
 - Removed inline onclick events.
 - Fixed checking of "requiredFields" in TicketForm.
 - Fixed restoring of old data in new ticket form by Sisyphus.
+- Improved javascript for Internet Explorer.
 
 1.2.4 rc5
 ==========

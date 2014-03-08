@@ -619,7 +619,7 @@ Tickets.Vote = {
 Tickets.tpanel = {
 	wrapper: $('#comments-tpanel')
 	,refresh: $('#tpanel-refresh')
-	,new: $('#tpanel-new')
+	,new_comments: $('#tpanel-new')
 	,class_new: 'ticket-comment-new'
 
 	,initialize: function() {
@@ -633,7 +633,7 @@ Tickets.tpanel = {
 			Tickets.comment.getlist();
 		});
 
-		this.new.on('click', function() {
+		this.new_comments.on('click', function() {
 			var elem = $('.' + Tickets.tpanel.class_new + ':first');
 			$('html, body').animate({
 				scrollTop: elem.offset().top
@@ -641,12 +641,12 @@ Tickets.tpanel = {
 				elem.removeClass(Tickets.tpanel.class_new);
 			});
 
-			var count = parseInt(Tickets.tpanel.new.text());
+			var count = parseInt(Tickets.tpanel.new_comments.text());
 			if (count > 1) {
-				Tickets.tpanel.new.text(count - 1);
+				Tickets.tpanel.new_comments.text(count - 1);
 			}
 			else {
-				Tickets.tpanel.new.text('').hide();
+				Tickets.tpanel.new_comments.text('').hide();
 			}
 		});
 	}
@@ -658,10 +658,10 @@ Tickets.tpanel = {
 	,stop: function() {
 		var count = $('.' + this.class_new).size();
 		if (count > 0) {
-			this.new.text(count).show();
+			this.new_comments.text(count).show();
 		}
 		else {
-			this.new.hide();
+			this.new_comments.hide();
 		}
 		this.refresh.removeClass('loading');
 	}
