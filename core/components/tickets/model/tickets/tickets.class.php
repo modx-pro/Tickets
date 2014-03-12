@@ -713,7 +713,7 @@ class Tickets {
 			$node['email'] = $node['user_email'];
 		}
 		unset($node['user_email']);
-		if (empty($node['fullname']) || !empty($node['name'])) {
+		if (empty($node['fullname']) && !empty($node['name'])) {
 			$node['fullname'] = $node['name'];
 		}
 		$node['guest'] = empty($node['createdby']);
