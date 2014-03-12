@@ -76,8 +76,8 @@ if ($action == 'comments') {
 
 	$innerJoin = array();
 	$innerJoin['Thread'] = empty($user)
-		? array('class' => 'TicketThread', 'on' => '`TicketComment`.`id` = `Thread`.`comment_last` AND `Thread`.`closed` = 0 AND `Thread`.`deleted` = 0')
-		: array('class' => 'TicketThread', 'on' => '`TicketComment`.`thread` = `Thread`.`id` AND `Thread`.`closed` = 0 AND `Thread`.`deleted` = 0');
+		? array('class' => 'TicketThread', 'on' => '`TicketComment`.`id` = `Thread`.`comment_last` AND `Thread`.`deleted` = 0')
+		: array('class' => 'TicketThread', 'on' => '`TicketComment`.`thread` = `Thread`.`id` AND `Thread`.`deleted` = 0');
 	$innerJoin['Ticket'] = array('class' => 'Ticket', 'on' => '`Ticket`.`id` = `Thread`.`resource`');
 
 	$leftJoin = array(
@@ -104,7 +104,7 @@ elseif ($action == 'tickets') {
 
 	$innerJoin = array();
 	$leftJoin = array(
-		'Thread' => array('class' => 'TicketThread', 'on' => '`Thread`.`resource` = `Ticket`.`id` AND `Thread`.`closed` = 0 AND `Thread`.`deleted` = 0'),
+		'Thread' => array('class' => 'TicketThread', 'on' => '`Thread`.`resource` = `Ticket`.`id` AND `Thread`.`deleted` = 0'),
 		'Section' => array('class' => 'TicketsSection', 'on' => '`Section`.`id` = `Ticket`.`parent`'),
 		'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `Ticket`.`createdby`'),
 		'Profile' => array('class' => 'modUserProfile', 'on' => '`Profile`.`internalKey` = `Ticket`.`createdby`'),

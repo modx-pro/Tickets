@@ -62,7 +62,7 @@ $output = array();
 if (!empty($rows) && is_array($rows)) {
 	foreach ($rows as $k => $row) {
 		// Processing main fields
-		$add = $pdoFetch->getObject('TicketThread', array('closed' => 0, 'deleted' => 0), array(
+		$add = $pdoFetch->getObject('TicketThread', array('deleted' => 0), array(
 			'innerJoin' => array(
 				'Ticket' => array('class' => 'Ticket', 'on' => 'Ticket.id = TicketThread.resource AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key="Ticket" AND Ticket.parent='.$row['id']),
 			),

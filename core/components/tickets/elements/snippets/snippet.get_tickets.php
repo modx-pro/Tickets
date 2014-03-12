@@ -143,7 +143,7 @@ if (!empty($rows) && is_array($rows)) {
 			'leftJoin' => array(
 				'View' => array('class' => 'TicketView', 'on' => '`Ticket`.`id` = `View`.`parent`'),
 				'LastView' => array('class' => 'TicketView', 'on' => '`Ticket`.`id` = `LastView`.`parent` AND `LastView`.`uid` = '.$modx->user->id),
-				'Thread' => array('class' => 'TicketThread', 'on' => '`Thread`.`resource` = `Ticket`.`id`  AND `Thread`.`closed` = 0 AND `Thread`.`deleted` = 0'),
+				'Thread' => array('class' => 'TicketThread', 'on' => '`Thread`.`resource` = `Ticket`.`id`  AND `Thread`.`deleted` = 0'),
 			),
 			'select' => array(
 				'View' => 'COUNT(DISTINCT `View`.`uid`) as `views`',
