@@ -96,11 +96,11 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		$this->setProperties(array(
 			'class_key' => 'Ticket'
 			//,'show_in_tree' => 0
-			,'published' => 0
-			,'hidemenu' => $hidemenu
-			,'syncsite' => 0
-			,'isfolder' => $isfolder
-			,'introtext' => $introtext
+		,'published' => 0
+		,'hidemenu' => $hidemenu
+		,'syncsite' => 0
+		,'isfolder' => $isfolder
+		,'introtext' => $introtext
 		));
 
 		/* Tickets properties */
@@ -170,22 +170,22 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 
 	/** {@inheritDoc} */
 	public function saveTemplateVariables() {
-		$properties = $this->getProperties();
-		$fields = array_keys($this->modx->getFieldMeta($this->classKey));
-		$tvs = array_diff(array_keys($properties), $fields);
+		if ($this->modx->context->key != 'mgr') {
+			$values = array();
+			$tvs = $this->object->getMany('TemplateVars');
 
-		if (!empty($tvs)) {
-			$q = $this->modx->newQuery('modTemplateVar', array('name:IN' => $tvs));
-			$q->select('id,name');
-			if ($q->prepare() && $q->stmt->execute()) {
-				while ($row = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
-					$this->setProperty('tv'.$row['id'], $properties[$row['name']]);
-				}
+			/** @var modTemplateVarResource $tv */
+			foreach ($tvs as $tv) {
+				$values['tv' . $tv->id] = $this->getProperty($tv->name, $tv->get('value'));
 			}
-			$this->setProperty('tvs', 1);
-			return parent::saveTemplateVariables();
+
+			if (!empty($values)) {
+				$this->setProperties($values);
+				$this->setProperty('tvs', 1);
+			}
 		}
-		return false;
+
+		return parent::saveTemplateVariables();
 	}
 
 }
