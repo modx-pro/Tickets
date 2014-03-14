@@ -14,6 +14,18 @@ if (empty($tplCommentGuest)) {$tplCommentGuest = 'tpl.Tickets.comment.one.guest'
 if (empty($tplLoginToComment)) {$tplLoginToComment = 'tpl.Tickets.comment.login';}
 if (empty($outputSeparator)) {$outputSeparator = "\n";}
 
+/*
+* $anotherTemplat парамет который будет показывать нужны ли разные шаблоны комментариев, если включена возможность комментирования гостями
+* Данный параметр будет работать только если $allowGuest = 1
+* для этого и нужно следующее условие
+*/
+if (empty($allowGuest)) {
+    $anotherTemplate = 0; // если комментирование гостями отключено, то anotherTemplate бессмысленен 
+}
+else{
+    if (empty($anotherTemplate)) {$anotherTemplate = 0;} // если комментирование гостями включено, то определяем нужно ли гостям показывать другой шаблон комментариев , не такой как авторизированным
+}
+
 /** @var Tickets $Tickets */
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
@@ -131,9 +143,16 @@ if (!empty($rows) && is_array($rows)) {
 		$rows = array_reverse($rows);
 	}
 
-	$tpl = !$thread->get('closed') && ($modx->user->isAuthenticated($modx->context->key) || !empty($allowGuest))
-		? $tplCommentAuth
-		: $tplCommentGuest;
+    	if($anotherTemplate == 0){
+        	$tpl = !$thread->get('closed') && ($modx->user->isAuthenticated($modx->context->key) || !empty($allowGuest))
+			? $tplCommentAuth 
+			: $tplCommentGuest;
+	 }
+	 else{
+		 $tpl = !$thread->get('closed') && $modx->user->isAuthenticated($modx->context->key)
+			? $tplCommentAuth 
+			: $tplCommentGuest;
+    }
 	foreach ($rows as $row) {
 		$output[] = $Tickets->templateNode($row, $tpl);
 	}
