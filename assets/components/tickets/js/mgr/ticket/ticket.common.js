@@ -214,7 +214,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 						action: 'getList'
 						,combo: '1'
 					}
-					,value: MODx.config['tickets.default_template'] > 0 ? MODx.config['tickets.default_template'] : config.record.template
+					,value: config.record.template
 					,listeners: {select: {fn: this.templateWarning,scope: this}}
 				},{
 					xtype: MODx.config.publish_document ? 'tickets-combo-user' : 'hidden'
@@ -328,67 +328,5 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 			,layout: 'form'
 		}];
 	}
-
-	,success: function(o) {
-		var g = Ext.getCmp('modx-grid-resource-security');
-		if (g) {g.getStore().commitChanges();}
-		var t = Ext.getCmp('modx-resource-tree');
-
-		if (t) {
-			var ctx = Ext.getCmp('modx-resource-context-key').getValue();
-			var pa = Ext.getCmp('modx-resource-parent-hidden').getValue();
-			var pao = Ext.getCmp('modx-resource-parent-old-hidden').getValue();
-			var v = ctx+'_'+pa;
-
-			if (pa !== pao) {
-				t.refresh();
-				Ext.getCmp('modx-resource-parent-old-hidden').setValue(pa);
-			}
-			else {
-				var n = t.getNodeById(v);
-				if (n) {
-					n.leaf = false;
-					t.refreshNode(v,true);
-				}
-			}
-		}
-
-		var action = 'resource/update';
-		var page = MODx.action ? MODx.action[action] : action;
-
-		if ((o.result.object.class_key != this.defaultClassKey) || (o.result.object.parent != this.defaultValues.parent) || (o.result.object.richtext != this.defaultValues.richtext)) {
-			MODx.loadPage(page, 'id='+o.result.object.id);
-		} else {
-			this.getForm().setValues(o.result.object);
-			Ext.getCmp('modx-page-update-resource').config.preview_url = o.result.object.preview_url;
-		}
-	}
-
-	,templateWarning: function() {
-		var t = Ext.getCmp('modx-resource-template');
-		if (!t) {return;}
-		if(t.getValue() !== t.originalValue) {
-			Ext.Msg.confirm(_('warning'), _('resource_change_template_confirm'), function(e) {
-				if (e == 'yes') {
-					var nt = t.getValue();
-					var f = Ext.getCmp('modx-page-update-resource');
-					f.config.action = 'reload';
-					MODx.activePage.submitForm({
-						success: {fn:function(r) {
-							var page = MODx.action ? MODx.action[r.result.object.action] : r.result.object.action;
-							MODx.loadPage(page, '&id='+r.result.object.id+'&reload='+r.result.object.reload+'&class_key='+this.config.record.class_key);
-						},scope:this}
-					},{
-						bypassValidCheck: true
-					},{
-						reloadOnly: true
-					});
-				} else {
-					t.setValue(this.config.record.template);
-				}
-			},this);
-		}
-	}
-
 });
 Ext.reg('modx-panel-ticket',Tickets.panel.Ticket);
