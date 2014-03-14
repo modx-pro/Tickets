@@ -45,12 +45,21 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$this->setProperty('template', $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true));
 		}
 
+		// Ticket properties
+		if ($this->modx->context->key != 'mgr') {
+			$this->unsetProperty('properties');
+		}
+		$properties = $this->getProperty('properties',array());
+
 		$beforeSet = parent::beforeSet();
 		if ($this->hasErrors()) {
 			return $this->modx->lexicon('ticket_err_form');
 		}
-		if ($introtext = $this->getProperty('introtext')) {
-			$introtext = $this->object->Jevix($introtext);
+		$introtext = $this->getProperty('introtext');
+		if (!empty($introtext)) {
+			if (empty($properties['disable_jevix'])) {
+				$introtext = $this->object->Jevix($introtext);
+			}
 		}
 		else {
 			$introtext = $this->object->getIntroText($this->getProperty('content'));
@@ -77,12 +86,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			'introtext' => $introtext,
 			'createdby' => !empty($createdby) ? $createdby : $this->modx->user->id,
 		);
-
 		$this->setProperties($properties);
-		/* Tickets properties */
-		if ($this->modx->context->key != 'mgr') {
-			$this->unsetProperty('properties');
-		}
 
 		return $beforeSet;
 	}

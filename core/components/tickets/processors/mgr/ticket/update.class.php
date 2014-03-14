@@ -63,12 +63,29 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			return $this->modx->lexicon('ticket_err_empty');
 		}
 
+		// Ticket properties
+		if ($this->modx->context->key == 'mgr') {
+			$prop1 = $this->object->get('properties');
+			$prop2 = $this->getProperty('properties');
+			if (empty($prop1)) {$prop1 = array();}
+			if (empty($prop2)) {$prop2 = array();}
+			$properties = array_merge($prop1, $prop2);
+			$this->setProperty('properties', $properties);
+		}
+		else {
+			$this->unsetProperty('properties');
+		}
+		$properties = $this->getProperty('properties',array());
+
 		$beforeSet = parent::beforeSet();
 		if ($this->hasErrors()) {
 			return $this->modx->lexicon('ticket_err_form');
 		}
-		if ($introtext = $this->getProperty('introtext')) {
-			$introtext = $this->object->Jevix($introtext);
+		$introtext = $this->getProperty('introtext');
+		if (!empty($introtext)) {
+			if (empty($properties['disable_jevix'])) {
+				$introtext = $this->object->Jevix($introtext);
+			}
 		}
 		else {
 			$introtext = $this->object->getIntroText($this->getProperty('content'));
@@ -94,27 +111,14 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		}
 
 		$this->setProperties(array(
-			'class_key' => 'Ticket'
-			//,'show_in_tree' => 0
-		,'published' => 0
-		,'hidemenu' => $hidemenu
-		,'syncsite' => 0
-		,'isfolder' => $isfolder
-		,'introtext' => $introtext
+			'class_key' => 'Ticket',
+			//'show_in_tree' => 0,
+			'published' => 0,
+			'hidemenu' => $hidemenu,
+			'syncsite' => 0,
+			'isfolder' => $isfolder,
+			'introtext' => $introtext,
 		));
-
-		/* Tickets properties */
-		if ($this->modx->context->key == 'mgr') {
-			$prop1 = $this->object->get('properties');
-			$prop2 = $this->getProperty('properties');
-			if (empty($prop1)) {$prop1 = array();}
-			if (empty($prop2)) {$prop2 = array();}
-			$properties = array_merge($prop1, $prop2);
-			$this->setProperty('properties', $properties);
-		}
-		else {
-			$this->unsetProperty('properties');
-		}
 
 		return $beforeSet;
 	}
