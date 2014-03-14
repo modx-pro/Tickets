@@ -284,8 +284,8 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 			,published: {}
 			,private: {name: 'privateweb',boxLabel: _('ticket_private'),description: _('ticket_private_help')}
 			,richtext: {}
-			,hidemenu: {boxLabel: _('resource_hide_from_menus'),description: '<b>[[*hidemenu]]</b><br/>' + _('resource_hide_from_menus_help')}
-			,isfolder: {boxLabel: _('resource_folder'),description: _('resource_folder_help')}
+			,hidemenu: {boxLabel: _('resource_hide_from_menus'),description: '<b>[[*hidemenu]]</b><br/>' + _('resource_hide_from_menus_help'), disabled: parseInt(MODx.config['tickets.ticket_hidemenu_force'])}
+			,isfolder: {boxLabel: _('resource_folder'),description: _('resource_folder_help'), disabled: parseInt(MODx.config['tickets.ticket_isfolder_force'])}
 			,show_in_tree: {boxLabel: _('ticket_show_in_tree'), xtype:'xcheckbox', inputValue:1, description: '<b>[[*show_in_tree]]</b><br/>' + _('ticket_show_in_tree_help'), checked:parseInt(config.record.properties.show_in_tree)}
 			,uri_override: {xtype:'xcheckbox', inputValue:1, checked:parseInt(config.record.uri_override), id: 'modx-resource-uri-override'}
 			,menutitle: {xtype: 'hidden', value: config.record.menutitle || ''}

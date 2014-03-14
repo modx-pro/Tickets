@@ -13,7 +13,15 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 	 */
 	public function process(array $scriptProperties = array()) {
 		$this->scriptProperties['template'] = $this->modx->getOption('tickets.default_template',null,$this->modx->getOption('default_template',null,1), true);
-		return parent::process($scriptProperties);
+		$placeholders =  parent::process($scriptProperties);
+
+		$this->resourceArray['hidemenu'] = (integer) $this->modx->getOption('tickets.ticket_hidemenu_force', null, false);
+		if (empty($this->resourceArray['hidemenu'])) {
+			$this->resourceArray['hidemenu'] = (integer) $this->modx->getOption('hidemenu_default');
+		}
+		$this->resourceArray['isfolder'] = (integer) $this->modx->getOption('tickets.ticket_isfolder_force', null, false);
+
+		return $placeholders;
 	}
 
 
