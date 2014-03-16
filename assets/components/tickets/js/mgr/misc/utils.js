@@ -114,7 +114,7 @@ Ext.extend(Tickets.combo.FilterStatus,MODx.combo.ComboBox);
 Ext.reg('tickets-combo-filter-status',Tickets.combo.FilterStatus);
 
 
-MODx.combo.TicketThread = function(config) {
+Tickets.combo.TicketThread = function(config) {
 	config = config || {};
 	Ext.applyIf(config,{
 		id: 'tickets-combo-thread'
@@ -142,7 +142,24 @@ MODx.combo.TicketThread = function(config) {
 		,width: 300
 		,editable: true
 	});
-	MODx.combo.TicketThread.superclass.constructor.call(this,config);
+	Tickets.combo.TicketThread.superclass.constructor.call(this,config);
 };
-Ext.extend(MODx.combo.TicketThread,MODx.combo.ComboBox);
-Ext.reg('tickets-combo-thread',MODx.combo.TicketThread);
+Ext.extend(Tickets.combo.TicketThread,MODx.combo.ComboBox);
+Ext.reg('tickets-combo-thread',Tickets.combo.TicketThread);
+
+
+Tickets.combo.Template = function(config) {
+	config = config || {};
+	Ext.applyIf(config,{
+		name: 'properties[tickets][template]'
+		,hiddenName: 'properties[tickets][template]'
+		,url: MODx.config.connectors_url+'element/template.php'
+		,baseParams: {
+			action: 'getlist'
+			,combo: 1
+		}
+	});
+	Tickets.combo.Template.superclass.constructor.call(this,config);
+};
+Ext.extend(Tickets.combo.Template,MODx.combo.Template);
+Ext.reg('tickets-children-combo-template',Tickets.combo.Template);

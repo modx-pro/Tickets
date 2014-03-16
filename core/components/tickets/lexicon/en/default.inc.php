@@ -24,6 +24,24 @@ $_lang['tickets_section_undelete'] = 'Undelete section';
 $_lang['tickets_section_delete'] = 'Delete section';
 $_lang['tickets_section_view'] = 'View on site';
 
+$_lang['tickets_section_settings'] = 'Settings';
+$_lang['tickets_section_tab_main'] = 'Main';
+$_lang['tickets_section_tab_tickets'] = 'Children tickets';
+$_lang['tickets_section_tab_tickets_intro'] = 'All settings on this page apply only to new tickets.';
+
+$_lang['tickets_section_settings_template'] = 'The template of children';
+$_lang['tickets_section_settings_template_desc'] = 'Select the template that will be assigned to all new tickets that are created in this section. If template is not specified, it will be taken from the system settings <b>tickets.default_template</b>.';
+$_lang['tickets_section_settings_uri'] = 'URI scheme';
+$_lang['tickets_section_settings_uri_desc'] = 'You can use <b>%y</b> - the year in two digits, <b>%m</b> is the month <b>%d</b> - the day <b>%alias</b> - alias <b>%id</b> - the identifier and <b>%ext</b> - the document extension.';
+$_lang['tickets_section_settings_show_in_tree'] = 'Display in the tree';
+$_lang['tickets_section_settings_show_in_tree_desc'] = 'default tickets are not shown in the document tree, to reduce the load on the admin panel, but you can enable it for new documents.';
+$_lang['tickets_section_settings_hidemenu'] = 'Hide in menu';
+$_lang['tickets_section_settings_hidemenu_desc'] = 'You can specify configuration display the new ticket in the menu.';
+$_lang['tickets_section_settings_disable_jevix'] = 'Disable Jevix';
+$_lang['tickets_section_settings_disable_jevix_desc'] = 'By default, for security purposes, all tickets are processed snippet Jevix. You can disable this processing for new tickets current topic.';
+$_lang['tickets_section_settings_process_tags'] = 'Process MODX tags';
+$_lang['tickets_section_settings_process_tags_desc'] = 'By default, for security purposes, in the tickets are not run MODX tags. You can include progress in new tickets current topic.';
+
 $_lang['ticket_create_here'] = 'Create ticket';
 
 $_lang['ticket_no_comments'] = 'This page has no comments. You can be a trailblazer.';

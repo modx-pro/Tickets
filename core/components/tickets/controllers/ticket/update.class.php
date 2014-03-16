@@ -5,6 +5,10 @@
  * @package tickets
  */
 class TicketUpdateManagerController extends ResourceUpdateManagerController {
+	/** @var  Ticket $resource */
+	public $resource;
+
+
 	/**
 	 * Returns language topics
 	 * @return array
@@ -32,6 +36,9 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 		$ticketsAssetsUrl = $this->modx->getOption('tickets.assets_url',null,$this->modx->getOption('assets_url',null,MODX_ASSETS_URL).'components/tickets/');
 		$connectorUrl = $ticketsAssetsUrl.'connector.php';
 		$ticketsJsUrl = $ticketsAssetsUrl.'js/mgr/';
+
+		$properties = $this->resource->getProperties();
+		$this->resourceArray['properties'] = $properties;
 
 		$this->addJavascript($mgrUrl.'assets/modext/util/datetime.js');
 		$this->addJavascript($mgrUrl.'assets/modext/widgets/element/modx.panel.tv.renders.js');

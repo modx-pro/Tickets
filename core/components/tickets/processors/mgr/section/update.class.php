@@ -49,7 +49,28 @@ class TicketsSectionUpdateProcessor extends modResourceUpdateProcessor {
 			'isfolder' => 1,
 			'hide_children_in_tree' => 0,
 		));
+
+		$this->handleProperties();
 		return parent::beforeSet();
+	}
+
+
+	/**
+	 * Handle boolean properties
+	 */
+	public function handleProperties() {
+		$properties = $this->getProperty('properties');
+		if (!empty($properties['tickets'])) {
+			foreach ($properties['tickets'] as &$property) {
+				if ($property == 'true') {
+					$property = true;
+				}
+				elseif ($property == 'false') {
+					$property = false;
+				}
+			}
+		}
+		$this->setProperty('properties', $properties);
 	}
 
 }

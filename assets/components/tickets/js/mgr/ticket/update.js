@@ -10,6 +10,7 @@ Tickets.page.UpdateTicket = function(config) {
 };
 
 Ext.extend(Tickets.page.UpdateTicket,MODx.page.UpdateResource,{
+	/*
 	getButtons: function(cfg) {
 		var btns = [];
 		if (cfg.canSave == 1) {
@@ -65,11 +66,12 @@ Ext.extend(Tickets.page.UpdateTicket,MODx.page.UpdateResource,{
 		MODx.Ajax.request({
 			url: MODx.config.connectors_url+'resource/index.php'
 			,params: {
-				action: 'publish'
+				action: 'update'
 				,id: MODx.request.id
 			}
 			,listeners: {
-				'success':{fn:function(r) {
+				success:{fn:function(r) {
+					console.log(r.object)
 					var p = Ext.getCmp('modx-resource-published');
 					if (p) {
 						p.setValue(1);
@@ -120,5 +122,6 @@ Ext.extend(Tickets.page.UpdateTicket,MODx.page.UpdateResource,{
 			}
 		});
 	}
+	*/
 });
 Ext.reg('tickets-page-ticket-update',Tickets.page.UpdateTicket);

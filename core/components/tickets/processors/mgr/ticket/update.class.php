@@ -63,85 +63,57 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			return $this->modx->lexicon('ticket_err_empty');
 		}
 
-		// Ticket properties
-		if ($this->modx->context->key == 'mgr') {
-			$prop1 = $this->object->get('properties');
-			$prop2 = $this->getProperty('properties');
-			if (empty($prop1)) {$prop1 = array();}
-			if (empty($prop2)) {$prop2 = array();}
-			$properties = array_merge($prop1, $prop2);
-			$this->setProperty('properties', $properties);
-		}
-		else {
-			$this->unsetProperty('properties');
-		}
-		$properties = $this->getProperty('properties',array());
-
-		$beforeSet = parent::beforeSet();
+		// Run main verification
+		parent::beforeSet();
 		if ($this->hasErrors()) {
 			return $this->modx->lexicon('ticket_err_form');
 		}
+
+		// Ticket properties
+		$properties = $this->modx->context->key == 'mgr'
+			? $this->getProperty('properties')
+			: $this->object->getProperties();
+		$this->unsetProperty('properties');
+
+		// Define introtext
 		$introtext = $this->getProperty('introtext');
-		if (!empty($introtext)) {
-			if (empty($properties['disable_jevix'])) {
-				$introtext = $this->object->Jevix($introtext);
-			}
+		if (empty($introtext)) {
+			$introtext = $this->object->getIntroText($this->getProperty('content'), false);
 		}
-		else {
-			$introtext = $this->object->getIntroText($this->getProperty('content'));
+		if (empty($properties['disable_jevix'])) {
+			$introtext = $this->object->Jevix($introtext);
 		}
 
-		if (!$hidemenu = $this->modx->getOption('tickets.ticket_hidemenu_force', null, false)) {
-			$hidemenu = array_key_exists('hidemenu', $this->properties)
-				? $this->getProperty('hidemenu')
-				: $this->modx->getOption('hidemenu_default');
+		// Set properties
+		if ($this->modx->context->key != 'mgr') {
+			$this->unsetProperty('properties');
 		}
-		if (!$isfolder = $this->modx->getOption('tickets.ticket_isfolder_force', null, false)) {
-			$isfolder = array_key_exists('isfolder', $this->properties)
-				? $this->getProperty('isfolder')
-				: false;
-		}
-		if ($category = $this->modx->getObject('TicketsSection', array('id' => $this->getProperty('parent'), 'class_key' => 'TicketsSection'))) {
-			if (!$category->checkPolicy('section_add_children') && $this->object->parent != $category->id) {
-				return $this->modx->lexicon('ticket_err_wrong_parent') . $this->modx->lexicon('ticket_err_access_denied');
-			}
-		}
-		elseif ($this->modx->context->key != 'mgr') {
-			return $this->modx->lexicon('resource_err_nfs', array('id' => $this->getProperty('parent')));
-		}
-
 		$this->setProperties(array(
 			'class_key' => 'Ticket',
-			//'show_in_tree' => 0,
 			'published' => 0,
-			'hidemenu' => $hidemenu,
 			'syncsite' => 0,
-			'isfolder' => $isfolder,
 			'introtext' => $introtext,
 		));
+		if ($this->modx->context->key == 'mgr') {
+			$properties['disable_jevix'] = empty($properties['disable_jevix']);
+			$properties['process_tags'] = empty($properties['process_tags']);
+			$this->object->setProperties($properties, 'tickets', true);
+		}
 
-		return $beforeSet;
+		return true;
 	}
 
 
 	/** {@inheritDoc} */
 	public function checkFriendlyAlias() {
-		parent::checkFriendlyAlias();
+		$alias = parent::checkFriendlyAlias();
 
-		$found = false;
-		foreach ($this->modx->error->errors as $k => $v) {
-			if ($v['id'] == 'alias') {
-				unset($this->modx->error->errors[$k]);
-				$found = true;
+		if ($this->modx->context->key != 'mgr') {
+			foreach ($this->modx->error->errors as $k => $v) {
+				if ($v['id'] == 'alias' || $v['id'] == 'uri') {
+					unset($this->modx->error->errors[$k]);
+				}
 			}
-		}
-
-		if ($found || $this->workingContext->getOption('tickets.ticket_id_as_alias')) {
-			$alias = $this->object->id;
-			$this->setProperty('alias', $alias);
-		}
-		else {
-			$alias = parent::checkFriendlyAlias();
 		}
 
 		return $alias;

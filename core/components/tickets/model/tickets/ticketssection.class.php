@@ -11,6 +11,7 @@ require_once MODX_CORE_PATH.'components/tickets/processors/mgr/section/update.cl
 class TicketsSection extends modResource {
 	public $showInContextMenu = true;
 	public $allowChildrenResources = false;
+	private $_oldUri = '';
 
 	function __construct(xPDO & $xpdo) {
 		parent :: __construct($xpdo);
@@ -76,9 +77,17 @@ class TicketsSection extends modResource {
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
+	/** {@inheritDoc} */
+	public function set($k, $v= null, $vType= '') {
+		if (is_string($k) && ($k == 'alias' || $k == 'uri')) {
+			$this->_oldUri = parent::get('uri');
+		}
+
+		return parent::set($k,$v,$vType);
+	}
+
+
+	/** {@inheritDoc} */
 	public function get($k, $format = null, $formatTemplate= null) {
 		$fields = array('comments','views','votes','tickets');
 
@@ -107,15 +116,6 @@ class TicketsSection extends modResource {
 		$array = array_merge(parent::toArray(), $this->getVirtualFields());
 
 		return $array;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function process() {
-		//$this->xpdo->setPlaceholders($this->getVirtualFields());
-		return parent::process();
 	}
 
 
@@ -303,4 +303,82 @@ class TicketsSection extends modResource {
 		$node['hasChildren'] = true;
 		return $node;
 	}
+
+
+	/**
+	 * Get the properties for the specific namespace for the Resource
+	 *
+	 * @param string $namespace
+	 * @return array
+	 */
+	public function getProperties($namespace = 'tickets') {
+		$properties = parent::getProperties($namespace);
+		$default_properties = array(
+			'template' => $this->xpdo->context->getOption('tickets.default_template', 0),
+			'uri' => '%id-%alias%ext',
+			'show_in_tree' => $this->xpdo->context->getOption('tickets.ticket_show_in_tree_default', false),
+			'hidemenu' => $this->xpdo->context->getOption('tickets.ticket_hidemenu_force', $this->xpdo->context->getOption('hidemenu_default')),
+			'disable_jevix' => $this->xpdo->context->getOption('tickets.disable_jevix_default', false),
+			'process_tags' => $this->xpdo->context->getOption('tickets.process_tags_default', false),
+		);
+
+		// Old default values
+		if (array_key_exists('tickets.ticket_id_as_alias',$this->xpdo->config)) {
+			$default_properties['uri'] = $this->xpdo->context->getOption('tickets.ticket_id_as_alias')
+				? '%id'
+				: '%alias';
+			$default_properties['uri'] .= $this->xpdo->context->getOption('tickets.ticket_isfolder_force')
+				? '/'
+				: '%ext';
+		}
+
+		foreach ($default_properties as $key => $value) {
+			if (!isset($properties[$key])) {
+				$properties[$key] = $value;
+			}
+			elseif ($properties[$key] === 'true') {
+				$properties[$key] = true;
+			}
+			elseif ($properties[$key] === 'false') {
+				$properties[$key] = false;
+			}
+			elseif (is_numeric($value) && $key == 'disable_jevix' || $key == 'process_tags') {
+				$properties[$key] = boolval(intval($value));
+			}
+		}
+
+		return $properties;
+	}
+
+
+	/** {@InheritDoc} */
+	public function save($cacheFlag = null) {
+		$this->set('isfolder', 1);
+
+		$isNew = $this->isNew();
+		$saved = parent::save($cacheFlag);
+		if ($saved && !$isNew) {
+			$this->updateChildrenURIs();
+		}
+
+		return $saved;
+	}
+
+
+	/**
+	 * Update all children URIs if section uri was changed
+	 *
+	 * @return int
+	 */
+	public function updateChildrenURIs() {
+		$count = 0;
+		if (!empty($this->_oldUri) && $this->_oldUri != $this->get('uri')) {
+			$sql = "UPDATE {$this->xpdo->getTableName('Ticket')}
+				SET `uri` = REPLACE(`uri`,'{$this->_oldUri}','{$this->get('uri')}')
+				WHERE `parent` = {$this->get('id')}";
+			$count = $this->xpdo->exec($sql);
+		}
+		return $count;
+	}
+
 }

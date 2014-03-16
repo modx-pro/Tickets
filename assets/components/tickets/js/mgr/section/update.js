@@ -43,20 +43,15 @@ Ext.extend(Tickets.panel.Section,MODx.panel.Resource,{
 			,items: this.getMainFields(config)
 		});
 		 it.push({
-			 title: _('settings')
+			 title: _('tickets_section_settings')
 			 ,id: 'modx-tickets-template'
 			 ,cls: 'modx-resource-tab'
-			 ,layout: 'form'
+			 ,bodyCssClass: 'tab-panel-wrapper form-with-labels'
+			 ,autoHeight: true
+			 //,layout: 'form'
 			 ,labelAlign: 'top'
 			 ,labelSeparator: ''
-			 ,bodyCssClass: 'tab-panel-wrapper main-wrapper'
-			 ,autoHeight: true
-			 ,defaults: {
-				 border: false
-				 ,msgTarget: 'side'
-				 ,width: 400
-		 	}
-		 	,items: this.getTemplateSettings(config)
+		 	,items: this.getSectionSettings(config)
 		 });
 		 it.push({
 			 title: _('comments')
@@ -113,9 +108,9 @@ Ext.extend(Tickets.panel.Section,MODx.panel.Resource,{
 		}];
 	}
 
-	 ,getTemplateSettings: function(config) {
+	 ,getSectionSettings: function(config) {
 		 return [{
-		 	xtype: 'tickets-tab-template-settings'
+		 	xtype: 'tickets-section-tab-settings'
 		 	,record: config.record
 		 }];
 	 }

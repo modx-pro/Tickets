@@ -9,7 +9,6 @@ $tmp = array(
 			'OnDocFormSave',
 			'OnSiteRefresh',
 			'OnManagerPageInit',
-			'OnDocFormRender',
 			'OnWebPagePrerender',
 			'OnPageNotFound',
 			'OnWebPageComplete',

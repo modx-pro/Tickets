@@ -59,6 +59,7 @@ $tmp = array(
 		]}',
 		'area' => 'tickets.comment',
 	),
+	/*
 	'default_template' => array(
 		'xtype' => 'modx-combo-template',
 		'value' => '',
@@ -74,6 +75,7 @@ $tmp = array(
 		'value' => false,
 		'area' => 'tickets.ticket',
 	),
+	*/
 	'snippet_prepare_comment' => array(
 		'xtype' => 'textfield',
 		'value' => '',
@@ -125,6 +127,7 @@ $tmp = array(
 		'xtype' => 'textarea',
 		'area' => 'tickets.section',
 	),
+	/*
 	'ticket_hidemenu_force' => array(
 		'value' => false,
 		'xtype' => 'combo-boolean',
@@ -150,7 +153,7 @@ $tmp = array(
 		'xtype' => 'combo-boolean',
 		'area' => 'tickets.ticket',
 	)
-
+	*/
 );
 
 foreach ($tmp as $k => $v) {

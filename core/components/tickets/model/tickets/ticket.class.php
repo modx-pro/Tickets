@@ -11,68 +11,6 @@ require_once MODX_CORE_PATH.'components/tickets/processors/mgr/ticket/update.cla
 class Ticket extends modResource {
 	public $showInContextMenu = false;
 	public $allowChildrenResources = false;
-	private $_properties = array();
-
-
-	function __construct(xPDO & $xpdo) {
-		parent :: __construct($xpdo);
-
-		$this->set('class_key','Ticket');
-		$this->set('comments',0);
-		$this->set('views',0);
-		$this->set('votes',0);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 * @return object|null
-	 */
-	public static function load(xPDO & $xpdo, $className, $criteria= null, $cacheFlag= true){
-		if (!is_object($criteria)) {
-			$criteria= $xpdo->getCriteria($className, $criteria, $cacheFlag);
-		}
-		$xpdo->addDerivativeCriteria($className, $criteria);
-		return parent::load($xpdo, $className, $criteria, $cacheFlag);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 * @return array
-	 */
-	public static function loadCollection(xPDO & $xpdo, $className, $criteria= null, $cacheFlag= true){
-		if (!is_object($criteria)) {
-			$criteria= $xpdo->getCriteria($className, $criteria, $cacheFlag);
-		}
-		$xpdo->addDerivativeCriteria($className, $criteria);
-		return parent::loadCollection($xpdo, $className, $criteria, $cacheFlag);
-	}
-
-
-	/**
-	 * Loads ticket properties
-	 */
-	private function _loadProperties() {
-		$properties = array();
-
-		$q = $this->xpdo->newQuery('Ticket', $this->id);
-		$q->select('properties');
-		$tstart = microtime(true);
-		if ($q->prepare() && $q->stmt->execute()) {
-			$this->xpdo->startTime += microtime(true) - $tstart;
-			$this->xpdo->executedQueries ++;
-			$properties = $this->xpdo->fromJSON($q->stmt->fetch(PDO::FETCH_COLUMN));
-			if (!is_array($properties)) {
-				$properties = array();
-			}
-		}
-
-		$properties['disable_jevix'] = !empty($properties['disable_jevix']);
-		$properties['process_tags'] = !empty($properties['process_tags']) || $this->xpdo->context->key == 'mgr';
-
-		$this->_properties = $properties;
-	}
 
 
 	/** {@inheritDoc} */
@@ -122,10 +60,11 @@ class Ticket extends modResource {
 				default: $value = parent::get($k, $format, $formatTemplate);
 			}
 
-			if (!$this->_properties) {$this->_loadProperties();}
-
-			if (!$this->_properties['process_tags'] && is_string($k) && !in_array($k, $fields) && @$this->_fieldMeta[$k]['phptype'] == 'string') {
-				$value = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $value);
+			if (isset($this->_fieldMeta[$k]) && $this->_fieldMeta[$k]['phptype'] == 'string') {
+				$properties = $this->getProperties();
+				if (!$properties['process_tags'] && !in_array($k, $fields)) {
+					$value = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $value);
+				}
 			}
 		}
 
@@ -167,12 +106,12 @@ class Ticket extends modResource {
 	 */
 	public function getContent(array $options = array()) {
 		$content = parent::get('content');
+		$properties = $this->getProperties();
 
-		if (!$this->_properties) {$this->_loadProperties();}
-		if (!$this->_properties['disable_jevix']) {
+		if (!$properties['disable_jevix']) {
 			$content = $this->Jevix($content, false);
 		}
-		if (!$this->_properties['process_tags']) {
+		if (!$properties['process_tags']) {
 			$content = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $content);
 		}
 		$content = preg_replace('/<cut(.*?)>/i', '<a name="cut"></a>', $content);
@@ -219,11 +158,13 @@ class Ticket extends modResource {
 
 	/**
 	 * Generate intro text from content buy cutting text before tag <cut/>
+	 *
 	 * @param string $content Any text for processing, with tag <cut/>
+	 * @param boolean $jevix
 	 *
 	 * @return mixed $introtext
 	 */
-	function getIntroText($content = null) {
+	function getIntroText($content = null, $jevix = true) {
 		if (empty($content)) {
 			$content = parent::get('content');
 		}
@@ -233,9 +174,11 @@ class Ticket extends modResource {
 			$introtext = '';
 		}
 		else {
-			$tmp = explode("<cut/>", $content);
+			$tmp = explode('<cut/>', $content);
 			$introtext = reset($tmp);
-			$introtext = $this->Jevix($introtext);
+			if ($jevix) {
+				$introtext = $this->Jevix($introtext);
+			}
 		}
 		return $introtext;
 	}
@@ -275,8 +218,6 @@ class Ticket extends modResource {
 	 * @return array $array Array with virtual fields
 	 */
 	function getVirtualFields() {
-		if (!$this->_properties) {$this->_loadProperties();}
-
 		$array = array(
 			'comments' => $this->getCommentsCount(),
 			'views' => $this->getViewsCount(),
@@ -294,18 +235,14 @@ class Ticket extends modResource {
 	 * @return array
 	 */
 	public function getRating() {
-		if (!$this->_properties) {$this->_loadProperties();}
+		$properties = $this->getProperties();
 
 		$array = array(
-			'rating' => isset($this->_properties['rating']) ? $this->_properties['rating'] : 0,
-			'rating_total' => isset($this->_properties['rating']) ? $this->_properties['rating'] : 0,
-			'rating_plus' => isset($this->_properties['rating_plus']) ? $this->_properties['rating_plus'] : 0,
-			'rating_minus' => isset($this->_properties['rating_minus']) ? $this->_properties['rating_minus'] : 0,
+			'rating' => isset($properties['rating']) ? $properties['rating'] : 0,
+			'rating_total' => isset($properties['rating']) ? $properties['rating'] : 0,
+			'rating_plus' => isset($properties['rating_plus']) ? $properties['rating_plus'] : 0,
+			'rating_minus' => isset($properties['rating_minus']) ? $properties['rating_minus'] : 0,
 		);
-		$rating = array_key_exists('rating', $this->_properties)
-			? $this->_properties['rating']
-			: '';
-		//if ($array['rating'] > 0) {$array['rating'] = '+' . $rating;}
 
 		if (!$this->xpdo->user->id || $this->xpdo->user->id == $this->createdby) {
 			$array['voted'] = 0;
@@ -452,18 +389,143 @@ class Ticket extends modResource {
 					$votes['rating_minus'] += $value;
 				}
 			}
-			$tmp = $this->get('properties');
-			if (!is_array($tmp)) {
-				$this->_properties = $votes;
-			}
-			else {
-				$this->_properties = array_merge($tmp, $votes);
-			}
-			$this->set('properties', $this->_properties);
+
+			$this->setProperties($votes, 'tickets', true);
 			$this->save();
 		}
 
 		return $votes;
+	}
+
+
+	/**
+	 * Build custom uri with respect to section settings
+	 *
+	 * @param string $alias
+	 *
+	 * @return string|bool
+	 */
+	public function setUri($alias = '') {
+		if (!$this->get('published')) {
+			$this->set('uri', '');
+			$this->set('uri_override', 0);
+			return true;
+		}
+
+		if (empty($alias)) {
+			$alias = $this->get('alias');
+		}
+		/** @var TicketsSection $section */
+		if ($section = $this->xpdo->getObject('TicketsSection', $this->get('parent'))) {
+			$properties = $section->getProperties();
+		}
+		else {
+			return false;
+		}
+		$template = $properties['uri'];
+		if (empty($template) || strpos($template, '%') === false) {
+			return false;
+		}
+
+		if ($this->get('pub_date')) {
+			$date = $this->get('pub_date');
+		}
+		else {
+			$date = $this->get('published')
+				? $this->get('publishedon')
+				: $this->get('createdon');
+		}
+		$date = strtotime($date);
+
+		$pls = array(
+			'pl' => array('%y','%m','%d','%id','%alias','%ext'),
+			'vl' => array(
+				date('y', $date),
+				date('m', $date),
+				date('d', $date),
+				$this->get('id')
+					? $this->get('id')
+					: '%id',
+				$alias,
+			)
+		);
+
+		/** @var modContentType $contentType */
+		if ($contentType = $this->xpdo->getObject('modContentType', $this->get('content_type'))) {
+			$pls['vl'][] = $contentType->getExtension();
+		}
+		else {
+			$pls['vl'][] = '';
+		}
+
+		$uri = rtrim($section->getAliasPath(),'/') .'/'. str_replace($pls['pl'], $pls['vl'], $template);
+		$this->set('uri', $uri);
+		$this->set('uri_override', true);
+		return $uri;
+	}
+
+
+	/**
+	 * Get the properties for the specific namespace for the Resource
+	 *
+	 * @param string $namespace
+	 * @return array
+	 */
+	public function getProperties($namespace = 'tickets') {
+		$properties = parent::getProperties($namespace);
+
+		// Convert old settings
+		$flag = false;
+		$old = parent::get('properties');
+		$tmp = array('disable_jevix','process_tags','rating');
+		foreach ($tmp as $v) {
+			if (isset($old[$v])) {
+				$properties[$v] = $old[$v];
+				$flag = true;
+				unset($old[$v]);
+			}
+		}
+		if ($flag) {
+			$old['tickets'] = $properties;
+			$this->set('properties', $old);
+			$this->save();
+		}
+		// --
+
+		if (empty($properties)) {
+			/** @var TicketsSection $parent */
+			if (!$parent = $this->getOne('Parent')) {
+				$parent = $this->xpdo->newObject('TicketsSection');
+			}
+			$default_properties = $parent->getProperties($namespace);
+			if (!empty($default_properties)) {
+				foreach ($default_properties as $key => $value) {
+					if (!isset($properties[$key])) {
+						$properties[$key] = $value;
+					}
+					elseif ($properties[$key] === 'true') {
+						$properties[$key] = true;
+					}
+					elseif ($properties[$key] === 'false') {
+						$properties[$key] = false;
+					}
+					elseif (is_numeric($value) && $key == 'disable_jevix' || $key == 'process_tags') {
+						$properties[$key] = boolval(intval($value));
+					}
+				}
+			}
+		}
+
+		return $properties;
+	}
+
+
+	public function save($cacheFlag= null) {
+		if ($this->isDirty('parent') || $this->isDirty('alias') || $this->isDirty('published') || ($this->get('uri_override') && !$this->get('uri'))) {
+			$this->setUri($this->get('alias'));
+		}
+
+		return parent::save();
 	}
 
 }

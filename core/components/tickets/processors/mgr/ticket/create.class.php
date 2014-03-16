@@ -17,12 +17,15 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	private $published = 0;
 	private $publishedon = 0;
 	private $publishedby = 0;
+	private $_properties;
+
+	/** @var TicketsSection $parentResource */
+	public $parentResource;
 
 
 	/** {@inheritDoc} */
 	public function beforeSet() {
 		$published = $this->getProperty('published');
-		$createdby = $this->getProperty('createdby');
 		$this->published = empty($published) || $published === 'false' ? 0 : 1;
 		if (!$this->publishedon = $this->getProperty('publishedon')) {$this->publishedon = time();}
 		if (!$this->publishedby = $this->getProperty('publishedby')) {$this->publishedby = $this->modx->user->id;}
@@ -41,77 +44,73 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		if (!$this->getProperty('content') && $this->modx->context->key != 'mgr') {
 			return $this->modx->lexicon('ticket_err_empty');
 		}
-		if (!$this->getProperty('template')) {
-			$this->setProperty('template', $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true));
-		}
 
-		// Ticket properties
-		if ($this->modx->context->key != 'mgr') {
-			$this->unsetProperty('properties');
-		}
-		$properties = $this->getProperty('properties',array());
-
-		$beforeSet = parent::beforeSet();
+		// Run main verifications
+		parent::beforeSet();
 		if ($this->hasErrors()) {
 			return $this->modx->lexicon('ticket_err_form');
 		}
+
+		// Ticket properties
+		$properties = $this->modx->context->key == 'mgr'
+			? $this->getProperty('properties')
+			: $this->parentResource->getProperties();
+		$this->_properties = $properties;
+		$this->unsetProperty('properties');
+
+		// Define introtext
 		$introtext = $this->getProperty('introtext');
-		if (!empty($introtext)) {
-			if (empty($properties['disable_jevix'])) {
-				$introtext = $this->object->Jevix($introtext);
-			}
+		if (empty($introtext)) {
+			$introtext = $this->object->getIntroText($this->getProperty('content'), false);
+		}
+		if (empty($properties['disable_jevix'])) {
+			$introtext = $this->object->Jevix($introtext);
+		}
+
+		// Redefine main parameters if we are not in the manager
+		if ($this->modx->context->key == 'mgr') {
+			$template = $this->getProperty('template');
+			$hidemenu = $this->getProperty('hidemenu');
+			$show_in_tree = $this->getProperty('show_in_tree');
+			$createdby = $this->getProperty('createdby');
 		}
 		else {
-			$introtext = $this->object->getIntroText($this->getProperty('content'));
+			$template = $properties['template'];
+			$hidemenu = $properties['hidemenu'];
+			$show_in_tree = $properties['show_in_tree'];
+			$createdby = $this->modx->user->id;
 		}
 
-		if (!$hidemenu = $this->modx->getOption('tickets.ticket_hidemenu_force', null, false)) {
-			$hidemenu = array_key_exists('hidemenu', $this->properties)
-				? $this->getProperty('hidemenu')
-				: $this->modx->getOption('hidemenu_default');
-		}
-		if (!$isfolder = $this->modx->getOption('tickets.ticket_isfolder_force', null, false)) {
-			$isfolder = array_key_exists('isfolder', $this->properties)
-				? $this->getProperty('isfolder')
-				: false;
-		}
-
-		$properties = array(
+		// Set properties
+		$this->setProperties(array(
 			'class_key' => 'Ticket',
-			'show_in_tree' => $this->modx->getOption('tickets.ticket_show_in_tree_default', null, false),
 			'published' => 0,
-			'hidemenu' => $hidemenu,
 			'syncsite' => 0,
-			'isfolder' => $isfolder,
+			'template' => $template,
 			'introtext' => $introtext,
-			'createdby' => !empty($createdby) ? $createdby : $this->modx->user->id,
-		);
-		$this->setProperties($properties);
+			'hidemenu' => $hidemenu,
+			'show_in_tree' => $show_in_tree,
+			'createdby' => $createdby,
+			'properties' => array(
+				'disable_jevix' => !empty($properties['disable_jevix']),
+				'process_tags' => !empty($properties['process_tags']),
+			)
+		));
 
-		return $beforeSet;
+		return true;
 	}
 
 
 	/** {@inheritDoc} */
 	public function prepareAlias() {
-		parent::prepareAlias();
+		$alias = parent::prepareAlias();
 
-		$found = false;
-		$alias = 'empty';
-
-		foreach ($this->modx->error->errors as $k => $v) {
-			if ($v['id'] == 'alias') {
-				unset($this->modx->error->errors[$k]);
-				$found = true;
-				break;
+		if ($this->modx->context->key != 'mgr') {
+			foreach ($this->modx->error->errors as $k => $v) {
+				if ($v['id'] == 'alias' || $v['id'] == 'uri') {
+					unset($this->modx->error->errors[$k]);
+				}
 			}
-		}
-
-		if ($found || $this->workingContext->getOption('tickets.ticket_id_as_alias')) {
-			$this->setProperty('alias', $alias);
-		}
-		else {
-			$alias = parent::prepareAlias();
 		}
 
 		return $alias;
@@ -131,7 +130,8 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 				if (!$this->parentResource->checkPolicy('section_add_children')) {
 					return $this->modx->lexicon('ticket_err_wrong_parent') . $this->modx->lexicon('ticket_err_access_denied');
 				}
-			} else {
+			}
+			else {
 				return $this->modx->lexicon('resource_err_nfs', array('id' => $parentId));
 			}
 		}
@@ -149,8 +149,11 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			,'publishedon' => $this->published ? $this->publishedon : 0
 			,'publishedby' => $this->published ? $this->publishedby : 0
 		));
-		if ($this->object->alias == 'empty') {
-			$this->object->set('alias', $this->object->id);
+
+		$uri = $this->object->get('uri');
+		$new_uri = str_replace('%id', $this->object->get('id'), $uri);
+		if ($uri != $new_uri) {
+			$this->object->set('uri', $new_uri);
 		}
 		$this->object->save();
 
@@ -183,21 +186,22 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 
 	/** {@inheritDoc} */
 	public function addTemplateVariables() {
-		$properties = $this->getProperties();
-		$fields = array_keys($this->modx->getFieldMeta($this->classKey));
-		$tvs = array_diff(array_keys($properties), $fields);
+		if ($this->modx->context->key != 'mgr') {
+			$values = array();
+			$tvs = $this->object->getMany('TemplateVars');
 
-		if (!empty($tvs)) {
-			$q = $this->modx->newQuery('modTemplateVar', array('name:IN' => $tvs));
-			$q->select('id,name');
-			if ($q->prepare() && $q->stmt->execute()) {
-				while ($row = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
-					$this->setProperty('tv'.$row['id'], $properties[$row['name']]);
-				}
+			/** @var modTemplateVarResource $tv */
+			foreach ($tvs as $tv) {
+				$values['tv' . $tv->id] = $this->getProperty($tv->name, $tv->get('value'));
 			}
-			return parent::addTemplateVariables();
+
+			if (!empty($values)) {
+				$this->setProperties($values);
+				$this->setProperty('tvs', 1);
+			}
 		}
-		return false;
+
+		return parent::addTemplateVariables();
 	}
 
 }

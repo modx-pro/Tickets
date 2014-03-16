@@ -10,6 +10,7 @@ Tickets.page.CreateTicket = function(config) {
 };
 
 Ext.extend(Tickets.page.CreateTicket,MODx.page.CreateResource,{
+	/*
 	getButtons: function(cfg) {
 		var btns = [];
 		if (cfg.canSave == 1) {
@@ -34,6 +35,6 @@ Ext.extend(Tickets.page.CreateTicket,MODx.page.CreateResource,{
 		});
 		return btns;
 	}
-
+	*/
 });
 Ext.reg('tickets-page-ticket-create',Tickets.page.CreateTicket);

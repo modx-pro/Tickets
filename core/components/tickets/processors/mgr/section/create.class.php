@@ -27,7 +27,7 @@ class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
 	/** {@inheritDoc} */
 	public function prepareAlias() {
 		if ($this->workingContext->getOption('tickets.section_id_as_alias')) {
-			$alias = 'empty-resource-alias';
+			$alias = 'empty';
 			$this->setProperty('alias', $alias);
 		}
 		else {
@@ -40,7 +40,7 @@ class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
 
 	/** {@inheritDoc} */
 	public function afterSave() {
-		if ($this->object->alias == 'empty-resource-alias') {
+		if ($this->object->alias == 'empty') {
 			$this->object->set('alias', $this->object->id);
 			$this->object->save();
 		}
@@ -50,7 +50,26 @@ class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
 		if (isset($results['resourceMap'])) {$this->modx->context->resourceMap = $results['resourceMap'];}
 		if (isset($results['aliasMap'])) {$this->modx->context->aliasMap = $results['aliasMap'];}
 
+		$this->handleProperties();
 		return parent::afterSave();
 	}
 
+
+	/**
+	 * Handle boolean properties
+	 */
+	public function handleProperties() {
+		$properties = $this->getProperty('properties');
+		if (!empty($properties['tickets'])) {
+			foreach ($properties['tickets'] as &$property) {
+				if ($property == 'true') {
+					$property = true;
+				}
+				elseif ($property == 'false') {
+					$property = false;
+				}
+			}
+		}
+		$this->setProperty('properties', $properties);
+	}
 }

@@ -7,18 +7,13 @@ switch($modx->event->name) {
 		$modx->regClientCSS($cssFile);
 		break;
 
+
 	case 'OnSiteRefresh':
 		if ($modx->cacheManager->refresh(array('default/tickets' => array()))) {
 			$modx->log(modX::LOG_LEVEL_INFO, $modx->lexicon('refresh_default').': Tickets');
 		}
 		break;
 
-	case 'OnDocFormRender':
-		if ($resource->class_key == "TicketsSection") {
-			/* @var TicketsSection $resource */
-			$resource->set('syncsite', 0);
-		}
-		break;
 
 	case 'OnDocFormSave':
 		/* @var Ticket $resource */
@@ -33,36 +28,52 @@ switch($modx->event->name) {
 		}
 		break;
 
+
 	case 'OnWebPagePrerender':
 		$output = & $modx->resource->_output;
 		$output = str_replace(array('{{{{{','}}}}}'), array('[',']'), $output);
 		break;
 
+
 	case 'OnPageNotFound':
 		// It is working only with friendly urls enabled
-		$q = trim($_REQUEST['q']);
-		$matches = explode('/', $q);
+		$q = trim(@$_REQUEST[$modx->context->getOption('request_param_alias','q')]);
+		$matches = explode('/', rtrim($q, '/'));
 		$count = count($matches);
 		if ($count < 3) {return;}
 
-		$section = $matches[$count - 3];
-		$ticket = $matches[$count - 2];
+		$ticket_uri = array_pop($matches);
+		$section_uri = implode('/', $matches) . '/';
 
-		// Redirect to requested page, when you moved ticket from one section to another
-		if ($modx->getCount('TicketsSection',array('class_key' => 'TicketsSection', 'alias' => $section, 'deleted' => 0, 'published' => 1))) {
-			if (preg_match('/^\d+$/', $ticket)) {
-				if ($modx->getCount('Ticket',  array('id' => $ticket, 'published' => 1, 'deleted' => 0))) {
-					$url = $modx->makeUrl($ticket, '', '', 'full');
-					$modx->sendRedirect($url);
+		if ($section_id = $modx->findResource($section_uri)) {
+			/** @var TicketsSection $section */
+			if ($section = $modx->getObject('TicketsSection', $section_id)) {
+				if (is_numeric($ticket_uri)) {
+					$ticket_id = $ticket_uri;
+				}
+				else {
+					$properties = $section->getProperties('tickets');
+					if (!empty($properties['uri']) && strpos($properties['uri'], '%id') !== false) {
+						$pcre = str_replace('%id', '([0-9]+)', $properties['uri']);
+						$pcre = preg_replace('/(\%[a-z]+)/', '(?:.*?)', $pcre);
+						if (preg_match('/'.$pcre.'/', $ticket_uri, $matches)) {
+							$ticket_id = $matches[1];
+						}
+					}
+				}
+				if (!empty($ticket_id)) {
+					$modx->sendRedirect($modx->makeUrl($ticket_id, '', '', 'full'));
 				}
 			}
 		}
 		break;
 
+
 	case 'OnWebPageComplete':
 		$Tickets = $modx->getService('tickets');
 		$Tickets->logView($modx->resource->id);
 		break;
+
 
 	case 'OnEmptyTrash':
 		if (!empty($ids)) {

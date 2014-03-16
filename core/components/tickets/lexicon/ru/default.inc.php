@@ -24,6 +24,24 @@ $_lang['tickets_section_undelete'] = 'Восстановить секцию';
 $_lang['tickets_section_delete'] = 'Удалить секцию';
 $_lang['tickets_section_view'] = 'Просмотреть на сайте';
 
+$_lang['tickets_section_settings'] = 'Настройки раздела';
+$_lang['tickets_section_tab_main'] = 'Основные';
+$_lang['tickets_section_tab_tickets'] = 'Дочерние тикеты';
+$_lang['tickets_section_tab_tickets_intro'] = 'Все настройки на этой странице действуют только на новые тикеты.';
+
+$_lang['tickets_section_settings_template'] = 'Шаблон дочерних документов';
+$_lang['tickets_section_settings_template_desc'] = 'Выберите шаблон, который будет присвоен всем новым тикетам, создаваемым в этой секции. Если шаблон не указан - он будет взят из системной настройки <b>tickets.default_template</b>.';
+$_lang['tickets_section_settings_uri'] = 'Формирование URI';
+$_lang['tickets_section_settings_uri_desc'] = 'Вы можете использовать <b>%y</b> - год двумя цифрами, <b>%m</b> - месяц, <b>%d</b> - день, <b>%alias</b> - псевдоним, <b>%id</b> - идентификатор и <b>%ext</b> - расширение документа.';
+$_lang['tickets_section_settings_show_in_tree'] = 'Показывать в дереве';
+$_lang['tickets_section_settings_show_in_tree_desc'] = 'По умолчанию тикеты не показываются в дереве документов, чтобы снизить нагрузку на админку, но вы можете включить это для новых документов.';
+$_lang['tickets_section_settings_hidemenu'] = 'Скрыть в меню';
+$_lang['tickets_section_settings_hidemenu_desc'] = 'Вы можете указать настройку отображения новых тикетов в меню.';
+$_lang['tickets_section_settings_disable_jevix'] = 'Отключить Jevix';
+$_lang['tickets_section_settings_disable_jevix_desc'] = 'По умолчанию, в целях безопасности, все тикеты обрабатываются сниппетом Jevix. Вы можете отключить эту обработку для новых тикетов текущего раздела.';
+$_lang['tickets_section_settings_process_tags'] = 'Выполнять теги MODX';
+$_lang['tickets_section_settings_process_tags_desc'] = 'По умолчанию, в целях безопасности, в тикетах не выполняются теги MODX. Вы можете включить их выполнение в новых тикетах текущего раздела.';
+
 $_lang['ticket_create_here'] = 'Создать тикет';
 
 $_lang['ticket_no_comments'] = 'На этой странице еще нет комментариев. Вы можете написать первый.';

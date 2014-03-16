@@ -1,30 +1,85 @@
-Tickets.panel.SectionTemplateSettings = function(config) {
+Tickets.panel.SectionSettings = function(config) {
 	config = config || {};
 	Ext.applyIf(config,{
 		id: 'tickets-panel-container-template-settings'
-		,layout: 'column'
 		,border: false
+		,deferredRender: false
+		,forceLayout: true
 		,anchor: '100%'
-		,defaults: {
-			layout: 'form'
-			,labelAlign: 'top'
-			,anchor: '100%'
-			,border: false
-			,labelSeparator: ''
-		}
-		,items: this.getItems(config)
+		//,stateful: MODx.config.tickets.section_remember_tabs
+		,stateful: true
+		,stateEvents: ['tabchange']
+		,getState:function() {return { activeTab:this.items.indexOf(this.getActiveTab())};}
+		,items: this.getTabs(config)
 	});
-	Tickets.panel.SectionTemplateSettings.superclass.constructor.call(this,config);
+	Tickets.panel.SectionSettings.superclass.constructor.call(this,config);
 };
-Ext.extend(Tickets.panel.SectionTemplateSettings,MODx.Panel,{
-	getItems: function(config) {
-		return [{
-			columnWidth: .5
-			,items: this.getContentField(config)
-		},{
-			columnWidth: .5
-			,items: this.getSettingRightFields(config)
+Ext.extend(Tickets.panel.SectionSettings, MODx.VerticalTabs, {
+	getTabs: function(config) {
+		config.listeners = {
+			change:{fn:MODx.fireResourceFormChange}
+			,select:{fn:MODx.fireResourceFormChange}
+			,keydown:{fn:MODx.fireResourceFormChange}
+			,check:{fn:MODx.fireResourceFormChange}
+			,uncheck:{fn:MODx.fireResourceFormChange}
+		};
+
+		var tabs = [{
+			title: _('tickets_section_tab_main')
+			,hideMode: 'offsets'
+			,anchor: '100%'
+			,layout: 'form'
+			,defaults: {
+				layout: 'form'
+				,labelAlign: 'top'
+				,anchor: '100%'
+				,border: false
+				,labelSeparator: ''
+			}
+			,items: this.getMainFields(config)
 		}];
+
+		tabs.push({
+			title: _('tickets_section_tab_tickets')
+			,hideMode: 'offsets'
+			,anchor: '100%'
+			,layout: 'form'
+			,defaults: {
+				layout: 'form'
+				,labelAlign: 'top'
+				,anchor: '100%'
+				,border: false
+				,labelSeparator: ''
+			}
+			,items: this.getTicketsSettings(config)
+		});
+
+		return tabs;
+	}
+
+	,getMainFields: function(config) {
+		return [
+			this.getContentField(config)
+			,{
+				layout: 'column'
+				,defaults: {
+					layout: 'form'
+					,labelAlign: 'top'
+					,anchor: '100%'
+					,border: false
+					,labelSeparator: ''
+				}
+				,items: [{
+					columnWidth: .5
+					,items: this.getMainDates(config)
+				},{
+					columnWidth: .5
+					,items: this.getMainCheckboxes(config)
+				}]
+			}
+			,{name: 'content_type',xtype: 'hidden',id: 'modx-resource-content-type-hidden', value: config.record.content_type || (MODx.config.default_content_type || 1)}
+			,{name: 'class_key',xtype: 'hidden',id: 'modx-resource-class-key-hidden',value: 'TicketsSection'}
+		];
 	}
 
 	,getContentField: function(config) {
@@ -34,22 +89,19 @@ Ext.extend(Tickets.panel.SectionTemplateSettings,MODx.Panel,{
 			,id: 'ta'
 			,fieldLabel: _('content')
 			,anchor: '100%'
-			,height: 300
+			,height: 200
 			,grow: false
 			,value: config.record && config.record.content
 				? config.record.content
 				: MODx.config['tickets.section_content_default']
+			,listeners: config.listeners
 		},{
 			id: 'modx-content-below'
 			,border: false
 		}];
 	}
 
-	,getSettingRightFields: function(config) {
-		var oc = {
-			'select':{fn:MODx.fireResourceFormChange}
-			,'change':{fn:MODx.fireResourceFormChange}
-		};
+	,getMainDates: function(config) {
 		return [{
 			xtype: 'xdatetime'
 			,fieldLabel: _('resource_publishedon')
@@ -63,7 +115,7 @@ Ext.extend(Tickets.panel.SectionTemplateSettings,MODx.Panel,{
 			,dateWidth: 120
 			,timeWidth: 120
 			,value: config.record.publishedon
-			,listeners: oc
+			,listeners: config.listeners
 		},{
 			xtype: MODx.config.publish_document ? 'xdatetime' : 'hidden'
 			,fieldLabel: _('resource_publishdate')
@@ -77,7 +129,7 @@ Ext.extend(Tickets.panel.SectionTemplateSettings,MODx.Panel,{
 			,dateWidth: 120
 			,timeWidth: 120
 			,value: config.record.pub_date
-			,listeners: oc
+			,listeners: config.listeners
 		},{
 			xtype: MODx.config.publish_document ? 'xdatetime' : 'hidden'
 			,fieldLabel: _('resource_unpublishdate')
@@ -91,144 +143,100 @@ Ext.extend(Tickets.panel.SectionTemplateSettings,MODx.Panel,{
 			,dateWidth: 120
 			,timeWidth: 120
 			,value: config.record.unpub_date
-			,listeners: oc
-		},{
-			xtype: 'fieldset'
-			,items: this.getSettingRightFieldset(config)
+			,listeners: config.listeners
 		}];
 	}
 
-	,getSettingRightFieldset: function(config) {
-		return [{
-			layout: 'column'
-			,id: 'modx-page-settings-box-columns'
-			,border: false
-			,anchor: '100%'
-			,defaults: {
-				labelSeparator: ''
-				,labelAlign: 'top'
-				,border: false
-				,layout: 'form'
-				,msgTarget: 'under'
+	,getMainCheckboxes: function(config) {
+		var items = [];
+
+		var tmp = {
+			isfolder: {boxLabel: _('resource_folder'),description: _('resource_folder_help'), disabled: 1}
+			,cacheable: {}
+			,searchable: {}
+			,deleted: {boxLabel: _('deleted')}
+			,syncsite: {}
+			,richtext: {}
+			,uri_override: {id: 'modx-resource-uri-override'}
+		};
+
+		for (var i in tmp) {
+			if (tmp.hasOwnProperty(i)) {
+				items.push(Ext.apply({
+						xtype: 'xcheckbox'
+						,name: i
+						,boxLabel: _('resource_' + i)
+						,description: '<b>[[*' + i + ']]</b><br/>' + _('resource_' + i + '_help')
+						,id: 'modx-resource-' + i
+						,inputValue: 1
+						,hideLabel: true
+						,checked: parseInt(config.record[i])
+						,listeners: config.listeners
+					}
+					,tmp[i]
+				));
 			}
-			,items: [{
-				columnWidth: .5
-				,id: 'modx-page-settings-right-box-left'
-				,defaults: { msgTarget: 'under' }
-				,items: this.getSettingRightFieldsetLeft(config)
-			},{
-				columnWidth: .5
-				,id: 'modx-page-settings-right-box-right'
-				,defaults: { msgTarget: 'under' }
-				,items: this.getSettingRightFieldsetRight(config)
-			}]
-		},{
-			xtype: 'hidden'
-			,name: 'class_key'
-			,id: 'modx-resource-class-key'
-			,value: 'TicketsSection'
-		},{
-			xtype: 'xcheckbox'
-			,boxLabel: _('resource_uri_override')
-			,description: _('resource_uri_override_help')
-			,hideLabel: true
-			,name: 'uri_override'
-			,value: 1
-			,checked: parseInt(config.record.uri_override) ? true : false
-			,id: 'modx-resource-uri-override'
-			,listeners: {
-				'check':{fn:MODx.fireResourceFormChange}
-			}
-		},{
-			xtype: 'textfield'
-			,fieldLabel: _('resource_uri')
-			,description: '<b>[[*uri]]</b><br />'+_('resource_uri_help')
+		}
+
+		var fields = [{
+			xtype: 'checkboxgroup'
+			,columns: 2
+			,items: items
+		}];
+		fields.push({
+			xtype:'textfield'
 			,name: 'uri'
 			,id: 'modx-resource-uri'
-			,maxLength: 255
-			,anchor: '70%'
-			,value: config.record.uri || ''
+			,fieldLabel: _('resource_uri')
+			,description: '<b>[[*uri]]</b><br />'+_('resource_uri_help')
+			,value:config.record.uri || ''
 			,hidden: !config.record.uri_override
-		}];
+			,anchor: '100%'
+		});
+
+		return fields;
 	}
 
+	,getTicketsSettings: function(config) {
+		var items = [{
+			html: '<em>' + _('tickets_section_tab_tickets_intro') + '</em>'
+			,border: false
+			,bodyStyle: 'margin-bottom: 10px'
+		}];
 
-	,getSettingRightFieldsetLeft: function(config) {
-		var oc = {
-			'check':{fn:MODx.fireResourceFormChange}
+		var tmp = {
+			template: {xtype: 'tickets-children-combo-template', anchor: '50%'}
+			,uri: {xtype: 'textfield', anchor: '75%'}
+			,show_in_tree: {}
+			,hidemenu: {}
+			,disable_jevix: {}
+			,process_tags: {}
 		};
-		return [{
-			xtype: 'xcheckbox'
-			,boxLabel: _('resource_folder')
-			,description: '<b>[[*isfolder]]</b><br />'+_('resource_folder_help')
-			,hideLabel: true
-			,name: 'isfolder'
-			,id: 'modx-resource-isfolder'
-			,inputValue: 1
-			,value: 1
-			,checked: 1
-			,disabled: true
-		},{
-			xtype: 'xcheckbox'
-			,boxLabel: _('resource_searchable')
-			,description: '<b>[[*searchable]]</b><br />'+_('resource_searchable_help')
-			,hideLabel: true
-			,name: 'searchable'
-			,id: 'modx-resource-searchable'
-			,inputValue: 1
-			,checked: parseInt(config.record.searchable)
-			,listeners: oc
-		},{
-			xtype: 'xcheckbox'
-			,boxLabel: _('resource_richtext')
-			,description: '<b>[[*richtext]]</b><br />'+_('resource_richtext_help')
-			,hideLabel: true
-			,name: 'richtext'
-			,id: 'modx-resource-richtext'
-			,inputValue: 1
-			,checked: parseInt(config.record.richtext)
-			,listeners: oc
-		}];
+
+		for (var i in tmp) {
+			if (tmp.hasOwnProperty(i)) {
+				items.push(Ext.apply({
+						xtype: 'modx-combo-boolean'
+						,name: 'properties[tickets][' + i + ']'
+						,hiddenName: 'properties[tickets][' + i + ']'
+						,fieldLabel: _('tickets_section_settings_' + i)
+						,description: '<b>[[*' + i + ']]</b><br/>' + _('resource_' + i + '_help')
+						,id: 'tickets-settings-children-' + i
+						,value: config.record.properties['tickets'][i]
+						,listeners: config.listeners
+						,anchor: '25%'
+					}
+					,tmp[i]
+				));
+				items.push({
+					xtype: 'label'
+					,html: _('tickets_section_settings_' + i + '_desc')
+					,cls: 'desc-under'
+				});
+			}
+		}
+
+		return items;
 	}
-
-	,getSettingRightFieldsetRight: function(config) {
-		var oc = {
-			'check':{fn:MODx.fireResourceFormChange}
-		};
-		return [{
-			xtype: 'xcheckbox'
-			,boxLabel: _('resource_cacheable')
-			,description: '<b>[[*cacheable]]</b><br />'+_('resource_cacheable_help')
-			,hideLabel: true
-			,name: 'cacheable'
-			,id: 'modx-resource-cacheable'
-			,inputValue: 1
-			,checked: parseInt(config.record.cacheable)
-			,listeners: oc
-		},{
-			xtype: 'xcheckbox'
-			,boxLabel: _('resource_syncsite')
-			,description: _('resource_syncsite_help')
-			,hideLabel: true
-			,name: 'syncsite'
-			,id: 'modx-resource-syncsite'
-			,inputValue: 1
-			,checked: config.record.syncsite !== undefined && config.record.syncsite !== null ? parseInt(config.record.syncsite) : true
-			,listeners: oc
-		},{
-			xtype: 'xcheckbox'
-			,boxLabel: _('deleted')
-			,description: '<b>[[*deleted]]</b>'
-			,hideLabel: true
-			,name: 'deleted'
-			,id: 'modx-resource-deleted'
-			,inputValue: 1
-			,checked: parseInt(config.record.deleted) || false
-			,listeners: oc
-		}];
-	}
-
-
-
 });
-Ext.reg('tickets-tab-template-settings',Tickets.panel.SectionTemplateSettings);
+Ext.reg('tickets-section-tab-settings',Tickets.panel.SectionSettings);

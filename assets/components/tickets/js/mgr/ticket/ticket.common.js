@@ -254,7 +254,12 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 					,name: 'alias'
 					,anchor: '90%'
 					,value: config.record.alias || ''
-				}]
+				}
+				,{xtype: 'hidden', name: 'menutitle', value: config.record.menutitle, id: 'modx-resource-menutitle'}
+				,{xtype: 'hidden', name: 'link_attributes', id: 'modx-resource-link-attributes'}
+				,{xtype: 'hidden', name: 'content_type', id: 'modx-resource-content-type', value: config.record.content_type || (MODx.config.default_content_type || 1)}
+				,{xtype: 'hidden', name: 'class_key', id: 'modx-resource-class-key', value: 'Ticket'}
+			]
 		},{
 			html: '<hr />'
 			,border: false
@@ -275,23 +280,19 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 
 	,getCheckboxes: function(config) {
 		var items = [];
-
 		var tmp = {
 			searchable: {}
-			,disable_jevix: {name: 'properties[disable_jevix]',boxLabel: _('ticket_disable_jevix'),description: _('ticket_disable_jevix_help'), checked: parseInt(config.record.properties.disable_jevix)}
+			,disable_jevix: {name: 'properties[disable_jevix]',boxLabel: _('ticket_disable_jevix'),description: _('ticket_disable_jevix_help'), checked: config.record.properties['disable_jevix']}
 			,cacheable: {}
-			,process_tags: {name: 'properties[process_tags]',boxLabel: _('ticket_process_tags'),description: _('ticket_process_tags_help'), checked: parseInt(config.record.properties.process_tags)}
+			,process_tags: {name: 'properties[process_tags]',boxLabel: _('ticket_process_tags'),description: _('ticket_process_tags_help'), checked: config.record.properties['process_tags']}
 			,published: {}
 			,private: {name: 'privateweb',boxLabel: _('ticket_private'),description: _('ticket_private_help')}
 			,richtext: {}
-			,hidemenu: {boxLabel: _('resource_hide_from_menus'),description: '<b>[[*hidemenu]]</b><br/>' + _('resource_hide_from_menus_help'), disabled: parseInt(MODx.config['tickets.ticket_hidemenu_force'])}
-			,isfolder: {boxLabel: _('resource_folder'),description: _('resource_folder_help'), disabled: parseInt(MODx.config['tickets.ticket_isfolder_force'])}
-			,show_in_tree: {boxLabel: _('ticket_show_in_tree'), xtype:'xcheckbox', inputValue:1, description: '<b>[[*show_in_tree]]</b><br/>' + _('ticket_show_in_tree_help'), checked:parseInt(config.record.properties.show_in_tree)}
-			,uri_override: {xtype:'xcheckbox', inputValue:1, checked:parseInt(config.record.uri_override), id: 'modx-resource-uri-override'}
-			,menutitle: {xtype: 'hidden', value: config.record.menutitle || ''}
-			,link_attributes: {xtype: 'hidden',name: 'link_attributes',id: 'modx-resource-link-attributes'}
-			,content_type: {xtype: 'hidden',name: 'content_type',id: 'modx-resource-content-type', value: MODx.config.default_content_type || 1}
-			,class_key: {xtype: 'hidden',id: 'modx-resource-class-key',value: 'Ticket'}
+			,hidemenu: {boxLabel: _('resource_hide_from_menus'),description: '<b>[[*hidemenu]]</b><br/>' + _('resource_hide_from_menus_help')}
+			//,isfolder: {boxLabel: _('resource_folder'),description: _('resource_folder_help')}
+			//,syncsite: {disabled:true}
+			,uri_override: {xtype:'xcheckbox', id: 'modx-resource-uri-override'}
+			,show_in_tree: {boxLabel: _('ticket_show_in_tree'), description: '<b>[[*show_in_tree]]</b><br/>' + _('ticket_show_in_tree_help')}
 		};
 
 		for (var i in tmp) {
@@ -301,9 +302,9 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 						,name: i
 						,boxLabel: _('resource_' + i)
 						,description: '<b>[[*' + i + ']]</b><br/>' + _('resource_' + i + '_help')
-						,id: 'modx-resource-' + i
+						,id: 'modx-ticket-' + i
 						,inputValue: 1
-						,checked: parseInt(config.record[i])
+						,checked: config.record[i]
 					}
 					,tmp[i]
 				));
@@ -315,7 +316,16 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 			,columns: 2
 			,items: items
 		}];
-		fields.push({xtype:'textfield', name: 'uri', id: 'modx-resource-uri',fieldLabel: _('ms2_product_uri'),value:config.record.uri || '',hidden: !config.record.uri_override,anchor: '100%'});
+		fields.push({
+			xtype:'textfield'
+			,name: 'uri'
+			,id: 'modx-resource-uri'
+			,fieldLabel: _('resource_uri')
+			,description: '<b>[[*uri]]</b><br />'+_('resource_uri_help')
+			,value:config.record.uri || ''
+			,hidden: !config.record.uri_override
+			,anchor: '100%'
+		});
 
 		return fields;
 	}

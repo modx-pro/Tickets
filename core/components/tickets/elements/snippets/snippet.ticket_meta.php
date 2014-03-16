@@ -20,7 +20,7 @@ if (!($ticket instanceof Ticket)) {
 	return 'This resource is not instance of Ticket class.';
 }
 
-$data = $ticket->getVirtualFields();
+$data = $ticket->toArray();
 $vote = $pdoFetch->getObject('TicketVote', array('id' => $ticket->id, 'class' => 'Ticket', 'createdby' => $modx->user->id), array('select' => 'value', 'sortby' => 'id'));
 if (!empty($vote)) {
 	$data['vote'] = $vote['value'];

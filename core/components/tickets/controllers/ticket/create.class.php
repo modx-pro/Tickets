@@ -5,24 +5,10 @@
  * @package tickets
  */
 class TicketCreateManagerController extends ResourceCreateManagerController {
-
-	/**
-	 * Custom logic code here for setting placeholders, etc
-	 * @param array $scriptProperties
-	 * @return mixed
-	 */
-	public function process(array $scriptProperties = array()) {
-		$this->scriptProperties['template'] = $this->modx->getOption('tickets.default_template',null,$this->modx->getOption('default_template',null,1), true);
-		$placeholders =  parent::process($scriptProperties);
-
-		$this->resourceArray['hidemenu'] = (integer) $this->modx->getOption('tickets.ticket_hidemenu_force', null, false);
-		if (empty($this->resourceArray['hidemenu'])) {
-			$this->resourceArray['hidemenu'] = (integer) $this->modx->getOption('hidemenu_default');
-		}
-		$this->resourceArray['isfolder'] = (integer) $this->modx->getOption('tickets.ticket_isfolder_force', null, false);
-
-		return $placeholders;
-	}
+	/** @var TicketsSection $resource */
+	public $parent;
+	/** @var Ticket $resource */
+	public $resource;
 
 
 	/**
@@ -53,12 +39,9 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 		$connectorUrl = $ticketsAssetsUrl.'connector.php';
 		$ticketsJsUrl = $ticketsAssetsUrl.'js/mgr/';
 
-		$this->resourceArray['properties'] = array(
-			'disable_jevix' => $this->modx->getOption('tickets.disable_jevix_default', null, false),
-			'process_tags' => $this->modx->getOption('tickets.process_tags_default', null, false),
-		);
-		$this->resourceArray['show_in_tree'] = $this->context->getOption('tickets.ticket_show_in_tree_default', 0, $this->modx->_userConfig);
-		$this->resourceArray['show_in_tree'] = isset($this->resourceArray['show_in_tree']) && intval($this->resourceArray['show_in_tree']) == 1 ? true : false;
+		$properties = $this->parent->getProperties();
+		$this->resourceArray = array_merge($this->resourceArray, $properties);
+		$this->resourceArray['properties'] = $properties;
 
 		$this->addJavascript($mgrUrl.'assets/modext/util/datetime.js');
 		$this->addJavascript($mgrUrl.'assets/modext/widgets/element/modx.panel.tv.renders.js');
