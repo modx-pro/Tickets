@@ -80,6 +80,9 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$show_in_tree = $properties['show_in_tree'];
 			$createdby = $this->modx->user->id;
 		}
+		if (empty($template)) {
+			$template = $this->modx->context->getOption('tickets.default_template', $this->modx->context->getOption('default_template'));
+		}
 
 		// Set properties
 		$this->setProperties(array(

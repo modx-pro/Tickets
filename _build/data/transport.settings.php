@@ -59,12 +59,12 @@ $tmp = array(
 		]}',
 		'area' => 'tickets.comment',
 	),
-	/*
 	'default_template' => array(
 		'xtype' => 'modx-combo-template',
 		'value' => '',
 		'area' => 'tickets.ticket',
 	),
+	/*
 	'disable_jevix_default' => array(
 		'xtype' => 'combo-boolean',
 		'value' => false,
