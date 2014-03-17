@@ -5,7 +5,6 @@ Changelog for Tickets.
 - [#74] Fixed ticket panel for new versions of MODX.
 - [#72] Fixed handling TVs.
 - [#64] Fixed forced processing of introtext by Jevix.
-- [#63] Visible deactivation of forced checkboxes.
 - Added section settings.
 - Removed system settings "ticket_id_as_alias" and "section_id_as_alias".
 - System settings "ticket_show_in_tree_default", "ticket_isfolder_force" and "ticket_hidemenu_force" moved to section settings.
