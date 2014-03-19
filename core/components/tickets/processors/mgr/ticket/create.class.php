@@ -17,7 +17,6 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	private $published = 0;
 	private $publishedon = 0;
 	private $publishedby = 0;
-	private $_properties;
 
 	/** @var TicketsSection $parentResource */
 	public $parentResource;
@@ -45,17 +44,23 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			return $this->modx->lexicon('ticket_err_empty');
 		}
 
-		// Run main verifications
-		parent::beforeSet();
+		$set = parent::beforeSet();
 		if ($this->hasErrors()) {
 			return $this->modx->lexicon('ticket_err_form');
 		}
+
+		return $set;
+	}
+
+
+	/** {@inheritDoc} */
+	public function setFieldDefaults() {
+		$set = parent::setFieldDefaults();
 
 		// Ticket properties
 		$properties = $this->modx->context->key == 'mgr'
 			? $this->getProperty('properties')
 			: $this->parentResource->getProperties();
-		$this->_properties = $properties;
 		$this->unsetProperty('properties');
 
 		// Define introtext
@@ -100,7 +105,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			)
 		));
 
-		return true;
+		return $set;
 	}
 
 

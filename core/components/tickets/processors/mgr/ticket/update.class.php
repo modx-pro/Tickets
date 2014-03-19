@@ -63,12 +63,17 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			return $this->modx->lexicon('ticket_err_empty');
 		}
 
-		// Run main verification
-		parent::beforeSet();
+		$set = parent::beforeSet();
 		if ($this->hasErrors()) {
 			return $this->modx->lexicon('ticket_err_form');
 		}
+		$this->setFieldDefault();
 
+		return $set;
+	}
+
+
+	public function setFieldDefault() {
 		// Ticket properties
 		$properties = $this->modx->context->key == 'mgr'
 			? $this->getProperty('properties')
@@ -99,7 +104,6 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			$properties['process_tags'] = empty($properties['process_tags']);
 			$this->object->setProperties($properties, 'tickets', true);
 		}
-
 		return true;
 	}
 
