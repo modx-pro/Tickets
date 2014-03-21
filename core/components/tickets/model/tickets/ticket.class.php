@@ -250,7 +250,7 @@ class Ticket extends modResource {
 		else {
 			$voted = $this->getVote();
 			if ($voted > 0) {$voted = 1;}
-			elseif ($voted < 0) {$array['voted'] = -1;}
+			elseif ($voted < 0) {$voted = -1;}
 			$array['voted'] = $voted;
 		}
 

@@ -3,6 +3,7 @@ Changelog for Tickets.
 1.4.0 beta2
 ==========
 - [#76] Fixed auto publication of tickets.
+- [#75] Ability to vote for any resource.
 - [#74] Fixed ticket panel for new versions of MODX.
 - [#72] Fixed handling TVs.
 - [#64] Fixed forced processing of introtext by Jevix.

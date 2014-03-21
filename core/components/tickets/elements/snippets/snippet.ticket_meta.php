@@ -11,19 +11,73 @@ if (!$pdoClass = $modx->loadClass($fqn, '', false, true)) {return false;}
 $pdoFetch = new $pdoClass($modx, $scriptProperties);
 $pdoFetch->addTime('pdoTools loaded');
 
-/** @var Ticket $ticket */
+/** @var Ticket|modResource $ticket */
 $ticket = !empty($id) && $id != $modx->resource->id
-	? $modx->getObject('Ticket', $id)
+	? $modx->getObject('modResource', $id)
 	: $modx->resource;
 
-if (!($ticket instanceof Ticket)) {
-	return 'This resource is not instance of Ticket class.';
-}
+$class = $ticket instanceof Ticket
+	? 'Ticket'
+	: 'modResource';
 
 $data = $ticket->toArray();
 $vote = $pdoFetch->getObject('TicketVote', array('id' => $ticket->id, 'class' => 'Ticket', 'createdby' => $modx->user->id), array('select' => 'value', 'sortby' => 'id'));
 if (!empty($vote)) {
 	$data['vote'] = $vote['value'];
+}
+
+if ($class != 'Ticket') {
+	// Rating
+	if (!$modx->user->id || $modx->user->id == $ticket->createdby) {
+		$data['voted'] = 0;
+	}
+	else {
+		$q = $modx->newQuery('TicketVote');
+		$q->where(array('id' => $ticket->id, 'createdby' => $modx->user->id, 'class' => 'Ticket'));
+		$q->select('`value`');
+		$tstart = microtime(true);
+		if ($q->prepare() && $q->stmt->execute()) {
+			$modx->startTime += microtime(true) - $tstart;
+			$modx->executedQueries ++;
+			$voted = $q->stmt->fetchColumn();
+			if ($voted > 0) {$voted = 1;}
+			elseif ($voted < 0) {$voted = -1;}
+			$data['voted'] = $voted;
+		}
+	}
+	$data['can_vote'] = $data['voted'] === false && $modx->user->id && $modx->user->id != $ticket->createdby;
+
+	$data = array_merge($ticket->getProperties('tickets'), $data);
+	if (!isset($data['rating'])) {
+		$data['rating'] = $data['rating_total'] = $data['rating_plus'] = $data['rating_minus'] = 0;
+	}
+
+	// Views
+	$data['views'] = 0;
+	$q = $modx->newQuery('modResource', $ticket->id);
+	$q->leftJoin('TicketView','TicketView', "`TicketView`.`parent` = `modResource`.`id`");
+	$q->select('COUNT(`TicketView`.`parent`) as `views`');
+	$tstart = microtime(true);
+	if ($q->prepare() && $q->stmt->execute()) {
+		$modx->startTime += microtime(true) - $tstart;
+		$modx->executedQueries ++;
+		$data['views'] = (integer) $q->stmt->fetchColumn();
+	}
+
+	// Comments
+	$data['comments'] = 0;
+	$q = $modx->newQuery('TicketThread', array('name' => 'resource-'.$ticket->id));
+	$q->leftJoin('TicketComment','TicketComment', "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1");
+	$q->select('COUNT(`TicketComment`.`id`) as `comments`');
+	$tstart = microtime(true);
+	if ($q->prepare() && $q->stmt->execute()) {
+		$modx->startTime += microtime(true) - $tstart;
+		$modx->executedQueries ++;
+		$data['comments'] = (integer) $q->stmt->fetchColumn();
+	}
+
+	// Date ago
+	$data['date_ago'] = $Tickets->dateFormat($data['createdon']);
 }
 
 if ($data['rating'] > 0) {
@@ -58,9 +112,9 @@ $data['active'] = (integer) !empty($data['can_vote']);
 $data['inactive'] = (integer) !empty($data['cant_vote']);
 
 if (!empty($getSection)) {
-	$fields = $modx->getFieldMeta('TicketsSection');
-	unset($fields['content']);
-	$section = $pdoFetch->getObject('TicketsSection', $ticket->parent, array('select' => implode(',', array_keys($fields))));
+	$fields = $modx->getFieldMeta('modResource');
+	unset($fields['content'], $fields['id']);
+	$section = $pdoFetch->getObject('modResource', $ticket->parent, array('select' => implode(',', array_keys($fields))));
 	foreach ($section as $k => $v) {
 		$data['section.'.$k] = $v;
 	}
@@ -76,7 +130,6 @@ if (!empty($getUser)) {
 			'modUser' => 'username',
 		)
 	));
-
 	$data = array_merge($data, $user);
 }
 $data['id'] = $ticket->id;
