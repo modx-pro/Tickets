@@ -14,10 +14,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	public $classKey = 'Ticket';
 	public $permission = 'ticket_save';
 	public $languageTopics = array('resource','tickets:default');
-	private $published = 0;
-	private $publishedon = 0;
-	private $publishedby = 0;
-	private $updatepubdate = 0;
+	private $_published = 0;
 
 
 	/** {inheritDoc} */
@@ -36,17 +33,11 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 
 	/** {@inheritDoc} */
 	public function beforeSet() {
+		$this->_published = $this->getProperty('published');
+
 		if ($this->object->createdby != $this->modx->user->id && !$this->modx->hasPermission('edit_document')) {
 			return $this->modx->lexicon('ticket_err_wrong_user');
 		}
-
-		$published = $this->getProperty('published');
-		$this->published = empty($published) || $published === 'false' ? 0 : 1;
-		if ($this->object->published != $this->published) {
-			$this->updatepubdate = 1;
-		}
-		if (!$this->publishedon = $this->getProperty('publishedon')) {$this->publishedon = time();}
-		if (!$this->publishedby = $this->getProperty('publishedby')) {$this->publishedby = $this->modx->user->id;}
 
 		// Required fields
 		$requiredFields = $this->getProperty('requiredFields', array('parent','pagetitle','content'));
@@ -73,6 +64,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	}
 
 
+	/** {@inheritDoc} */
 	public function setFieldDefault() {
 		// Ticket properties
 		$properties = $this->modx->context->key == 'mgr'
@@ -95,7 +87,9 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		}
 		$this->setProperties(array(
 			'class_key' => 'Ticket',
-			'published' => 0,
+			'published' => $this->modx->context->key == 'mgr'
+				? $this->getProperty('published')
+				: $this->_published,
 			'syncsite' => 0,
 			'introtext' => $introtext,
 		));
@@ -125,16 +119,11 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 
 
 	/** {@inheritDoc} */
-	public function afterSave() {
-		$this->object->fromArray(array(
-			'published' => $this->published
-		));
-		if ($this->updatepubdate) {
-			$this->object->set('publishedon', $this->published ? $this->publishedon : 0);
-			$this->object->set('publishedby', $this->published ? $this->publishedby : 0);
+	public function checkPublishingPermissions() {
+		if ($this->modx->context->key == 'mgr') {
+			return parent::checkPublishingPermissions();
 		}
-		$this->object->save();
-		return parent::afterSave();
+		return true;
 	}
 
 
@@ -142,7 +131,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	public function clearCache() {
 		$this->object->clearCache();
 		/** @var TicketsSection $section */
-		if ($section = $this->modx->getObject('TicketsSection', $this->object->parent)) {
+		if ($section = $this->object->getOne('Section')) {
 			$section->clearCache();
 		}
 	}

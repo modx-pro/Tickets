@@ -14,20 +14,14 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	public $classKey = 'Ticket';
 	public $permission = 'ticket_save';
 	public $languageTopics = array('access','resource','tickets:default');
-	private $published = 0;
-	private $publishedon = 0;
-	private $publishedby = 0;
-
+	private $_published = 0;
 	/** @var TicketsSection $parentResource */
 	public $parentResource;
 
 
 	/** {@inheritDoc} */
 	public function beforeSet() {
-		$published = $this->getProperty('published');
-		$this->published = empty($published) || $published === 'false' ? 0 : 1;
-		if (!$this->publishedon = $this->getProperty('publishedon')) {$this->publishedon = time();}
-		if (!$this->publishedby = $this->getProperty('publishedby')) {$this->publishedby = $this->modx->user->id;}
+		$this->_published = $this->getProperty('published');
 
 		// Required fields
 		$requiredFields = $this->getProperty('requiredFields', array('parent','pagetitle','content'));
@@ -78,12 +72,18 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$hidemenu = $this->getProperty('hidemenu');
 			$show_in_tree = $this->getProperty('show_in_tree');
 			$createdby = $this->getProperty('createdby');
+			$published = $this->getProperty('published');
+			$publishedon = $this->getProperty('publishedon', time());
+			$publishedby = $this->getProperty('publishedby', $createdby);
 		}
 		else {
 			$template = $properties['template'];
 			$hidemenu = $properties['hidemenu'];
 			$show_in_tree = $properties['show_in_tree'];
 			$createdby = $this->modx->user->id;
+			$published = $this->_published;
+			$publishedon = time();
+			$publishedby = $this->modx->user->id;
 		}
 		if (empty($template)) {
 			$template = $this->modx->context->getOption('tickets.default_template', $this->modx->context->getOption('default_template'));
@@ -92,7 +92,9 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		// Set properties
 		$this->setProperties(array(
 			'class_key' => 'Ticket',
-			'published' => 0,
+			'published' => $published,
+			'publishedon' => $publishedon,
+			'publishedby' => $publishedby,
 			'syncsite' => 0,
 			'template' => $template,
 			'introtext' => $introtext,
@@ -152,12 +154,6 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 
 	/** {@inheritDoc} */
 	public function afterSave() {
-		$this->object->fromArray(array(
-			'published' => $this->published
-			,'publishedon' => $this->published ? $this->publishedon : 0
-			,'publishedby' => $this->published ? $this->publishedby : 0
-		));
-
 		$uri = $this->object->get('uri');
 		$new_uri = str_replace('%id', $this->object->get('id'), $uri);
 		if ($uri != $new_uri) {
@@ -177,16 +173,19 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	/** {@inheritDoc} */
 	public function clearCache() {
 		$clear = false;
-		/* @var TicketsSection $category */
-		if ($category = $this->object->getOne('Section')) {
-			$category->clearCache();
+		/* @var TicketsSection $section */
+		if ($section = $this->object->getOne('Section')) {
+			$section->clearCache();
 			$clear = true;
 		}
 
-		/** @var xPDOFileCache $cache */
-		$cache = $this->modx->cacheManager->getCacheProvider($this->modx->getOption('cache_context_settings_key', null, 'context_settings'));
-		$key = $this->modx->context->getCacheKey();
-		$cache->delete($key);
+		// Clear context settings
+		if ($this->object->get('published')) {
+			/** @var xPDOFileCache $cache */
+			$cache = $this->modx->cacheManager->getCacheProvider($this->modx->getOption('cache_context_settings_key', null, 'context_settings'));
+			$key = $this->modx->context->getCacheKey();
+			$cache->delete($key);
+		}
 
 		return $clear;
 	}
