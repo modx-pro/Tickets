@@ -94,8 +94,8 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			'introtext' => $introtext,
 		));
 		if ($this->modx->context->key == 'mgr') {
-			$properties['disable_jevix'] = empty($properties['disable_jevix']);
-			$properties['process_tags'] = empty($properties['process_tags']);
+			$properties['disable_jevix'] = !empty($properties['disable_jevix']);
+			$properties['process_tags'] = !empty($properties['process_tags']);
 			$this->object->setProperties($properties, 'tickets', true);
 		}
 		return true;
