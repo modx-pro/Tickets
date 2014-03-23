@@ -3,6 +3,7 @@ Changelog for Tickets.
 1.4.0 beta3
 ==========
 - Fixed saving ticket properties.
+- Improved vote for any resource with TicketMeta.
 
 1.4.0 beta2
 ==========

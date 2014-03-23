@@ -11,10 +11,11 @@ if (!$pdoClass = $modx->loadClass($fqn, '', false, true)) {return false;}
 $pdoFetch = new $pdoClass($modx, $scriptProperties);
 $pdoFetch->addTime('pdoTools loaded');
 
+if (empty($id)) {$id = $modx->resource->id;}
 /** @var Ticket|modResource $ticket */
-$ticket = !empty($id) && $id != $modx->resource->id
-	? $modx->getObject('modResource', $id)
-	: $modx->resource;
+if (!$ticket = $modx->getObject('modResource', $id)) {
+	return 'Could not load resource with id = '.$id;
+}
 
 $class = $ticket instanceof Ticket
 	? 'Ticket'

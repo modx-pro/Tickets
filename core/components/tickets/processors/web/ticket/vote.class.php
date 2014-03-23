@@ -87,26 +87,10 @@ class TicketVoteProcessor extends modObjectCreateProcessor {
 				}
 				$this->ticket->setProperties($rating, 'tickets', true);
 				$this->ticket->save();
-				$this->clearCache();
 			}
 		}
 
 		return $this->success('', $rating);
-	}
-
-
-	/**
-	 * Clear ticket cache
-	 */
-	public function clearCache() {
-		$context = $this->ticket->get('context_key');
-		$this->ticket->_contextKey = $context;
-
-		/** @var xPDOFileCache $cache */
-		$cache = $this->modx->cacheManager->getCacheProvider($this->modx->getOption('cache_resource_key', null, 'resource'));
-		$key = $this->ticket->getCacheKey();
-		$cache->delete($key, array('deleteTop' => false));
-		$cache->delete($key);
 	}
 
 }
