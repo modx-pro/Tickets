@@ -154,6 +154,12 @@ $tmp = array(
 		'area' => 'tickets.ticket',
 	)
 	*/
+
+	'source_default' => array(
+		'value' => 0,
+		'xtype' => 'modx-combo-source',
+		'area' => 'tickets.main',
+	)
 );
 
 foreach ($tmp as $k => $v) {

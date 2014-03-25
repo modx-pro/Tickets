@@ -22,7 +22,7 @@ require $sources['build'] . '/includes/functions.php';
 $modx= new modX();
 $modx->initialize('mgr');
 $modx->getService('error', 'error.modError');
-$modx->setLogLevel(modX::LOG_LEVEL_INFO);
+$modx->setLogLevel(modX::LOG_LEVEL_ERROR);
 $modx->setLogTarget(XPDO_CLI_MODE ? 'ECHO' : 'HTML');
 $modx->loadClass('transport.modPackageBuilder', '', false, true);
 

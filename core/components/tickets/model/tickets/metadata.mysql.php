@@ -11,6 +11,7 @@ $xpdo_meta_map = array (
     0 => 'TicketComment',
     1 => 'TicketThread',
     2 => 'TicketQueue',
+    3 => 'TicketFile',
   ),
   'xPDOObject' => 
   array (

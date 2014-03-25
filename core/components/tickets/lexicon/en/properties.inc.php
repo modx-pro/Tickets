@@ -74,3 +74,13 @@ $_lang['tickets_prop_allowGuestEmails'] = 'Send to the guests email notification
 $_lang['tickets_prop_enableCaptcha'] = 'Enable protection against spam for unauthorized users?';
 $_lang['tickets_prop_minCaptcha'] = 'The minimum number for generate spam-protecting code.';
 $_lang['tickets_prop_maxCaptcha'] = 'The maximum number for generate spam-protecting code.';
+
+$_lang['tickets_prop_allowFiles'] = 'Allow user to upload files to the server.';
+$_lang['tickets_prop_source'] = 'Id of media source for upload files. By default will be used media source specified in system setting "tickets.source_default".';
+$_lang['tickets_prop_tplFiles'] = 'Container to display the uploader and the list of already uploaded files.';
+$_lang['tickets_prop_tplFile'] = 'The chunk for uploaded file, that not an image.';
+$_lang['tickets_prop_tplImage'] = 'The chunk for uploaded image.';
+
+$_lang['tickets_prop_getFiles'] = 'Display a list of uploaded files?';
+$_lang['tickets_prop_unusedFiles'] = 'Display only those files, links on which are absent in the content of the ticket.';
+$_lang['tickets_prop_meta_tplFile'] = 'The chunk for file in the list.';

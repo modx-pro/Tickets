@@ -44,7 +44,9 @@ if ($context != 'web') {
 /* @var Tickets $Tickets */
 define('MODX_ACTION_MODE', true);
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/', $properties);
-if ($modx->error->hasError() || !($Tickets instanceof Tickets)) {die('Error');}
+if ($modx->error->hasError() || !($Tickets instanceof Tickets)) {
+	die('Error');
+}
 
 switch ($action) {
 	case 'comment/preview': $response = $Tickets->previewComment($_POST); break;
@@ -57,6 +59,8 @@ switch ($action) {
 	case 'ticket/save': $response = $Tickets->saveTicket($_POST); break;
 	case 'ticket/update': $response = $Tickets->saveTicket($_POST); break;
 	case 'ticket/vote': $response = $Tickets->voteTicket($_POST['id'], $_POST['value']); break;
+	case 'ticket/file/upload': $response = $Tickets->fileUpload($_POST, 'Ticket'); break;
+	case 'ticket/file/delete': $response = $Tickets->fileDelete($_POST['id']); break;
 	default:
 		$message = $_REQUEST['action'] != $action ? 'tickets_err_register_globals' : 'tickets_err_unknown';
 		$response = $modx->toJSON(array('success' => false, 'message' => $modx->lexicon($message)));

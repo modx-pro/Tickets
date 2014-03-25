@@ -157,4 +157,94 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		return parent::saveTemplateVariables();
 	}
 
+
+	/** {@inheritDoc} */
+	public function cleanup() {
+		$this->processFiles();
+
+		return parent::cleanup();
+	}
+
+
+	/**
+	 * Add uploaded files to ticket
+	 *
+	 * @return bool|int
+	 */
+	public function processFiles() {
+		$q = $this->modx->newQuery('TicketFile');
+		$q->where(array('class' => 'Ticket'));
+		$q->andCondition(array('parent' => 0, 'createdby' => $this->modx->user->id), null, 1);
+		$q->orCondition(array('parent' => $this->object->get('id')), null, 1);
+		$q->sortby('createdon', 'ASC');
+		$collection = $this->modx->getIterator('TicketFile', $q);
+
+		$hashes = $replace = array();
+		$count = 0;
+		/** @var TicketFile $item */
+		foreach ($collection as $item) {
+			$hash = $item->get('hash');
+			if ($item->get('deleted')) {
+				$replace[$item->get('url')] = '';
+				$item->remove();
+			}
+			elseif ($item->get('parent')) {
+				$hashes[$hash] = true;
+			}
+			elseif (!isset($hashes[$hash])) {
+				$old_url = $item->get('url');
+				$item->set('parent', $this->object->get('id'));
+				$item->save();
+				$new_url = $item->get('url');
+				if ($old_url != $new_url) {
+					$replace[$old_url] = $new_url;
+				}
+				$count ++;
+			}
+		}
+
+		// Update ticket links
+		if (!empty($replace)) {
+			$array = array(
+				'introtext' => $this->object->get('introtext'),
+				'content' => $this->object->get('content'),
+			);
+			$update = false;
+			foreach ($array as $field => $text) {
+				$pcre = '#<a.*?>.*?</a>|<img.*?>#s';
+				preg_match_all($pcre, $text, $matches);
+				$src = $dst = array();
+				foreach ($matches[0] as $tag) {
+					foreach ($replace as $from => $to) {
+						if (strpos($tag, $from) !== false) {
+							if ($to == '') {
+								$src[] = $tag;
+								$dst[] = '';
+							}
+							else {
+								$src[] = $from;
+								$dst[] = $to;
+								$src[] = preg_replace('/\.[a-z]+$/i','_thumb$0', $from);
+								$dst[] = preg_replace('/\.[a-z]+$/i','_thumb$0', $to);
+							}
+							break;
+						}
+					}
+				}
+				if (!empty($src)) {
+					$text = str_replace($src, $dst, $text);
+					if ($text != $this->object->$field) {
+						$this->object->set($field, $text);
+						$update = true;
+					}
+				}
+			}
+			if ($update) {
+				$this->object->save();
+			}
+		}
+
+		return $count;
+	}
+
 }

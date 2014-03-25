@@ -1134,6 +1134,61 @@ class Tickets {
 
 
 	/**
+	 * Upload file for ticket
+	 *
+	 * @param $data
+	 * @param string $class
+	 *
+	 * @return array|string
+	 */
+	public function fileUpload($data, $class = 'Ticket') {
+		if (!$this->modx->user->isAuthenticated($this->modx->context->key) || empty($this->config['allowFiles'])) {
+			return $this->error('ticket_err_access_denied');
+		}
+
+		$data['source'] = $this->config['source'];
+		$data['class'] = $class;
+
+		/** @var modProcessorResponse $response */
+		$response = $this->runProcessor('web/file/upload', $data);
+		if ($response->isError()) {
+			return $this->error($response->getMessage());
+		}
+		$file = $response->getObject();
+		$file['size'] = round($file['size'] / 1024, 2);
+		$file['new'] = empty($file['new']);
+
+		$tpl = $file['type'] == 'image'
+			? $this->config['tplImage']
+			: $this->config['tplFile'];
+		$html = $this->getChunk($tpl, $file);
+
+		return $this->success('', $html);
+	}
+
+
+	/**
+	 * Delete or restore uploaded file
+	 *
+	 * @param $id
+	 *
+	 * @return array|string
+	 */
+	public function fileDelete($id) {
+		if (!$this->modx->user->isAuthenticated($this->modx->context->key) || empty($this->config['allowFiles'])) {
+			return $this->error('ticket_err_access_denied');
+		}
+		/** @var modProcessorResponse $response */
+		$response = $this->runProcessor('web/file/delete', array('id' => $id));
+		if ($response->isError()) {
+			return $this->error($response->getMessage());
+		}
+
+		return $this->success();
+	}
+
+
+	/**
 	 * This method returns an error of the cart
 	 *
 	 * @param string $message A lexicon key for error message

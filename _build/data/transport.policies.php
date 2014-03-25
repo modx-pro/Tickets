@@ -12,6 +12,8 @@ $tmp = array(
 			'ticket_vote' => true,
 			'comment_save' => true,
 			'comment_vote' => true,
+			'ticket_file_upload' => true,
+			'ticket_file_delete' => true,
 		),
 	),
 	'TicketSectionPolicy' => array(
@@ -30,6 +32,8 @@ $tmp = array(
 			'comment_save' => true,
 			'comment_vote' => true,
 			'ticket_view_private' => true,
+			'ticket_file_upload' => true,
+			'ticket_file_delete' => true,
 		),
 	),
 );

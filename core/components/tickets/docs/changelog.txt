@@ -1,9 +1,11 @@
 Changelog for Tickets.
 
-1.4.0 beta3
+1.4.0 rc
 ==========
 - Fixed saving ticket properties.
 - Improved vote for any resource with TicketMeta.
+- Added ability to upload files for tickets.
+- Added permissions for work with files.
 
 1.4.0 beta2
 ==========

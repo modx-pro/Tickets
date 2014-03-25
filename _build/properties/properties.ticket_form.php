@@ -64,7 +64,28 @@ $tmp = array(
 		'type' => 'textfield',
 		'value' => '',
 		'desc' => 'tickets_prop_sections_context',
-	)
+	),
+
+	'allowFiles' => array(
+		'type' => 'combo-boolean',
+		'value' => true,
+	),
+	'source' => array(
+		'type' => 'numberfield',
+		'value' => 0,
+	),
+	'tplFiles' => array(
+		'type' => 'textfield',
+		'value' => 'tpl.Tickets.form.files',
+	),
+	'tplFile' => array(
+		'type' => 'textfield',
+		'value' => 'tpl.Tickets.form.file',
+	),
+	'tplImage' => array(
+		'type' => 'textfield',
+		'value' => 'tpl.Tickets.form.image',
+	),
 
 );
 

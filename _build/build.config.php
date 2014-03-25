@@ -4,7 +4,7 @@
 define('PKG_NAME','Tickets');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
 define('PKG_VERSION','1.4.0');
-define('PKG_RELEASE','beta3');
+define('PKG_RELEASE','rc');
 define('PKG_AUTO_INSTALL', true);
 
 
@@ -55,4 +55,5 @@ $BUILD_RESOLVERS = array(
 	'actionfields',
 	'update',
 	'setup',
+	'sources',
 );

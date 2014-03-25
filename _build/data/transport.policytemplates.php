@@ -14,6 +14,8 @@ $tmp = array(
 			'ticket_vote' => array(),
 			'comment_save' => array(),
 			'comment_vote' => array(),
+			'ticket_file_upload' => array(),
+			'ticket_file_delete' => array(),
 		),
 	),
 	'TicketsSectionPolicyTemplate' => array(

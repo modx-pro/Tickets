@@ -186,7 +186,7 @@ class Ticket extends modResource {
 
 	/** {@inheritDoc} */
 	public function & getMany($alias, $criteria= null, $cacheFlag= true) {
-		if ($alias == 'Attachments' || $alias == 'Votes') {
+		if ($alias == 'Files' || $alias == 'Votes') {
 			$criteria = array('class' => $this->class_key);
 		}
 		return parent::getMany($alias, $criteria, $cacheFlag);

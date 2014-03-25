@@ -13,6 +13,11 @@
 			{"class":"Ticket"}
 			]]></criteria>
 		</composite>
+		<composite alias="Files" class="TicketFile" local="id" foreign="parent" cardinality="many" owner="local">
+			<criteria target="local"><![CDATA[
+			{"class":"Ticket"}
+			]]></criteria>
+		</composite>
 	</object>
 
 	<object class="TicketComment" table="tickets_comments" extends="xPDOSimpleObject">
@@ -160,6 +165,53 @@
 		</index>
 
 		<aggregate alias="User" class="modUser" local="uid" foreign="id" cardinality="one" owner="foreign" />
+	</object>
+
+	<object class="TicketFile" table="tickets_files" extends="xPDOSimpleObject">
+		<field key="parent" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
+		<field key="class" dbtype="varchar" precision="100" phptype="string" />
+		<field key="source" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="true" default="1" />
+
+		<field key="name" dbtype="varchar" precision="255" phptype="string" null="false" />
+		<field key="description" dbtype="text" phptype="string" null="true" />
+		<field key="path" dbtype="varchar" precision="255" phptype="string" null="false" />
+		<field key="file" dbtype="varchar" precision="255" phptype="string" null="false" />
+		<field key="type" dbtype="varchar" precision="50" phptype="string" null="true" />
+		<field key="size" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" default="0" />
+
+		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" default="0000-00-00 00:00:00" />
+		<field key="createdby" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" default="0" />
+
+		<field key="url" dbtype="varchar" precision="255" phptype="string" null="false" />
+		<field key="thumb" dbtype="varchar" precision="255" phptype="string" null="false" />
+
+		<!--<field key="active" dbtype="tinyint" precision="1" phptype="boolean" null="true" default="1" />-->
+		<field key="deleted" dbtype="tinyint" precision="1" phptype="boolean" null="true" default="0" />
+
+		<field key="properties" dbtype="text" phptype="json" null="true" />
+		<field key="hash" dbtype="char" precision="40" phptype="string" null="true" default="" index="index" />
+
+		<index alias="parent" name="parent" primary="false" unique="false" type="BTREE">
+			<column key="parent" length="" collation="A" null="false" />
+			<column key="class" length="" collation="A" null="false" />
+		</index>
+		<index alias="source" name="source" primary="false" unique="false" type="BTREE">
+			<column key="source" length="" collation="A" null="false" />
+		</index>
+		<index alias="type" name="type" primary="false" unique="false" type="BTREE">
+			<column key="type" length="" collation="A" null="false" />
+		</index>
+		<!--
+		<index alias="active" name="active" primary="false" unique="false" type="BTREE">
+			<column key="active" length="" collation="A" null="false" />
+		</index>
+		-->
+		<index alias="deleted" name="deleted" primary="false" unique="false" type="BTREE">
+			<column key="deleted" length="" collation="A" null="false" />
+		</index>
+		<index alias="hash" name="hash" primary="false" unique="false" type="BTREE" >
+			<column key="hash" length="" collation="A" null="false" />
+		</index>
 	</object>
 
 </model>

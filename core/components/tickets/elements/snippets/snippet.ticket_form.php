@@ -7,6 +7,13 @@ $Tickets->initialize($modx->context->key, $scriptProperties);
 if (!$modx->user->isAuthenticated($modx->context->key)) {
 	return $modx->lexicon('ticket_err_no_auth');
 }
+if (empty($tplSectionRow)) {$tplSectionRow = 'tpl.Tickets.sections.row';}
+if (empty($tplFormCreate)) {$tplFormCreate = 'tpl.Tickets.form.create';}
+if (empty($tplFormUpdate)) {$tplFormUpdate = 'tpl.Tickets.form.update';}
+if (empty($tplFiles)) {$tplFiles = 'tpl.Tickets.form.files';}
+if (empty($tplFile)) {$tplFile = $Tickets->config['tplFile'] = 'tpl.Tickets.form.file';}
+if (empty($tplImage)) {$tplImage = $Tickets->config['tplImage'] = 'tpl.Tickets.form.image';}
+if (empty($source)) {$source = $Tickets->config['source'] = $modx->getOption('tickets.source_default', null, $modx->getOption('default_media_source'));}
 
 $tid = !empty($_REQUEST['tid']) ? (integer) $_REQUEST['tid'] : 0;
 $parent = !empty($_REQUEST['parent']) ? (integer) $_REQUEST['parent'] : 0;
@@ -14,7 +21,7 @@ $data = array();
 
 // Update of ticket
 if (!empty($tid)) {
-	$tpl = $scriptProperties['tplFormUpdate'];
+	$tplWrapper = $tplFormUpdate;
 	/* @var Ticket $ticket */
 	if ($ticket = $modx->getObject('Ticket', array('class_key' => 'Ticket', 'id' => $tid))) {
 		if ($ticket->get('createdby') != $modx->user->id  && !$modx->hasPermission('edit_document')) {
@@ -42,7 +49,7 @@ if (!empty($tid)) {
 	}
 }
 else {
-	$tpl = $scriptProperties['tplFormCreate'];
+	$tplWrapper = $tplFormCreate;
 }
 
 // Get available sections for ticket create
@@ -59,8 +66,59 @@ $response = $modx->fromJSON($response->response);
 
 foreach ($response['results'] as $v) {
 	$v['selected'] = ($parent == $v['id']) ? 'selected' : '';
-	$data['sections'] .= $Tickets->getChunk($Tickets->config['tplSectionRow'], $v);
+	$data['sections'] .= $Tickets->getChunk($tplSectionRow, $v);
+}
+
+if (!empty($allowFiles)) {
+	$q = $modx->newQuery('TicketFile');
+	$q->where(array('class' => 'Ticket'));
+	$q->andCondition(array('parent' => 0, 'createdby' => $modx->user->id), null, 1);
+	if (!empty($tid)) {
+		$q->orCondition(array('parent' => $tid), null, 1);
+	}
+	$q->sortby('createdon', 'ASC');
+	$collection = $modx->getIterator('TicketFile', $q);
+	$files = '';
+	/** @var TicketFile $item */
+	foreach ($collection as $item) {
+		if ($item->get('deleted') && !$item->get('parent')) {
+			$item->remove();
+		}
+		else {
+			$item = $item->toArray();
+			$item['size'] = round($item['size'] / 1024, 2);
+			$item['new'] = empty($item['parent']);
+			$tpl = $item['type'] == 'image'
+				? $tplImage
+				: $tplFile;
+			$files .= $Tickets->getChunk($tpl, $item);
+		}
+	}
+
+	$data['files'] = $Tickets->getChunk($tplFiles, array(
+		'files' => $files,
+	));
+
+	/** @var modMediaSource $source */
+	if ($source = $modx->getObject('sources.modMediaSource', $source)) {
+		$properties = $source->getPropertyList();
+		$modx->regClientStartupScript(preg_replace("/\t{2}/s", '', '
+		<script type="text/javascript">
+		TicketsConfig.source = {
+			size: '.(!empty($properties['maxUploadSize']) ? $properties['maxUploadSize'] : 3145728).'
+			,height: '.(!empty($properties['maxUploadHeight']) ? $properties['maxUploadHeight'] : 1080).'
+			,width: '.(!empty($properties['maxUploadWidth']) ? $properties['maxUploadWidth'] : 1920).'
+			,extensions: '.(!empty($properties['allowedFileTypes']) ? '"'.$properties['allowedFileTypes'].'"' : "jpg,jpeg,png,gif").'
+		};
+		</script>'), true);
+	}
+	$modx->regClientScript($Tickets->config['jsUrl'] . 'web/lib/plupload/plupload.full.min.js');
+	$modx->regClientScript($Tickets->config['jsUrl'] . 'web/files.js');
+	$lang = $modx->getOption('cultureKey');
+	if ($lang != 'en' && file_exists($Tickets->config['jsPath'] . 'web/lib/plupload/i18n/'.$lang.'.js')) {
+		$modx->regClientScript($Tickets->config['jsUrl'] . 'web/lib/plupload/i18n/'.$lang.'.js');
+	}
 }
 
 $_SESSION['TicketForm'] = $Tickets->config;
-return $Tickets->getChunk($tpl, $data);
+return $Tickets->getChunk($tplWrapper, $data);

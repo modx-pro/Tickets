@@ -21,6 +21,10 @@
 		<span class="error"></span>
 	</div>
 
+	<div class="ticket-form-files">
+		[[+files]]
+	</div>
+
 	<div class="form-actions">
 		<input type="button" class="btn btn-default preview" value="[[%ticket_preview]]" title="Ctrl + Enter" />
 		<input type="submit" class="btn btn-primary submit" value="[[%ticket_save]]" title="Ctrl + Shift + Enter" />

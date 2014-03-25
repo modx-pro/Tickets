@@ -13,6 +13,8 @@
 		</span>
 	</span>
 </div>
+[[+has_files]]
+
 <!--tickets_can_vote <span class="vote rating" title="[[%ticket_refrain]]"><i class="glyphicon glyphicon-minus"></i></span>-->
 <!--tickets_cant_vote <span class="rating[[+rating_positive]][[+rating_negative]]" title="[[%ticket_rating_total]] [[+rating_total]]: ↑[[+rating_plus]] [[%ticket_rating_and]] ↓[[+rating_minus]]">[[+rating]]</span>-->
 <!--tickets_active  active-->
@@ -21,3 +23,8 @@
 <!--tickets_voted_minus  voted-->
 <!--tickets_rating_positive  positive-->
 <!--tickets_rating_negative  negative-->
+<!--tickets_has_files
+<ul class="ticket-files">
+	<strong>[[%ticket_uploaded_files]]:</strong>
+	[[+files]]
+</ul>-->

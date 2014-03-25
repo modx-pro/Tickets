@@ -20,6 +20,7 @@ if ($object->xpdo) {
 			$manager->createObjectContainer('TicketThread');
 			$manager->createObjectContainer('TicketView');
 			$manager->createObjectContainer('TicketQueue');
+			$manager->createObjectContainer('TicketFile');
 
 			$tmp = $modx->getFieldMeta('TicketComment');
 			if (isset($tmp['parent']) && !$modx->getCount('TicketVote')) {
@@ -58,7 +59,7 @@ if ($object->xpdo) {
 			$manager->addField('TicketQueue', 'email');
 			$manager->addIndex('TicketQueue', 'email');
 
-		$modx->setLogLevel($level);
+			$modx->setLogLevel($level);
 		break;
 
 		case xPDOTransport::ACTION_UNINSTALL:

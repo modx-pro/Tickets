@@ -9,6 +9,9 @@ $tmp = array(
 	'tpl.Tickets.form.create' => 'form_create',
 	'tpl.Tickets.form.update' => 'form_update',
 	'tpl.Tickets.form.preview' => 'form_preview',
+	'tpl.Tickets.form.files' => 'form_files',
+	'tpl.Tickets.form.file' => 'form_file',
+	'tpl.Tickets.form.image' => 'form_image',
 
 	'tpl.Tickets.ticket.latest' => 'ticket_latest',
 	'tpl.Tickets.ticket.email.bcc' => 'ticket_email_bcc',
@@ -29,6 +32,7 @@ $tmp = array(
 	'tpl.Tickets.list.row' => 'ticket_list_row',
 	'tpl.Tickets.sections.row' => 'ticket_sections_row',
 	'tpl.Tickets.meta' => 'ticket_meta',
+	'tpl.Tickets.meta.file' => 'ticket_meta_file',
 );
 
 // Save chunks for setup options

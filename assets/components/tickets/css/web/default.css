@@ -114,3 +114,34 @@
 	border-top: 1px solid #d3d3d3;
 	border-bottom: 1px solid #d3d3d3;
 }
+
+/* Form files */
+#ticket-files-container {margin-top: 10px;}
+#ticket-files-select {font-weight: bold;}
+#ticket-files-progress,
+#ticket-files-list .ticket-file-template {display:none;}
+#ticket-files-progress-count {}
+#ticket-files-progress-percent {float:right;}
+#ticket-files-progress-bar {height: 1.5em; background: lightblue; margin-top:5px; width: 0;}
+
+.clearfix {clear: both;}
+#ticket-files-list {padding: 10px 0; background: #fff; border: 1px solid #ccc; border-radius: 5px; min-height: 50px;}
+#ticket-files-list .ticket-file {width: 120px; float:left; margin: 5px 0 5px 10px; outline: 1px solid #efefef;}
+#ticket-files-list .ticket-file-image-wrapper {width: 120px; height: 90px; overflow:hidden;}
+#ticket-files-list .ticket-file-image {width: 120px; border: 1px solid #efefef;}
+#ticket-files-list .ticket-file-size {color: #777; float: right;}
+
+#ticket-files-list.droppable {border-width: 3px; border-style: dashed;}
+#ticket-files-list.dragover {border-color: darkgreen;}
+#ticket-files-list .ticket-file-meta {font-size: .8em; padding: 0 5px;}
+
+#ticket-files-list .ticket-file.new {outline-color: lightblue;}
+#ticket-files-list .ticket-file.deleted {outline-color: darkred;}
+
+#ticket-files-list .ticket-file .ticket-file-restore {color: darkgreen;}
+#ticket-files-list .ticket-file .ticket-file-delete {color: darkred;}
+
+#ticket-files-list .ticket-file .ticket-file-restore,
+#ticket-files-list .ticket-file.deleted .ticket-file-delete {display: none;}
+#ticket-files-list .ticket-file.deleted .ticket-file-restore {display: inline;}
+

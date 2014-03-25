@@ -114,7 +114,7 @@ $data['inactive'] = (integer) !empty($data['cant_vote']);
 
 if (!empty($getSection)) {
 	$fields = $modx->getFieldMeta('modResource');
-	unset($fields['content'], $fields['id']);
+	unset($fields['content']);
 	$section = $pdoFetch->getObject('modResource', $ticket->parent, array('select' => implode(',', array_keys($fields))));
 	foreach ($section as $k => $v) {
 		$data['section.'.$k] = $v;
@@ -133,8 +133,27 @@ if (!empty($getUser)) {
 	));
 	$data = array_merge($data, $user);
 }
-$data['id'] = $ticket->id;
 
+if (!empty($getFiles)) {
+	$where = array('deleted' => 0, 'class' => 'Ticket', 'parent' => $ticket->id);
+	$collection = $pdoFetch->getCollection('TicketFile', $where, array('sortby' => 'createdon', 'sortdir' => 'ASC'));
+	$data['files'] = $content = '';
+	if (!empty($unusedFiles)) {
+		$content = $ticket->getContent();
+	}
+	foreach ($collection as $item) {
+		if ($content && strpos($content, $item['url']) !== false) {
+			continue;
+		}
+		$item['size'] = round($item['size'] / 1024, 2);
+		$data['files'] .= !empty($tplFile)
+			? $Tickets->getChunk($tplFile, $item)
+			: $Tickets->getChunk('', $item);
+	}
+	$data['has_files'] = !empty($data['files']);
+}
+
+$data['id'] = $ticket->id;
 return !empty($tpl)
-	? $pdoFetch->getChunk($tpl, $data)
-	: $pdoFetch->getChunk('', $data);
+	? $Tickets->getChunk($tpl, $data)
+	: $Tickets->getChunk('', $data);

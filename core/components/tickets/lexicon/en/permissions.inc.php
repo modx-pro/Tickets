@@ -13,3 +13,5 @@ $_lang['ticket_view_private'] = 'Permission for reading private tickets.';
 $_lang['comment_save'] = 'Permission for save\update comments.';
 $_lang['comment_vote'] = 'Permission for change rating of comment.';
 $_lang['section_add_children'] = 'Permission for create new tickets in section.';
+$_lang['ticket_file_upload'] = 'Permission for upload files.';
+$_lang['ticket_file_delete'] = 'Permission for delete files.';
