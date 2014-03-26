@@ -16,9 +16,6 @@ $modx->setLogLevel(modX::LOG_LEVEL_ERROR);
 $modx->setLogTarget('FILE');
 $modx->error->message = null;
 
-$ctx = !empty($_REQUEST['ctx']) ? $_REQUEST['ctx'] : 'web';
-if ($ctx != 'web') {$modx->switchContext($ctx);}
-
 // Get properties
 $properties = array();
 /* @var TicketThread $thread */
@@ -36,6 +33,9 @@ if (!empty($thread) && $thread->resource && $resource = $thread->getOne('Resourc
 }
 elseif (!empty($_REQUEST['parent']) && $resource = $modx->getObject('modResource', $_REQUEST['parent'])) {
 	$context = $resource->get('context_key');
+}
+elseif (!empty($_REQUEST['ctx']) && $modx->getCount('modContext', $_REQUEST['ctx'])) {
+	$context = $_REQUEST['ctx'];
 }
 if ($context != 'web') {
 	$modx->switchContext($context);

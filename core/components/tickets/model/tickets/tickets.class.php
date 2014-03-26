@@ -119,7 +119,8 @@ class Tickets {
 					}
 					$config_js = preg_replace(array('/^\n/', '/\t{6}/'), '', '
 						TicketsConfig = {
-							jsUrl: "'.$this->config['jsUrl'].'web/"
+							ctx: "'.$ctx.'"
+							,jsUrl: "'.$this->config['jsUrl'].'web/"
 							,cssUrl: "'.$this->config['cssUrl'].'web/"
 							,actionUrl: "'.$this->config['actionUrl'].'"
 							,close_all_message: "'.$this->modx->lexicon('tickets_message_close_all').'"
@@ -127,13 +128,7 @@ class Tickets {
 							,'.$editorConfig.'
 						};
 					');
-
-					if (file_put_contents($this->config['jsPath'] . 'web/config.js', $config_js)) {
-						$this->modx->regClientStartupScript($this->config['jsUrl'] . 'web/config.js');
-					}
-					else {
-						$this->modx->regClientStartupScript("<script type=\"text/javascript\">\n".$config_js."\n</script>", true);
-					}
+					$this->modx->regClientStartupScript("<script type=\"text/javascript\">\n".$config_js."\n</script>", true);
 
 					if ($js = trim($this->modx->getOption('tickets.frontend_js'))) {
 						if (!empty($js) && preg_match('/\.js/i', $js)) {

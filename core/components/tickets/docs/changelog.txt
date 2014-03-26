@@ -6,6 +6,7 @@ Changelog for Tickets.
 - Improved vote for any resource with TicketMeta.
 - Added ability to upload files for tickets.
 - Added permissions for work with files.
+- Improved contexts support.
 
 1.4.0 beta2
 ==========

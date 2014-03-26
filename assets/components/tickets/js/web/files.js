@@ -19,7 +19,8 @@ Tickets.Uploader = new plupload.Uploader({
 
 	multipart_params: {
 		action: $('#' + this.container).data('action') || 'ticket/file/upload',
-		tid: this.form.find('[name="tid"]').val()
+		tid: this.form.find('[name="tid"]').val(),
+		ctx: TicketsConfig.ctx || 'web'
 	},
 	drop_element: 'ticket-files-list',
 
@@ -35,8 +36,7 @@ Tickets.Uploader = new plupload.Uploader({
 
 	resize: {
 		width: TicketsConfig.source.width,
-		height: TicketsConfig.source.height,
-		quality: 99
+		height: TicketsConfig.source.height
 	},
 
 	flash_swf_url: TicketsConfig.jsUrl + 'web/lib/plupload/js/Moxie.swf',

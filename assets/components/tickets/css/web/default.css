@@ -4,6 +4,7 @@
 #ticketForm {max-width: 800px;}
 #ticketForm #ticket-sections {max-width: 400px;}
 #ticketForm .error, #comment-form .error {color: brown;}
+#ticketForm [name="content"] {display:inline-block;}
 #ticket-preview-placeholder {background: #fff; outline: 5px solid #AAA; padding: 5px; display: none; margin: 10px 0; overflow: hidden;}
 .form-actions {margin-top: 10px; padding-top: 10px; border-top: 1px solid #e3e3e3;}
 .form-actions .checkbox {display:inline-block;}
