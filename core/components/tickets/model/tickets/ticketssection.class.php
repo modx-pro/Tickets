@@ -342,7 +342,7 @@ class TicketsSection extends modResource {
 			elseif ($properties[$key] === 'false') {
 				$properties[$key] = false;
 			}
-			elseif (is_numeric($value) && $key == 'disable_jevix' || $key == 'process_tags') {
+			elseif (is_numeric($value) && ($key == 'disable_jevix' || $key == 'process_tags')) {
 				$properties[$key] = (boolean) intval($value);
 			}
 		}
