@@ -108,7 +108,7 @@ var Tickets = {
 		});
 		// --
         // Stars
-        $(document).on('click touchend', '.ticket-star > .star', function(e) {
+        $(document).on('click touchend', '.ticket-star.active > .star', function(e) {
 			var id = $(this).parents('.ticket-meta').data('id');
 			Tickets.Star.ticket.star(this, id, 0);
 			e.preventDefault();
