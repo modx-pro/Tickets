@@ -43,7 +43,12 @@ if ($modx->user->id) {
 		'class' => 'TicketVote',
 		'on' => '`Vote`.`id` = `Ticket`.`id` AND `Vote`.`class` = "Ticket" AND `Vote`.`createdby` = '.$modx->user->id
 	);
+	$leftJoin['Star'] = array(
+		'class' => 'TicketStar',
+		'on' => '`Star`.`id` = `Ticket`.`id` AND `Star`.`class` = "Ticket" AND `Star`.`user` = '.$modx->user->id
+	);
 }
+
 // Fields to select
 $select = array(
 	'Section' => $modx->getSelectColumns('TicketsSection', 'Section', 'section.', array('content'), true),
@@ -55,6 +60,7 @@ $select = array(
 );
 if ($modx->user->id) {
 	$select['Vote'] = '`Vote`.`value` as `vote`';
+    $select['Star'] = '`Star`.`id` as `star_id`';
 }
 $pdoFetch->addTime('Conditions prepared');
 
@@ -140,6 +146,11 @@ if (!empty($rows) && is_array($rows)) {
 		}
 		$row['active'] = (integer) !empty($row['can_vote']);
 		$row['inactive'] = (integer) !empty($row['cant_vote']);
+        if (!empty($row['star_id'])) {
+            $row['stared'] = 1;
+        }  else {
+            $row['unstared'] = 1;
+        }
 
 		// Adding fields to row
 		$additional_fields = $pdoFetch->getObject('Ticket', $row['id'], array(

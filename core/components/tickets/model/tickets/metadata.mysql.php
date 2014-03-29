@@ -16,6 +16,7 @@ $xpdo_meta_map = array (
   'xPDOObject' => 
   array (
     0 => 'TicketVote',
-    1 => 'TicketView',
+    1 => 'TicketStar',
+    2 => 'TicketView',
   ),
 );

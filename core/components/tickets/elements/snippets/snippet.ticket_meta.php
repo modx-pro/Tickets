@@ -27,6 +27,13 @@ if (!empty($vote)) {
 	$data['vote'] = $vote['value'];
 }
 
+$star = $pdoFetch->getObject('TicketStar', array('id' => $ticket->id, 'class' => 'Ticket', 'user' => $modx->user->id), array('select' => 'id', 'sortby' => 'id'));
+if (!empty($star)) {
+	$data['stared'] = 1;
+}  else {
+    $data['unstared'] = 1;
+}
+
 if ($class != 'Ticket') {
 	// Rating
 	if (!$modx->user->id || $modx->user->id == $ticket->createdby) {
