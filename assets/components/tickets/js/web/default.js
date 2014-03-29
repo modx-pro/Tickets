@@ -107,6 +107,13 @@ var Tickets = {
 			return false;
 		});
 		// --
+        // Stars
+        $(document).on('click touchend', '.ticket-star > .star', function(e) {
+			var id = $(this).parents('.ticket-meta').data('id');
+			Tickets.Star.ticket.star(this, id, 0);
+			e.preventDefault();
+			return false;
+		});
 
 		$(document).ready(function() {
 			if (TicketsConfig.enable_editor == true) {
@@ -604,6 +611,33 @@ Tickets.Vote = {
 					else if (response.data.status == -1) {
 						rating.addClass(options.negative);
 					}
+				}
+				else {
+					Tickets.Message.error(response.message);
+				}
+			}, 'json');
+
+			return true;
+		}
+	}
+};
+
+Tickets.Star = {
+
+	ticket: {
+        options: {
+			stared: 'stared'
+			,unstared: 'unstared'
+		}
+		,star: function(link, id, value) {
+			link = $(link);
+            var options = this.options;
+			var parent = link.parent();
+
+			$.post(TicketsConfig.actionUrl, {action: 'ticket/star', id: id}, function(response) {
+				if (response.success) {
+					link.toggleClass(options.stared);
+					link.toggleClass(options.unstared);
 				}
 				else {
 					Tickets.Message.error(response.message);

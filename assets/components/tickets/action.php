@@ -59,6 +59,7 @@ switch ($action) {
 	case 'ticket/save': $response = $Tickets->saveTicket($_POST); break;
 	case 'ticket/update': $response = $Tickets->saveTicket($_POST); break;
 	case 'ticket/vote': $response = $Tickets->voteTicket($_POST['id'], $_POST['value']); break;
+	case 'ticket/star': $response = $Tickets->starTicket($_POST['id']); break;
 	case 'ticket/file/upload': $response = $Tickets->fileUpload($_POST, 'Ticket'); break;
 	case 'ticket/file/delete': $response = $Tickets->fileDelete($_POST['id']); break;
 	default:

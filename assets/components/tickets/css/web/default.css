@@ -108,6 +108,17 @@
 	opacity: .7;
 }
 
+/* Ticket star*/
+.ticket-star .star {
+    cursor: pointer;
+}
+.ticket-star .stared {
+    color: green;
+}
+.ticket-star .unstared {
+    color: gray;
+}
+
 /* Ticket meta*/
 .ticket-meta {
 	margin: 20px 0;
