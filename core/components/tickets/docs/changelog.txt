@@ -8,6 +8,7 @@ Changelog for Tickets.
 - Added permissions for work with files.
 - Improved contexts support.
 - Improved parameter "returnIds" in snippets.
+- Improved handling of "ticketForm" properties and sections verification.
 
 1.4.0 beta2
 ==========

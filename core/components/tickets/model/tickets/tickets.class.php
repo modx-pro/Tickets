@@ -218,6 +218,9 @@ class Tickets {
 
 		$fields['requiredFields'] = $requiredFields;
 		$fields['class_key'] = 'Ticket';
+		if (!empty($this->config['sections']) && is_array($this->config['sections'])) {
+			$fields['sections'] = $this->config['sections'];
+		}
 		if (!empty($data['tid'])) {
 			$fields['id'] = (integer) $data['tid'];
 			if ($ticket = $this->modx->getObject('Ticket', array('class_key' => 'Ticket', 'id' => $fields['id']))) {

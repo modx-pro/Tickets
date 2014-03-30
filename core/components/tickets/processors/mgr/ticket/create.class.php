@@ -132,13 +132,17 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		$parent = null;
 		$parentId = intval($this->getProperty('parent'));
 		if ($parentId > 0) {
+			$sections = $this->getProperty('sections');
+			if (!empty($sections) && !in_array($parentId, $sections)) {
+				return $this->modx->lexicon('ticket_err_wrong_parent');
+			}
 			$this->parentResource = $this->modx->getObject('TicketsSection',$parentId);
 			if ($this->parentResource->get('class_key') != 'TicketsSection') {
 				return $this->modx->lexicon('ticket_err_wrong_parent');
 			}
 			if ($this->parentResource) {
 				if (!$this->parentResource->checkPolicy('section_add_children')) {
-					return $this->modx->lexicon('ticket_err_wrong_parent') . $this->modx->lexicon('ticket_err_access_denied');
+					return $this->modx->lexicon('ticket_err_wrong_parent');
 				}
 			}
 			else {

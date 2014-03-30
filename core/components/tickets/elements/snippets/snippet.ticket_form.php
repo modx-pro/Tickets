@@ -54,6 +54,7 @@ else {
 
 // Get available sections for ticket create
 $data['sections'] = '';
+/** @var modProcessorResponse $response */
 $response = $Tickets->runProcessor('web/section/getlist', array(
 	'parents' => $scriptProperties['parents'],
 	'permissions' => $scriptProperties['permissions'],
@@ -62,11 +63,15 @@ $response = $Tickets->runProcessor('web/section/getlist', array(
 	'depth' => isset($scriptProperties['depth']) ? $scriptProperties['depth'] : 0,
 	'context' => !empty($scriptProperties['context']) ? $scriptProperties['context'] : $modx->context->key,
 ));
-$response = $modx->fromJSON($response->response);
+$response = $modx->fromJSON($response->getResponse());
 
-foreach ($response['results'] as $v) {
-	$v['selected'] = ($parent == $v['id']) ? 'selected' : '';
-	$data['sections'] .= $Tickets->getChunk($tplSectionRow, $v);
+if (!empty($response['results'])) {
+	$Tickets->config['sections'] = array();
+	foreach ($response['results'] as $v) {
+		$v['selected'] = ($parent == $v['id']) ? 'selected' : '';
+		$data['sections'] .= $Tickets->getChunk($tplSectionRow, $v);
+		$Tickets->config['sections'][] = $v['id'];
+	}
 }
 
 if (!empty($allowFiles)) {
@@ -120,5 +125,9 @@ if (!empty($allowFiles)) {
 	}
 }
 
-$_SESSION['TicketForm'] = $Tickets->config;
-return $Tickets->getChunk($tplWrapper, $data);
+$output = $Tickets->getChunk($tplWrapper, $data);
+$key = md5($modx->toJSON($Tickets->config));
+$_SESSION['TicketForm'][$key] = $Tickets->config;
+
+$output = str_ireplace('</form>', "\n<input type=\"hidden\" name=\"form_key\" value=\"{$key}\" />\n</form>", $output);
+return $output;

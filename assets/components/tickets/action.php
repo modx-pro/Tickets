@@ -22,6 +22,9 @@ $properties = array();
 if (!empty($_REQUEST['thread']) && $thread = $modx->getObject('TicketThread', array('name' => $_REQUEST['thread']))) {
 	$properties = $thread->get('properties');
 }
+elseif (!empty($_REQUEST['form_key']) && isset($_SESSION['TicketForm'][$_REQUEST['form_key']])) {
+	$properties = $_SESSION['TicketForm'][$_REQUEST['form_key']];
+}
 elseif (!empty($_SESSION['TicketForm'])) {
 	$properties = $_SESSION['TicketForm'];
 }
