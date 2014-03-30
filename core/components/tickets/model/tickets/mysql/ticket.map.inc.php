@@ -49,6 +49,13 @@ $xpdo_meta_map['Ticket']= array (
       'foreign' => 'parent',
       'cardinality' => 'many',
       'owner' => 'local',
+      'criteria' => 
+      array (
+        'local' => 
+        array (
+          'class' => 'Ticket',
+        ),
+      ),
     ),
   ),
   'aggregates' => 

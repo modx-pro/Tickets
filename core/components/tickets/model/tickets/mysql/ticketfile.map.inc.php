@@ -7,7 +7,10 @@ $xpdo_meta_map['TicketFile']= array (
   'fields' => 
   array (
     'parent' => 0,
+    'class' => NULL,
+    'source' => 1,
     'name' => NULL,
+    'description' => NULL,
     'path' => NULL,
     'file' => NULL,
     'type' => NULL,
@@ -16,8 +19,9 @@ $xpdo_meta_map['TicketFile']= array (
     'createdby' => 0,
     'url' => NULL,
     'thumb' => NULL,
-    'ip' => NULL,
     'deleted' => 0,
+    'properties' => NULL,
+    'hash' => '',
   ),
   'fieldMeta' => 
   array (
@@ -29,7 +33,21 @@ $xpdo_meta_map['TicketFile']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
-      'index' => 'index',
+    ),
+    'class' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '100',
+      'phptype' => 'string',
+    ),
+    'source' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => true,
+      'default' => 1,
     ),
     'name' => 
     array (
@@ -37,6 +55,12 @@ $xpdo_meta_map['TicketFile']= array (
       'precision' => '255',
       'phptype' => 'string',
       'null' => false,
+    ),
+    'description' => 
+    array (
+      'dbtype' => 'text',
+      'phptype' => 'string',
+      'null' => true,
     ),
     'path' => 
     array (
@@ -98,12 +122,6 @@ $xpdo_meta_map['TicketFile']= array (
       'phptype' => 'string',
       'null' => false,
     ),
-    'ip' => 
-    array (
-      'dbtype' => 'text',
-      'phptype' => 'json',
-      'null' => false,
-    ),
     'deleted' => 
     array (
       'dbtype' => 'tinyint',
@@ -111,6 +129,21 @@ $xpdo_meta_map['TicketFile']= array (
       'phptype' => 'boolean',
       'null' => true,
       'default' => 0,
+    ),
+    'properties' => 
+    array (
+      'dbtype' => 'text',
+      'phptype' => 'json',
+      'null' => true,
+    ),
+    'hash' => 
+    array (
+      'dbtype' => 'char',
+      'precision' => '40',
+      'phptype' => 'string',
+      'null' => true,
+      'default' => '',
+      'index' => 'index',
     ),
   ),
   'indexes' => 
@@ -124,6 +157,28 @@ $xpdo_meta_map['TicketFile']= array (
       'columns' => 
       array (
         'parent' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+        'class' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
+    'source' => 
+    array (
+      'alias' => 'source',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'source' => 
         array (
           'length' => '',
           'collation' => 'A',
@@ -163,16 +218,21 @@ $xpdo_meta_map['TicketFile']= array (
         ),
       ),
     ),
-  ),
-  'aggregates' => 
-  array (
-    'Ticket' => 
+    'hash' => 
     array (
-      'class' => 'Ticket',
-      'local' => 'parent',
-      'foreign' => 'id',
-      'cardinality' => 'one',
-      'owner' => 'foreign',
+      'alias' => 'hash',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'hash' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
     ),
   ),
 );
