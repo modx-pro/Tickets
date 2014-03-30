@@ -77,7 +77,7 @@ $default = array(
 	,'sortby' => 'createdon'
 	,'sortdir' => 'DESC'
 	,'groupby' => $class.'.id'
-	,'return' => 'data'
+	,'return' => !empty($returnIds) ? 'ids' : 'data'
 	,'nestedChunkPrefix' => 'tickets_'
 );
 
@@ -85,6 +85,8 @@ $default = array(
 $pdoFetch->setConfig(array_merge($default, $scriptProperties));
 $pdoFetch->addTime('Query parameters are prepared.');
 $rows = $pdoFetch->run();
+
+if (!empty($returnIds)) {return $rows;}
 
 // Processing rows
 $output = array();
@@ -191,16 +193,7 @@ if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
 }
 
 // Return output
-if (!empty($returnIds)) {
-	$modx->setPlaceholder('pdoResources.log', $log);
-	if (!empty($toPlaceholder)) {
-		$modx->setPlaceholder($toPlaceholder, $output);
-	}
-	else {
-		return $output;
-	}
-}
-elseif (!empty($toSeparatePlaceholders)) {
+if (!empty($toSeparatePlaceholders)) {
 	$output['log'] = $log;
 	$modx->setPlaceholders($output, $toSeparatePlaceholders);
 }
