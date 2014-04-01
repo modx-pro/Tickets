@@ -11,6 +11,8 @@ $tmp = array(
 	'TicketMeta' => 'ticket_meta',
 	'getTickets' => 'get_tickets',
 	'getTicketsSections' => 'get_sections',
+	'getComments' => 'get_comments',
+	'getStars' => 'get_stars',
 );
 
 foreach ($tmp as $k => $v) {

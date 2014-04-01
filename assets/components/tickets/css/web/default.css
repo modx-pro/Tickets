@@ -1,5 +1,9 @@
 @import url("./lib/jquery.jgrowl.css");
 
+/* Lists */
+.ticket-comment,
+.ticket-comment-row {margin-bottom: 15px;}
+
 /* Ticket form */
 #ticketForm {max-width: 800px;}
 #ticketForm #ticket-sections {max-width: 400px;}

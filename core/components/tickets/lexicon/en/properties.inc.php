@@ -11,6 +11,7 @@ $_lang['tickets_prop_sortby'] = 'The field to sort by.';
 $_lang['tickets_prop_sortdir'] = 'The direction to sort by';
 $_lang['tickets_prop_parents'] = 'Container list, separated by commas, to search results. By default, the query is limited to the current parent. If set to 0, query not limited.';
 $_lang['tickets_prop_resources'] = 'Comma-delimited list of ids to include in the results. Prefix an id with a dash to exclude the resource from the result.';
+$_lang['tickets_prop_resources'] = 'Comma-delimited list of threads to include in the results. Prefix an id with a dash to exclude this thread from the result.';
 $_lang['tickets_prop_where'] = 'A JSON-style expression of criteria to build any additional where clauses from';
 $_lang['tickets_prop_tvPrefix'] = 'The prefix for TemplateVar properties, "tv." for ex`ample. By default it is empty.';
 $_lang['tickets_prop_includeContent'] = 'Retrieve field "content" from resources.';
@@ -84,3 +85,5 @@ $_lang['tickets_prop_tplImage'] = 'The chunk for uploaded image.';
 $_lang['tickets_prop_getFiles'] = 'Display a list of uploaded files?';
 $_lang['tickets_prop_unusedFiles'] = 'Display only those files, links on which are absent in the content of the ticket.';
 $_lang['tickets_prop_meta_tplFile'] = 'The chunk for file in the list.';
+
+$_lang['tickets_prop_class'] = 'Specify class for selecting results.';

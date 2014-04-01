@@ -28,6 +28,7 @@ $tmp = array(
 	'tpl.Tickets.comment.email.reply' => 'comment_email_reply',
 	'tpl.Tickets.comment.email.subscription' => 'comment_email_subscription',
 	'tpl.Tickets.comment.email.bcc' => 'comment_email_bcc',
+	'tpl.Tickets.comment.list.row' => 'comment_list_row',
 
 	'tpl.Tickets.list.row' => 'ticket_list_row',
 	'tpl.Tickets.sections.row' => 'ticket_sections_row',

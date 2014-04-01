@@ -2,6 +2,13 @@ Changelog for Tickets.
 
 1.4.0 rc2
 ==========
+- [#80] Fixed innerJoin in getTickets.
+- Ability to add tickets and comments into favorites.
+- Added new snippet "getComments".
+- Added new snippet "getStars".
+
+1.4.0 rc1
+==========
 - Fixed saving ticket properties.
 - Improved vote for any resource with TicketMeta.
 - Added ability to upload files for tickets.
@@ -9,8 +16,6 @@ Changelog for Tickets.
 - Improved contexts support.
 - Improved parameter "returnIds" in snippets.
 - Improved handling of "ticketForm" properties and sections verification.
-- Ability to add tickets and comments into favorites.
-- [#80] Fixed innerJoin in getTickets.
 
 1.4.0 beta2
 ==========
