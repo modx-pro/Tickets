@@ -20,6 +20,7 @@ Tickets.Uploader = new plupload.Uploader({
 	multipart_params: {
 		action: $('#' + this.container).data('action') || 'ticket/file/upload',
 		tid: this.form.find('[name="tid"]').val(),
+		form_key: this.form.find('[name="form_key"]').val(),
 		ctx: TicketsConfig.ctx || 'web'
 	},
 	drop_element: 'ticket-files-list',
