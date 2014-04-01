@@ -10,9 +10,9 @@ class Tickets {
 	/* @var pdoTools $pdoTools */
 	public $pdoTools;
 	public $initialized = array();
+	public $authenticated = false;
 	private $prepareCommentCustom = null;
 	private $last_view = 0;
-	private $authenticated = false;
 
 
 	/**
@@ -78,7 +78,7 @@ class Tickets {
 			}
 		}
 
-		$this->authenticated = $this->modx->user->isAuthenticated($this->modx->context->key);
+		$this->authenticated = $this->modx->user->isAuthenticated($this->modx->context->get('key'));
 	}
 
 
@@ -437,7 +437,7 @@ class Tickets {
 			$comment['mode'] = 'save';
 			$comment['new_parent'] = $data['parent'];
 			$comment['resource'] = $this->config['resource'];
-			$comment['vote'] = '';
+			$comment['vote'] = $comment['star'] = '';
 
 			/** @var modUser $user */
 			if ($user = $this->modx->getObject('modUser', $comment['createdby'])) {
@@ -797,7 +797,7 @@ class Tickets {
 			$node['children'] = '';
 		}
 		$node['comment_was_edited'] = (boolean) $node['editedon'];
-		$node['comment_new'] = $node['createdby'] != $this->modx->user->id && $this->last_view > 0 && strtotime($node['createdon']) > $this->last_view;
+		$node['comment_new'] = $this->authenticated && $node['createdby'] != $this->modx->user->id && $this->last_view > 0 && strtotime($node['createdon']) > $this->last_view;
 
 		return $this->getChunk($tpl, $node, $this->config['fastMode']);
 	}

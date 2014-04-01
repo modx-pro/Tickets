@@ -103,7 +103,7 @@ $leftJoin = array(
 	'Ticket' => array('class' => 'Ticket', 'on' => '`Ticket`.`id` = `Thread`.`resource`'),
 	'Section' => array('class' => 'TicketsSection', 'on' => '`Section`.`id` = `Ticket`.`parent`'),
 );
-if ($modx->user->isAuthenticated($modx->context->key)) {
+if ($Tickets->authenticated) {
 	$leftJoin['Vote'] = array(
 		'class' => 'TicketVote',
 		'on' => '`Vote`.`id` = `TicketComment`.`id` AND `Vote`.`class` = "TicketComment" AND `Vote`.`createdby` = '.$modx->user->id
@@ -126,7 +126,7 @@ $select = array(
 			? $modx->getSelectColumns('TicketsSection', 'Section', 'section.')
 			: $modx->getSelectColumns('TicketsSection', 'Section', 'section.', array('content'), true),
 );
-if ($modx->user->isAuthenticated($modx->context->key)) {
+if ($Tickets->authenticated) {
 	$select['Vote'] = '`Vote`.`value` as `vote`';
 	$select['Star'] = 'COUNT(`Star`.`id`) as `star`';
 }

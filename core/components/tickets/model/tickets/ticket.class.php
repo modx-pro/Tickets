@@ -267,7 +267,7 @@ class Ticket extends modResource {
 	 * @return integer $count Total count of views
 	 */
 	public function getViewsCount() {
-		return $this->modx->getCount('TicketView', array('parent' => $this->id));
+		return $this->xpdo->getCount('TicketView', array('parent' => $this->id));
 	}
 
 
@@ -298,7 +298,7 @@ class Ticket extends modResource {
 	 * @return integer
 	 */
 	public function getStarsCount() {
-		return $this->modx->getCount('TicketStar', array('id' => $this->id, 'class' => 'Ticket'));
+		return $this->xpdo->getCount('TicketStar', array('id' => $this->id, 'class' => 'Ticket'));
 	}
 
 

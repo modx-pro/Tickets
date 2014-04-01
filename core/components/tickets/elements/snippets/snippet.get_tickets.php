@@ -38,7 +38,7 @@ $leftJoin = array(
 	'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `Ticket`.`createdby`'),
 	'Profile' => array('class' => 'modUserProfile', 'on' => '`Profile`.`internalKey` = `User`.`id`'),
 );
-if ($modx->user->id) {
+if ($Tickets->authenticated) {
 	$leftJoin['Vote'] = array(
 		'class' => 'TicketVote',
 		'on' => '`Vote`.`id` = `Ticket`.`id` AND `Vote`.`class` = "Ticket" AND `Vote`.`createdby` = '.$modx->user->id
@@ -58,7 +58,7 @@ $select = array(
 		? $modx->getSelectColumns($class, $class)
 		: $modx->getSelectColumns($class, $class, '', array('content'), true),
 );
-if ($modx->user->id) {
+if ($Tickets->authenticated) {
 	$select['Vote'] = '`Vote`.`value` as `vote`';
 	$select['Star'] = 'COUNT(`Star`.`id`) as `star`';
 }
@@ -149,7 +149,7 @@ if (!empty($rows) && is_array($rows)) {
 		$row['active'] = (integer) !empty($row['can_vote']);
 		$row['inactive'] = (integer) !empty($row['cant_vote']);
 
-		$row['can_star'] = !empty($modx->user->id);
+		$row['can_star'] = $Tickets->authenticated;
 		$row['stared'] = !empty($row['star']);
 		$row['unstared'] = empty($row['star']);
 

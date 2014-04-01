@@ -67,7 +67,7 @@ $leftJoin = array(
 	'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `TicketComment`.`createdby`'),
 	'Profile' => array('class' => 'modUserProfile', 'on' => '`Profile`.`internalKey` = `TicketComment`.`createdby`'),
 );
-if ($modx->user->isAuthenticated($modx->context->key)) {
+if ($Tickets->authenticated) {
 	$leftJoin['Vote'] = array(
 		'class' => 'TicketVote',
 		'on' => '`Vote`.`id` = `TicketComment`.`id` AND `Vote`.`class` = "TicketComment" AND `Vote`.`createdby` = '.$modx->user->id
@@ -84,7 +84,7 @@ $select = array(
 	'User' => '`User`.`username`',
 	'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id','email'), true) . ',`Profile`.`email` as `user_email`',
 );
-if ($modx->user->isAuthenticated($modx->context->key)) {
+if ($Tickets->authenticated) {
 	$select['Vote'] = '`Vote`.`value` as `vote`';
 	$select['Star'] = 'COUNT(`Star`.`id`) as `star`';
 }
@@ -137,7 +137,7 @@ if (!empty($rows) && is_array($rows)) {
 		$rows = array_reverse($rows);
 	}
 
-	$tpl = !$thread->get('closed') && ($modx->user->isAuthenticated($modx->context->key) || !empty($allowGuest))
+	$tpl = !$thread->get('closed') && ($Tickets->authenticated || !empty($allowGuest))
 		? $tplCommentAuth
 		: $tplCommentGuest;
 	foreach ($rows as $row) {
@@ -155,10 +155,10 @@ $commentsThread = $pdoFetch->getChunk($tplComments, array(
 ));
 
 $pls = array('thread' => $scriptProperties['thread']);
-if (!$modx->user->isAuthenticated($modx->context->key) && empty($allowGuest)) {
+if (!$Tickets->authenticated && empty($allowGuest)) {
 	$form = $pdoFetch->getChunk($tplLoginToComment);
 }
-elseif (!$modx->user->isAuthenticated($modx->context->key)) {
+elseif (!$Tickets->authenticated) {
 	$pls['name'] = $_SESSION['TicketComments']['name'];
 	$pls['email'] = $_SESSION['TicketComments']['email'];
 	if (!empty($enableCaptcha)) {

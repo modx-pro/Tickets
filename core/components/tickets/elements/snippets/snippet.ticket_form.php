@@ -4,7 +4,7 @@
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
-if (!$modx->user->isAuthenticated($modx->context->key)) {
+if (!$Tickets->authenticated) {
 	return $modx->lexicon('ticket_err_no_auth');
 }
 if (empty($tplSectionRow)) {$tplSectionRow = 'tpl.Tickets.sections.row';}

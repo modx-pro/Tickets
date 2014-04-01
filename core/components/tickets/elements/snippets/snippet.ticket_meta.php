@@ -111,7 +111,7 @@ elseif (array_key_exists('vote', $data)) {
 $data['active'] = (integer) !empty($data['can_vote']);
 $data['inactive'] = (integer) !empty($data['cant_vote']);
 
-$data['can_star'] = !empty($modx->user->id);
+$data['can_star'] = $Tickets->authenticated;
 
 if (!empty($getSection)) {
 	$fields = $modx->getFieldMeta('modResource');

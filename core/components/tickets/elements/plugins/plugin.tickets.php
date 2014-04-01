@@ -77,7 +77,23 @@ switch($modx->event->name) {
 
 	case 'OnEmptyTrash':
 		if (!empty($ids)) {
-			$modx->removeCollection('TicketThread', array('resource:IN' => $ids));
+			$collection = $modx->getIterator('TicketThread', array('resource:IN' => $ids));
+			/** @var TicketThread $item */
+			foreach ($collection as $item) {
+				$item->remove();
+			}
+
+			$collection = $modx->getIterator('TicketVote', array('id:IN' => $ids, 'class' => 'Ticket'));
+			/** @var TicketVote $item */
+			foreach ($collection as $item) {
+				$item->remove();
+			}
+
+			$collection = $modx->getIterator('TicketStar', array('id:IN' => $ids, 'class' => 'Ticket'));
+			/** @var TicketStar $item */
+			foreach ($collection as $item) {
+				$item->remove();
+			}
 		}
 		break;
 
