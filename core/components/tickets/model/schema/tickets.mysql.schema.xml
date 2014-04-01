@@ -136,21 +136,25 @@
 			<column key="owner" length="" collation="A" null="false" />
 		</index>
 	</object>
-    
-    <object class="TicketStar" table="tickets_stars" extends="xPDOObject">
+
+	<object class="TicketStar" table="tickets_stars" extends="xPDOObject">
 		<field key="id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
 		<field key="class" dbtype="varchar" precision="100" phptype="string" default="Ticket" index="pk" />
+		<field key="owner" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="index" />
 
-		<field key="createdon" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" index="index" />
-		<field key="user" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
+		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" index="index" />
+		<field key="createdby" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
 
 		<index alias="unique_key" name="unique_key" primary="true" unique="true" type="BTREE">
 			<column key="id" length="" collation="A" null="false" />
-			<column key="user" length="" collation="A" null="false" />
+			<column key="createdby" length="" collation="A" null="false" />
 			<column key="class" length="" collation="A" null="false" />
 		</index>
 		<index alias="createdon" name="createdon" primary="false" unique="false" type="BTREE">
 			<column key="createdon" length="" collation="A" null="false" />
+		</index>
+		<index alias="owner" name="owner" primary="false" unique="false" type="BTREE">
+			<column key="owner" length="" collation="A" null="false" />
 		</index>
 	</object>
 

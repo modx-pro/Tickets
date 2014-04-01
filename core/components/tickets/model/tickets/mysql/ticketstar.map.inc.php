@@ -8,8 +8,9 @@ $xpdo_meta_map['TicketStar']= array (
   array (
     'id' => 0,
     'class' => 'Ticket',
-    'createdon' => 'CURRENT_TIMESTAMP',
-    'user' => 0,
+    'owner' => 0,
+    'createdon' => NULL,
+    'createdby' => 0,
   ),
   'fieldMeta' => 
   array (
@@ -31,15 +32,24 @@ $xpdo_meta_map['TicketStar']= array (
       'default' => 'Ticket',
       'index' => 'pk',
     ),
-    'createdon' => 
+    'owner' => 
     array (
-      'dbtype' => 'timestamp',
-      'phptype' => 'timestamp',
+      'dbtype' => 'int',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'attributes' => 'unsigned',
       'null' => false,
-      'default' => 'CURRENT_TIMESTAMP',
+      'default' => 0,
       'index' => 'index',
     ),
-    'user' => 
+    'createdon' => 
+    array (
+      'dbtype' => 'datetime',
+      'phptype' => 'datetime',
+      'null' => true,
+      'index' => 'index',
+    ),
+    'createdby' => 
     array (
       'dbtype' => 'int',
       'precision' => '10',
@@ -66,7 +76,7 @@ $xpdo_meta_map['TicketStar']= array (
           'collation' => 'A',
           'null' => false,
         ),
-        'user' => 
+        'createdby' => 
         array (
           'length' => '',
           'collation' => 'A',
@@ -89,6 +99,22 @@ $xpdo_meta_map['TicketStar']= array (
       'columns' => 
       array (
         'createdon' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
+    'owner' => 
+    array (
+      'alias' => 'owner',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'owner' => 
         array (
           'length' => '',
           'collation' => 'A',

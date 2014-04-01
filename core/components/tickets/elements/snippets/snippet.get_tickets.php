@@ -45,7 +45,7 @@ if ($modx->user->id) {
 	);
 	$leftJoin['Star'] = array(
 		'class' => 'TicketStar',
-		'on' => '`Star`.`id` = `Ticket`.`id` AND `Star`.`class` = "Ticket" AND `Star`.`user` = '.$modx->user->id
+		'on' => '`Star`.`id` = `Ticket`.`id` AND `Star`.`class` = "Ticket" AND `Star`.`createdby` = '.$modx->user->id
 	);
 }
 
@@ -60,12 +60,12 @@ $select = array(
 );
 if ($modx->user->id) {
 	$select['Vote'] = '`Vote`.`value` as `vote`';
-    $select['Star'] = '`Star`.`id` as `star_id`, `Star`.`user` as `star_user`, `Star`.`createdon` as `star_createdon`, `Star`.`class` as `star_class`';
+	$select['Star'] = 'COUNT(`Star`.`id`) as `star`';
 }
 $pdoFetch->addTime('Conditions prepared');
 
 // Add custom parameters
-foreach (array('where','select','leftJoin','innerJoin') as $v) {
+foreach (array('where','select','leftJoin') as $v) {
 	if (!empty($scriptProperties[$v])) {
 		$tmp = $modx->fromJSON($scriptProperties[$v]);
 		if (is_array($tmp)) {
@@ -76,15 +76,15 @@ foreach (array('where','select','leftJoin','innerJoin') as $v) {
 }
 
 $default = array(
-	'class' => $class
-	,'where' => $modx->toJSON($where)
-	,'leftJoin' => $modx->toJSON($leftJoin)
-	,'select' => $modx->toJSON($select)
-	,'sortby' => 'createdon'
-	,'sortdir' => 'DESC'
-	,'groupby' => $class.'.id'
-	,'return' => !empty($returnIds) ? 'ids' : 'data'
-	,'nestedChunkPrefix' => 'tickets_'
+	'class' => $class,
+	'where' => $modx->toJSON($where),
+	'leftJoin' => $modx->toJSON($leftJoin),
+	'select' => $modx->toJSON($select),
+	'sortby' => 'createdon',
+	'sortdir' => 'DESC',
+	'groupby' => $class.'.id',
+	'return' => !empty($returnIds) ? 'ids' : 'data',
+	'nestedChunkPrefix' => 'tickets_',
 );
 
 // Merge all properties and run!
@@ -146,14 +146,12 @@ if (!empty($rows) && is_array($rows)) {
 				$row['cant_vote'] = 1;
 			}
 		}
-        $row['can_star'] = $modx->user->id ? 1 : '';
 		$row['active'] = (integer) !empty($row['can_vote']);
 		$row['inactive'] = (integer) !empty($row['cant_vote']);
-        if (!empty($row['star_id'])) {
-            $row['stared'] = 1;
-        }  else {
-            $row['unstared'] = 1;
-        }
+
+		$row['can_star'] = !empty($modx->user->id);
+		$row['stared'] = !empty($row['star']);
+		$row['unstared'] = empty($row['star']);
 
 		// Adding fields to row
 		$additional_fields = $pdoFetch->getObject('Ticket', $row['id'], array(

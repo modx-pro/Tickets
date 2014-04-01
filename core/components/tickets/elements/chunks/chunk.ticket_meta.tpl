@@ -18,9 +18,6 @@
 
 <!--tickets_can_vote <span class="vote rating" title="[[%ticket_refrain]]"><i class="glyphicon glyphicon-minus"></i></span>-->
 <!--tickets_cant_vote <span class="rating[[+rating_positive]][[+rating_negative]]" title="[[%ticket_rating_total]] [[+rating_total]]: ↑[[+rating_plus]] [[%ticket_rating_and]] ↓[[+rating_minus]]">[[+rating]]</span>-->
-<!--tickets_stared <i class="glyphicon glyphicon-star stared star"></i>-->
-<!--tickets_unstared <i class="glyphicon glyphicon-star unstared star"></i>-->
-<!--tickets_can_star  active-->
 <!--tickets_active  active-->
 <!--tickets_inactive  inactive-->
 <!--tickets_voted_plus  voted-->
@@ -32,3 +29,6 @@
 	<strong>[[%ticket_uploaded_files]]:</strong>
 	[[+files]]
 </ul>-->
+<!--tickets_can_star  active-->
+<!--tickets_stared <i class="glyphicon glyphicon-star stared star"></i>-->
+<!--tickets_unstared <i class="glyphicon glyphicon-star unstared star"></i>-->

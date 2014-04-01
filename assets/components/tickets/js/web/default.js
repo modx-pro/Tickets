@@ -107,8 +107,14 @@ var Tickets = {
 			return false;
 		});
 		// --
-        // Stars
-        $(document).on('click touchend', '.ticket-star.active > .star', function(e) {
+		// Stars
+		$(document).on('click touchend', '.ticket-comment-star.active > .star', function(e) {
+			var id = $(this).parents('.ticket-comment').data('id');
+			Tickets.Star.comment.star(this, id, 0);
+			e.preventDefault();
+			return false;
+		});
+		$(document).on('click touchend', '.ticket-star.active > .star', function(e) {
 			var id = $(this).parents('.ticket-meta').data('id');
 			Tickets.Star.ticket.star(this, id, 0);
 			e.preventDefault();
@@ -623,21 +629,41 @@ Tickets.Vote = {
 };
 
 Tickets.Star = {
-
-	ticket: {
-        options: {
+	comment: {
+		options: {
 			stared: 'stared'
 			,unstared: 'unstared'
 		}
 		,star: function(link, id, value) {
 			link = $(link);
-            var options = this.options;
+			var options = this.options;
+			var parent = link.parent();
+
+			$.post(TicketsConfig.actionUrl, {action: 'comment/star', id: id}, function(response) {
+				if (response.success) {
+					link.toggleClass(options.stared).toggleClass(options.unstared);
+				}
+				else {
+					Tickets.Message.error(response.message);
+				}
+			}, 'json');
+
+			return true;
+		}
+	}
+	,ticket: {
+		options: {
+			stared: 'stared'
+			,unstared: 'unstared'
+		}
+		,star: function(link, id, value) {
+			link = $(link);
+			var options = this.options;
 			var parent = link.parent();
 
 			$.post(TicketsConfig.actionUrl, {action: 'ticket/star', id: id}, function(response) {
 				if (response.success) {
-					link.toggleClass(options.stared);
-					link.toggleClass(options.unstared);
+					link.toggleClass(options.stared).toggleClass(options.unstared);
 				}
 				else {
 					Tickets.Message.error(response.message);

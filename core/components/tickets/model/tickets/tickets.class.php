@@ -12,6 +12,7 @@ class Tickets {
 	public $initialized = array();
 	private $prepareCommentCustom = null;
 	private $last_view = 0;
+	private $authenticated = false;
 
 
 	/**
@@ -76,6 +77,8 @@ class Tickets {
 				$this->prepareCommentCustom = $snippet->get('content');
 			}
 		}
+
+		$this->authenticated = $this->modx->user->isAuthenticated($this->modx->context->key);
 	}
 
 
@@ -124,7 +127,7 @@ class Tickets {
 							,cssUrl: "'.$this->config['cssUrl'].'web/"
 							,actionUrl: "'.$this->config['actionUrl'].'"
 							,close_all_message: "'.$this->modx->lexicon('tickets_message_close_all').'"
-							,tpanel: '.(integer) $this->modx->user->isAuthenticated($this->modx->context->key).'
+							,tpanel: '.(integer) $this->authenticated.'
 							,'.$editorConfig.'
 						};
 					');
@@ -312,8 +315,8 @@ class Tickets {
 
 		return $this->error('tickets_err_unknown');
 	}
-    
-    
+
+
 	/**
 	 * Star for ticket
 	 *
@@ -322,26 +325,21 @@ class Tickets {
 	 * @return array|string
 	 */
 	public function starTicket($id) {
-		$data = array('id' => $id, 'user' => $this->modx->user->id, 'class' => 'Ticket');
-        
-		/** @var TicketStar $star */
-		if ($star = $this->modx->getObject('TicketStar', $data)) {
-            if ($star->remove()) {
-                return $this->success('tickets_unstared');
-            } else {
-                return $this->error('tickets_err_unknown');
-            }
-		} else {
-    		$table = $this->modx->getTableName('TicketStar');
-			$sql = "INSERT INTO {$table} (`id`,`user`) VALUES ({$id},{$this->modx->user->id})";
-			if ($stmt = $this->modx->prepare($sql)) {
-				$stmt->execute();
-                return $this->success('tickets_stared');
-			} else {
-                return $this->error('tickets_err_unknown');
-            }
+		$data = array('id' => $id);
+
+		/** @var modProcessorResponse $response */
+		if (!empty($id)) {
+			$response = $this->runProcessor('web/ticket/star', $data);
+			if ($response->isError()) {
+				return $this->error($response->getMessage());
+			}
+			else {
+				$data = $response->getObject();
+				return $this->success('', $data);
+			}
 		}
 
+		return $this->error('tickets_err_unknown');
 	}
 
 
@@ -376,7 +374,7 @@ class Tickets {
 		$comment = $comment->toArray();
 
 		/** @var modUser $user */
-		if ($this->modx->user->isAuthenticated($this->modx->context->key) && $user = $this->modx->getObject('modUser', $this->modx->user->id)) {
+		if ($this->authenticated && $user = $this->modx->getObject('modUser', $this->modx->user->id)) {
 			$comment['name'] = $this->modx->user->Profile->fullname;
 			$comment['email'] = $this->modx->user->Profile->email;
 			/** @var modUserProfile $profile */
@@ -409,7 +407,7 @@ class Tickets {
 		$data['allowGuestEdit'] = !empty($this->config['allowGuestEdit']);
 		$data['published'] = !empty($this->config['autoPublish']);
 
-		if ($this->modx->user->isAuthenticated($this->modx->context->key)) {
+		if ($this->authenticated) {
 			$data['name'] = $this->modx->user->Profile->fullname;
 			$data['email'] = $this->modx->user->Profile->email;
 		}
@@ -512,6 +510,32 @@ class Tickets {
 
 
 	/**
+	 * Star for comment
+	 *
+	 * @param $id
+	 *
+	 * @return array|string
+	 */
+	public function starComment($id) {
+		$data = array('id' => $id);
+
+		/** @var modProcessorResponse $response */
+		if (!empty($id)) {
+			$response = $this->runProcessor('web/comment/star', $data);
+			if ($response->isError()) {
+				return $this->error($response->getMessage());
+			}
+			else {
+				$data = $response->getObject();
+				return $this->success('', $data);
+			}
+		}
+
+		return $this->error('tickets_err_unknown');
+	}
+
+
+	/**
 	 * Returns Comment for edit by its author
 	 *
 	 * @param integer $id Id of an comment
@@ -528,10 +552,10 @@ class Tickets {
 		$time = time() - strtotime($comment['createdon']);
 		$time_limit = $this->config['commentEditTime'];
 
-		if ($this->modx->user->isAuthenticated($this->modx->context->key) && $this->modx->user->id != $comment['createdby']) {
+		if ($this->authenticated && $this->modx->user->id != $comment['createdby']) {
 			return $this->error($this->modx->lexicon('ticket_comment_err_wrong_user'));
 		}
-		elseif (!$this->modx->user->isAuthenticated($this->modx->context->key)) {
+		elseif (!$this->authenticated) {
 			if (!$this->config['allowGuest'] || !$this->config['allowGuestEdit']) {
 				return $this->error($this->modx->lexicon('ticket_comment_err_guest_edit'));
 			}
@@ -567,7 +591,7 @@ class Tickets {
 	 * @return array
 	 */
 	public function getNewComments($name) {
-		if (!$this->modx->user->isAuthenticated($this->modx->context->key)) {
+		if (!$this->authenticated) {
 			return $this->error($this->modx->lexicon('access_denied'));
 		}
 		elseif ($thread = $this->modx->getObject('TicketThread', array('name' => $name))) {
@@ -688,7 +712,7 @@ class Tickets {
 		$node['has_parent'] = !empty($node['parent']);
 
 		// Handling rating
-		if (!$this->modx->user->isAuthenticated($this->modx->context->key) || $this->modx->user->id == $node['createdby']) {
+		if (!$this->authenticated || $this->modx->user->id == $node['createdby']) {
 			$node['cant_vote'] = 1;
 		}
 		elseif (array_key_exists('vote', $node)) {
@@ -704,7 +728,6 @@ class Tickets {
 				$node['cant_vote'] = 1;
 			}
 		}
-
 		if ($node['rating'] > 0) {
 			$node['rating'] = '+'.$node['rating'];
 			$node['rating_positive'] = 1;
@@ -715,6 +738,13 @@ class Tickets {
 			$node['bad'] = $node['rating'] >= -5
 				? ' bad bad' . abs($node['rating'])
 				: ' bad bad5';
+		}
+
+		// Handling stars
+		if ($this->authenticated && array_key_exists('star', $node)) {
+			$node['can_star'] = 1;
+			$node['stared'] = !empty($node['star']);
+			$node['unstared'] = empty($node['star']);
 		}
 
 		// Checking comment novelty
@@ -730,7 +760,7 @@ class Tickets {
 		// Processing comment and selecting needed template
 		$node = $this->prepareComment($node);
 		if (empty($tpl)) {
-			$tpl = $this->modx->user->isAuthenticated($this->modx->context->key) || !empty($this->config['allowGuest'])
+			$tpl = $this->authenticated || !empty($this->config['allowGuest'])
 				? $this->config['tplCommentAuth']
 				: $this->config['tplCommentGuest'];
 		}
@@ -951,7 +981,7 @@ class Tickets {
 	 * @return array
 	 */
 	public function Subscribe($name) {
-		if (!$this->modx->user->isAuthenticated($this->modx->context->key)) {
+		if (!$this->authenticated) {
 			return $this->error('ticket_err_access_denied');
 		}
 		/* @var TicketThread $thread */
@@ -1135,7 +1165,7 @@ class Tickets {
 	 * @return void
 	 */
 	public function logView($resource) {
-		if ($this->modx->user->isAuthenticated($this->modx->context->key) && $this->modx->user->id && $this->modx->getCount('modResource', $resource)) {
+		if ($this->authenticated && $this->modx->user->id && $this->modx->getCount('modResource', $resource)) {
 			$table = $this->modx->getTableName('TicketView');
 			$timestamp = date('Y-m-d H:i:s');
 			$sql = "INSERT INTO {$table} (`uid`,`parent`,`timestamp`) VALUES ({$this->modx->user->id},{$resource},'{$timestamp}') ON DUPLICATE KEY UPDATE `timestamp` = '{$timestamp}'";
@@ -1171,7 +1201,7 @@ class Tickets {
 	 * @return array|string
 	 */
 	public function fileUpload($data, $class = 'Ticket') {
-		if (!$this->modx->user->isAuthenticated($this->modx->context->key) || empty($this->config['allowFiles'])) {
+		if (!$this->authenticated || empty($this->config['allowFiles'])) {
 			return $this->error('ticket_err_access_denied');
 		}
 
@@ -1204,7 +1234,7 @@ class Tickets {
 	 * @return array|string
 	 */
 	public function fileDelete($id) {
-		if (!$this->modx->user->isAuthenticated($this->modx->context->key) || empty($this->config['allowFiles'])) {
+		if (!$this->authenticated || empty($this->config['allowFiles'])) {
 			return $this->error('ticket_err_access_denied');
 		}
 		/** @var modProcessorResponse $response */

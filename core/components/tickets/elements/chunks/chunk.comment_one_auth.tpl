@@ -6,10 +6,9 @@
 			<span class="ticket-comment-author">[[+fullname]]</span>
 			<span class="ticket-comment-createdon">[[+date_ago]]</span>[[+comment_was_edited]]
 			<span class="ticket-comment-link"><a href="[[+url]]#comment-[[+id]]">#</a></span>
-
+			<span class="ticket-comment-star[[+can_star]]">[[+stared]][[+unstared]]</span>
 			[[+has_parent]]
 			<span class="ticket-comment-down"><a href="#" data-child="">&darr;</a></span>
-
 			<span class="ticket-comment-rating[[+can_vote]][[+cant_vote]]">
 				<span class="rating[[+rating_positive]][[+rating_negative]]" title="[[%ticket_rating_total]] [[+rating_total]]: ↑[[+rating_plus]] [[%ticket_rating_and]] ↓[[+rating_minus]]">[[+rating]]</span>
 				<span class="vote plus[[+voted_plus]]" title="[[%ticket_like]]"><i class="glyphicon glyphicon-arrow-up"></i></span>
@@ -37,3 +36,6 @@
 <!--tickets_voted_minus  voted-->
 <!--tickets_guest  ticket-comment-guest-->
 <!--tickets_has_parent <span class="ticket-comment-up"><a href="[[+url]]#comment-[[+parent]]" data-id="[[+id]]" data-parent="[[+parent]]">&uarr;</a></span>-->
+<!--tickets_can_star  active-->
+<!--tickets_stared <i class="glyphicon glyphicon-star stared star"></i>-->
+<!--tickets_unstared <i class="glyphicon glyphicon-star unstared star"></i>-->

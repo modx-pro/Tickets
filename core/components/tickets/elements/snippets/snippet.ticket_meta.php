@@ -27,15 +27,12 @@ if (!empty($vote)) {
 	$data['vote'] = $vote['value'];
 }
 
-$star = $pdoFetch->getObject('TicketStar', array('id' => $ticket->id, 'class' => 'Ticket', 'user' => $modx->user->id), array('select' => 'id', 'sortby' => 'id'));
-if (!empty($star)) {
-	$data['stared'] = 1;
-}  else {
-    $data['unstared'] = 1;
-}
+$star = $modx->getCount('TicketStar', array('id' => $ticket->id, 'class' => 'Ticket', 'createdby' => $modx->user->id));
+$data['stared'] = !empty($star);
+$data['unstared'] = empty($star);
 
 if ($class != 'Ticket') {
-    // Rating
+	// Rating
 	if (!$modx->user->id || $modx->user->id == $ticket->createdby) {
 		$data['voted'] = 0;
 	}
@@ -116,9 +113,11 @@ elseif (array_key_exists('vote', $data)) {
 		$data['cant_vote'] = 1;
 	}
 }
-$data['can_star'] = $modx->user->id ? 1 : '';
+
 $data['active'] = (integer) !empty($data['can_vote']);
 $data['inactive'] = (integer) !empty($data['cant_vote']);
+
+$data['can_star'] = !empty($modx->user->id);
 
 if (!empty($getSection)) {
 	$fields = $modx->getFieldMeta('modResource');

@@ -108,16 +108,15 @@
 	opacity: .7;
 }
 
-/* Ticket star*/
-.ticket-star .star {
-    cursor: pointer;
-}
-.ticket-star .stared {
-    color: green;
-}
-.ticket-star .unstared {
-    color: gray;
-}
+/* Ticket stars*/
+.ticket-star.active .star,
+.ticket-comment-star.active .star {cursor: pointer;}
+.ticket-star .stared,
+.ticket-comment-star .stared {color: green;}
+.ticket-star .unstared,
+.ticket-comment-star .unstared {color: gray;}
+.ticket-star.active .unstared:hover,
+.ticket-comment-star.active .unstared:hover {color: green;}
 
 /* Ticket meta*/
 .ticket-meta {

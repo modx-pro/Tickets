@@ -9,6 +9,8 @@ Changelog for Tickets.
 - Improved contexts support.
 - Improved parameter "returnIds" in snippets.
 - Improved handling of "ticketForm" properties and sections verification.
+- Ability to add tickets and comments into favorites.
+- [#80] Fixed innerJoin in getTickets.
 
 1.4.0 beta2
 ==========

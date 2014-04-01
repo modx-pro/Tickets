@@ -72,6 +72,10 @@ if ($modx->user->isAuthenticated($modx->context->key)) {
 		'class' => 'TicketVote',
 		'on' => '`Vote`.`id` = `TicketComment`.`id` AND `Vote`.`class` = "TicketComment" AND `Vote`.`createdby` = '.$modx->user->id
 	);
+	$leftJoin['Star'] = array(
+		'class' => 'TicketStar',
+		'on' => '`Star`.`id` = `TicketComment`.`id` AND `Star`.`class` = "TicketComment" AND `Star`.`createdby` = '.$modx->user->id
+	);
 }
 // Fields to select
 $select = array(
@@ -82,6 +86,7 @@ $select = array(
 );
 if ($modx->user->isAuthenticated($modx->context->key)) {
 	$select['Vote'] = '`Vote`.`value` as `vote`';
+	$select['Star'] = 'COUNT(`Star`.`id`) as `star`';
 }
 
 // Add custom parameters
@@ -104,6 +109,7 @@ $default = array(
 	'select' => $modx->toJSON($select),
 	'sortby' => $class.'.id',
 	'sortdir' => 'ASC',
+	'groupby' => $class.'.id',
 	'limit' => 0,
 	'fastMode' => true,
 	'return' => 'data',
