@@ -19,6 +19,7 @@ if ($object->xpdo) {
 			$manager->createObjectContainer('TicketComment');
 			$manager->createObjectContainer('TicketThread');
 			$manager->createObjectContainer('TicketView');
+            $manager->createObjectContainer('TicketStar');
 			$manager->createObjectContainer('TicketQueue');
 			$manager->createObjectContainer('TicketFile');
 

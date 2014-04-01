@@ -312,6 +312,37 @@ class Tickets {
 
 		return $this->error('tickets_err_unknown');
 	}
+    
+    
+	/**
+	 * Star for ticket
+	 *
+	 * @param $id
+	 *
+	 * @return array|string
+	 */
+	public function starTicket($id) {
+		$data = array('id' => $id, 'user' => $this->modx->user->id, 'class' => 'Ticket');
+        
+		/** @var TicketStar $star */
+		if ($star = $this->modx->getObject('TicketStar', $data)) {
+            if ($star->remove()) {
+                return $this->success('tickets_unstared');
+            } else {
+                return $this->error('tickets_err_unknown');
+            }
+		} else {
+    		$table = $this->modx->getTableName('TicketStar');
+			$sql = "INSERT INTO {$table} (`id`,`user`) VALUES ({$id},{$this->modx->user->id})";
+			if ($stmt = $this->modx->prepare($sql)) {
+				$stmt->execute();
+                return $this->success('tickets_stared');
+			} else {
+                return $this->error('tickets_err_unknown');
+            }
+		}
+
+	}
 
 
 	/**
