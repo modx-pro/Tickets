@@ -42,7 +42,8 @@ class CommentStarProcessor extends modObjectProcessor {
 			$star->save();
 		}
 
-		return $this->success();
+		$stars = $this->modx->getCount('TicketStar', array('id' => $id, 'class' => 'TicketComment'));
+		return $this->success('', array('stars' => $stars));
 	}
 
 }

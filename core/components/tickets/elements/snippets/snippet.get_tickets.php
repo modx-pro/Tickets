@@ -171,6 +171,7 @@ if (!empty($rows) && is_array($rows)) {
 		$row = array_merge($row, $additional_fields);
 		$row['date_ago'] = $Tickets->dateFormat($row['createdon']);
 		$row['comments'] = $modx->getCount('TicketComment', array('published' => 1, 'thread' => $row['thread']));
+		$row['stars'] = $modx->getCount('TicketStar', array('id' => $row['id'], 'class' => 'Ticket'));
 
 		$row['idx'] = $pdoFetch->idx++;
 		// Processing new comments

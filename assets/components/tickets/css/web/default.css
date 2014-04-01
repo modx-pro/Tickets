@@ -3,6 +3,7 @@
 /* Lists */
 .ticket-comment,
 .ticket-comment-row {margin-bottom: 15px;}
+.ticket-new-comments {color: green;}
 
 /* Ticket form */
 #ticketForm {max-width: 800px;}

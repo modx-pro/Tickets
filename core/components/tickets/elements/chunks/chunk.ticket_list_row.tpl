@@ -7,7 +7,7 @@
 		<span class="col-md-2"><i class="glyphicon glyphicon-calendar"></i> [[+date_ago]]</span>
 		<span class="col-md-3"><i class="glyphicon glyphicon-user"></i> [[+fullname]]</span>
 		<span class="col-md-2"><a href="[[~[[+section.id]]]]"><i class="glyphicon glyphicon-folder-open"></i> [[+section.pagetitle]]</a></span>
-		<span class="col-md-1 ticket-star[[+can_star]]">[[+stared]][[+unstared]]</span>
+		<span class="col-md-1 ticket-star[[+can_star]]">[[+stared]][[+unstared]] <span class="ticket-star-count">[[+stars]]</span></span>
 		<span class="col-md-1"><i class="glyphicon glyphicon-eye-open"></i> [[+views]]</span>
 		<span class="col-md-1"><i class="glyphicon glyphicon-comment"></i> [[+comments]]  [[+new_comments]]</span>
 		<span class="col-md-2 pull-right ticket-rating[[+active]][[+inactive]]">
@@ -19,7 +19,7 @@
 </div>
 <!--tickets_can_vote <span class="vote rating" title="[[%ticket_refrain]]"><i class="glyphicon glyphicon-minus"></i></span>-->
 <!--tickets_cant_vote <span class="rating[[+rating_positive]][[+rating_negative]]" title="[[%ticket_rating_total]] [[+rating_total]]: ↑[[+rating_plus]] [[%ticket_rating_and]] ↓[[+rating_minus]]">[[+rating]]</span>-->
-<!--tickets_new_comments <span class="green">+[[+new_comments]]</span>-->
+<!--tickets_new_comments <span class="ticket-new-comments">+[[+new_comments]]</span>-->
 <!--tickets_active  active-->
 <!--tickets_inactive  inactive-->
 <!--tickets_voted_plus  voted-->

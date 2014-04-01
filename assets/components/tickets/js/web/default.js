@@ -633,6 +633,7 @@ Tickets.Star = {
 		options: {
 			stared: 'stared'
 			,unstared: 'unstared'
+			//,count: 'ticket-comment-star-count'
 		}
 		,star: function(link, id, value) {
 			link = $(link);
@@ -655,15 +656,17 @@ Tickets.Star = {
 		options: {
 			stared: 'stared'
 			,unstared: 'unstared'
+			,count: 'ticket-star-count'
 		}
 		,star: function(link, id, value) {
 			link = $(link);
 			var options = this.options;
-			var parent = link.parent();
+			var count = link.parent().find('.' + this.options.count);
 
 			$.post(TicketsConfig.actionUrl, {action: 'ticket/star', id: id}, function(response) {
 				if (response.success) {
 					link.toggleClass(options.stared).toggleClass(options.unstared);
+					count.text(response.data.stars);
 				}
 				else {
 					Tickets.Message.error(response.message);

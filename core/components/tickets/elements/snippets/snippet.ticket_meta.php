@@ -58,16 +58,7 @@ if ($class != 'Ticket') {
 	}
 
 	// Views
-	$data['views'] = 0;
-	$q = $modx->newQuery('modResource', $ticket->id);
-	$q->leftJoin('TicketView','TicketView', "`TicketView`.`parent` = `modResource`.`id`");
-	$q->select('COUNT(`TicketView`.`parent`) as `views`');
-	$tstart = microtime(true);
-	if ($q->prepare() && $q->stmt->execute()) {
-		$modx->startTime += microtime(true) - $tstart;
-		$modx->executedQueries ++;
-		$data['views'] = (integer) $q->stmt->fetchColumn();
-	}
+	$data['views'] = $modx->getCount('TicketView', array('parent' => $ticket->id));
 
 	// Comments
 	$data['comments'] = 0;
@@ -83,6 +74,9 @@ if ($class != 'Ticket') {
 
 	// Date ago
 	$data['date_ago'] = $Tickets->dateFormat($data['createdon']);
+	
+	// Stars
+	$data['stars'] = $modx->getCount('TicketStar', array('id' => $ticket->id, 'class' => 'Ticket'));
 }
 
 if ($data['rating'] > 0) {

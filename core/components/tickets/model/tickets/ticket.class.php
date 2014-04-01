@@ -55,8 +55,8 @@ class Ticket extends modResource {
 			switch ($k) {
 				case 'comments': $value = $this->getCommentsCount(); break;
 				case 'views': $value = $this->getViewsCount(); break;
-				case 'votes': $value = $this->getVotesSum(); break;
 				case 'date_ago': $value = $this->getDateAgo(); break;
+				case 'stars': $value = $this->getStars(); break;
 				default: $value = parent::get($k, $format, $formatTemplate);
 			}
 
@@ -222,6 +222,7 @@ class Ticket extends modResource {
 			'comments' => $this->getCommentsCount(),
 			'views' => $this->getViewsCount(),
 			'date_ago' => $this->getDateAgo(),
+			'stars' => $this->getStarsCount(),
 		);
 		$array = array_merge($array, $this->getRating());
 
@@ -266,18 +267,7 @@ class Ticket extends modResource {
 	 * @return integer $count Total count of views
 	 */
 	public function getViewsCount() {
-		$q = $this->xpdo->newQuery('Ticket', $this->id);
-		$q->leftJoin('TicketView','TicketView', "`TicketView`.`parent` = `Ticket`.`id`");
-		$q->select('COUNT(`TicketView`.`parent`) as `views`');
-
-		$count = 0;
-		$tstart = microtime(true);
-		if ($q->prepare() && $q->stmt->execute()) {
-			$this->xpdo->startTime += microtime(true) - $tstart;
-			$this->xpdo->executedQueries ++;
-			$count = (integer) $q->stmt->fetch(PDO::FETCH_COLUMN);
-		}
-		return $count;
+		return $this->modx->getCount('TicketView', array('parent' => $this->id));
 	}
 
 
@@ -296,30 +286,19 @@ class Ticket extends modResource {
 		if ($q->prepare() && $q->stmt->execute()) {
 			$this->xpdo->startTime += microtime(true) - $tstart;
 			$this->xpdo->executedQueries ++;
-			$count = (integer) $q->stmt->fetch(PDO::FETCH_COLUMN);
+			$count = (integer) $q->stmt->fetchColumn();
 		}
 		return $count;
 	}
 
 
 	/**
-	 * Returns sum of votes to Ticket by users
+	 * Returns number of stars for Ticket
 	 *
-	 * @return integer $count Total sum of votes
+	 * @return integer
 	 */
-	public function getVotesSum() {
-		$q = $this->xpdo->newQuery('Ticket', $this->id);
-		$q->leftJoin('TicketVote','TicketVote', "`TicketVote`.`parent` = `Ticket`.`id` AND `TicketVote`.`class` = 'Ticket'");
-		$q->select('SUM(`TicketVote`.`value`) as `votes`');
-
-		$sum = 0;
-		$tstart = microtime(true);
-		if ($q->prepare() && $q->stmt->execute()) {
-			$this->xpdo->startTime += microtime(true) - $tstart;
-			$this->xpdo->executedQueries ++;
-			$sum = (integer) $q->stmt->fetch(PDO::FETCH_COLUMN);
-		}
-		return $sum;
+	public function getStarsCount() {
+		return $this->modx->getCount('TicketStar', array('id' => $this->id, 'class' => 'Ticket'));
 	}
 
 
@@ -357,7 +336,7 @@ class Ticket extends modResource {
 		if ($q->prepare() && $q->stmt->execute()) {
 			$this->xpdo->startTime += microtime(true) - $tstart;
 			$this->xpdo->executedQueries ++;
-			$vote = $q->stmt->fetch(PDO::FETCH_COLUMN);
+			$vote = $q->stmt->fetchColumn();
 		}
 		return $vote;
 	}

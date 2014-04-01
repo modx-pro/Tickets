@@ -42,7 +42,8 @@ class TicketStarProcessor extends modObjectProcessor {
 			$star->save();
 		}
 
-		return $this->success();
+		$stars = $this->modx->getCount('TicketStar', array('id' => $id, 'class' => 'Ticket'));
+		return $this->success('', array('stars' => $stars));
 	}
 
 }
