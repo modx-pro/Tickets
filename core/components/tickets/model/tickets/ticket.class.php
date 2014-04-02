@@ -56,7 +56,7 @@ class Ticket extends modResource {
 				case 'comments': $value = $this->getCommentsCount(); break;
 				case 'views': $value = $this->getViewsCount(); break;
 				case 'date_ago': $value = $this->getDateAgo(); break;
-				case 'stars': $value = $this->getStars(); break;
+				case 'stars': $value = $this->getStarsCount(); break;
 				default: $value = parent::get($k, $format, $formatTemplate);
 			}
 

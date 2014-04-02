@@ -29,7 +29,7 @@
 			<input type="button" class="btn btn-default preview" value="[[%ticket_preview]]" title="Ctrl + Enter" />
 		</div>
 		<div class="col-md-6 move-right">
-			[[+published:is=`1`:then=`
+			[[!+published:is=`1`:then=`
 			<a href="[[~[[+id]]?scheme=`full`]]" class="btn btn-default btn-xs" target="_blank">[[%ticket_open]]</a>
 			<input type="button" class="btn btn-danger draft" name="draft" value="[[%ticket_draft]]" title="" />
 			`:else=`

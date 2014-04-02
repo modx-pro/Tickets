@@ -42,6 +42,7 @@ if (!empty($tid)) {
 			$data[$field] = $value;
 		}
 		$data['id'] = $ticket->id;
+		$data['published'] = $ticket->published;
 		$parent = $ticket->get('parent');
 	}
 	else {
