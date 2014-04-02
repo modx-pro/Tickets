@@ -14,7 +14,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	public $classKey = 'Ticket';
 	public $permission = 'ticket_save';
 	public $languageTopics = array('resource','tickets:default');
-	private $_published = 0;
+	private $_published = null;
 
 
 	/** {inheritDoc} */
@@ -33,7 +33,10 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 
 	/** {@inheritDoc} */
 	public function beforeSet() {
-		$this->_published = $this->getProperty('published');
+		$this->_published = $this->getProperty('published', null);
+		if ($this->_published && !$this->modx->hasPermission('ticket_publish')) {
+			return $this->modx->lexicon('ticket_err_publish');
+		}
 
 		if ($this->object->createdby != $this->modx->user->id && !$this->modx->hasPermission('edit_document')) {
 			return $this->modx->lexicon('ticket_err_wrong_user');
@@ -87,12 +90,12 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		}
 		$this->setProperties(array(
 			'class_key' => 'Ticket',
-			'published' => $this->modx->context->key == 'mgr'
-				? $this->getProperty('published')
-				: $this->_published,
 			'syncsite' => 0,
 			'introtext' => $introtext,
 		));
+		if ($this->modx->context->key != 'mgr' && !is_null($this->_published)) {
+			$this->setProperty('published', $this->_published);
+		}
 		if ($this->modx->context->key == 'mgr') {
 			$properties['disable_jevix'] = !empty($properties['disable_jevix']);
 			$properties['process_tags'] = !empty($properties['process_tags']);

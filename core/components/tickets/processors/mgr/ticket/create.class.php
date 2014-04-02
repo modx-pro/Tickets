@@ -14,14 +14,17 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	public $classKey = 'Ticket';
 	public $permission = 'ticket_save';
 	public $languageTopics = array('access','resource','tickets:default');
-	private $_published = 0;
+	private $_published = null;
 	/** @var TicketsSection $parentResource */
 	public $parentResource;
 
 
 	/** {@inheritDoc} */
 	public function beforeSet() {
-		$this->_published = $this->getProperty('published');
+		$this->_published = $this->getProperty('published', null);
+		if ($this->_published && !$this->modx->hasPermission('ticket_publish')) {
+			return $this->modx->lexicon('ticket_err_publish');
+		}
 
 		// Required fields
 		$requiredFields = $this->getProperty('requiredFields', array('parent','pagetitle','content'));
@@ -82,7 +85,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$show_in_tree = $properties['show_in_tree'];
 			$createdby = $this->modx->user->id;
 			$published = $this->_published;
-			$publishedon = time();
+			$publishedon = $this->_published ? time() : 0;
 			$publishedby = $this->modx->user->id;
 		}
 		if (empty($template)) {

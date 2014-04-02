@@ -2,7 +2,6 @@
 	<div id="ticket-preview-placeholder"></div>
 
 	<input type="hidden" name="tid" value="0" />
-	<input type="hidden" name="published" value="1" />
 
 	<div class="form-group">
 		<label for="ticket-sections">[[%tickets_section]]</label>
@@ -25,8 +24,13 @@
 		[[+files]]
 	</div>
 
-	<div class="form-actions">
-		<input type="button" class="btn btn-default preview" value="[[%ticket_preview]]" title="Ctrl + Enter" />
-		<input type="submit" class="btn btn-primary submit" value="[[%ticket_save]]" title="Ctrl + Shift + Enter" />
+	<div class="form-actions row">
+		<div class="col-md-6">
+			<input type="button" class="btn btn-default preview" value="[[%ticket_preview]]" title="Ctrl + Enter" />
+		</div>
+		<div class="col-md-6 move-right">
+			<input type="button" class="btn btn-primary publish" name="publish" value="[[%ticket_publish]]" title="" />
+			<input type="submit" class="btn btn-danger draft" name="draft" value="[[%ticket_draft]]" title="Ctrl + Shift + Enter" />
+		</div>
 	</div>
 </form>

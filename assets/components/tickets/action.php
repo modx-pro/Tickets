@@ -59,11 +59,15 @@ switch ($action) {
 	case 'comment/subscribe': $response = $Tickets->Subscribe($_POST['thread']); break;
 	case 'comment/vote': $response = $Tickets->voteComment($_POST['id'], $_POST['value']); break;
 	case 'comment/star': $response = $Tickets->starComment($_POST['id']); break;
-	case 'ticket/preview': $response = $Tickets->previewTicket($_POST); break;
+
+	case 'ticket/draft':
+	case 'ticket/publish':
+	case 'ticket/update':
 	case 'ticket/save': $response = $Tickets->saveTicket($_POST); break;
-	case 'ticket/update': $response = $Tickets->saveTicket($_POST); break;
+	case 'ticket/preview': $response = $Tickets->previewTicket($_POST); break;
 	case 'ticket/vote': $response = $Tickets->voteTicket($_POST['id'], $_POST['value']); break;
 	case 'ticket/star': $response = $Tickets->starTicket($_POST['id']); break;
+
 	case 'ticket/file/upload': $response = $Tickets->fileUpload($_POST, 'Ticket'); break;
 	case 'ticket/file/delete': $response = $Tickets->fileDelete($_POST['id']); break;
 	default:

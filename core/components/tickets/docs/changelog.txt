@@ -1,11 +1,12 @@
 Changelog for Tickets.
 
-1.4.0 rc5
+1.4.0 rc7
 ==========
 - [#80] Fixed innerJoin in getTickets.
 - Ability to add tickets and comments into favorites.
 - Added new snippet "getComments".
 - Added new snippet "getStars".
+- Added ability to publish and unpublish tickets.
 
 1.4.0 rc1
 ==========

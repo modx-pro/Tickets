@@ -25,7 +25,7 @@ $tmp = array(
 	),
 	'allowedFields' => array(
 		'type' => 'textfield',
-		'value' => 'parent,pagetitle,content,published',
+		'value' => 'parent,pagetitle,content',
 	),
 	'requiredFields' => array(
 		'type' => 'textfield',

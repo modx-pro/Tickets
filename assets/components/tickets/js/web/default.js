@@ -32,7 +32,7 @@ var Tickets = {
 			return false;
 		});
 		// Preview and submit
-		$(document).on('click touchend', '#ticketForm .preview, #ticketForm .submit', function(e) {
+		$(document).on('click touchend', '#ticketForm .preview, #ticketForm .save, #ticketForm .draft, #ticketForm .publish', function(e) {
 			if ($(this).hasClass('preview')) {
 				Tickets.ticket.preview(this.form, this);
 			}
@@ -192,29 +192,40 @@ var Tickets = {
 		}
 
 		,save: function(form,button) {
+			var action = 'ticket/';
+			switch ($(button).prop('name')) {
+				case 'draft': action += 'draft'; break;
+				case 'save': action += 'save'; break;
+				default: action += 'publish'; break;
+			}
+
 			$(form).ajaxSubmit({
-				data: {action: 'ticket/save'}
+				data: {action: action}
 				,url: TicketsConfig.actionUrl
 				,form: form
 				,button: button
 				,dataType: 'json'
 				,beforeSubmit: function() {
-					$(button).attr('disabled','disabled');
+					$(form).find('input[type="submit"], input[type="button"]').attr('disabled','disabled');
 					$('.error',form).text('');
 					return true;
 				}
 				,success: function(response) {
 					$('#ticketForm.create').sisyphus().manuallyReleaseData();
 
-					if (response.success && response.data.redirect) {
-						document.location.href = response.data.redirect;
-					}
-					else if (response.success && response.message) {
-						$(button).removeAttr('disabled');
-						Tickets.Message.success(response.message);
+					if (response.success) {
+						if (response.message) {
+							Tickets.Message.success(response.message);
+						}
+						if (action == 'ticket/save') {
+							$(form).find('input[type="submit"], input[type="button"]').removeAttr('disabled');
+						}
+						else if (response.data.redirect) {
+							document.location.href = response.data.redirect;
+						}
 					}
 					else {
-						$(button).removeAttr('disabled');
+						$(form).find('input[type="submit"], input[type="button"]').removeAttr('disabled');
 						Tickets.Message.error(response.message);
 						if (response.data) {
 							var i, field;

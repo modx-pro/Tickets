@@ -219,6 +219,12 @@ class Tickets {
 			}
 		}
 
+		switch ($data['action']) {
+			case 'ticket/save': $fields['published'] = null; break;
+			case 'ticket/draft': $fields['published'] = false; break;
+			default: $fields['published'] = true;
+		}
+
 		$fields['requiredFields'] = $requiredFields;
 		$fields['class_key'] = 'Ticket';
 		if (!empty($this->config['sections']) && is_array($this->config['sections'])) {
@@ -261,17 +267,38 @@ class Tickets {
 		}
 
 		$id = $response->response['object']['id'];
-		if (empty($data['published'])) {
-			$id = !empty($this->config['redirectUnpublished'])
-				? (int) $this->config['redirectUnpublished']
-				: $data['parent'];
-		}
-		$redirect = $this->modx->makeUrl($id,'','','full');
-		if (empty($redirect)) {
-			$redirect = $this->modx->getOption('site_url');
+		$message = '';
+		$results = array();
+		switch ($data['action']) {
+			case 'ticket/save':
+				$message = $this->modx->lexicon('ticket_saved');
+				break;
+			case 'ticket/draft':
+				if (!empty($this->config['redirectUnpublished'])) {
+					$url = $this->modx->makeUrl((int) $this->config['redirectUnpublished'],'','','full');
+				}
+				else {
+					$url = $_SERVER['HTTP_REFERER'];
+					if (!preg_match('/[\?\&]tid\=\d+/', $url)) {
+						$url .= strpos($url, '?') !== false
+							? '&tid=' . $id
+							: '?tid=' . $id;
+					}
+				}
+				if (empty($url)) {
+					$url = $this->modx->getOption('site_url');
+				}
+				$results['redirect'] = $url;
+				break;
+			default:
+				$url = $this->modx->makeUrl($id,'','','full');
+				if (empty($url)) {
+					$url = $this->modx->getOption('site_url');
+				}
+				$results['redirect'] = $url;
 		}
 
-		return $this->success('', array('redirect' => $redirect));
+		return $this->success($message, $results);
 	}
 
 
