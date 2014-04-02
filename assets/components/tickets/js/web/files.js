@@ -112,10 +112,12 @@ Tickets.Uploader.init();
 $(document).on('click', '.ticket-file-delete, .ticket-file-restore', function(e) {
 	var deleted = 'deleted';
 	var $this = $(this);
+	var $form = $this.parents('form');
 	var $parent = $this.parents('.ticket-file');
 	var id = $parent.data('id');
+	var form_key = $form.find('[name="form_key"]').val();
 
-	$.post(TicketsConfig.actionUrl, {action: 'ticket/file/delete', id: id}, function(response) {
+	$.post(TicketsConfig.actionUrl, {action: 'ticket/file/delete', id: id, form_key: form_key}, function(response) {
 		if (response.success) {
 			if ($parent.hasClass(deleted)) {
 				$parent.removeClass(deleted)
