@@ -1034,9 +1034,14 @@ class Tickets {
 			if ($pdoClass = $this->modx->loadClass($fqn, '', false, true)) {
 				$this->pdoTools = new $pdoClass($this->modx, $this->config);
 			}
-			return true;
+			elseif ($pdoClass = $this->modx->loadClass($fqn, MODX_CORE_PATH . 'components/pdotools/model/', false, true)) {
+				$this->pdoTools = new $pdoClass($this->modx, $this->config);
+			}
+			else {
+				$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not load pdoFetch from "MODX_CORE_PATH/components/pdotools/model/".');
+			}
 		}
-		return false;
+		return !empty($this->pdoTools) && $this->pdoTools instanceof pdoTools;
 	}
 
 
