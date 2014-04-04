@@ -4,12 +4,19 @@
 		[[+introtext:notempty=`[[+introtext]]<br/><a href="[[~[[+id]]]]#cut" class="btn read-more">[[%ticket_read_more?namespace=`tickets`]]</a>`]]
 	</div>
 	<div class="ticket-meta row" data-id="[[+id]]">
-		<span class="col-md-2"><i class="glyphicon glyphicon-calendar"></i> [[+date_ago]]</span>
-		<span class="col-md-3"><i class="glyphicon glyphicon-user"></i> [[+fullname]]</span>
+		<span class="col-md-5">
+			<i class="glyphicon glyphicon-calendar"></i> [[+date_ago]]
+			&nbsp;&nbsp;
+			<i class="glyphicon glyphicon-user"></i> [[+fullname]]
+		</span>
 		<span class="col-md-2"><a href="[[~[[+section.id]]]]"><i class="glyphicon glyphicon-folder-open"></i> [[+section.pagetitle]]</a></span>
-		<span class="col-md-1 ticket-star[[+can_star]]">[[+stared]][[+unstared]] <span class="ticket-star-count">[[+stars]]</span></span>
-		<span class="col-md-1"><i class="glyphicon glyphicon-eye-open"></i> [[+views]]</span>
-		<span class="col-md-1"><i class="glyphicon glyphicon-comment"></i> [[+comments]]  [[+new_comments]]</span>
+		<span class="col-md-3">
+			<span class="ticket-star[[+can_star]]">[[+stared]][[+unstared]] <span class="ticket-star-count">[[+stars]]</span></span>
+			&nbsp;&nbsp;
+			<i class="glyphicon glyphicon-eye-open"></i> [[+views]]
+			&nbsp;&nbsp;
+			<i class="glyphicon glyphicon-comment"></i> [[+comments]]  [[+new_comments]]
+		</span>
 		<span class="col-md-2 pull-right ticket-rating[[+active]][[+inactive]]">
 			<span class="vote plus[[+voted_plus]]" title="[[%ticket_like]]"><i class="glyphicon glyphicon-arrow-up"></i></span>
 			[[+can_vote]][[+cant_vote]]

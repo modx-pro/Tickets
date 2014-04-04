@@ -2,6 +2,7 @@
 /* @var array $scriptProperties */
 /* @var Tickets $Tickets */
 $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
+$Tickets->initialize($modx->context->key);
 /** @var pdoFetch $pdoFetch */
 $fqn = $modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
 if (!$pdoClass = $modx->loadClass($fqn, '', false, true)) {return false;}

@@ -127,7 +127,7 @@
 .ticket-comment-star.active .unstared:hover {color: green;}
 
 /* Ticket meta*/
-.ticket-meta {
+.ticket-meta, .section-meta {
 	margin: 20px 0;
 	padding: 20px 0;
 	border-top: 1px solid #d3d3d3;
