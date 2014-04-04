@@ -50,7 +50,7 @@ if ($class != 'Ticket') {
 			$data['voted'] = $voted;
 		}
 	}
-	$data['can_vote'] = $data['voted'] === false && $modx->user->id && $modx->user->id != $ticket->createdby;
+	$data['can_vote'] = $data['voted'] === false && $Tickets->authenticated && $modx->user->id != $ticket->createdby;
 
 	$data = array_merge($ticket->getProperties('tickets'), $data);
 	if (!isset($data['rating'])) {
@@ -87,7 +87,7 @@ elseif ($data['rating'] < 0) {
 	$data['rating_negative'] = 1;
 }
 
-if (!$modx->user->id || $modx->user->id == $ticket->createdby) {
+if (!$Tickets->authenticated || $modx->user->id == $ticket->createdby) {
 	$data['cant_vote'] = 1;
 }
 elseif (array_key_exists('vote', $data)) {

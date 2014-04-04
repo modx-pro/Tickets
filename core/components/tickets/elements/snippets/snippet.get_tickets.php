@@ -126,7 +126,7 @@ if (!empty($rows) && is_array($rows)) {
 			$row['rating_negative'] = 1;
 		}
 
-		if (!$modx->user->id || $modx->user->id == $row['createdby']) {
+		if (!$Tickets->authenticated || $modx->user->id == $row['createdby']) {
 			$row['cant_vote'] = 1;
 		}
 		elseif (array_key_exists('vote', $row)) {
@@ -175,15 +175,15 @@ if (!empty($rows) && is_array($rows)) {
 
 		$row['idx'] = $pdoFetch->idx++;
 		// Processing new comments
-		if ($modx->user->id && empty($row['new_comments'])) {
+		if ($Tickets->authenticated && empty($row['new_comments'])) {
 			$row['new_comments'] = $row['comments'];
 		}
 		elseif (!empty($row['new_comments'])) {
 			$row['new_comments'] = $modx->getCount('TicketComment', array(
-				'published' => 1
-				,'thread' => $row['thread']
-				,'createdon:>' => $row['new_comments']
-				,'createdby:!=' => $modx->user->id
+				'published' => 1,
+				'thread' => $row['thread'],
+				'createdon:>' => $row['new_comments'],
+				'createdby:!=' => $modx->user->id,
 			));
 		}
 
