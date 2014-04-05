@@ -1,7 +1,8 @@
 <div class="tickets-row">
     <h3 class="title"><a href="[[~[[+id]]]]">[[+pagetitle]]</a></h3>
 	<div class="content">
-		[[+introtext:notempty=`[[+introtext]]<br/><a href="[[~[[+id]]]]#cut" class="btn read-more">[[%ticket_read_more?namespace=`tickets`]]</a>`]]
+		[[+introtext]]<br/>
+		<a href="[[~[[+id]]]]#cut" class="btn btn-default ticket-read-more">[[%ticket_read_more]]</a>
 	</div>
 	<div class="ticket-meta row" data-id="[[+id]]">
 		<span class="col-md-5">
