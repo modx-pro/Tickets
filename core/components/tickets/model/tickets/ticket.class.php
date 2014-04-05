@@ -454,20 +454,23 @@ class Ticket extends modResource {
 		$properties = parent::getProperties($namespace);
 
 		// Convert old settings
-		$flag = false;
-		$old = parent::get('properties');
-		$tmp = array('disable_jevix','process_tags','rating');
-		foreach ($tmp as $v) {
-			if (isset($old[$v])) {
-				$properties[$v] = $old[$v];
-				$flag = true;
-				unset($old[$v]);
+		if (empty($this->reloadOnly)) {
+			$flag = false;
+			$tmp = array('disable_jevix','process_tags','rating');
+			if ($old = parent::get('properties')) {
+				foreach ($tmp as $v) {
+					if (array_key_exists($v, $old)) {
+						$properties[$v] = $old[$v];
+						$flag = true;
+						unset($old[$v]);
+					}
+				}
+				if ($flag) {
+					$old['tickets'] = $properties;
+					$this->set('properties', $old);
+					$this->save();
+				}
 			}
-		}
-		if ($flag) {
-			$old['tickets'] = $properties;
-			$this->set('properties', $old);
-			$this->save();
 		}
 		// --
 
