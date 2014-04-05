@@ -16,7 +16,7 @@ if (empty($tplImage)) {$tplImage = $Tickets->config['tplImage'] = 'tpl.Tickets.f
 if (empty($source)) {$source = $Tickets->config['source'] = $modx->getOption('tickets.source_default', null, $modx->getOption('default_media_source'));}
 
 $tid = !empty($_REQUEST['tid']) ? (integer) $_REQUEST['tid'] : 0;
-$parent = !empty($_REQUEST['parent']) ? (integer) $_REQUEST['parent'] : 0;
+$parent = !empty($_REQUEST['parent']) ? $_REQUEST['parent'] : '';
 $data = array();
 
 // Update of ticket
@@ -69,7 +69,9 @@ $response = $modx->fromJSON($response->getResponse());
 if (!empty($response['results'])) {
 	$Tickets->config['sections'] = array();
 	foreach ($response['results'] as $v) {
-		$v['selected'] = ($parent == $v['id']) ? 'selected' : '';
+		$v['selected'] = $parent == $v['id'] || $parent == $v['alias']
+			? 'selected'
+			: '';
 		$data['sections'] .= $Tickets->getChunk($tplSectionRow, $v);
 		$Tickets->config['sections'][] = $v['id'];
 	}
