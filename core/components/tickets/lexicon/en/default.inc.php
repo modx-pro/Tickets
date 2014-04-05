@@ -63,6 +63,7 @@ $_lang['ticket_err_vote_own'] = 'You cannot vote for your ticket.';
 $_lang['ticket_err_vote_already'] = 'You have already voted for this ticket.';
 $_lang['ticket_err_empty'] = 'You forgot to write the text of the ticket.';
 $_lang['ticket_err_publish'] = 'You are not allowed to publish tickets.';
+$_lang['ticket_err_cut'] = 'The length of text is [[+length]] symbols. You must specify tag &lt;cut/&gt if text longer than [[+max_cut]] symbols.';
 $_lang['ticket_unpublished_comment'] = 'Your comment will be published after moderation.';
 $_lang['permission_denied'] = 'You do not have permissions for this action.';
 $_lang['field_required'] = 'This field is required.';

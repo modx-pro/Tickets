@@ -96,6 +96,11 @@ $tmp = array(
 		'value' => 0,
 		'area' => 'tickets.ticket',
 	),
+	'ticket_max_cut' => array(
+		'xtype' => 'numberfield',
+		'value' => 1000,
+		'area' => 'tickets.ticket',
+	),
 
 	'mail_from' => array(
 		'xtype' => 'textfield',

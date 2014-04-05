@@ -171,7 +171,7 @@ class Ticket extends modResource {
 		$content = preg_replace('/<cut(.*?)>/i', '<cut/>', $content);
 
 		if (!preg_match('/<cut\/>/', $content)) {
-			$introtext = '';
+			$introtext = $content;
 		}
 		else {
 			$tmp = explode('<cut/>', $content);
@@ -245,7 +245,8 @@ class Ticket extends modResource {
 			'rating_minus' => isset($properties['rating_minus']) ? $properties['rating_minus'] : 0,
 		);
 
-		if (!$this->xpdo->user->id || $this->xpdo->user->id == $this->createdby) {
+		$authenticated = !empty($this->xpdo->context) && $this->xpdo->user->isAuthenticated($this->xpdo->context->key);
+		if (!$authenticated || $this->xpdo->user->id == $this->createdby) {
 			$array['voted'] = 0;
 		}
 		else {
@@ -255,7 +256,7 @@ class Ticket extends modResource {
 			$array['voted'] = $voted;
 		}
 
-		$array['can_vote'] = $array['voted'] === false && $this->xpdo->user->id && $this->xpdo->user->id != $this->createdby;
+		$array['can_vote'] = $array['voted'] === false && $authenticated && $this->xpdo->user->id != $this->createdby;
 
 		return $array;
 	}

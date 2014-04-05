@@ -53,8 +53,14 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 				$this->setProperty($field, $value);
 			}
 		}
-		if (!$this->getProperty('content') && $this->modx->context->key != 'mgr') {
+		$content = $this->getProperty('content');
+		$length = mb_strlen(strip_tags($content), $this->modx->getOption('modx_charset', null, 'UTF-8', true));
+		$max = $this->modx->getOption('ticket.ticket_max_cut', null, 1000, true);
+		if (empty($content) && $this->modx->context->key != 'mgr') {
 			return $this->modx->lexicon('ticket_err_empty');
+		}
+		elseif ($this->modx->context->key != 'mgr' && !preg_match('#<cut\b.*?>#', $content) && $length > $max) {
+			return $this->modx->lexicon('ticket_err_cut', array('length' => $length, 'max_cut' => $max));
 		}
 
 		$set = parent::beforeSet();

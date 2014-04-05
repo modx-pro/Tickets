@@ -38,6 +38,9 @@ $_lang['setting_tickets.process_tags_default'] = 'Process tags by default';
 $_lang['setting_tickets.process_tags_default_desc'] = 'If true, setting "Process MODX tags" will be disabled for all new tickets by default.';
 $_lang['setting_tickets.private_ticket_page'] = 'Redirect from private ticket';
 $_lang['setting_tickets.private_ticket_page_desc'] = 'Id of existing MODX resource for redirect user without needed permissions for viewing private tickets to.';
+$_lang['setting_tickets.ticket_max_cut'] = 'The maximum size of the text without cut';
+$_lang['setting_tickets.ticket_max_cut_desc'] = 'Максимальное количество символов без тегов, которые можно сохранить без тега cut.';
+
 
 $_lang['setting_tickets.snippet_prepare_comment'] = 'Snippet for comment prepare';
 $_lang['setting_tickets.snippet_prepare_comment_desc'] = 'Special snippet, that will prepare all comments before returning to frontend. It will be called in class "Tickets" and will be able to use all it methods and variables.';
