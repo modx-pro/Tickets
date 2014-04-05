@@ -28,6 +28,19 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 		return $this->modx->hasPermission('new_document');
 	}
 
+
+	/**
+	 * Return the default template for this resource
+	 *
+	 * @return int
+	 */
+	public function getDefaultTemplate() {
+		$properties = $this->parent->getProperties();
+
+		return $properties['template'];
+	}
+
+
 	/**
 	 * Register custom CSS/JS for the page
 	 * @return void
