@@ -3,8 +3,9 @@
 if (empty($class)) {$class = 'Ticket';}
 /** @var integer $user */
 if (empty($user)) {$user = $modx->user->id;}
-$ids = array();
+unset($scriptProperties['user']);
 
+$ids = array();
 $q = $modx->newQuery('TicketStar', array('class' => $class, 'createdby' => $user));
 $q->select('id');
 $tstart = microtime(true);
