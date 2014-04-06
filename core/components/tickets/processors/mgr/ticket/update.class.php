@@ -93,6 +93,13 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		// Set properties
 		if ($this->modx->context->key != 'mgr') {
 			$this->unsetProperty('properties');
+			$this->unsetProperty('published');
+			$tmp = $this->parentResource->getProperties();
+			$template = $tmp['template'];
+			if (empty($template)) {
+				$template = $this->modx->context->getOption('tickets.default_template', $this->modx->context->getOption('default_template'));
+			}
+			$this->setProperty('template', $template);
 		}
 		$this->setProperties(array(
 			'class_key' => 'Ticket',
@@ -124,6 +131,37 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		}
 
 		return $alias;
+	}
+
+
+	/** {@inheritDoc} */
+	public function handleParent() {
+		if ($this->modx->context->key == 'manager') {
+			return parent::handleParent();
+		}
+
+		$parent = null;
+		$parentId = intval($this->getProperty('parent'));
+		if ($parentId > 0) {
+			$sections = $this->getProperty('sections');
+			if (!empty($sections) && !in_array($parentId, $sections)) {
+				return $this->modx->lexicon('ticket_err_wrong_parent');
+			}
+			$this->parentResource = $this->modx->getObject('TicketsSection',$parentId);
+			if ($this->parentResource) {
+				if ($this->parentResource->get('class_key') != 'TicketsSection') {
+					$this->addFieldError('parent', $this->modx->lexicon('ticket_err_wrong_parent'));
+				}
+				elseif (!$this->parentResource->checkPolicy('section_add_children')) {
+					$this->addFieldError('parent', $this->modx->lexicon('ticket_err_wrong_parent'));
+				}
+			}
+			else {
+				$this->addFieldError('parent', $this->modx->lexicon('resource_err_nfs', array('id' => $parentId)));
+			}
+		}
+
+		return $parent;
 	}
 
 

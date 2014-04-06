@@ -385,11 +385,13 @@ class Ticket extends modResource {
 	 * @return string|bool
 	 */
 	public function setUri($alias = '') {
+		/*
 		if (!$this->get('published')) {
 			$this->set('uri', '');
 			$this->set('uri_override', 0);
 			return true;
 		}
+		*/
 
 		if (empty($alias)) {
 			$alias = $this->get('alias');

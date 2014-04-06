@@ -134,7 +134,9 @@ var Tickets = {
 			var count = $('.ticket-comment').size();
 			$('#comment-total, .ticket-comments-count').text(count);
 
-			$("#ticketForm.create").sisyphus();
+			$("#ticketForm.create").sisyphus({
+				excludeFields: $('#ticketForm .disable-sisyphus')
+			});
 
 			// Auto hide new comment button
 			if ($('#comment-form').is(':visible')) {
@@ -448,6 +450,8 @@ var Tickets = {
 		}
 
 		,edit: function(comment_id) {
+			$('#comment-new-link').show();
+
 			var thread = $('#comment-form [name="thread"]').val();
 			$.post(TicketsConfig.actionUrl, {action: "comment/get", id: comment_id, thread: thread}, function(response) {
 				if (!response.success) {

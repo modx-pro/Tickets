@@ -43,7 +43,9 @@ if (!empty($tid)) {
 		}
 		$data['id'] = $ticket->id;
 		$data['published'] = $ticket->published;
-		$parent = $ticket->get('parent');
+		if (empty($parent)) {
+			$parent = $ticket->get('parent');
+		}
 	}
 	else {
 		return $modx->lexicon('ticket_err_id', array('id' => $tid));
@@ -132,5 +134,5 @@ $output = $Tickets->getChunk($tplWrapper, $data);
 $key = md5($modx->toJSON($Tickets->config));
 $_SESSION['TicketForm'][$key] = $Tickets->config;
 
-$output = str_ireplace('</form>', "\n<input type=\"hidden\" name=\"form_key\" value=\"{$key}\" />\n</form>", $output);
+$output = str_ireplace('</form>', "\n<input type=\"hidden\" name=\"form_key\" value=\"{$key}\" class=\"disable-sisyphus\" />\n</form>", $output);
 return $output;
