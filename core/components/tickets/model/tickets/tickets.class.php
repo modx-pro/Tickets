@@ -1197,7 +1197,7 @@ class Tickets {
 	 * @return void
 	 */
 	public function logView($resource) {
-		if ($this->authenticated && $this->modx->user->id && $this->modx->getCount('modResource', $resource)) {
+		if ($this->authenticated && !empty($resource)) {
 			$table = $this->modx->getTableName('TicketView');
 			$timestamp = date('Y-m-d H:i:s');
 			$sql = "INSERT INTO {$table} (`uid`,`parent`,`timestamp`) VALUES ({$this->modx->user->id},{$resource},'{$timestamp}') ON DUPLICATE KEY UPDATE `timestamp` = '{$timestamp}'";
