@@ -39,8 +39,7 @@ switch($modx->event->name) {
 		// It is working only with friendly urls enabled
 		$q = trim(@$_REQUEST[$modx->context->getOption('request_param_alias','q')]);
 		$matches = explode('/', rtrim($q, '/'));
-		$count = count($matches);
-		if ($count < 3) {return;}
+		if (count($matches) < 2) {return;}
 
 		$ticket_uri = array_pop($matches);
 		$section_uri = implode('/', $matches) . '/';
@@ -62,7 +61,14 @@ switch($modx->event->name) {
 					}
 				}
 				if (!empty($ticket_id)) {
-					$modx->sendRedirect($modx->makeUrl($ticket_id, '', '', 'full'));
+					if ($ticket = $modx->getObject('Ticket', array('id' => $ticket_id, 'deleted' => 0))) {
+						if ($ticket->published) {
+							$modx->sendRedirect($modx->makeUrl($ticket_id, '', '', 'full'));
+						}
+						elseif ($unp_id = $modx->getOption('tickets.unpublished_ticket_page')) {
+							$modx->sendForward($unp_id);
+						}
+					}
 				}
 			}
 		}
@@ -70,6 +76,7 @@ switch($modx->event->name) {
 
 
 	case 'OnWebPageComplete':
+		/** @var Tickets $Tickets */
 		$Tickets = $modx->getService('tickets');
 		$Tickets->logView($modx->resource->id);
 		break;

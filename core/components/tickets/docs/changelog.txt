@@ -10,6 +10,7 @@ Changelog for Tickets.
 - Added new snippet "getComments".
 - Added new snippet "getStars".
 - Added ability to publish and unpublish tickets.
+- Added new system setting "unpublished_ticket_page".
 - Fixed saving ticket properties.
 - Improved vote for any resource with TicketMeta.
 - Added ability to upload files for tickets.
