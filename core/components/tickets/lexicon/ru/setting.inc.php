@@ -38,8 +38,8 @@ $_lang['setting_tickets.process_tags_default'] = 'Выполнять теги п
 $_lang['setting_tickets.process_tags_default_desc'] = 'Эта настройка включает или отключает параметр "Выполнять теги MODX" по умолчанию у новых тикетов.';
 $_lang['setting_tickets.private_ticket_page'] = 'Редирект с приватных тикетов';
 $_lang['setting_tickets.private_ticket_page_desc'] = 'Id существующего ресурса MODX, на который отправлять пользователя, если у него недостаточно прав для просмотра приватного тикета.';
-$_lang['setting_tickets.private_ticket_page'] = 'Страница неопубликованных тикетов';
-$_lang['setting_tickets.private_ticket_page_desc'] = 'Id существующего ресурса MODX, которая будет показана при запросе неопубликованного тикета.';
+$_lang['setting_tickets.unpublished_ticket_page'] = 'Страница неопубликованных тикетов';
+$_lang['setting_tickets.unpublished_ticket_page_desc'] = 'Id существующего ресурса MODX, которая будет показана при запросе неопубликованного тикета.';
 $_lang['setting_tickets.ticket_max_cut'] = 'Максимальный размер текста без сut';
 $_lang['setting_tickets.ticket_max_cut_desc'] = 'Максимальное количество символов без тегов, которые можно сохранить без тега cut.';
 

@@ -1,6 +1,6 @@
 Changelog for Tickets.
 
-1.4.0 rc9
+1.4.0 rc10
 ==========
 - Added new system setting "ticket_max_cut". Now you can specify length of text without tag "cut".
 - Fixed default template on ticket creation.
