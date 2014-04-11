@@ -279,7 +279,7 @@ class Tickets {
 				}
 				else {
 					$url = $_SERVER['HTTP_REFERER'];
-					if (!preg_match('/[\?\&]tid\=\d+/', $url)) {
+					if (!preg_match('/\b'.$id.'\b/', $url)) {
 						$url .= strpos($url, '?') !== false
 							? '&tid=' . $id
 							: '?tid=' . $id;
