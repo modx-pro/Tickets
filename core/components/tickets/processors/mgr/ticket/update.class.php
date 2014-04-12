@@ -266,7 +266,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 				$item->save();
 				$new_url = $item->get('url');
 				if ($old_url != $new_url) {
-					$replace[$old_url] = $new_url;
+					$replace[preg_replace('/\.[a-z]+$/i', '', $old_url)] = preg_replace('/\.[a-z]+$/i', '', $new_url);
 				}
 				$count ++;
 			}

@@ -266,7 +266,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 				$item->save();
 				$new_url = $item->get('url');
 				if ($old_url != $new_url) {
-					$replace[$old_url] = $new_url;
+					$replace[preg_replace('/\.[a-z]+$/i', '', $old_url)] = preg_replace('/\.[a-z]+$/i', '', $new_url);
 				}
 				$count ++;
 			}
@@ -293,8 +293,6 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 							else {
 								$src[] = $from;
 								$dst[] = $to;
-								$src[] = preg_replace('/\.[a-z]+$/i','_thumb$0', $from);
-								$dst[] = preg_replace('/\.[a-z]+$/i','_thumb$0', $to);
 							}
 							break;
 						}
