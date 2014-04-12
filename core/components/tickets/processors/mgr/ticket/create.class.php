@@ -75,6 +75,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$introtext = $this->object->Jevix($introtext);
 		}
 
+		$createdon = time();
 		// Redefine main parameters if we are not in the manager
 		if ($this->modx->context->key == 'mgr') {
 			$template = $this->getProperty('template');
@@ -82,7 +83,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$show_in_tree = $this->getProperty('show_in_tree');
 			$createdby = $this->getProperty('createdby');
 			$published = $this->getProperty('published');
-			$publishedon = $this->getProperty('publishedon', time());
+			$publishedon = $this->getProperty('publishedon', $createdon);
 			$publishedby = $this->getProperty('publishedby', $createdby);
 		}
 		else {
@@ -91,29 +92,34 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			$show_in_tree = $properties['show_in_tree'];
 			$createdby = $this->modx->user->id;
 			$published = $this->_published;
-			$publishedon = $this->_published ? time() : 0;
+			$publishedon = $this->_published ? $createdon : 0;
 			$publishedby = $this->modx->user->id;
 		}
 		if (empty($template)) {
 			$template = $this->modx->context->getOption('tickets.default_template', $this->modx->context->getOption('default_template'));
 		}
 
+		$tmp = array(
+			'disable_jevix' => !empty($properties['disable_jevix']),
+			'process_tags' => !empty($properties['process_tags']),
+		);
+		if (empty($published)) {
+			$tmp['was_published'] = false;
+		}
 		// Set properties
 		$this->setProperties(array(
 			'class_key' => 'Ticket',
 			'published' => $published,
-			'publishedon' => $publishedon,
+			'createdby' => $createdby,
+			'createdon' => $createdon,
 			'publishedby' => $publishedby,
+			'publishedon' => $publishedon,
 			'syncsite' => 0,
 			'template' => $template,
 			'introtext' => $introtext,
 			'hidemenu' => $hidemenu,
 			'show_in_tree' => $show_in_tree,
-			'createdby' => $createdby,
-			'properties' => array(
-				'disable_jevix' => !empty($properties['disable_jevix']),
-				'process_tags' => !empty($properties['process_tags']),
-			)
+			'properties' => array('tickets' => $tmp),
 		));
 
 		return $set;

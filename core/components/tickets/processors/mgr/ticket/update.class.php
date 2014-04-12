@@ -73,6 +73,28 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 * @return boolean
+	 */
+	public function beforeSave() {
+		$time = time();
+		if ($this->modx->context->key != 'mgr' && $this->_published) {
+			$properties = $this->object->getProperties();
+			// First publication
+			if (isset($properties['was_published']) && empty($properties['was_published'])) {
+				$this->object->set('createdon', $time, 'integer');
+				$this->object->set('publishedon', $time, 'integer');
+				unset($properties['was_published']);
+				$this->object->set('properties', $properties);
+			}
+		}
+		$this->object->set('editedby', $this->modx->user->get('id'));
+		$this->object->set('editedon', $time, 'integer');
+		return !$this->hasErrors();
+	}
+
+
 	/** {@inheritDoc} */
 	public function setFieldDefault() {
 		// Ticket properties

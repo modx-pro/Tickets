@@ -249,18 +249,21 @@ class Tickets {
 		if ($response->isError()) {
 			return $this->error($response->getMessage(), $response->getFieldErrors());
 		}
-		elseif (empty($data['tid']) && $this->modx->getOption('tickets.mail_bcc_level') >= 1) {
+		elseif ($this->modx->getOption('tickets.mail_bcc_level') >= 1) {
 			if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
 				$bcc = array_map('trim', explode(',', $bcc));
 				if (!empty($bcc) && $resource = $this->modx->getObject('Ticket', $response->response['object']['id'])) {
 					$resource = $resource->toArray();
-					foreach ($bcc as $uid) {
-						if ($uid == $resource['createdby']) {continue;}
-						$this->addQueue(
-							$uid
-							,$this->modx->lexicon('ticket_email_bcc', $resource)
-							,$this->getChunk($this->config['tplTicketEmailBcc'], $resource, false)
-						);
+					// New ticket or first publication of the old ticket
+					if (($resource['published'] && empty($data['tid'])) || ($resource['createdon'] == $resource['publishedon'] && $resource['createdon'] == $resource['editedon'])) {
+						foreach ($bcc as $uid) {
+							if ($uid == $resource['createdby']) {continue;}
+							$this->addQueue(
+								$uid
+								,$this->modx->lexicon('ticket_email_bcc', $resource)
+								,$this->getChunk($this->config['tplTicketEmailBcc'], $resource, false)
+							);
+						}
 					}
 				}
 			}
