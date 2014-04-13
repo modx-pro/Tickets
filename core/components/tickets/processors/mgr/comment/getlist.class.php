@@ -13,9 +13,8 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 		if ($section = (integer) $this->getProperty('section')) {
 			if ($section = $this->modx->getObject('modResource', $section)) {
 				$parents = $this->modx->getChildIds($section->get('id'), 1, array('context' => $section->get('context_key')));
-				if (!empty($parents)) {
-					$c->where(array('TicketThread.resource:IN' => $parents));
-				}
+				if (empty($parents)) {$parents = array('0');}
+				$c->where(array('TicketThread.resource:IN' => $parents));
 			}
 		}
 		/* OR get all comments by threads list */

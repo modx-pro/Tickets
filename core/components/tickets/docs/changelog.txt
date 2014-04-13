@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.4.0 pl1
+==========
+- Fixed bug with listing of all comments in empty section.
+
 1.4.0 pl
 ==========
 - Added section settings.
