@@ -29,6 +29,7 @@ Changelog for Tickets.
 - System settings "default_template", "disable_jevix_default", "process_tags_default" moved to section settings.
 - Added ability to specify custom uris for children tickets.
 - [TicketForm] Added ability to disable sisyphus for any fields by setting class "disable-sisyphus".
+- Disabled ability to delete comment via update form.
 
 1.3.0 rc3
 ==========

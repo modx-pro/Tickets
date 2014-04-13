@@ -260,16 +260,16 @@ Ext.extend(Tickets.window.UpdateComment,MODx.Window,{
 					,border: false
 					,layout: 'form'
 					,items: [
-						{xtype:'xcheckbox', fieldLabel: _('ticket_comment_deleted'), name: 'deleted', id:'tickets-'+this.ident+'-deleted',anchor: '99%'}
-						,{xtype:'displayfield', fieldLabel: _('ticket_comment_createdon'), name: 'createdon', id:'tickets-'+this.ident+'-createdon',anchor: '99%'}
+						{xtype:'displayfield', fieldLabel: _('ticket_comment_createdon'), name: 'createdon', id:'tickets-'+this.ident+'-createdon',anchor: '99%'}
+						//{xtype:'xcheckbox', fieldLabel: _('ticket_comment_deleted'), name: 'deleted', id:'tickets-'+this.ident+'-deleted',anchor: '99%'}
+						,{xtype:'displayfield', fieldLabel: 'IP', name: 'ip', id:'tickets-'+this.ident+'-ip',anchor: '99%'}
 					]
 				},{
 					columnWidth: .5
 					,border: false
 					,layout: 'form'
 					,items: [
-						{xtype:'displayfield', fieldLabel: 'IP', name: 'ip', id:'tickets-'+this.ident+'-ip',anchor: '99%'}
-						,{xtype:'displayfield', fieldLabel: _('ticket_comment_editedon'), name: 'editedon', id:'tickets-'+this.ident+'-editedon',anchor: '99%'}
+						{xtype:'displayfield', fieldLabel: _('ticket_comment_editedon'), name: 'editedon', id:'tickets-'+this.ident+'-editedon',anchor: '99%'}
 						//,{xtype:'displayfield', fieldLabel: _('ticket_comment_deletedon'), name: 'deletedon', id:'tickets-'+this.ident+'-deletedon',anchor: '99%', hidden: config.record.deleted ? 0 : 1}
 					]
 				}]
