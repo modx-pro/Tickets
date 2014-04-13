@@ -15,6 +15,7 @@ $tmp = array(
 
 	'tpl.Tickets.ticket.latest' => 'ticket_latest',
 	'tpl.Tickets.ticket.email.bcc' => 'ticket_email_bcc',
+	'tpl.Tickets.ticket.email.subscription' => 'ticket_email_subscription',
 
 	'tpl.Tickets.comment.form' => 'comment_form',
 	'tpl.Tickets.comment.form.guest' => 'comment_form_guest',
@@ -32,6 +33,7 @@ $tmp = array(
 
 	'tpl.Tickets.list.row' => 'ticket_list_row',
 	'tpl.Tickets.sections.row' => 'ticket_sections_row',
+	'tpl.Tickets.sections.wrapper' => 'ticket_sections_wrapper',
 	'tpl.Tickets.meta' => 'ticket_meta',
 	'tpl.Tickets.meta.file' => 'ticket_meta_file',
 );

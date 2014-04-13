@@ -23,6 +23,10 @@ $tmp = array(
 		'type' => 'textfield',
 		'value' => 'tpl.Tickets.ticket.email.bcc',
 	),
+	'tplTicketEmailSubscription' => array(
+		'type' => 'textfield',
+		'value' => 'tpl.Tickets.ticket.email.subscription',
+	),
 	'allowedFields' => array(
 		'type' => 'textfield',
 		'value' => 'parent,pagetitle,content',

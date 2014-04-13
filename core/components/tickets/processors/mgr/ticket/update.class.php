@@ -15,6 +15,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	public $permission = 'ticket_save';
 	public $languageTopics = array('resource','tickets:default');
 	private $_published = null;
+	private $_sendEmails = false;
 
 
 	/** {inheritDoc} */
@@ -73,13 +74,10 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 * @return boolean
-	 */
+	/** {@inheritDoc} */
 	public function beforeSave() {
 		$time = time();
-		if ($this->modx->context->key != 'mgr' && $this->_published) {
+		if ($this->_published) {
 			$properties = $this->object->getProperties();
 			// First publication
 			if (isset($properties['was_published']) && empty($properties['was_published'])) {
@@ -87,11 +85,22 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 				$this->object->set('publishedon', $time, 'integer');
 				unset($properties['was_published']);
 				$this->object->set('properties', $properties);
+				$this->_sendEmails = true;
 			}
 		}
 		$this->object->set('editedby', $this->modx->user->get('id'));
 		$this->object->set('editedon', $time, 'integer');
 		return !$this->hasErrors();
+	}
+
+
+	/** {@inheritDoc} */
+	public function afterSave() {
+		$parent = parent::afterSave();
+		if ($this->_sendEmails && $this->modx->context->key == 'mgr') {
+			$this->sendTicketMails();
+		}
+		return $parent;
 	}
 
 
@@ -316,4 +325,16 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		return $count;
 	}
 
+
+	/**
+	 * Call method for notify users about new ticket in section
+	 */
+	protected function sendTicketMails() {
+		/** @var Tickets $Tickets */
+		if ($Tickets = $this->modx->getService('Tickets')) {
+			$Tickets->config['tplTicketEmailBcc'] = 'tpl.Tickets.ticket.email.bcc';
+			$Tickets->config['tplTicketEmailSubscription'] = 'tpl.Tickets.ticket.email.subscription';
+			$Tickets->sendTicketMails($this->object->toArray());
+		}
+	}
 }

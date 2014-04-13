@@ -41,6 +41,10 @@ $_lang['tickets_section_settings_disable_jevix'] = 'Отключить Jevix';
 $_lang['tickets_section_settings_disable_jevix_desc'] = 'По умолчанию, в целях безопасности, все тикеты обрабатываются сниппетом Jevix. Вы можете отключить эту обработку для новых тикетов текущего раздела.';
 $_lang['tickets_section_settings_process_tags'] = 'Выполнять теги MODX';
 $_lang['tickets_section_settings_process_tags_desc'] = 'По умолчанию, в целях безопасности, в тикетах не выполняются теги MODX. Вы можете включить их выполнение в новых тикетах текущего раздела.';
+$_lang['tickets_section_notify'] = 'Уведомлять о новых тикетах';
+$_lang['tickets_section_subscribed'] = 'Вы подписались на уведомления о новых тикетах в этой секции.';
+$_lang['tickets_section_unsubscribed'] = 'Вы больше не будете получать уведомления о тикетах из этой секции.';
+$_lang['tickets_section_email_subscription'] = 'Новый тикет в секции "[[+section.pagetitle]]"';
 
 $_lang['ticket_create_here'] = 'Создать тикет';
 
@@ -54,6 +58,7 @@ $_lang['ticket_err_no_auth'] = 'Вы должны авторизоваться, 
 $_lang['ticket_err_wrong_parent'] = 'Указан неверный раздел для тикета.';
 $_lang['ticket_err_wrong_resource'] = 'Указан неверный тикет.';
 $_lang['ticket_err_wrong_thread'] = 'Указана неверная ветвь комментариев.';
+$_lang['ticket_err_wrong_section'] = 'Указана неверная секция тикетов.';
 $_lang['ticket_err_access_denied'] = 'Доступ запрещен.';
 $_lang['ticket_err_form'] = 'В форме содержатся ошибки. Пожалуйста, исправьте их.';
 $_lang['ticket_err_deleted_comment'] = 'Вы пытаетесь отредактировать удалённый комментарий.';

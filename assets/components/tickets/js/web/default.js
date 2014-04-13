@@ -19,7 +19,10 @@ var Tickets = {
 			return false;
 		});
 		$(document).on('change', '#comments-subscribe', function() {
-			Tickets.comment.subscribe();
+			Tickets.comment.subscribe($('[name="thread"]', $('#comment-form')));
+		});
+		$(document).on('change', '#tickets-subscribe', function() {
+			Tickets.ticket.subscribe($(this).data('id'));
 		});
 		$(document).on('submit', '#ticketForm', function(e) {
 			Tickets.ticket.save(this, $(this).find('[type="submit"]')[0]);
@@ -240,6 +243,19 @@ var Tickets = {
 				}
 			});
 		}
+
+		,subscribe: function(section) {
+			if (section) {
+				$.post(TicketsConfig.actionUrl, {action: "section/subscribe", section: section}, function(response) {
+					if (response.success) {
+						Tickets.Message.success(response.message);
+					}
+					else {
+						Tickets.Message.error(response.message);
+					}
+				}, 'json');
+			}
+		}
 	}
 
 	,comment: {
@@ -389,9 +405,7 @@ var Tickets = {
 			}
 		}
 
-		,subscribe: function() {
-			var form = $('#comment-form');
-			var thread = $('[name="thread"]', form);
+		,subscribe: function(thread) {
 			if (thread.length) {
 				$.post(TicketsConfig.actionUrl, {action: "comment/subscribe", thread: thread.val()}, function(response) {
 					if (response.success) {
@@ -642,6 +656,7 @@ Tickets.Vote = {
 		}
 	}
 };
+
 
 Tickets.Star = {
 	comment: {

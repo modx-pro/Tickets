@@ -87,6 +87,10 @@ $tmp = array(
 		'type' => 'textfield',
 		'value' => '',
 	),
+	'tplWrapper' => array(
+		'type' => 'textfield',
+		'value' => '',
+	),
 );
 
 foreach ($tmp as $k => $v) {

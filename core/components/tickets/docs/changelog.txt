@@ -32,6 +32,10 @@ Changelog for Tickets.
 - [mgr] Disabled ability to delete comment via update form.
 - Improved notifications about unpublished comments.
 - [TicketComments] Added parameter "autoPublishGuest" for more flexible management of comments.
+- Added subscriptions for sections of tickets.
+- Added chunks "tpl.Tickets.ticket.email.subscription" and "tpl.Tickets.sections.wrapper".
+- New methods: TicketsSection:Subscribe() and TicketsSection::isSubscribed().
+- [getTickets] Parameter &tplWpapper set to "tpl.Tickets.sections.wrapper" by default.
 
 1.3.0 rc3
 ==========

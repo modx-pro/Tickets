@@ -56,7 +56,7 @@ switch ($action) {
 	case 'comment/save': $response = $Tickets->saveComment($_POST); break;
 	case 'comment/get': $response = $Tickets->getComment($_POST['id']); break;
 	case 'comment/getlist': $response = $Tickets->getNewComments($_POST['thread']); break;
-	case 'comment/subscribe': $response = $Tickets->Subscribe($_POST['thread']); break;
+	case 'comment/subscribe': $response = $Tickets->subscribeThread($_POST['thread']); break;
 	case 'comment/vote': $response = $Tickets->voteComment($_POST['id'], $_POST['value']); break;
 	case 'comment/star': $response = $Tickets->starComment($_POST['id']); break;
 
@@ -67,6 +67,8 @@ switch ($action) {
 	case 'ticket/preview': $response = $Tickets->previewTicket($_POST); break;
 	case 'ticket/vote': $response = $Tickets->voteTicket($_POST['id'], $_POST['value']); break;
 	case 'ticket/star': $response = $Tickets->starTicket($_POST['id']); break;
+
+	case 'section/subscribe': $response = $Tickets->subscribeSection($_POST['section']); break;
 
 	case 'ticket/file/upload': $response = $Tickets->fileUpload($_POST, 'Ticket'); break;
 	case 'ticket/file/delete': $response = $Tickets->fileDelete($_POST['id']); break;

@@ -249,24 +249,9 @@ class Tickets {
 		if ($response->isError()) {
 			return $this->error($response->getMessage(), $response->getFieldErrors());
 		}
-		elseif ($this->modx->getOption('tickets.mail_bcc_level') >= 1) {
-			if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
-				$bcc = array_map('trim', explode(',', $bcc));
-				if (!empty($bcc) && $resource = $this->modx->getObject('Ticket', $response->response['object']['id'])) {
-					$resource = $resource->toArray();
-					// New ticket or first publication of the old ticket
-					if (($resource['published'] && empty($data['tid'])) || ($resource['createdon'] == $resource['publishedon'] && $resource['createdon'] == $resource['editedon'])) {
-						foreach ($bcc as $uid) {
-							if ($uid == $resource['createdby']) {continue;}
-							$this->addQueue(
-								$uid
-								,$this->modx->lexicon('ticket_email_bcc', $resource)
-								,$this->getChunk($this->config['tplTicketEmailBcc'], $resource, false)
-							);
-						}
-					}
-				}
-			}
+		elseif ($ticket = $this->modx->getObject('Ticket', $response->response['object']['id'])) {
+			$ticket = $ticket->toArray();
+			$this->sendTicketMails($ticket);
 		}
 
 		$id = $response->response['object']['id'];
@@ -878,6 +863,68 @@ class Tickets {
 	/**
 	 * Email notifications about new comment
 	 *
+	 * @param array $ticket
+	 *
+	 * @return void
+	 */
+	public function sendTicketMails($ticket = array()) {
+		// We need only the first publication of ticket
+		if (empty($ticket['published']) || $ticket['createdon'] != $ticket['publishedon']) {
+			return;
+		}
+		elseif (($ticket['editedon'] != 0 && $ticket['editedon'] != $ticket['createdon'])) {
+			return;
+		}
+
+		/** @var TicketsSection $section */
+		$section = $this->modx->getObject('TicketsSection', $ticket['parent'], false);
+		$properties = $section->get('properties');
+		$subscribers = !empty($properties['subscribers'])
+			? $properties['subscribers']
+			: array();
+
+		$ticket = array_merge($ticket, $section->toArray('section.'));
+
+		// Send notifications to admin
+		$sent = array();
+		if ($this->modx->getOption('tickets.mail_bcc_level') >= 1) {
+			if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
+				$bcc = array_map('trim', explode(',', $bcc));
+				if (!empty($bcc) ) {
+					foreach ($bcc as $uid) {
+						if ($uid == $ticket['createdby']) {
+							continue;
+						}
+						$this->addQueue(
+							$uid
+							,$this->modx->lexicon('ticket_email_bcc', $ticket)
+							,$this->getChunk($this->config['tplTicketEmailBcc'], $ticket, false)
+						);
+						$sent[] = $uid;
+					}
+				}
+			}
+		}
+
+		// Then we send emails to subscribers
+		foreach ($subscribers as $uid) {
+			if (in_array($uid, $sent) || $ticket['createdby'] == $uid) {
+				continue;
+			}
+			else {
+				$this->addQueue(
+					$uid,
+					$this->modx->lexicon('tickets_section_email_subscription', $ticket),
+					$this->getChunk($this->config['tplTicketEmailSubscription'], $ticket, false)
+				);
+			}
+		}
+	}
+
+
+	/**
+	 * Email notifications about new comment
+	 *
 	 * @param array $comment
 	 *
 	 * @return void
@@ -903,17 +950,14 @@ class Tickets {
 		}
 
 		$comment = $this->prepareComment($comment);
+		$sent = array();
 
 		if (!empty($comment['published'])) {
-			if (empty($subscribers)) {
-				$subscribers = array();
-			}
-
 			// It is a reply for a comment
 			if ($comment['parent']) {
 				$q = $this->modx->newQuery('TicketComment');
 				$q->select('TicketComment.createdby as uid, TicketComment.text, TicketComment.email');
-				$q->where(array('TicketComment.id' => $comment['parent']/*, 'TicketComment.createdby:!=' => $comment['createdby']*/));
+				$q->where(array('TicketComment.id' => $comment['parent']));
 				if ($q->prepare() && $q->stmt->execute()) {
 					if ($res = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
 						$reply_uid = $res['uid'];
@@ -931,42 +975,47 @@ class Tickets {
 					$this->getChunk($this->config['tplCommentEmailReply'], $comment, false),
 					$reply_email
 				);
+				$sent[] = $reply_uid;
 			}
 
-			// Then we send emails to subscribers
-			foreach ($subscribers as $uid) {
-				if ($uid == $reply_uid || $uid == $comment['createdby']) {
-					continue;
-				}
-				elseif ($uid == $owner_uid) {
-					$this->addQueue(
-						$uid,
-						$this->modx->lexicon('ticket_comment_email_owner', $comment),
-						$this->getChunk($this->config['tplCommentEmailOwner'], $comment, false)
-					);
-				}
-				else {
-					$this->addQueue(
-						$uid,
-						$this->modx->lexicon('ticket_comment_email_subscription', $comment),
-						$this->getChunk($this->config['tplCommentEmailSubscription'], $comment, false)
-					);
-				}
-			}
-		}
-
-		// Then we make blind copy to administrators
-		if ($this->modx->getOption('tickets.mail_bcc_level') >= 2 || (empty($comment['published'])) && array_key_exists('was_published', $comment['properties'])) {
-			if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
-				$bcc = array_map('trim', explode(',', $bcc));
-				foreach ($bcc as $uid) {
-					if ($uid != $reply_uid && $uid != $owner_uid && $uid != $comment['createdby']) {
+			// Then we make blind copy to administrators
+			if ($this->modx->getOption('tickets.mail_bcc_level') >= 2 || (empty($comment['published'])) && array_key_exists('was_published', $comment['properties'])) {
+				if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
+					$bcc = array_map('trim', explode(',', $bcc));
+					foreach ($bcc as $uid) {
+						if (in_array($uid, $sent) || $uid == $owner_uid || $uid == $comment['createdby']) {
+							continue;
+						}
 						$this->addQueue(
 							$uid,
 							empty($comment['published'])
 								? $this->modx->lexicon('ticket_comment_email_unpublished_bcc', $comment)
 								: $this->modx->lexicon('ticket_comment_email_bcc', $comment),
 							$this->getChunk($this->config['tplCommentEmailBcc'], $comment, false)
+						);
+						$sent[] = $uid;
+					}
+				}
+			}
+
+			if (!empty($subscribers)) {
+				// And send emails to subscribers
+				foreach ($subscribers as $uid) {
+					if (in_array($uid, $sent) || $uid == $comment['createdby']) {
+						continue;
+					}
+					elseif ($uid == $owner_uid) {
+						$this->addQueue(
+							$uid,
+							$this->modx->lexicon('ticket_comment_email_owner', $comment),
+							$this->getChunk($this->config['tplCommentEmailOwner'], $comment, false)
+						);
+					}
+					else {
+						$this->addQueue(
+							$uid,
+							$this->modx->lexicon('ticket_comment_email_subscription', $comment),
+							$this->getChunk($this->config['tplCommentEmailSubscription'], $comment, false)
 						);
 					}
 				}
@@ -1008,6 +1057,12 @@ class Tickets {
 	}
 
 
+	/** @deprecated */
+	public function subscribe($name) {
+		return $this->subscribeThread($name);
+	}
+
+
 	/**
 	 * This method subscribe or unsubscribe users for notifications about new comments in thread.
 	 *
@@ -1015,7 +1070,7 @@ class Tickets {
 	 *
 	 * @return array
 	 */
-	public function Subscribe($name) {
+	public function subscribeThread($name) {
 		if (!$this->authenticated) {
 			return $this->error('ticket_err_access_denied');
 		}
@@ -1031,6 +1086,30 @@ class Tickets {
 
 
 	/**
+	 * This method subscribe or unsubscribe users for notifications about new tickets in section.
+	 *
+	 * @param $id
+	 *
+	 * @return array
+	 */
+	public function subscribeSection($id) {
+		if (!$this->authenticated) {
+			return $this->error('ticket_err_access_denied');
+		}
+		/* @var TicketsSection $section */
+		if ($section = $this->modx->getObject('TicketsSection', array('id' => $id, 'class_key' => 'TicketsSection'))) {
+			$message = $section->Subscribe()
+				? 'tickets_section_subscribed'
+				: 'tickets_section_unsubscribed';
+			return $this->success($this->modx->lexicon($message));
+		}
+		else {
+			return $this->error($this->modx->lexicon('ticket_err_wrong_section'));
+		}
+	}
+
+
+		/**
 	 * Loads an instance of pdoTools
 	 *
 	 * @return boolean

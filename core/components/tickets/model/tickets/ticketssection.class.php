@@ -113,7 +113,10 @@ class TicketsSection extends modResource {
 	 * {@inheritDoc}
 	 */
 	public function toArray($keyPrefix= '', $rawValues= false, $excludeLazy= false, $includeRelated= false) {
-		$array = array_merge(parent::toArray(), $this->getVirtualFields());
+		$array = array_merge(
+			parent::toArray($keyPrefix, $rawValues, $excludeLazy, $includeRelated),
+			$this->getVirtualFields()
+		);
 
 		return $array;
 	}
@@ -313,37 +316,39 @@ class TicketsSection extends modResource {
 	 */
 	public function getProperties($namespace = 'tickets') {
 		$properties = parent::getProperties($namespace);
-		$default_properties = array(
-			'template' => $this->xpdo->context->getOption('tickets.default_template', 0),
-			'uri' => '%id-%alias%ext',
-			'show_in_tree' => $this->xpdo->context->getOption('tickets.ticket_show_in_tree_default', false),
-			'hidemenu' => $this->xpdo->context->getOption('tickets.ticket_hidemenu_force', $this->xpdo->context->getOption('hidemenu_default')),
-			'disable_jevix' => $this->xpdo->context->getOption('tickets.disable_jevix_default', false),
-			'process_tags' => $this->xpdo->context->getOption('tickets.process_tags_default', false),
-		);
+		if ($namespace == 'tickets') {
+			$default_properties = array(
+				'template' => $this->xpdo->context->getOption('tickets.default_template', 0),
+				'uri' => '%id-%alias%ext',
+				'show_in_tree' => $this->xpdo->context->getOption('tickets.ticket_show_in_tree_default', false),
+				'hidemenu' => $this->xpdo->context->getOption('tickets.ticket_hidemenu_force', $this->xpdo->context->getOption('hidemenu_default')),
+				'disable_jevix' => $this->xpdo->context->getOption('tickets.disable_jevix_default', false),
+				'process_tags' => $this->xpdo->context->getOption('tickets.process_tags_default', false),
+			);
 
-		// Old default values
-		if (array_key_exists('tickets.ticket_id_as_alias',$this->xpdo->config)) {
-			$default_properties['uri'] = $this->xpdo->context->getOption('tickets.ticket_id_as_alias')
-				? '%id'
-				: '%alias';
-			$default_properties['uri'] .= $this->xpdo->context->getOption('tickets.ticket_isfolder_force')
-				? '/'
-				: '%ext';
-		}
+			// Old default values
+			if (array_key_exists('tickets.ticket_id_as_alias',$this->xpdo->config)) {
+				$default_properties['uri'] = $this->xpdo->context->getOption('tickets.ticket_id_as_alias')
+					? '%id'
+					: '%alias';
+				$default_properties['uri'] .= $this->xpdo->context->getOption('tickets.ticket_isfolder_force')
+					? '/'
+					: '%ext';
+			}
 
-		foreach ($default_properties as $key => $value) {
-			if (!isset($properties[$key])) {
-				$properties[$key] = $value;
-			}
-			elseif ($properties[$key] === 'true') {
-				$properties[$key] = true;
-			}
-			elseif ($properties[$key] === 'false') {
-				$properties[$key] = false;
-			}
-			elseif (is_numeric($value) && ($key == 'disable_jevix' || $key == 'process_tags')) {
-				$properties[$key] = (boolean) intval($value);
+			foreach ($default_properties as $key => $value) {
+				if (!isset($properties[$key])) {
+					$properties[$key] = $value;
+				}
+				elseif ($properties[$key] === 'true') {
+					$properties[$key] = true;
+				}
+				elseif ($properties[$key] === 'false') {
+					$properties[$key] = false;
+				}
+				elseif (is_numeric($value) && ($key == 'disable_jevix' || $key == 'process_tags')) {
+					$properties[$key] = (boolean) intval($value);
+				}
 			}
 		}
 
@@ -379,6 +384,48 @@ class TicketsSection extends modResource {
 			$count = $this->xpdo->exec($sql);
 		}
 		return $count;
+	}
+
+
+	public function Subscribe($uid = 0) {
+		if (!$uid) {$uid = $this->xpdo->user->id;}
+
+		$subscribers = $this->getProperties('subscribers');
+		if (empty($subscribers) || !is_array($subscribers)) {
+			$subscribers = array();
+		}
+
+		$found = array_search($uid, $subscribers);
+		if ($found === false) {
+			$subscribers[] = $uid;
+		}
+		else {
+			unset($subscribers[$found]);
+		}
+		$this->setProperties(array_values($subscribers), 'subscribers', false);
+		$this->save();
+
+		return ($found === false);
+	}
+
+
+	public function isSubscribed($uid = 0) {
+		if (!$uid) {$uid = $this->xpdo->user->id;}
+
+		$properties = array();
+		$q = $this->xpdo->newQuery('TicketsSection', array('id' => $this->id));
+		$q->select('properties');
+		$tstart = microtime(true);
+		if ($q->prepare() && $q->stmt->execute()) {
+			$this->xpdo->queryTime += microtime(true) - $tstart;
+			$this->xpdo->executedQueries++;
+			$properties = $this->xpdo->fromJSON($q->stmt->fetchColumn());
+		}
+		$subscribers = !empty($properties['subscribers'])
+			? $properties['subscribers']
+			: array();
+
+		return in_array($uid, $subscribers);
 	}
 
 }

@@ -15,6 +15,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	public $permission = 'ticket_save';
 	public $languageTopics = array('access','resource','tickets:default');
 	private $_published = null;
+	private $_sendEmails = false;
 	/** @var TicketsSection $parentResource */
 	public $parentResource;
 
@@ -106,6 +107,9 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		if (empty($published)) {
 			$tmp['was_published'] = false;
 		}
+		else {
+			$this->_sendEmails = true;
+		}
 		// Set properties
 		$this->setProperties(array(
 			'class_key' => 'Ticket',
@@ -184,6 +188,10 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		$results = $this->modx->cacheManager->generateContext($this->object->context_key, array('cache_context_settings' => false));
 		$this->modx->context->resourceMap = $results['resourceMap'];
 		$this->modx->context->aliasMap = $results['aliasMap'];
+
+		if ($this->_sendEmails && $this->modx->context->key == 'mgr') {
+			$this->sendTicketMails();
+		}
 
 		return parent::afterSave();
 	}
@@ -311,6 +319,19 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 			}
 		}
 		return $count;
+	}
+
+
+	/**
+	 * Call method for notify users about new ticket in section
+	 */
+	protected function sendTicketMails() {
+		/** @var Tickets $Tickets */
+		if ($Tickets = $this->modx->getService('Tickets')) {
+			$Tickets->config['tplTicketEmailBcc'] = 'tpl.Tickets.ticket.email.bcc';
+			$Tickets->config['tplTicketEmailSubscription'] = 'tpl.Tickets.ticket.email.subscription';
+			$Tickets->sendTicketMails($this->object->toArray());
+		}
 	}
 
 }

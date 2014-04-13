@@ -222,7 +222,13 @@ else {
 	$output .= $log;
 
 	if (!empty($tplWrapper) && (!empty($wrapIfEmpty) || !empty($output))) {
-		$output = $pdoFetch->getChunk($tplWrapper, array('output' => $output), $pdoFetch->config['fastMode']);
+		$array = array('output' => $output);
+		if ($Tickets->authenticated && $modx->resource->class_key == 'TicketsSection') {
+			/** @var TicketsSection $section */
+			$section = &$modx->resource;
+			$array['subscribed'] = $section->isSubscribed();
+		}
+		$output = $pdoFetch->getChunk($tplWrapper, $array, $pdoFetch->config['fastMode']);
 	}
 
 	if (!empty($toPlaceholder)) {
