@@ -76,6 +76,10 @@ $tmp = array(
 		'type' => 'combo-boolean',
 		'value' => true,
 	),
+	'autoPublishGuest' => array(
+		'type' => 'combo-boolean',
+		'value' => true,
+	),
 	'formBefore' => array(
 		'type' => 'combo-boolean',
 		'value' => false,

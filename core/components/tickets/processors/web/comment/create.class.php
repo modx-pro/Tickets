@@ -16,6 +16,9 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 	/** {@inheritDoc} */
 	public function checkPermissions() {
 		$this->guest = (boolean) $this->getProperty('allowGuest', false);
+		$this->unsetProperty('allowGuest');
+		$this->unsetProperty('allowGuestEdit');
+		$this->unsetProperty('captcha');
 
 		return !empty($this->permission) && !$this->guest
 			? $this->modx->hasPermission($this->permission)
@@ -66,6 +69,9 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 			if (!isset($meta[$k])) {
 				$add[$k] = $this->modx->stripTags($v);
 			}
+		}
+		if (!$this->getProperty('published')) {
+			$add['was_published'] = false;
 		}
 
 		// Comment values

@@ -435,7 +435,9 @@ class Tickets {
 		$data['text'] = $this->Jevix($data['text'], 'Comment');
 		$data['allowGuest'] = !empty($this->config['allowGuest']);
 		$data['allowGuestEdit'] = !empty($this->config['allowGuestEdit']);
-		$data['published'] = !empty($this->config['autoPublish']);
+		$data['published'] = (!$this->authenticated && empty($this->config['autoPublishGuest'])) || ($this->authenticated && empty($this->config['autoPublish']))
+			? false
+			: true;
 
 		if ($this->authenticated) {
 			$data['name'] = $this->modx->user->Profile->fullname;
@@ -477,7 +479,7 @@ class Tickets {
 			}
 
 			if (empty($data['id'])) {
-				$this->sendCommentMails($this->prepareComment($comment));
+				$this->sendCommentMails($comment);
 			}
 
 			$data = array();
@@ -900,68 +902,71 @@ class Tickets {
 			}
 		}
 
-		if (empty($subscribers)) {
-			$subscribers = array();
-		}
+		$comment = $this->prepareComment($comment);
 
-		// It is a reply for a comment
-		if ($comment['parent']) {
-			$q = $this->modx->newQuery('TicketComment');
-			$q->select('TicketComment.createdby as uid, TicketComment.text, TicketComment.email');
-			$q->where(array('TicketComment.id' => $comment['parent']/*, 'TicketComment.createdby:!=' => $comment['createdby']*/));
-			if ($q->prepare() && $q->stmt->execute()) {
-				if ($res = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
-					$reply_uid = $res['uid'];
-					$reply_email = $res['email'];
-					$comment['parent_text'] = $res['text'];
+		if (!empty($comment['published'])) {
+			if (empty($subscribers)) {
+				$subscribers = array();
+			}
+
+			// It is a reply for a comment
+			if ($comment['parent']) {
+				$q = $this->modx->newQuery('TicketComment');
+				$q->select('TicketComment.createdby as uid, TicketComment.text, TicketComment.email');
+				$q->where(array('TicketComment.id' => $comment['parent']/*, 'TicketComment.createdby:!=' => $comment['createdby']*/));
+				if ($q->prepare() && $q->stmt->execute()) {
+					if ($res = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
+						$reply_uid = $res['uid'];
+						$reply_email = $res['email'];
+						$comment['parent_text'] = $res['text'];
+					}
+				}
+			}
+
+			// We always send replies for comments
+			if (($reply_uid && $reply_uid != $comment['createdby']) || ($reply_email && $reply_email != $comment['email'])) {
+				$this->addQueue(
+					$reply_uid,
+					$this->modx->lexicon('ticket_comment_email_reply', $comment),
+					$this->getChunk($this->config['tplCommentEmailReply'], $comment, false),
+					$reply_email
+				);
+			}
+
+			// Then we send emails to subscribers
+			foreach ($subscribers as $uid) {
+				if ($uid == $reply_uid || $uid == $comment['createdby']) {
+					continue;
+				}
+				elseif ($uid == $owner_uid) {
+					$this->addQueue(
+						$uid,
+						$this->modx->lexicon('ticket_comment_email_owner', $comment),
+						$this->getChunk($this->config['tplCommentEmailOwner'], $comment, false)
+					);
+				}
+				else {
+					$this->addQueue(
+						$uid,
+						$this->modx->lexicon('ticket_comment_email_subscription', $comment),
+						$this->getChunk($this->config['tplCommentEmailSubscription'], $comment, false)
+					);
 				}
 			}
 		}
 
-		$comment = $this->prepareComment($comment);
-		unset($comment['properties']);
-
-		// We always send replies for comments
-		if (($reply_uid && $reply_uid != $comment['createdby']) || ($reply_email && $reply_email != $comment['email'])) {
-			$this->addQueue(
-				$reply_uid,
-				$this->modx->lexicon('ticket_comment_email_reply', $comment),
-				$this->getChunk($this->config['tplCommentEmailReply'], $comment, false),
-				$reply_email
-			);
-		}
-
-		// Then we send emails to subscribers
-		foreach ($subscribers as $uid) {
-			if ($uid == $reply_uid || $uid == $comment['createdby']) {
-				continue;
-			}
-			elseif ($uid == $owner_uid) {
-				$this->addQueue(
-					$uid
-					,$this->modx->lexicon('ticket_comment_email_owner', $comment)
-					,$this->getChunk($this->config['tplCommentEmailOwner'], $comment, false)
-				);
-			}
-			else {
-				$this->addQueue(
-					$uid
-					,$this->modx->lexicon('ticket_comment_email_subscription', $comment)
-					,$this->getChunk($this->config['tplCommentEmailSubscription'], $comment, false)
-				);
-			}
-		}
-
-		// Then we make blind copy
-		if ($this->modx->getOption('tickets.mail_bcc_level') >= 2) {
+		// Then we make blind copy to administrators
+		if ($this->modx->getOption('tickets.mail_bcc_level') >= 2 || (empty($comment['published'])) && array_key_exists('was_published', $comment['properties'])) {
 			if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
 				$bcc = array_map('trim', explode(',', $bcc));
 				foreach ($bcc as $uid) {
 					if ($uid != $reply_uid && $uid != $owner_uid && $uid != $comment['createdby']) {
 						$this->addQueue(
-							$uid
-							,$this->modx->lexicon('ticket_comment_email_bcc', $comment)
-							,$this->getChunk($this->config['tplCommentEmailBcc'], $comment, false)
+							$uid,
+							empty($comment['published'])
+								? $this->modx->lexicon('ticket_comment_email_unpublished_bcc', $comment)
+								: $this->modx->lexicon('ticket_comment_email_bcc', $comment),
+							$this->getChunk($this->config['tplCommentEmailBcc'], $comment, false)
 						);
 					}
 				}

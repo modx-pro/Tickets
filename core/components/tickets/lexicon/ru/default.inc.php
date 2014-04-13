@@ -174,6 +174,7 @@ $_lang['ticket_comment_email_owner'] = 'Новый комментарий к в�
 $_lang['ticket_comment_email_reply'] = 'Ответ на ваш комментарий к тикету "[[+pagetitle]]"';
 $_lang['ticket_comment_email_subscription'] = 'Новый комментарий в теме "[[+pagetitle]]"';
 $_lang['ticket_comment_email_bcc'] = 'Новый комментарий в теме "[[+pagetitle]]"';
+$_lang['ticket_comment_email_unpublished_bcc'] = 'Неопубликованный комментарий в теме "[[+pagetitle]]"';
 $_lang['ticket_email_bcc'] = 'Новый тикет у вас на сайте - "[[+pagetitle]]"';
 
 $_lang['ticket_like'] = 'Нравится';

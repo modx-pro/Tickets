@@ -9,6 +9,8 @@ class TicketCommentPublishProcessor extends modObjectUpdateProcessor  {
 	public $permission = 'update_document';
 	public $beforeSaveEvent = 'OnBeforeCommentSave';
 	public $afterSaveEvent = 'OnCommentSave';
+	protected $_sendEmails = false;
+
 
 	public function beforeSave() {
 		if ($this->object->get('published')) {
@@ -16,10 +18,17 @@ class TicketCommentPublishProcessor extends modObjectUpdateProcessor  {
 		}
 		else {
 			$this->object->set('published', 1);
+			$properties = $this->object->get('properties');
+			if (array_key_exists('was_published', $properties)) {
+				unset($properties['was_published']);
+				$this->object->set('properties', $properties);
+				$this->_sendEmails = true;
+			}
 		}
 
 		return parent::beforeSave();
 	}
+
 
 	public function afterSave() {
 		$this->object->clearTicketCache();
@@ -31,6 +40,10 @@ class TicketCommentPublishProcessor extends modObjectUpdateProcessor  {
 		$this->modx->cacheManager->delete('tickets/latest.comments');
 		$this->modx->cacheManager->delete('tickets/latest.tickets');
 
+		if ($this->_sendEmails) {
+			$this->sendCommentMails();
+		}
+
 		return parent::afterSave();
 	}
 
@@ -39,6 +52,19 @@ class TicketCommentPublishProcessor extends modObjectUpdateProcessor  {
 		$action = $this->object->get('published') ? 'publish' : 'unpublish';
 		$this->modx->logManagerAction($this->objectType.'_'.$action, $this->classKey, $this->object->get($this->primaryKeyField));
 	}
+
+
+	protected function sendCommentMails() {
+		/** @var TicketThread $thread */
+		if ($thread = $this->object->getOne('Thread')) {
+			/** @var Tickets $Tickets */
+			if ($Tickets = $this->modx->getService('Tickets')) {
+				$Tickets->config = $thread->get('properties');
+				$Tickets->sendCommentMails($this->object->toArray());
+			}
+		}
+	}
+
 }
 
 return 'TicketCommentPublishProcessor';

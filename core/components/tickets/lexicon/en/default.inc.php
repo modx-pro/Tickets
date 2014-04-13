@@ -174,6 +174,7 @@ $_lang['ticket_comment_email_owner'] = 'New comment for your ticket "[[+pagetitl
 $_lang['ticket_comment_email_reply'] = 'Reply to your comment for ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_email_subscription'] = 'New comment for ticket "[[+pagetitle]]"';
 $_lang['ticket_comment_email_bcc'] = 'New comment for ticket "[[+pagetitle]]"';
+$_lang['ticket_comment_email_unpublished_bcc'] = 'Unpublished comment for ticket "[[+pagetitle]]"';
 $_lang['ticket_email_bcc'] = 'New ticket on site - "[[+pagetitle]]"';
 
 $_lang['ticket_like'] = 'Like';
