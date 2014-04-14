@@ -56,7 +56,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		}
 		$content = $this->getProperty('content');
 		$length = mb_strlen(strip_tags($content), $this->modx->getOption('modx_charset', null, 'UTF-8', true));
-		$max = $this->modx->getOption('ticket.ticket_max_cut', null, 1000, true);
+		$max = $this->modx->getOption('tickets.ticket_max_cut', null, 1000, true);
 		if (empty($content) && $this->modx->context->key != 'mgr') {
 			return $this->modx->lexicon('ticket_err_empty');
 		}
