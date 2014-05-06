@@ -4,7 +4,7 @@ $templates = array();
 
 $tmp = array(
 	'TicketsUserPolicyTemplate' => array(
-		'description' => 'A policy for miniShop2 managers.',
+		'description' => 'A policy for users to create Tickets and comments.',
 		'template_group' => 1,
 		'permissions' => array(
 			'ticket_delete' => array(),
@@ -21,7 +21,7 @@ $tmp = array(
 		),
 	),
 	'TicketsSectionPolicyTemplate' => array(
-		'description' => 'A policy for miniShop2 managers.',
+		'description' => 'A policy for users to add Tickets to section.',
 		'template_group' => 3,
 		'permissions' => array(
 			'section_add_children' => array(),
