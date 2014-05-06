@@ -832,12 +832,14 @@ class Tickets {
 			return eval($this->prepareCommentCustom);
 		}
 		else {
-			$data['avatar'] = $this->config['gravatarUrl'] . md5(strtolower($data['email'])) .'?s=' . $this->config['gravatarSize'] . '&d=' . $this->config['gravatarIcon'];
+			$data['avatar'] = !empty($data['photo'])
+				? $data['photo']
+				: $this->config['gravatarUrl'] . md5(strtolower($data['email'])) .'?s=' . $this->config['gravatarSize'] . '&d=' . $this->config['gravatarIcon'];
 			if (!empty($data['resource'])) {
 				$data['url'] = $this->modx->makeUrl($data['resource'], '', '', 'full');
 			}
-
 			$data['date_ago'] = $this->dateFormat($data['createdon']);
+
 			return $data;
 		}
 	}

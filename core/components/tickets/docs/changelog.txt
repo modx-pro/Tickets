@@ -4,6 +4,7 @@ Changelog for Tickets.
 ==========
 - Fixed bug with listing of all comments in empty section.
 - Fixed processing of "tickets.ticket_max_cut" in tickets processor.
+- Comments are now using users photo if exists.
 
 1.4.0 pl
 ==========
