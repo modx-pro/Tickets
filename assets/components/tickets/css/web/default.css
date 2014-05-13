@@ -22,6 +22,7 @@
 .comments-list {padding-left: 25px;}
 .ticket-comment {list-style-type: none;margin-top:20px;}
 .ticket-avatar {display:inline-block;}
+.ticket-comment .ticket-avatar {max-width: 24px; max-height: 24px;}
 .ticket-comment-author {display:inline-block;font-weight:bold;margin-left: 10px;}
 .ticket-comment-createdon {display:inline-block;font-size: 0.8em;color: #555555;margin-left: 10px;}
 .ticket-comment-edited {display:inline-block;font-size: 0.8em;color: #555555;margin-left: 10px;font-style:italic;}
