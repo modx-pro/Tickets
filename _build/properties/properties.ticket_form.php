@@ -45,6 +45,11 @@ $tmp = array(
 		'value' => '',
 		'desc' => 'tickets_prop_sections_parents'
 	),
+	'resources' => array(
+		'type' => 'textfield',
+		'value' => '',
+		'desc' => 'tickets_prop_sections_resources'
+	),
 	'permissions' => array(
 		'type' => 'textfield',
 		'value' => 'section_add_children',

@@ -60,11 +60,13 @@ $data['sections'] = '';
 /** @var modProcessorResponse $response */
 $response = $Tickets->runProcessor('web/section/getlist', array(
 	'parents' => $scriptProperties['parents'],
+	'resources' => $scriptProperties['resources'],
 	'permissions' => $scriptProperties['permissions'],
 	'sortby' => !empty($scriptProperties['sortby']) ? $scriptProperties['sortby'] : 'pagetitle',
 	'sortdir' => !empty($scriptProperties['sortdir']) ? $scriptProperties['sortdir'] : 'asc',
 	'depth' => isset($scriptProperties['depth']) ? $scriptProperties['depth'] : 0,
 	'context' => !empty($scriptProperties['context']) ? $scriptProperties['context'] : $modx->context->key,
+	'limit' => 0,
 ));
 $response = $modx->fromJSON($response->getResponse());
 

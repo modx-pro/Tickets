@@ -49,6 +49,10 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 				$c->where(array('parent:IN' => $parents));
 			}
 		}
+		if ($resources = $this->getProperty('resources')) {
+			$resources = array_map('trim', explode(',', $resources));
+			$c->where(array('id:IN' => $resources));
+		}
 
 		return $c;
 	}
