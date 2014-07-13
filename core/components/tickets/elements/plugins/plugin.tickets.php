@@ -1,5 +1,4 @@
 <?php
-
 switch($modx->event->name) {
 
 	case 'OnManagerPageInit':
@@ -50,6 +49,9 @@ switch($modx->event->name) {
 				if (is_numeric($ticket_uri)) {
 					$ticket_id = $ticket_uri;
 				}
+				elseif (preg_match('/^\d+/', $ticket_uri, $tmp)) {
+					$ticket_id = $tmp[0];
+				}
 				else {
 					$properties = $section->getProperties('tickets');
 					if (!empty($properties['uri']) && strpos($properties['uri'], '%id') !== false) {
@@ -63,7 +65,7 @@ switch($modx->event->name) {
 				if (!empty($ticket_id)) {
 					if ($ticket = $modx->getObject('Ticket', array('id' => $ticket_id, 'deleted' => 0))) {
 						if ($ticket->published) {
-							$modx->sendRedirect($modx->makeUrl($ticket_id, '', '', 'full'));
+							$modx->sendRedirect($modx->makeUrl($ticket_id), array('responseCode' => 'HTTP/1.1 301 Moved Permanently'));
 						}
 						elseif ($unp_id = $modx->getOption('tickets.unpublished_ticket_page')) {
 							$modx->sendForward($unp_id);
