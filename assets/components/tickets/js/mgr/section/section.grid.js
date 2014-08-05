@@ -53,8 +53,8 @@ Tickets.grid.Section = function(config) {
 	});
 	Tickets.grid.Section.superclass.constructor.call(this,config);
 	this._makeTemplates();
-	this.on('rowclick',MODx.fireResourceFormChange);
-	this.on('click', this.onClick, this);
+	//this.on('rowclick',MODx.fireResourceFormChange);
+	//this.on('click', this.onClick, this);
 };
 Ext.extend(Tickets.grid.Section,MODx.grid.Grid,{
 
@@ -91,13 +91,12 @@ Ext.extend(Tickets.grid.Section,MODx.grid.Grid,{
 	,_renderComments:function(v,md,rec) {
 		return this.tplComments.apply(rec.data);
 	}
-	,onClick: function(e){
+	,onClick: function(e) {
 		var t = e.getTarget();
 		var elm = t.className.split(' ')[0];
-		if(elm == 'controlBtn') {
+		if (elm == 'controlBtn') {
 			var action = t.className.split(' ')[1];
-			var record = this.getSelectionModel().getSelected();
-			this.menu.record = record;
+			this.menu.record = this.getSelectionModel().getSelected();
 			switch (action) {
 				case 'delete':
 					this.deleteTicket();
@@ -120,11 +119,9 @@ Ext.extend(Tickets.grid.Section,MODx.grid.Grid,{
 				case 'duplicate':
 					this.duplicateTicket();
 					break;
-				default:
-					window.location = record.data.edit_action;
-					break;
 			}
 		}
+		this.processEvent('click', e);
 	}
 
 	,search: function(tf, nv, ov) {
