@@ -153,7 +153,7 @@ Tickets.combo.Template = function(config) {
 	Ext.applyIf(config,{
 		name: 'properties[tickets][template]'
 		,hiddenName: 'properties[tickets][template]'
-		,url: MODx.config.connectors_url + MODx.modx23 ? '' : 'element/template.php'
+		,url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'element/template.php'
 		,baseParams: {
 			action: MODx.modx23 ? 'element/template/getlist' : 'getlist'
 			,combo: 1
