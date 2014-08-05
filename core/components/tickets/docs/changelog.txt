@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.4.2 rc
+==========
+- Changed Gravatar url to https protocol.
+
 1.4.1 pl
 ==========
 - Improved redirect of NotFound tickets in plugin.

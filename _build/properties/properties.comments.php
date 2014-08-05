@@ -26,7 +26,7 @@ $tmp = array(
 	),
 	'gravatarUrl' => array(
 		'type' => 'textfield',
-		'value' => 'http://www.gravatar.com/avatar/',
+		'value' => 'https://www.gravatar.com/avatar/',
 	),
 	'tplCommentForm' => array(
 		'type' => 'textfield',

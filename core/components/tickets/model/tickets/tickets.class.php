@@ -57,7 +57,7 @@ class Tickets {
 			'commentEditTime' => $this->modx->getOption('tickets.comment_edit_time', null, 180),
 			'depth' => 0,
 
-			'gravatarUrl' => 'http://www.gravatar.com/avatar/',
+			'gravatarUrl' => 'https://www.gravatar.com/avatar/',
 			'gravatarSize' => 24,
 			'gravatarIcon' => 'mm',
 
@@ -832,9 +832,10 @@ class Tickets {
 			return eval($this->prepareCommentCustom);
 		}
 		else {
+			$data['gravatar'] = $this->config['gravatarUrl'] . md5(strtolower($data['email'])) .'?s=' . $this->config['gravatarSize'] . '&d=' . $this->config['gravatarIcon'];
 			$data['avatar'] = !empty($data['photo'])
 				? $data['photo']
-				: $this->config['gravatarUrl'] . md5(strtolower($data['email'])) .'?s=' . $this->config['gravatarSize'] . '&d=' . $this->config['gravatarIcon'];
+				: $data['gravatar'];
 			if (!empty($data['resource'])) {
 				$data['url'] = $this->modx->makeUrl($data['resource'], '', '', 'full');
 			}
