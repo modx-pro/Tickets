@@ -155,7 +155,7 @@ Ext.extend(Tickets.grid.Section,MODx.grid.Grid,{
 
 	,deleteTicket: function(btn,e) {
 		MODx.Ajax.request({
-			url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'index.php'
+			url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'resource/index.php'
 			,params: {
 				action: MODx.modx23 ? 'resource/delete' : 'delete'
 				,id: this.menu.record.id
@@ -168,7 +168,7 @@ Ext.extend(Tickets.grid.Section,MODx.grid.Grid,{
 
 	,undeleteTicket: function(btn,e) {
 		MODx.Ajax.request({
-			url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'index.php'
+			url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'resource/index.php'
 			,params: {
 				action: MODx.modx23 ? 'resource/undelete' : 'undelete'
 				,id: this.menu.record.id
@@ -181,7 +181,7 @@ Ext.extend(Tickets.grid.Section,MODx.grid.Grid,{
 
 	,publishTicket: function(btn,e) {
 		MODx.Ajax.request({
-			url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'index.php'
+			url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'resource/index.php'
 			,params: {
 				action: MODx.modx23 ? 'resource/publish' : 'publish'
 				,id: this.menu.record.id
@@ -194,7 +194,7 @@ Ext.extend(Tickets.grid.Section,MODx.grid.Grid,{
 
 	,unpublishTicket: function(btn,e) {
 		MODx.Ajax.request({
-			url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'index.php'
+			url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'resource/index.php'
 			,params: {
 				action: MODx.modx23 ? 'resource/unpublish' : 'unpublish'
 				,id: this.menu.record.id
