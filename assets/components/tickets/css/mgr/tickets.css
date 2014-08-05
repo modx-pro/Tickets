@@ -73,20 +73,10 @@
 
 
 .tickets-panel-spacer .x-panel-body { background: transparent !important; }
+
 .actions a {
-	-moz-border-radius:3px;
-	-webkit-border-radius:3px;
-	-o-border-radius:3px;
-	-ms-border-radius:3px;
-	-khtml-border-radius:3px;
 	border-radius:3px;
 	background:#dcdcdc;
-	background:-moz-linear-gradient(center bottom,#dcdcdc 0%,#fcfcfc 100%) repeat scroll 0 0 transparent;
-	background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fcfcfc),color-stop(100%,#dcdcdc));
-	background:-webkit-linear-gradient(center bottom,#dcdcdc 0%,#fcfcfc 100%);
-	background:-o-linear-gradient(center bottom,#dcdcdc 0%,#fcfcfc 100%);
-	background:-ms-linear-gradient(center bottom,#dcdcdc 0%,#fcfcfc 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcfcfc,endColorstr=#dcdcdc,GradientType=0);
 	background:linear-gradient(center bottom,#dcdcdc 0%,#fcfcfc 100%);
 	text-shadow:0 1px 0 #ffffff;
 	border:1px solid #cccccc;
@@ -101,45 +91,22 @@
 }
 .actions a:hover {
 	background:#e0e0e0;
-	background:-moz-linear-gradient(center bottom,#e0e0e0 0%,#fcfcfc 100%) repeat scroll 0 0 transparent;
-	background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fcfcfc),color-stop(100%,#e0e0e0));
-	background:-webkit-linear-gradient(center bottom,#e0e0e0 0%,#fcfcfc 100%);
-	background:-o-linear-gradient(center bottom,#e0e0e0 0%,#fcfcfc 100%);
-	background:-ms-linear-gradient(center bottom,#e0e0e0 0%,#fcfcfc 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcfcfc,endColorstr=#e0e0e0,GradientType=0);
 	background:linear-gradient(center bottom,#e0e0e0 0%,#fcfcfc 100%);
 	color:#5b7a98;
 }
 .actions a:active {
-	-moz-box-shadow:0 0 3px #aaaaaa inset;
-	-webkit-box-shadow:0 0 3px #aaaaaa inset;
-	-o-box-shadow:0 0 3px #aaaaaa inset;
 	box-shadow:0 0 3px #aaaaaa inset;
 	background-color:#ffffff;
 	background-image:none;
 }
-.actions a.orange {
-	background:#febb4a;
-	background:-moz-linear-gradient(center bottom,#febb4a 0%,#feda71 100%) repeat scroll 0 0 transparent;
-	background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#feda71),color-stop(100%,#febb4a));
-	background:-webkit-linear-gradient(center bottom,#febb4a 0%,#feda71 100%);
-	background:-o-linear-gradient(center bottom,#febb4a 0%,#feda71 100%);
-	background:-ms-linear-gradient(center bottom,#febb4a 0%,#feda71 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#feda71,endColorstr=#febb4a,GradientType=0);
-	background:linear-gradient(center bottom,#febb4a 0%,#feda71 100%);
-	border-color:#f5b74e #e7a93f #dfa138;
-	color:#996633;
-	text-shadow:0 1px 0 #fee1a0;
+
+.actions a.delete:hover {
+	color:brown;
+	text-shadow:0 1px 0 #fff;
 }
-.actions a.orange:hover {
-	background:#fec95b;
-	background:-moz-linear-gradient(center bottom,#fec95b 0%,#fee1a0 100%) repeat scroll 0 0 transparent;
-	background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fee1a0),color-stop(100%,#fec95b));
-	background:-webkit-linear-gradient(center bottom,#fec95b 0%,#fee1a0 100%);
-	background:-o-linear-gradient(center bottom,#fec95b 0%,#fee1a0 100%);
-	background:-ms-linear-gradient(center bottom,#fec95b 0%,#fee1a0 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#fee1a0,endColorstr=#fec95b,GradientType=0);
-	background:linear-gradient(center bottom,#fec95b 0%,#fee1a0 100%);
+.actions a.unpublish:hover {
+	color:darkgoldenrod;
+	text-shadow:0 1px 0 #fff;
 }
 
 .tickets-grid .ticket-id {
@@ -162,12 +129,4 @@
 	padding: 5px;
 }
 
-.tickets-list-item .parents {
-	display:block;
-	color:#555555;
-	font-size: .9em;
-}
-.tickets-list-item .id {
-	font-size: .8em;
-	color: #555555;
-}
+.tickets-list-item .parents {display:block;}

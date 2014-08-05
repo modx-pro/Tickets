@@ -12,16 +12,16 @@ Tickets.combo.User = function(config) {
 		,url: MODx.config.connectors_url + (MODx.modx23 ? '' : 'security/user.php')
 		,typeAhead: true
 		,editable: true
-		,action:  (MODx.modx23 ? 'security/user/getlist' : 'getList')
+		,action:  MODx.modx23 ? 'security/user/getlist' : 'getList'
 		,allowBlank: true
 		,baseParams: {
-			action: (MODx.modx23 ? 'security/user/getlist' : 'getlist'),
+			action: MODx.modx23 ? 'security/user/getlist' : 'getlist',
 			combo: 1
 			,id: config.value
 		}
 		,tpl: new Ext.XTemplate(''
-			+'<tpl for="."><div class="tickets-list-item">'
-				+'<span><span class="id">({id})</span> <b>{username}</b> - {fullname}</span>'
+			+'<tpl for="."><div class="x-combo-list-item tickets-list-item">'
+				+'<span><small>({id})</small> <b>{username}</b> - {fullname}</span>'
 			+'</div></tpl>',{
 			compiled: true
 		})
@@ -52,7 +52,7 @@ MODx.combo.TicketsSection = function(config) {
 			,id: config.value
 		}
 		,tpl: new Ext.XTemplate(''
-			+'<tpl for="."><div class="tickets-list-item">'
+			+'<tpl for="."><div class="x-combo-list-item tickets-list-item">'
 				+'<tpl if="parents">'
 					+'<span class="parents">'
 						+'<tpl for="parents">'
@@ -60,7 +60,7 @@ MODx.combo.TicketsSection = function(config) {
 						+'</tpl>'
 					+'</span>'
 				+'</tpl>'
-			+'<span><span class="id">({id})</span> <b>{pagetitle}</b></span>'
+			+'<span><small>({id})</small> <b>{pagetitle}</b></span>'
 			+'</div></tpl>',{
 			compiled: true
 		})
@@ -132,8 +132,8 @@ Tickets.combo.TicketThread = function(config) {
 			,id: config.value
 		}
 		,tpl: new Ext.XTemplate(''
-			+'<tpl for="."><div class="tickets-list-item">'
-				+'<span><span class="id">({id})</span> <b>{name}</b> - {pagetitle}</span>'
+			+'<tpl for="."><div class="x-combo-list-item tickets-list-item">'
+				+'<span><small>({id})</small> <b>{name}</b> - {pagetitle}</span>'
 			+'</div></tpl>',{
 			compiled: true
 		})
@@ -153,9 +153,9 @@ Tickets.combo.Template = function(config) {
 	Ext.applyIf(config,{
 		name: 'properties[tickets][template]'
 		,hiddenName: 'properties[tickets][template]'
-		,url: MODx.config.connectors_url + (MODx.modx23 ? '' : 'element/template.php')
+		,url: MODx.config.connectors_url + MODx.modx23 ? '' : 'element/template.php'
 		,baseParams: {
-			action: (MODx.modx23 ? 'element/template/getlist' : 'getlist')
+			action: MODx.modx23 ? 'element/template/getlist' : 'getlist'
 			,combo: 1
 		}
 	});

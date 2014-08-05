@@ -211,7 +211,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 					,anchor: '90%'
 					,editable: false
 					,baseParams: {
-						action: (MODx.modx23 ? 'element/template/getlist' : 'getList')
+						action: MODx.modx23 ? 'element/template/getlist' : 'getList'
 						,combo: '1'
 					}
 					,value: config.record.template
@@ -225,7 +225,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 					,id: 'modx-resource-createdby'
 					,allowBlank: true
 					,baseParams: {
-						action: (MODx.modx23 ? 'security/user/getlist' : 'getList')
+						action: MODx.modx23 ? 'security/user/getlist' : 'getList'
 						,combo: '1'
 						,limit: 0
 					}
