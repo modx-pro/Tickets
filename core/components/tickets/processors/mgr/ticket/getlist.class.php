@@ -75,7 +75,7 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 			$resourceArray['publishedon'] = strftime('%b %d, %Y %H:%I %p',strtotime($resourceArray['publishedon']));
 		}
 
-		$resourceArray['action_edit'] = '?a='.$this->editAction->get('id').'&action=post/update&id='.$resourceArray['id'];
+		$resourceArray['action_edit'] = '?a='.($this->editAction instanceof modAction ? $this->editAction->get('id') : 'resource/update').'&action=post/update&id='.$resourceArray['id'];
 		if (!array_key_exists('comments',$resourceArray)) $resourceArray['comments'] = 0;
 
 		$this->modx->getContext($resourceArray['context_key']);

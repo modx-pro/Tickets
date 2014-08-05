@@ -2,6 +2,13 @@
 switch($modx->event->name) {
 
 	case 'OnManagerPageInit':
+        $modx->getVersionData();
+        $modx23 = !empty($modx->version) && version_compare($modx->version['full_version'], '2.3.0', '>=');
+        $modx->regClientHTMLBlock('<script type="text/javascript">
+            Ext.onReady(function() {
+            MODx.modx23 = '.(int)$modx23.';
+            });
+            </script>');
 		$cssFile = $modx->getOption('tickets.assets_url',null,$modx->getOption('assets_url').'components/tickets/').'css/mgr/tickets.css';
 		$modx->regClientCSS($cssFile);
 		break;
