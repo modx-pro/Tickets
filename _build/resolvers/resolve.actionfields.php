@@ -34,14 +34,20 @@ if ($object->xpdo) {
 				$modx->removeCollection('modActionField', array('other' => 'tickets'));
 			}
 
-			$actions = array();
-			foreach ($resourceActions as $controller) {
-				$actionObj = $modx->getObject('modAction',array(
-					'controller' => $controller,
-					'namespace' => 'core',
-				));
-				$actions[] = $actionObj->get('id');
-			}
+            $modx->getVersionData();
+            $modx23 = !empty($modx->version) && version_compare($modx->version['full_version'], '2.3.0', '>=');
+            if (!$modx23) {
+                $actions = array();
+                foreach ($resourceActions as $controller) {
+                    $actionObj = $modx->getObject('modAction',array(
+                        'controller' => $controller,
+                        'namespace' => 'core',
+                    ));
+                    $actions[] = $actionObj->get('id');
+                }
+            } else {
+                $actions = $resourceActions;
+            }
 
 			foreach ($actions as $actionId) {
 				$c = $modx->newQuery('modActionField', array('type' => 'tab', 'action' => $actionId));
