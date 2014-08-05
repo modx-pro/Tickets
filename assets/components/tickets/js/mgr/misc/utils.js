@@ -9,14 +9,14 @@ Tickets.combo.User = function(config) {
 		,anchor: '99%'
 		,fields: ['username','id','fullname']
 		,pageSize: 20
-		,url: MODx.config.connectors_url + 'security/user.php'
+		,url: MODx.config.connectors_url + (MODx.modx23 ? '' : 'security/user.php')
 		,typeAhead: true
 		,editable: true
-		,action: 'getList'
+		,action:  (MODx.modx23 ? 'security/user/getlist' : 'getList')
 		,allowBlank: true
 		,baseParams: {
-			action: 'getlist'
-			,combo: 1
+			action: (MODx.modx23 ? 'security/user/getlist' : 'getlist'),
+			combo: 1
 			,id: config.value
 		}
 		,tpl: new Ext.XTemplate(''
@@ -153,9 +153,9 @@ Tickets.combo.Template = function(config) {
 	Ext.applyIf(config,{
 		name: 'properties[tickets][template]'
 		,hiddenName: 'properties[tickets][template]'
-		,url: MODx.config.connectors_url+'element/template.php'
+		,url: MODx.config.connectors_url + (MODx.modx23 ? '' : 'element/template.php')
 		,baseParams: {
-			action: 'getlist'
+			action: (MODx.modx23 ? 'element/template/getlist' : 'getlist')
 			,combo: 1
 		}
 	});
