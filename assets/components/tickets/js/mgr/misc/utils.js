@@ -9,10 +9,9 @@ Tickets.combo.User = function(config) {
 		,anchor: '99%'
 		,fields: ['username','id','fullname']
 		,pageSize: 20
-		,url: MODx.config.connectors_url + (MODx.modx23 ? '' : 'security/user.php')
+		,url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'security/user.php'
 		,typeAhead: true
 		,editable: true
-		,action:  MODx.modx23 ? 'security/user/getlist' : 'getList'
 		,allowBlank: true
 		,baseParams: {
 			action: MODx.modx23 ? 'security/user/getlist' : 'getlist',
