@@ -1,10 +1,11 @@
 Changelog for Tickets.
 
-1.4.2 rc
+1.4.2 rc1
 ==========
 - Changed Gravatar url to https protocol.
 - Fixed work with MODX 2.3.
 - Fixed sort of tickets grid.
+- [#100] Fixed tables resolver.
 
 1.4.1 pl
 ==========

@@ -23,13 +23,11 @@ if ($object->xpdo) {
 			$manager->createObjectContainer('TicketQueue');
 			$manager->createObjectContainer('TicketFile');
 
-			/*
-			$tmp = $modx->getFieldMeta('TicketComment');
+			$tmp = $modx->getFieldMeta('TicketVote');
 			if (isset($tmp['parent']) && !$modx->getCount('TicketVote')) {
 				$manager->removeObjectContainer('TicketVote');
-				$manager->createObjectContainer('TicketVote');
 			}
-			*/
+			$manager->createObjectContainer('TicketVote');
 
 			if ($modx instanceof modX) {
 				$modx->addExtensionPackage('tickets', '[[++core_path]]components/tickets/model/');
