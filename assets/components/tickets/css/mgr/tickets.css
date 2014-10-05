@@ -2,6 +2,10 @@
 	background-image: url(../../img/tickets_section.png) !important;
 }
 
+.icon-ticketssection-mgr:before {
+	content: url(../../img/tickets_section.png) !important;
+}
+
 .tickets-comment-row.comment-unpublished div, .tickets-thread-row.thread-closed div {
 	color: #AAA;
 	font-style: italic !important;

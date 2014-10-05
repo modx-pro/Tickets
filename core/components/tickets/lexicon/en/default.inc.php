@@ -28,6 +28,8 @@ $_lang['tickets_section_settings'] = 'Settings';
 $_lang['tickets_section_tab_main'] = 'Main';
 $_lang['tickets_section_tab_tickets'] = 'Children tickets';
 $_lang['tickets_section_tab_tickets_intro'] = 'All settings on this page apply only to new tickets.';
+$_lang['setting_mgr_tree_icon_ticketssection'] = 'Tickets icon';
+$_lang['setting_mgr_tree_icon_ticketssection_desc'] = 'CSS class that will be used for Tickets';
 
 $_lang['tickets_section_settings_template'] = 'The template of children';
 $_lang['tickets_section_settings_template_desc'] = 'Select the template that will be assigned to all new tickets that are created in this section. If template is not specified, it will be taken from the system settings <b>tickets.default_template</b>.';

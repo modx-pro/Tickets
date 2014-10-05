@@ -185,4 +185,13 @@ foreach ($tmp as $k => $v) {
 	$settings[] = $setting;
 }
 
+$settings['mgr_tree_icon_ticketssection'] = $modx->newObject('modSystemSetting');
+$settings['mgr_tree_icon_ticketssection']->set('key', 'mgr_tree_icon_ticketssection');
+$settings['mgr_tree_icon_ticketssection']->fromArray(array(
+'value' => 'icon-ticketssection-mgr',
+'xtype' => 'textfield',
+'namespace' => PKG_NAME_LOWER,
+));
+
+
 return $settings;

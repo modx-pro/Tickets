@@ -28,6 +28,8 @@ $_lang['tickets_section_settings'] = 'Настройки раздела';
 $_lang['tickets_section_tab_main'] = 'Основные';
 $_lang['tickets_section_tab_tickets'] = 'Дочерние тикеты';
 $_lang['tickets_section_tab_tickets_intro'] = 'Все настройки на этой странице действуют только на новые тикеты.';
+$_lang['setting_mgr_tree_icon_ticketssection'] = 'Иконка тикетов';
+$_lang['setting_mgr_tree_icon_ticketssection_desc'] = 'CSS класс который будет использован для тикетов';
 
 $_lang['tickets_section_settings_template'] = 'Шаблон дочерних документов';
 $_lang['tickets_section_settings_template_desc'] = 'Выберите шаблон, который будет присвоен всем новым тикетам, создаваемым в этой секции. Если шаблон не указан - он будет взят из системной настройки <b>tickets.default_template</b>.';
