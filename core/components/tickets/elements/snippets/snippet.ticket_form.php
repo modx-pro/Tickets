@@ -33,11 +33,13 @@ if (!empty($tid)) {
 
 		$fields = array_keys($modx->getFieldMeta('Ticket'));
 		foreach ($allowedFields as $field) {
-			$value = in_array($field, $fields) ? $ticket->get($field) : $ticket->getTVValue($field);
+			$value = in_array($field, $fields)
+				? $ticket->get($field)
+				: $ticket->getTVValue($field);
 			if (is_string($value)) {
-				$value = html_entity_decode($value, ENT_QUOTES, $charset);
-				$value = str_replace(array('[^','^]','[',']'), array('&#91;^','^&#93;','{{{{{','}}}}}'), $value);
-				$value = htmlentities($value, ENT_QUOTES, $charset);
+				$value = html_entity_decode($value, ENT_NOQUOTES, $charset);
+				$value = str_replace(array('[^','^]','[',']'), array('&#91;^','^&#93;','*{*{*{*{*{*','*}*}*}*}*}*'), $value);
+				$value = htmlentities($value, ENT_NOQUOTES, $charset);
 			}
 			$data[$field] = $value;
 		}
