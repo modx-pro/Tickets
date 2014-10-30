@@ -33,7 +33,7 @@ class Tickets {
 			'cssUrl' => $assetsUrl.'css/',
 			'jsUrl' => $assetsUrl.'js/',
 			'jsPath' => $assetsPath.'js/',
-			'imagesUrl' => $assetsUrl.'images/',
+			'imagesUrl' => $assetsUrl.'img/',
 
 			'connectorUrl' => $connectorUrl,
 			'actionUrl' => $actionUrl,
