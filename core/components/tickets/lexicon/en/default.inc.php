@@ -99,6 +99,7 @@ $_lang['ticket_comment_edit'] = 'edit';
 $_lang['ticket_comment_create'] = 'Write comment';
 $_lang['ticket_comment_preview'] = 'Preview';
 $_lang['ticket_comment_save'] = 'Write';
+$_lang['ticket_comment_close'] = 'Close';
 $_lang['ticket_comment_was_edited'] = 'Comment was edited';
 $_lang['ticket_comment_guest'] = 'Guest';
 $_lang['ticket_comment_deleted'] = 'Deleted';
