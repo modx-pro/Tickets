@@ -678,16 +678,16 @@ class Tickets {
 		}
 
 		$text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
-		$params['input'] =  str_replace(array('[',']'), array('{{{{{','}}}}}'), $text);
+		$params['input'] =  str_replace(array('[',']'), array('*{*{*{*{*{*','*}*}*}*}*}*'), $text);
 
 		$snippet->setCacheable(false);
 		$filtered = $snippet->process($params);
 
 		if ($replaceTags) {
-			$filtered = str_replace(array('{{{{{','}}}}}','`'), array('&#91;','&#93;','&#96;'), $filtered);
+			$filtered = str_replace(array('*{*{*{*{*{*','*}*}*}*}*}*','`'), array('&#91;','&#93;','&#96;'), $filtered);
 		}
 		else {
-			$filtered = str_replace(array('{{{{{','}}}}}'), array('[',']'), $filtered);
+			$filtered = str_replace(array('*{*{*{*{*{*','*}*}*}*}*}*'), array('[',']'), $filtered);
 		}
 
 		return $filtered;
