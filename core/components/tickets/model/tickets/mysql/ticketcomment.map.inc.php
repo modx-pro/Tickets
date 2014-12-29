@@ -292,7 +292,7 @@ $xpdo_meta_map['TicketComment']= array (
     'User' => 
     array (
       'class' => 'modUser',
-      'local' => 'author',
+      'local' => 'createdby',
       'foreign' => 'id',
       'cardinality' => 'one',
       'owner' => 'foreign',
