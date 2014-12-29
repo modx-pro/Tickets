@@ -19,6 +19,7 @@ $xpdo_meta_map['TicketFile']= array (
     'createdby' => 0,
     'url' => NULL,
     'thumb' => NULL,
+    'thumbs' => NULL,
     'deleted' => 0,
     'properties' => NULL,
     'hash' => '',
@@ -121,6 +122,12 @@ $xpdo_meta_map['TicketFile']= array (
       'precision' => '255',
       'phptype' => 'string',
       'null' => false,
+    ),
+    'thumbs' => 
+    array (
+      'dbtype' => 'text',
+      'phptype' => 'json',
+      'null' => true,
     ),
     'deleted' => 
     array (

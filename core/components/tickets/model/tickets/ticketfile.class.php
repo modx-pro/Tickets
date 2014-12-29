@@ -33,28 +33,34 @@ class TicketFile extends xPDOSimpleObject {
 
 
 	public function getSourceProperties() {
-		$tmp = $this->mediaSource->getPropertyList();
-		$properties = array();
-		if (array_key_exists('thumbnail', $tmp) && !empty($tmp['thumbnail'])) {
-			$properties = $this->xpdo->fromJSON($tmp['thumbnail']);
+		$properties = $this->mediaSource->getPropertyList();
+		$thumbnails = array();
+		if (array_key_exists('thumbnail', $properties) && !empty($properties['thumbnail'])) {
+			$thumbnails = $this->xpdo->fromJSON($properties['thumbnail']);
 		}
-
-		if (empty($properties)) {
-			$properties = array(
-				'w' => 120,
-				'h' => 90,
-				'q' => 90,
-				'zc' => 'T',
-				'bg' => '000000',
+		if (empty($thumbnails)) {
+			$thumbnails = array(
+				'thumb' => array(
+					'w' => 120,
+					'h' => 90,
+					'q' => 90,
+					'zc' => 'T',
+					'bg' => '000000',
+				)
 			);
 		}
-		if (empty($properties['f'])) {
-			$properties['f'] = !empty($properties['thumbnailType'])
-				? $tmp['thumbnailType']
-				: 'jpg';
+		if (!is_array(current($thumbnails))) {
+			$thumbnails = array('thumb' => $thumbnails);
+		}
+		foreach ($thumbnails as &$set) {
+			if (empty($thumbnails['f'])) {
+				$set['f'] = !empty($properties['thumbnailType'])
+					? $properties['thumbnailType']
+					: 'jpg';
+			}
 		}
 
-		return $properties;
+		return $thumbnails;
 	}
 
 	/**
@@ -74,8 +80,10 @@ class TicketFile extends xPDOSimpleObject {
 		}
 
 		$properties = $this->getSourceProperties();
-		if ($image = $this->makeThumbnail($properties)) {
-			$this->saveThumbnail($image, $properties['f']);
+		foreach ($properties as $name => $set) {
+			if ($image = $this->makeThumbnail($set)) {
+				$this->saveThumbnail($image, $set['f'], $name);
+			}
 		}
 
 		return true;
@@ -118,18 +126,28 @@ class TicketFile extends xPDOSimpleObject {
 	/**
 	 * @param $raw_image
 	 * @param string $ext
+	 * @param string $name
 	 *
 	 * @return bool
 	 */
-	public function saveThumbnail($raw_image, $ext = 'jpg') {
+	public function saveThumbnail($raw_image, $ext = 'jpg', $name = 'thumb') {
 		$path = $this->get('path');
-
-		$filename = preg_replace('/\.[a-z]+$/i', '', $this->get('file')) . '_thumb.' . $ext;
+		$filename = preg_replace('/\.[a-z]+$/i', '', $this->get('file')) . '_' . $name . '.' . $ext;
 		if ($file = $this->mediaSource->createObject($path, $filename, $raw_image)) {
 			$url = $this->mediaSource->getObjectUrl($path.$filename);
-			$this->set('thumb', $url);
-			$this->save();
-			return true;
+			// Add thumbs
+			$thumbs = $this->get('thumbs');
+			if (!is_array($thumbs)) {
+				$thumbs = array();
+			}
+			$thumbs[$name] = $url;
+			$this->set('thumbs', $thumbs);
+			// Main thumb
+			if ($name == 'thumb') {
+				$this->set('thumb', $url);
+			}
+
+			return $this->save();
 		}
 		return false;
 	}
@@ -147,8 +165,11 @@ class TicketFile extends xPDOSimpleObject {
 					$this->set('path', $new_path);
 					$this->set('url', $this->mediaSource->getObjectUrl($new_path.$file));
 				}
-
-				if ($thumb = $this->get('thumb')) {
+				if (!$thumbs = $this->get('thumbs')) {
+					$thumbs = array('thumb' => $this->get('thumb'));
+				}
+				foreach ($thumbs as $thumb) {
+					if (empty($thumb)) {continue;}
 					$tmp = explode('/', $thumb);
 					$thumb = end($tmp);
 					if ($this->mediaSource->moveObject($old_path.$thumb, $new_path)) {
@@ -169,10 +190,15 @@ class TicketFile extends xPDOSimpleObject {
 	public function remove(array $ancestors= array ()) {
 		if ($this->prepareSource() === true) {
 			if ($this->mediaSource->removeObject($this->get('path').$this->get('file'))) {
-				$thumb = $this->get('thumb');
-				$tmp = explode('/', $thumb);
-				$filename = end($tmp);
-				$this->mediaSource->removeObject($this->path.$filename);
+				if (!$thumbs = $this->get('thumbs')) {
+					$thumbs = array('thumb' => $this->get('thumb'));
+				}
+				foreach ($thumbs as $thumb) {
+					if (empty($thumb)) {continue;}
+					$tmp = explode('/', $thumb);
+					$filename = end($tmp);
+					$this->mediaSource->removeObject($this->path . $filename);
+				}
 			}
 			else {
 				$this->xpdo->log(xPDO::LOG_LEVEL_ERROR,

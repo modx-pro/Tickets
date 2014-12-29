@@ -205,6 +205,7 @@
 
 		<field key="url" dbtype="varchar" precision="255" phptype="string" null="false" />
 		<field key="thumb" dbtype="varchar" precision="255" phptype="string" null="false" />
+		<field key="thumbs" dbtype="text" phptype="json" null="true" />
 
 		<!--<field key="active" dbtype="tinyint" precision="1" phptype="boolean" null="true" default="1" />-->
 		<field key="deleted" dbtype="tinyint" precision="1" phptype="boolean" null="true" default="0" />
