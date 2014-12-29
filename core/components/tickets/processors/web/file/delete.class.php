@@ -21,7 +21,7 @@ class TicketFileDeleteProcessor extends modObjectProcessor {
 		if (!$file = $this->modx->getObject($this->classKey, $id)) {
 			return $this->failure($this->modx->lexicon('ticket_err_file_ns'));
 		}
-		elseif ($file->createdby != $this->modx->user->id) {
+		elseif ($file->createdby != $this->modx->user->id && !$this->modx->user->isMember('Administrator')) {
 			return $this->failure($this->modx->lexicon('ticket_err_file_owner'));
 		}
 

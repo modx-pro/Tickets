@@ -4,6 +4,7 @@ Changelog for Tickets.
 ==========
 - Ability to specify multiple previews for uploaded images in media source.
 - [#110] Fixed aggregate connection to modUser in TicketComment.
+- [#95] Ability to remove user files for members of group "Administrator".
 
 1.4.2 pl1
 ==========
