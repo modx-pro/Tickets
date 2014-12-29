@@ -168,14 +168,18 @@ class TicketFile extends xPDOSimpleObject {
 				if (!$thumbs = $this->get('thumbs')) {
 					$thumbs = array('thumb' => $this->get('thumb'));
 				}
-				foreach ($thumbs as $thumb) {
+				foreach ($thumbs as $key => $thumb) {
 					if (empty($thumb)) {continue;}
 					$tmp = explode('/', $thumb);
 					$thumb = end($tmp);
 					if ($this->mediaSource->moveObject($old_path.$thumb, $new_path)) {
-						$this->set('thumb', $this->mediaSource->getObjectUrl($new_path.$thumb));
+						$thumbs[$key] = $this->mediaSource->getObjectUrl($new_path.$thumb);
+						if ($key == 'thumb') {
+							$this->set('thumb', $this->mediaSource->getObjectUrl($new_path.$thumb));
+						}
 					}
 				}
+				$this->set('thumbs', $thumbs);
 			}
 		}
 
