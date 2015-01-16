@@ -61,6 +61,7 @@ if ($object->xpdo) {
 			$manager->addIndex('TicketQueue', 'email');
 
 			$manager->addField('TicketFile', 'thumbs');
+			$manager->addField('TicketFile', 'rank');
 
 			$modx->setLogLevel($level);
 		break;
