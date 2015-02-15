@@ -11,6 +11,7 @@ $tmp = array(
 			'OnManagerPageInit',
 			'OnWebPagePrerender',
 			'OnPageNotFound',
+			'OnLoadWebDocument',
 			'OnWebPageComplete',
 			'OnEmptyTrash',
 		)

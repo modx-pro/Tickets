@@ -62,6 +62,10 @@ if ($object->xpdo) {
 
 			$manager->addField('TicketFile', 'thumbs');
 
+			$manager->addField('TicketView', 'guest_key');
+			$manager->removeIndex('TicketView', 'PRIMARY');
+			$manager->addIndex('TicketView', 'unique_key');
+
 			$modx->setLogLevel($level);
 		break;
 

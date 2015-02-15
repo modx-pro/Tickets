@@ -165,11 +165,11 @@ if (!empty($rows) && is_array($rows)) {
 		$additional_fields = $pdoFetch->getObject('Ticket', $row['id'], array(
 			'leftJoin' => array(
 				'View' => array('class' => 'TicketView', 'on' => '`Ticket`.`id` = `View`.`parent`'),
-				'LastView' => array('class' => 'TicketView', 'on' => '`Ticket`.`id` = `LastView`.`parent` AND `LastView`.`uid` = '.$modx->user->id),
+				'LastView' => array('class' => 'TicketView', 'on' => '`Ticket`.`id` = `LastView`.`parent` AND `LastView`.`uid` != 0 AND `LastView`.`uid` = '.$modx->user->id),
 				'Thread' => array('class' => 'TicketThread', 'on' => '`Thread`.`resource` = `Ticket`.`id`  AND `Thread`.`deleted` = 0'),
 			),
 			'select' => array(
-				'View' => 'COUNT(DISTINCT `View`.`uid`) as `views`',
+				'View' => 'COUNT(`View`.`parent`) as `views`',
 				'LastView' => '`LastView`.`timestamp` as `new_comments`',
 				'Thread' => '`Thread`.`id` as `thread`',
 			),
@@ -185,16 +185,21 @@ if (!empty($rows) && is_array($rows)) {
 
 		$row['idx'] = $pdoFetch->idx++;
 		// Processing new comments
-		if ($Tickets->authenticated && empty($row['new_comments'])) {
-			$row['new_comments'] = $row['comments'];
+		if ($Tickets->authenticated) {
+			if (!empty($row['new_comments'])) {
+				$row['new_comments'] = $modx->getCount('TicketComment', array(
+					'published' => 1,
+					'thread' => $row['thread'],
+					'createdon:>' => $row['new_comments'],
+					'createdby:!=' => $modx->user->id,
+				));
+			}
+			else {
+				$row['new_comments'] = $row['comments'];
+			}
 		}
-		elseif (!empty($row['new_comments'])) {
-			$row['new_comments'] = $modx->getCount('TicketComment', array(
-				'published' => 1,
-				'thread' => $row['thread'],
-				'createdon:>' => $row['new_comments'],
-				'createdby:!=' => $modx->user->id,
-			));
+		else {
+			$row['new_comments'] = '';
 		}
 
 		// Processing chunk

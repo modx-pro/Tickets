@@ -62,10 +62,13 @@ $_lang['setting_tickets.mail_bcc_desc'] = 'Specify a comma-separated list of <b>
 $_lang['setting_tickets.mail_bcc_level'] = 'Level of admin notifications';
 $_lang['setting_tickets.mail_bcc_level_desc'] = 'There are 3 possible levels of admin notifications: 0 - disabled, 1 - send only messages about new tickets, 2 - tickets + comments. Recommended level is 1.';
 
-$_lang['setting_tickets.section_id_as_alias'] = 'Use id of section as alias';
-$_lang['setting_tickets.section_id_as_alias_desc'] = 'If true, aliases for friendly urls of sections will don`t be generated. Id will be set as alias.';
-$_lang['setting_tickets.ticket_id_as_alias'] = 'Use id of ticket as alias';
-$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'If true, aliases for friendly urls of tickets will don`t be generated. Id will be set as alias.';
+$_lang['setting_tickets.count_guests'] = 'Count views of pages by guests';
+$_lang['setting_tickets.count_guests_desc'] = 'When enabled, component will count views of pages by all users, not just authorized. Keep in mind that with this approach the number of viewings is quite easy to cheat.';
+
+//$_lang['setting_tickets.section_id_as_alias'] = 'Use id of section as alias';
+//$_lang['setting_tickets.section_id_as_alias_desc'] = 'If true, aliases for friendly urls of sections will don`t be generated. Id will be set as alias.';
+//$_lang['setting_tickets.ticket_id_as_alias'] = 'Use id of ticket as alias';
+//$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'If true, aliases for friendly urls of tickets will don`t be generated. Id will be set as alias.';
 
 $_lang['tickets.source_thumbnail_desc'] = 'JSON encoded array of options for generating thumbnail.';
 $_lang['tickets.source_maxUploadWidth_desc'] = 'Maximum width of image for upload. All images, that exceeds this parameter, will be resized to fit..';

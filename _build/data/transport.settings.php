@@ -169,7 +169,13 @@ $tmp = array(
 		'value' => 0,
 		'xtype' => 'modx-combo-source',
 		'area' => 'tickets.main',
-	)
+	),
+
+	'count_guests' => array(
+		'xtype' => 'combo-boolean',
+		'value' => false,
+		'area' => 'tickets.ticket',
+	),
 );
 
 foreach ($tmp as $k => $v) {

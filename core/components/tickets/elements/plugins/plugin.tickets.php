@@ -82,6 +82,31 @@ switch($modx->event->name) {
 		break;
 
 
+	case 'OnLoadWebDocument':
+		$key = 'Tickets_User';
+		if (!$modx->user->isAuthenticated($modx->context->get('key')) && !$modx->getOption('tickets.count_guests', false)) {
+			return;
+		}
+
+		if (empty($_COOKIE[$key])) {
+			if (!empty($_SESSION[$key])) {
+				$guest_key = $_SESSION[$key];
+			}
+			else {
+				$guest_key = $_SESSION[$key] = md5(rand() . time() . rand());
+			}
+			setcookie($key, $guest_key, time() + (86400 * 365), '/');
+		}
+		else {
+			$guest_key = $_COOKIE[$key];
+		}
+
+		if (empty($_SESSION[$key])) {
+			$_SESSION[$key] = $guest_key;
+		}
+		break;
+
+
 	case 'OnWebPageComplete':
 		/** @var Tickets $Tickets */
 		$Tickets = $modx->getService('tickets');

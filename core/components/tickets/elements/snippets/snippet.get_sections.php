@@ -45,7 +45,7 @@ $leftJoin = array(
 $select = array(
 	'TicketsSection' => !empty($includeContent) ?  $modx->getSelectColumns($class, $class) : $modx->getSelectColumns($class, $class, '', array('content'), true)
 	,'Ticket' => 'COUNT(DISTINCT `Ticket`.`id`) as `tickets`'
-	,'View' => 'COUNT(DISTINCT `View`.`parent`, `View`.`uid`) as `views`'
+	,'View' => 'COUNT(`View`.`parent`) as `views`'
 	//,'Vote' => 'SUM(DISTINCT `Vote`.`value`) as `votes`'
 );
 
