@@ -612,7 +612,7 @@ class Tickets {
 			return $this->error($this->modx->lexicon('access_denied'));
 		}
 		elseif ($thread = $this->modx->getObject('TicketThread', array('name' => $name))) {
-			if ($view = $this->modx->getObject('TicketView', array('uid' => $this->modx->user->id, 'parent' => $thread->get('resource')))) {
+            if ($this->authenticated && $view = $this->modx->getObject('TicketView', array('uid' => $this->modx->user->id, 'parent' => $thread->get('resource')))) {
 				$date = $view->get('timestamp');
 				$q = $this->modx->newQuery('TicketComment');
 				$q->leftJoin('modUser', 'User', '`User`.`id` = `TicketComment`.`createdby`');
@@ -766,7 +766,7 @@ class Tickets {
 
 		// Checking comment novelty
 		if (isset($node['resource']) && $this->last_view === 0) {
-			if ($view = $this->modx->getObject('TicketView', array('parent' => $node['resource'], 'uid' => $this->modx->user->id))) {
+            if ($this->authenticated && $view = $this->modx->getObject('TicketView', array('parent' => $node['resource'], 'uid' => $this->modx->user->id))) {
 				$this->last_view = strtotime($view->get('timestamp'));
 			}
 			else {
@@ -1286,16 +1286,30 @@ class Tickets {
 	 *
 	 * @return void
 	 */
-	public function logView($resource) {
-		if ($this->authenticated && !empty($resource)) {
-			$table = $this->modx->getTableName('TicketView');
-			$timestamp = date('Y-m-d H:i:s');
-			$sql = "INSERT INTO {$table} (`uid`,`parent`,`timestamp`) VALUES ({$this->modx->user->id},{$resource},'{$timestamp}') ON DUPLICATE KEY UPDATE `timestamp` = '{$timestamp}'";
-			if ($stmt = $this->modx->prepare($sql)) {
-				$stmt->execute();
-			}
-		}
-	}
+    public function logView($resource) {
+        $key = 'Tickets_User';
+        $table = $this->modx->getTableName('TicketView');
+        $sql = '';
+        if (!$this->authenticated) {
+            if (!$this->modx->getOption('tickets.count_guests', false)) {
+                return;
+            }
+            $guest_key = $_SESSION[$key];
+        }
+        else {
+            if (!empty($_SESSION[$key])) {
+                $sql .= "DELETE FROM {$table} WHERE `uid` = 0 AND `guest_key` = '{$_SESSION[$key]}' AND `parent` = {$resource};";
+            }
+            $guest_key = '';
+        }
+        $timestamp = date('Y-m-d H:i:s');
+        $sql .= "INSERT INTO {$table} (`uid`, `guest_key`, `parent`, `timestamp`)
+			VALUES ({$this->modx->user->id}, '{$guest_key}', {$resource}, '{$timestamp}')
+			ON DUPLICATE KEY UPDATE `timestamp` = '{$timestamp}'";
+        if ($stmt = $this->modx->prepare($sql)) {
+            $stmt->execute();
+        }
+    }
 
 
 	/**

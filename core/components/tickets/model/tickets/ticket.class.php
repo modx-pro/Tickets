@@ -439,7 +439,7 @@ class Ticket extends modResource {
 			$pls['vl'][] = '';
 		}
 
-		$uri = rtrim($section->getAliasPath($section->get('alias')),'/') .'/'. str_replace($pls['pl'], $pls['vl'], $template);
+        $uri = rtrim($section->getAliasPath($section->get('alias')),'/') .'/'. str_replace($pls['pl'], $pls['vl'], $template);
 		$this->set('uri', $uri);
 		$this->set('uri_override', true);
 		return $uri;
