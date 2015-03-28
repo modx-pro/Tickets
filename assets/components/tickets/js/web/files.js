@@ -11,6 +11,7 @@ Tickets.Uploader = new plupload.Uploader({
 	//upload_button: document.getElementById('ticket-files-upload'),
 	container: 'ticket-files-container',
 	filelist: 'ticket-files-list',
+    file_container: 'ticket-file',
 	progress: 'ticket-files-progress',
 	progress_bar: 'ticket-files-progress-bar',
 	progress_count: 'ticket-files-progress-count',
@@ -57,12 +58,37 @@ Tickets.Uploader = new plupload.Uploader({
 					element.removeClass('dragover');
 				});
 			}
+            $('#' + up.settings.filelist).sortable({
+                items: "." + up.settings.file_container,
+                update: function( event, ui ) {
+                    var rank = {};
+                    $('#' + up.settings.filelist).find('.' + up.settings.file_container).each(function(i){
+                        rank[i] = $(this).data('id');
+                    });
+
+                    var $this = $(this);
+                    var $form = $this.parents('form');
+                    var form_key = $form.find('[name="form_key"]').val();
+
+                    $.post(TicketsConfig.actionUrl, {action: 'ticket/file/sort', rank: rank, form_key: form_key}, function(response) {
+                        if (!response.success) {
+                            Tickets.Message.error(response.message);
+                        }
+                    }, 'json');
+                }
+            });
 		},
 
 		PostInit: function(up) {},
 
 		FilesAdded: function(up, files) {
 			this.settings.form.find('[type="submit"]').attr('disabled',true);
+
+            //Set rank
+            var params = up.getOption('multipart_params');
+            params.rank = $('#' + up.settings.filelist).find('.' + up.settings.file_container).length;
+            up.setOption('multipart_params',params);
+
 			up.start();
 		},
 
@@ -86,7 +112,10 @@ Tickets.Uploader = new plupload.Uploader({
 				else {
 					files.append(response.data);
 				}
-
+                //Set new rank
+                var params = up.getOption('multipart_params');
+                params.rank = $('#' + up.settings.filelist).find('.' + up.settings.file_container).length;
+                up.setOption('multipart_params',params);
 			}
 			else {
 				Tickets.Message.error(response.message);

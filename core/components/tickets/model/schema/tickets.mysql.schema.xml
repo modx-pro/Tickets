@@ -201,6 +201,7 @@
 		<field key="file" dbtype="varchar" precision="255" phptype="string" null="false" />
 		<field key="type" dbtype="varchar" precision="50" phptype="string" null="true" />
 		<field key="size" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" default="0" />
+        <field key="rank" dbtype="smallint" precision="3" attributes="unsigned" phptype="integer" null="true" default="0" />
 
 		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" default="0000-00-00 00:00:00" />
 		<field key="createdby" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" default="0" />

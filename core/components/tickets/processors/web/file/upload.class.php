@@ -51,6 +51,8 @@ class TicketFileUploadProcessor extends modObjectProcessor {
 		$tmp = explode('.',$data['name']);
 		$extension = strtolower(end($tmp));
 
+        $rank = $this->getProperty('rank', '0');
+
 		$image_extensions = $allowed_extensions = array();
 		if (!empty($properties['imageExtensions'])) {
 			$image_extensions = array_map('trim', explode(',',strtolower($properties['imageExtensions'])));
@@ -96,6 +98,7 @@ class TicketFileUploadProcessor extends modObjectProcessor {
 			'createdon' => date('Y-m-d H:i:s'),
 			'createdby' => $this->modx->user->id,
 			'deleted' => 0,
+			'rank' => $rank,
 			'hash' => $hash,
 			'size' => $data['size'],
 			'class' => $this->class,

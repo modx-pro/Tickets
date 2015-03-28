@@ -90,15 +90,18 @@ if (!empty($allowFiles)) {
 	if (!empty($tid)) {
 		$q->orCondition(array('parent' => $tid), null, 1);
 	}
-	$q->sortby('createdon', 'ASC');
+	$q->sortby('rank', 'ASC');
 	$collection = $modx->getIterator('TicketFile', $q);
 	$files = '';
+    $rank = 0;
 	/** @var TicketFile $item */
 	foreach ($collection as $item) {
 		if ($item->get('deleted') && !$item->get('parent')) {
 			$item->remove();
 		}
 		else {
+            $item->set('rank', $rank);
+            $rank++;
 			$item = $item->toArray();
 			$item['size'] = round($item['size'] / 1024, 2);
 			$item['new'] = empty($item['parent']);

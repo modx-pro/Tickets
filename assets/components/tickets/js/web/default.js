@@ -13,6 +13,9 @@ var Tickets = {
 		if(!jQuery().sisyphus) {
 			document.write('<script src="'+TicketsConfig.jsUrl+'lib/jquery.sisyphus.min.js"><\/script>');
 		}
+        if(!jQuery().sortable) {
+            document.write('<script src="'+TicketsConfig.jsUrl+'lib/jquery-ui/jquery-ui.min.js"><\/script>');
+        }
 
 		// Forms listeners
 		$(document).on('click', '#comment-preview-placeholder a', function() {
