@@ -37,9 +37,9 @@ if (!empty($tid)) {
 				? $ticket->get($field)
 				: $ticket->getTVValue($field);
 			if (is_string($value)) {
-				$value = html_entity_decode($value, ENT_NOQUOTES, $charset);
+				$value = html_entity_decode($value, ENT_QUOTES, $charset);
 				$value = str_replace(array('[^','^]','[',']'), array('&#91;^','^&#93;','*{*{*{*{*{*','*}*}*}*}*}*'), $value);
-				$value = htmlentities($value, ENT_NOQUOTES, $charset);
+				$value = htmlentities($value, ENT_QUOTES, $charset);
 			}
 			$data[$field] = $value;
 		}

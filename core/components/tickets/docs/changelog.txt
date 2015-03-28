@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.5.1 pl
+==========
+- Improved editing html entities in page titles.
+
 1.5.0 pl
 ==========
 - Ability to specify multiple previews for uploaded images in media source.
