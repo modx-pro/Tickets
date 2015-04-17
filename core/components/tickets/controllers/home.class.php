@@ -4,6 +4,11 @@
  *
  * @package tickets
  */
+
+if (!class_exists('TicketsMainController')) {
+	require_once dirname(dirname(__FILE__)) . '/index.class.php';
+}
+
 class TicketsHomeManagerController extends TicketsMainController {
 	public function process(array $scriptProperties = array()) {}
 

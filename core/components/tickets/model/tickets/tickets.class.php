@@ -951,9 +951,9 @@ class Tickets {
 			$res = $q->stmt->fetch(PDO::FETCH_ASSOC);
 			if (!empty($res)) {
 				$comment = array_merge($comment, array(
-					'resource' => $res['resource']
-					,'pagetitle' => $res['pagetitle']
-					,'author' => $res['uid']
+					'resource' => $res['resource'],
+					'pagetitle' => $res['pagetitle'],
+					'author' => $res['uid'],
 				));
 				$owner_uid = $res['uid'];
 				$subscribers = $this->modx->fromJSON($res['subscribers']);
@@ -963,21 +963,24 @@ class Tickets {
 		$comment = $this->prepareComment($comment);
 		$sent = array();
 
-		if (!empty($comment['published'])) {
-			// It is a reply for a comment
-			if ($comment['parent']) {
-				$q = $this->modx->newQuery('TicketComment');
-				$q->select('TicketComment.createdby as uid, TicketComment.text, TicketComment.email');
-				$q->where(array('TicketComment.id' => $comment['parent']));
-				if ($q->prepare() && $q->stmt->execute()) {
-					if ($res = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
-						$reply_uid = $res['uid'];
-						$reply_email = $res['email'];
-						$comment['parent_text'] = $res['text'];
-					}
+		// It is a reply for a comment
+		if ($comment['parent']) {
+			$q = $this->modx->newQuery('TicketComment');
+			$q->select('TicketComment.createdby as uid, TicketComment.text, TicketComment.email');
+			$q->where(array('TicketComment.id' => $comment['parent']));
+			if ($q->prepare() && $q->stmt->execute()) {
+				if ($res = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
+					$reply_uid = $res['uid'];
+					$reply_email = $res['email'];
+					$comment['parent_text'] = $res['text'];
 				}
 			}
+		}
 
+		$published = !empty($comment['published']) && !array_key_exists('was_published', $comment['properties']);
+		$comment['manager_url'] = trim($this->modx->getOption('site_url'), '/') . MODX_MANAGER_URL . '?a=home&namespace=tickets';
+
+		if ($published) {
 			// We always send replies for comments
 			if (($reply_uid && $reply_uid != $comment['createdby']) || ($reply_email && $reply_email != $comment['email'])) {
 				$this->addQueue(
@@ -988,27 +991,31 @@ class Tickets {
 				);
 				$sent[] = $reply_uid;
 			}
+		}
 
-			// Then we make blind copy to administrators
-			if ($this->modx->getOption('tickets.mail_bcc_level') >= 2 || (empty($comment['published'])) && array_key_exists('was_published', $comment['properties'])) {
-				if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
-					$bcc = array_map('trim', explode(',', $bcc));
-					foreach ($bcc as $uid) {
-						if (in_array($uid, $sent) || $uid == $owner_uid || $uid == $comment['createdby']) {
-							continue;
-						}
-						$this->addQueue(
-							$uid,
-							empty($comment['published'])
-								? $this->modx->lexicon('ticket_comment_email_unpublished_bcc', $comment)
-								: $this->modx->lexicon('ticket_comment_email_bcc', $comment),
-							$this->getChunk($this->config['tplCommentEmailBcc'], $comment, false)
-						);
-						$sent[] = $uid;
+		// Then we make blind copy to administrators
+		if ($this->modx->getOption('tickets.mail_bcc_level') >= 2 || !$published) {
+			if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
+				$bcc = array_map('trim', explode(',', $bcc));
+				foreach ($bcc as $uid) {
+					if ($published && (in_array($uid, $sent) || $uid == $owner_uid || $uid == $comment['createdby'])) {
+						continue;
 					}
+					$this->addQueue(
+						$uid,
+						!$published
+							? $this->modx->lexicon('ticket_comment_email_unpublished_bcc', $comment)
+							: $this->modx->lexicon('ticket_comment_email_bcc', $comment),
+						!$published
+							? $this->getChunk($this->config['tplCommentEmailUnpublished'], $comment, false)
+							: $this->getChunk($this->config['tplCommentEmailBcc'], $comment, false)
+					);
+					$sent[] = $uid;
 				}
 			}
+		}
 
+		if ($published) {
 			if (!empty($subscribers)) {
 				// And send emails to subscribers
 				foreach ($subscribers as $uid) {

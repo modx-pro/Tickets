@@ -72,6 +72,10 @@ $tmp = array(
 		'type' => 'textfield',
 		'value' => 'tpl.Tickets.comment.email.bcc',
 	),
+	'tplCommentEmailUnpublished' => array(
+		'type' => 'textfield',
+		'value' => 'tpl.Tickets.comment.email.unpublished',
+	),
 	'autoPublish' => array(
 		'type' => 'combo-boolean',
 		'value' => true,
