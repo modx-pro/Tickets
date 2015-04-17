@@ -702,12 +702,18 @@ class Tickets {
 	 * @return string String with html entities
 	 */
 	public function sanitizeString($string = '') {
-		$string = htmlentities(trim($string), ENT_QUOTES, "UTF-8");
-		$string = preg_replace('/^@.*\b/', '', $string);
-
-		$arr1 = array('[',']','`');
-		$arr2 = array('&#091;','&#093;','&#096;');
-		return str_replace($arr1, $arr2, $string);
+		if (is_array($string)) {
+			foreach ($string as $key => $value) {
+				$string[$key] = $this->sanitizeString($value);
+		        }
+			return $string;
+        	} else {
+			$string = htmlentities(trim($string), ENT_QUOTES, "UTF-8");
+			$string = preg_replace('/^@.*\b/', '', $string);
+			$arr1 = array('[',']','`');
+			$arr2 = array('&#091;','&#093;','&#096;');
+			return str_replace($arr1, $arr2, $string);
+        	}
 	}
 
 
