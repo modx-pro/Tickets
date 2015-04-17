@@ -8,7 +8,7 @@ class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
 	public $languageTopics = array('tickets');
 	public $beforeRemoveEvent = 'OnBeforeCommentRemove';
 	public $afterRemoveEvent = 'OnCommentRemove';
-	public $permission = 'comment_save';
+	public $permission = 'comment_delete';
 
 	public function initialize() {
 		$parent = parent::initialize();

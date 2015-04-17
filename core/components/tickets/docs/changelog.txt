@@ -2,6 +2,7 @@ Changelog for Tickets.
 
 1.6.0 beta
 ==========
+- [#120] Fixed permissions in comments processors.
 - [#119] Fixed pagination in comments grid.
 - [#118] Tickets::sanitizeString can process simple arrays.
 - [#117] Fixed work with "tvs_below_content".
