@@ -702,6 +702,13 @@ class Tickets {
 	 * @return string String with html entities
 	 */
 	public function sanitizeString($string = '') {
+		if (is_array($string)) {
+			foreach ($string as $key => $value) {
+				$string[$key] = $this->sanitizeString($value);
+			}
+			return $string;
+		}
+
 		$string = htmlentities(trim($string), ENT_QUOTES, "UTF-8");
 		$string = preg_replace('/^@.*\b/', '', $string);
 

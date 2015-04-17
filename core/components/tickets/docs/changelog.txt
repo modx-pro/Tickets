@@ -2,6 +2,7 @@ Changelog for Tickets.
 
 1.6.0 pl
 ==========
+- [#118] Tickets::sanitizeString can process simple arrays.
 - [#117] Fixed work with "tvs_below_content".
 - [#114] [getComments] Fixed showDeleted parameter.
 - [getComments] Fixed displaying deleted comments.
