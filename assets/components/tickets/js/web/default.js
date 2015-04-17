@@ -65,6 +65,16 @@ var Tickets = {
 					$(this).find('input[type="button"].preview').click();
 				}
 			}
+		//Esc закрывает форму
+		}).on('keydown', '#comment-form', function(e) {
+			if (e.keyCode == 27) {
+				Tickets.forms.cancel();
+			}
+		});
+		$(document).on('click', '#comment-form .cancel', function(e) {
+			Tickets.forms.cancel();
+			e.preventDefault();
+			return false;
 		});
 		// Show and hide forms
 		$(document).on('click touchend', '#comment-new-link a', function(e) {
@@ -510,6 +520,12 @@ var Tickets = {
 			}, 'json');
 
 			return false;
+		}
+		// Закрывает форму
+		,cancel: function() {
+			$('#comment-new-link').show();
+			$('.ticket-comment .comment-reply a').show();
+			$('#comment-form').hide();
 		}
 	}
 

@@ -17,6 +17,7 @@
 		<div class="form-actions">
 			<input type="button" class="btn btn-default preview" value="[[%ticket_comment_preview]]" title="Ctrl + Enter" />
 			<input type="submit" class="btn btn-primary submit" value="[[%ticket_comment_save]]" title="Ctrl + Shift + Enter" />
+			<a class="btn btn-default close" href="#" title="Esc">[[%ticket_comment_close]]</a>
 			<span class="time"></span>
 		</div>
 	</form>

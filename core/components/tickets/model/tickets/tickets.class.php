@@ -1002,9 +1002,13 @@ class Tickets {
 			}
 
 			if (!empty($subscribers)) {
-				// And send emails to subscribers
+				// Get admins to send email
+				if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
+					$bcc = array_map('trim', explode(',', $bcc));
+				}
+				// And send emails to subscribers. If admins are in subscribers list, check the system option "tickets.mail_bcc_level"
 				foreach ($subscribers as $uid) {
-					if (in_array($uid, $sent) || $uid == $comment['createdby']) {
+					if (in_array($uid, $sent) || $uid == $comment['createdby'] || ($this->modx->getOption('tickets.mail_bcc_level') < 2 && in_array($uid, $bcc))) {
 						continue;
 					}
 					elseif ($uid == $owner_uid) {

@@ -68,6 +68,7 @@ $_lang['ticket_comment_edit'] = 'змінити';
 $_lang['ticket_comment_create'] = 'Написати коментар';
 $_lang['ticket_comment_preview'] = 'Прогляд';
 $_lang['ticket_comment_save'] = 'Написати';
+$_lang['ticket_comment_close'] = 'Закрити';
 $_lang['ticket_comment_was_edited'] = 'Коментар було змінено';
 $_lang['ticket_comment_guest'] = 'Гість';
 $_lang['ticket_comment_deleted'] = 'Видалено';

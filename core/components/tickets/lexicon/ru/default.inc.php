@@ -99,6 +99,7 @@ $_lang['ticket_comment_edit'] = 'изменить';
 $_lang['ticket_comment_create'] = 'Написать комментарий';
 $_lang['ticket_comment_preview'] = 'Предпросмотр';
 $_lang['ticket_comment_save'] = 'Написать';
+$_lang['ticket_comment_close'] = 'Закрыть';
 $_lang['ticket_comment_was_edited'] = 'Комментарий был изменён';
 $_lang['ticket_comment_guest'] = 'Гость';
 $_lang['ticket_comment_deleted'] = 'Удалён';
