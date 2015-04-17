@@ -35,6 +35,10 @@ $tmp = array(
 		'type' => 'textfield',
 		'value' => 'parent,pagetitle,content',
 	),
+	'bypassFields' => array(
+		'type' => 'textfield',
+		'value' => '',
+	),
 	'redirectUnpublished' => array(
 		'type' => 'numberfield',
 		'value' => 0,

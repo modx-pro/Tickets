@@ -207,12 +207,13 @@ class Tickets {
 		$requiredFields = array_unique(array_merge($requiredFields, array('parent','pagetitle','content')));
 		$allowedFields = array_map('trim', explode(',', $this->config['allowedFields']));
 		$allowedFields = array_unique(array_merge($allowedFields, $requiredFields));
+		$bypassFields = array_map('trim', explode(',', $this->config['bypassFields']));
 
 		$fields = array();
 		foreach ($allowedFields as $field) {
 			if (in_array($field, $allowedFields) && array_key_exists($field, $data)) {
 				$value = $data[$field];
-				if ($field !== 'content') {
+				if ($field !== 'content' && !in_array($field, $bypassFields)) {
 					$value = $this->sanitizeString($value);
 				}
 				$fields[$field] = $value;

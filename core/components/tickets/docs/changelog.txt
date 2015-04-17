@@ -6,6 +6,7 @@ Changelog for Tickets.
 - [#117] Fixed work with "tvs_below_content".
 - [#114] [getComments] Fixed showDeleted parameter.
 - [getComments] Fixed displaying deleted comments.
+- [#81] [TicketForm] Added parameter &bypassFields.
 
 1.5.1 pl
 ==========
