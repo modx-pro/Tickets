@@ -176,7 +176,11 @@ if (!empty($rows) && is_array($rows)) {
 			'groupby' => $class.'.id'
 		));
 		$row = array_merge($row, $additional_fields);
-		$row['date_ago'] = $Tickets->dateFormat($row['createdon']);
+		if ($row['publishedon'] && $row['published']){
+			$row['date_ago'] = $Tickets->dateFormat($row['publishedon']);
+		}else{
+			$row['date_ago'] = $Tickets->dateFormat($row['createdon']);
+		}
 		$row['comments'] = $modx->getCount('TicketComment', array('published' => 1, 'thread' => $row['thread']));
 		$row['stars'] = $modx->getCount('TicketStar', array('id' => $row['id'], 'class' => 'Ticket'));
 		// Special fields for quick placeholders
