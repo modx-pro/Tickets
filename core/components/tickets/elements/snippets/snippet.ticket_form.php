@@ -5,7 +5,10 @@ $Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 if (!$Tickets->authenticated) {
-	return $modx->lexicon('ticket_err_no_auth');
+	if(isset($scriptProperties['tplTicketNoAuthChunk']))
+		return $modx->getChunk($scriptProperties['tplTicketNoAuthChunk'], $scriptProperties);
+	else
+		return $modx->lexicon('ticket_err_no_auth');
 }
 if (empty($tplSectionRow)) {$tplSectionRow = 'tpl.Tickets.sections.row';}
 if (empty($tplFormCreate)) {$tplFormCreate = 'tpl.Tickets.form.create';}
