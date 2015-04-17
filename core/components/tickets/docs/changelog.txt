@@ -1,5 +1,10 @@
 Changelog for Tickets.
 
+1.6.0 pl
+==========
+- [#114] [getComments] Fixed showDeleted parameter.
+- [getComments] Fixed displaying deleted comments.
+
 1.5.1 pl
 ==========
 - Improved editing html entities in page titles.

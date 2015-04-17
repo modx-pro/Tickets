@@ -18,8 +18,8 @@ else {
 }
 $pdoFetch->addTime('pdoTools loaded');
 
-if (empty($tpl)) {$tpl = 'tpl.Tickets.comment.list.row';}
-if (empty($outputSeparator)) {$outputSeparator = "\n";}
+if (!isset($tpl)) {$tpl = 'tpl.Tickets.comment.list.row';}
+if (!isset($outputSeparator)) {$outputSeparator = "\n";}
 
 // Define threads of comments
 if (!empty($parents) || !empty($resources) || !empty($threads)) {

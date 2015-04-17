@@ -7,6 +7,10 @@ $tmp = array(
 		'type' => 'textfield',
 		'value' => 'tpl.Tickets.comment.list.row'
 	),
+	'tplCommentDeleted' => array(
+		'type' => 'textfield',
+		'value' => 'tpl.Tickets.comment.one.deleted'
+	),
 	'depth' => array(
 		'type' => 'numberfield',
 		'value' => 10,
