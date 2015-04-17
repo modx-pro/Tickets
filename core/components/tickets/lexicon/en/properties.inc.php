@@ -47,6 +47,7 @@ $_lang['tickets_prop_tplCommentEmailReply'] = 'Chunk for notification of user wh
 $_lang['tickets_prop_tplCommentEmailSubscription'] = 'Chunk for notification of a subscriber about new comment.';
 $_lang['tickets_prop_tplCommentEmailBcc'] = 'Chunk for bcc notification about new ticket.';
 $_lang['tickets_prop_tplTicketEmailBcc'] = 'Chunk for bcc notification about new comment.';
+$_lang['tickets_prop_tplCommentEmailUnpublished'] = 'Chunk for notification about unpublished new comment.';
 $_lang['tickets_prop_tplWrapper'] = 'Name of a chunk serving as a wrapper template for the output. This does not work with toSeparatePlaceholders.';
 
 $_lang['tickets_prop_commentsDepth'] = 'Integer value indicating maximum depth of comments thread.';
