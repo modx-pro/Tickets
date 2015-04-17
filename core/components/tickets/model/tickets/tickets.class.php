@@ -764,6 +764,9 @@ class Tickets {
 				? ' bad bad' . abs($node['rating'])
 				: ' bad bad5';
 		}
+		else {
+			$node['bad'] = '';
+		}
 
 		// Handling stars
 		if ($this->authenticated && array_key_exists('star', $node)) {

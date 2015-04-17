@@ -5,6 +5,7 @@ Changelog for Tickets.
 - [#118] Tickets::sanitizeString can process simple arrays.
 - [#117] Fixed work with "tvs_below_content".
 - [#114] [getComments] Fixed showDeleted parameter.
+- [#107] Fixed missing tag "bad".
 - [getComments] Fixed displaying deleted comments.
 - [#93] [TicketComments] Fixed notices about unpublished comments to admins.
 - [#81] [TicketForm] Added parameter &bypassFields.
