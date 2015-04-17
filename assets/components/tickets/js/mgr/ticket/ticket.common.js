@@ -59,7 +59,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 
 		if (MODx.config.tvs_below_content == 1) {
 			var tvs = this.getTemplateVariablesPanel(config);
-			tvs.style = 'margin-top: 10px';
+			tvs.style += ';margin-top: 10px;';
 			its.push(tvs);
 		}
 		return its;
