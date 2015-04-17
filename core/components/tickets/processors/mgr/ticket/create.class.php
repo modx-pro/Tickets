@@ -134,7 +134,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 	public function prepareAlias() {
 		$alias = parent::prepareAlias();
 
-		if ($this->modx->context->key != 'mgr') {
+		if (!$this->modx->config['global_duplicate_uri_check']) {
 			foreach ($this->modx->error->errors as $k => $v) {
 				if ($v['id'] == 'alias' || $v['id'] == 'uri') {
 					unset($this->modx->error->errors[$k]);
