@@ -1,5 +1,6 @@
 <?php
-class TicketThreadDeleteProcessor extends modObjectRemoveProcessor  {
+
+class TicketThreadDeleteProcessor extends modObjectRemoveProcessor {
 	public $checkClosePermission = true;
 	public $classKey = 'TicketThread';
 	public $objectType = 'TicketThread';
@@ -7,6 +8,10 @@ class TicketThreadDeleteProcessor extends modObjectRemoveProcessor  {
 	public $beforeCloseEvent = 'OnBeforeTicketThreadClose';
 	public $afterCloseEvent = 'OnTicketThreadClose';
 
+
+	/**
+	 * @return array|string
+	 */
 	public function process() {
 		$canClose = $this->beforeRemove();
 		if ($canClose !== true) {
@@ -28,25 +33,32 @@ class TicketThreadDeleteProcessor extends modObjectRemoveProcessor  {
 		}
 
 		if (!$this->object->save()) {
-			return $this->failure($this->modx->lexicon($this->objectType.'_err_'.$action));
+			return $this->failure($this->modx->lexicon($this->objectType . '_err_' . $action));
 		}
 		$this->afterRemove();
 		$this->fireAfterRemoveEvent();
 		$this->logManagerAction($action);
 		$this->cleanup();
-		return $this->success('',array($this->primaryKeyField => $this->object->get($this->primaryKeyField)));
+		return $this->success('', array($this->primaryKeyField => $this->object->get($this->primaryKeyField)));
 	}
 
 
+	/**
+	 * @param string $action
+	 */
+	public function logManagerAction($action = '') {
+		$this->modx->logManagerAction($this->objectType . '_' . $action, $this->classKey, $this->object->get($this->primaryKeyField));
+	}
+
+
+	/**
+	 *
+	 */
 	public function cleanup() {
 		$this->modx->cacheManager->delete('tickets/latest.comments');
 		$this->modx->cacheManager->delete('tickets/latest.tickets');
 	}
 
-
-	public function logManagerAction($action = '') {
-		$this->modx->logManagerAction($this->objectType.'_'.$action, $this->classKey, $this->object->get($this->primaryKeyField));
-	}
 }
 
 return 'TicketThreadDeleteProcessor';

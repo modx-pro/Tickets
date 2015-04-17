@@ -17,7 +17,7 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 	 */
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 		/* Get all comments by section */
-		if ($section = (integer)$this->getProperty('section')) {
+		if ($section = (int)$this->getProperty('section')) {
 			if ($section = $this->modx->getObject('modResource', $section)) {
 				$parents = $this->modx->getChildIds($section->get('id'), 1, array('context' => $section->get('context_key')));
 				if (empty($parents)) {

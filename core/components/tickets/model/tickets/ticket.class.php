@@ -1,27 +1,27 @@
 <?php
-/**
- * The Ticket CRC for Tickets.
- *
- * @package tickets
- */
 
-require_once MODX_CORE_PATH.'components/tickets/processors/mgr/ticket/create.class.php';
-require_once MODX_CORE_PATH.'components/tickets/processors/mgr/ticket/update.class.php';
+/** @noinspection PhpIncludeInspection */
+require_once MODX_CORE_PATH . 'components/tickets/processors/mgr/ticket/create.class.php';
+/** @noinspection PhpIncludeInspection */
+require_once MODX_CORE_PATH . 'components/tickets/processors/mgr/ticket/update.class.php';
 
 class Ticket extends modResource {
 	public $showInContextMenu = false;
 	public $allowChildrenResources = false;
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @param xPDO $modx
+	 *
+	 * @return string
+	 */
 	public static function getControllerPath(xPDO &$modx) {
-		return $modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'controllers/ticket/';
+		return $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'controllers/ticket/';
 	}
 
 
 	/**
-	 * {@inheritDoc}
-	 * @return mixed
+	 * @return array
 	 */
 	public function getContextMenuText() {
 		$this->xpdo->lexicon->load('tickets:default');
@@ -33,8 +33,7 @@ class Ticket extends modResource {
 
 
 	/**
-	 * {@inheritDoc}
-	 * @return mixed
+	 * @return null|string
 	 */
 	public function getResourceTypeName() {
 		$this->xpdo->lexicon->load('tickets:default');
@@ -43,27 +42,40 @@ class Ticket extends modResource {
 
 
 	/**
-	 * {@inheritDoc}
+	 * @param array|string $k
+	 * @param null $format
+	 * @param null $formatTemplate
+	 *
+	 * @return int|mixed|string
 	 */
-	public function get($k, $format = null, $formatTemplate= null) {
-		$fields = array('comments','views','votes');
+	public function get($k, $format = null, $formatTemplate = null) {
+		$fields = array('comments', 'views', 'votes');
 
 		if (is_array($k)) {
 			$value = parent::get($k, $format, $formatTemplate);
 		}
 		else {
 			switch ($k) {
-				case 'comments': $value = $this->getCommentsCount(); break;
-				case 'views': $value = $this->getViewsCount(); break;
-				case 'date_ago': $value = $this->getDateAgo(); break;
-				case 'stars': $value = $this->getStarsCount(); break;
-				default: $value = parent::get($k, $format, $formatTemplate);
+				case 'comments':
+					$value = $this->getCommentsCount();
+					break;
+				case 'views':
+					$value = $this->getViewsCount();
+					break;
+				case 'date_ago':
+					$value = $this->getDateAgo();
+					break;
+				case 'stars':
+					$value = $this->getStarsCount();
+					break;
+				default:
+					$value = parent::get($k, $format, $formatTemplate);
 			}
 
 			if (isset($this->_fieldMeta[$k]) && $this->_fieldMeta[$k]['phptype'] == 'string') {
 				$properties = $this->getProperties();
 				if (!$properties['process_tags'] && !in_array($k, $fields)) {
-					$value = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $value);
+					$value = str_replace(array('[', ']', '`'), array('&#91;', '&#93;', '&#96;'), $value);
 				}
 			}
 		}
@@ -73,9 +85,14 @@ class Ticket extends modResource {
 
 
 	/**
-	 * {@inheritDoc}
+	 * @param string $keyPrefix
+	 * @param bool $rawValues
+	 * @param bool $excludeLazy
+	 * @param bool $includeRelated
+	 *
+	 * @return array
 	 */
-	public function toArray($keyPrefix= '', $rawValues= false, $excludeLazy= false, $includeRelated= false) {
+	public function toArray($keyPrefix = '', $rawValues = false, $excludeLazy = false, $includeRelated = false) {
 		$array = array_merge(
 			parent::toArray($keyPrefix, $rawValues, $excludeLazy, $includeRelated),
 			$this->getVirtualFields()
@@ -86,7 +103,7 @@ class Ticket extends modResource {
 
 
 	/**
-	 * {@inheritDoc}
+	 * @return string
 	 */
 	public function process() {
 		if ($this->privateweb && !$this->xpdo->hasPermission('ticket_view_private') && $id = $this->getOption('tickets.private_ticket_page')) {
@@ -102,7 +119,9 @@ class Ticket extends modResource {
 
 
 	/**
-	 * {@inheritDoc}
+	 * @param array $options
+	 *
+	 * @return mixed
 	 */
 	public function getContent(array $options = array()) {
 		$content = parent::get('content');
@@ -112,7 +131,7 @@ class Ticket extends modResource {
 			$content = $this->Jevix($content, false);
 		}
 		if (!$properties['process_tags']) {
-			$content = str_replace(array('[',']','`'),array('&#91;','&#93;','&#96;'), $content);
+			$content = str_replace(array('[', ']', '`'), array('&#91;', '&#93;', '&#96;'), $content);
 		}
 		$content = preg_replace('/<cut(.*?)>/i', '<a name="cut"></a>', $content);
 
@@ -122,7 +141,9 @@ class Ticket extends modResource {
 
 	/**
 	 * Clearing cache of this resource
+	 *
 	 * @param string $context Key of context for clearing
+	 *
 	 * @return void
 	 */
 	public function clearCache($context = null) {
@@ -184,8 +205,14 @@ class Ticket extends modResource {
 	}
 
 
-	/** {@inheritDoc} */
-	public function & getMany($alias, $criteria= null, $cacheFlag= true) {
+	/**
+	 * @param string $alias
+	 * @param null $criteria
+	 * @param bool $cacheFlag
+	 *
+	 * @return array
+	 */
+	public function & getMany($alias, $criteria = null, $cacheFlag = true) {
 		if ($alias == 'Files' || $alias == 'Votes') {
 			$criteria = array('class' => $this->class_key);
 		}
@@ -193,9 +220,14 @@ class Ticket extends modResource {
 	}
 
 
-	/** {@inheritDoc} */
-	public function addMany(& $obj, $alias= '') {
-		$added= false;
+	/**
+	 * @param mixed $obj
+	 * @param string $alias
+	 *
+	 * @return bool
+	 */
+	public function addMany(& $obj, $alias = '') {
+		$added = false;
 		if (is_array($obj)) {
 			foreach ($obj as $o) {
 				/** @var xpdoObject $o */
@@ -239,10 +271,18 @@ class Ticket extends modResource {
 		$properties = $this->getProperties();
 
 		$array = array(
-			'rating' => isset($properties['rating']) ? $properties['rating'] : 0,
-			'rating_total' => isset($properties['rating']) ? $properties['rating'] : 0,
-			'rating_plus' => isset($properties['rating_plus']) ? $properties['rating_plus'] : 0,
-			'rating_minus' => isset($properties['rating_minus']) ? $properties['rating_minus'] : 0,
+			'rating' => isset($properties['rating'])
+				? $properties['rating']
+				: 0,
+			'rating_total' => isset($properties['rating'])
+				? $properties['rating']
+				: 0,
+			'rating_plus' => isset($properties['rating_plus'])
+				? $properties['rating_plus']
+				: 0,
+			'rating_minus' => isset($properties['rating_minus'])
+				? $properties['rating_minus']
+				: 0,
 		);
 
 		$authenticated = !empty($this->xpdo->context) && $this->xpdo->user->isAuthenticated($this->xpdo->context->key);
@@ -251,8 +291,12 @@ class Ticket extends modResource {
 		}
 		else {
 			$voted = $this->getVote();
-			if ($voted > 0) {$voted = 1;}
-			elseif ($voted < 0) {$voted = -1;}
+			if ($voted > 0) {
+				$voted = 1;
+			}
+			elseif ($voted < 0) {
+				$voted = -1;
+			}
 			$array['voted'] = $voted;
 		}
 
@@ -278,16 +322,16 @@ class Ticket extends modResource {
 	 * @return integer $count Total count of comment
 	 */
 	public function getCommentsCount() {
-		$q = $this->xpdo->newQuery('TicketThread', array('name' => 'resource-'.$this->id));
-		$q->leftJoin('TicketComment','TicketComment', "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1");
+		$q = $this->xpdo->newQuery('TicketThread', array('name' => 'resource-' . $this->id));
+		$q->leftJoin('TicketComment', 'TicketComment', "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1");
 		$q->select('COUNT(`TicketComment`.`id`) as `comments`');
 
 		$count = 0;
 		$tstart = microtime(true);
 		if ($q->prepare() && $q->stmt->execute()) {
 			$this->xpdo->startTime += microtime(true) - $tstart;
-			$this->xpdo->executedQueries ++;
-			$count = (integer) $q->stmt->fetchColumn();
+			$this->xpdo->executedQueries++;
+			$count = (int)$q->stmt->fetchColumn();
 		}
 		return $count;
 	}
@@ -336,7 +380,7 @@ class Ticket extends modResource {
 		$tstart = microtime(true);
 		if ($q->prepare() && $q->stmt->execute()) {
 			$this->xpdo->startTime += microtime(true) - $tstart;
-			$this->xpdo->executedQueries ++;
+			$this->xpdo->executedQueries++;
 			$vote = $q->stmt->fetchColumn();
 		}
 		return $vote;
@@ -357,7 +401,7 @@ class Ticket extends modResource {
 		$tstart = microtime(true);
 		if ($q->prepare() && $q->stmt->execute()) {
 			$this->xpdo->startTime += microtime(true) - $tstart;
-			$this->xpdo->executedQueries ++;
+			$this->xpdo->executedQueries++;
 			$rows = $q->stmt->fetchAll(PDO::FETCH_COLUMN);
 			foreach ($rows as $value) {
 				$votes['rating'] += $value;
@@ -419,7 +463,7 @@ class Ticket extends modResource {
 		$date = strtotime($date);
 
 		$pls = array(
-			'pl' => array('%y','%m','%d','%id','%alias','%ext'),
+			'pl' => array('%y', '%m', '%d', '%id', '%alias', '%ext'),
 			'vl' => array(
 				date('y', $date),
 				date('m', $date),
@@ -439,7 +483,7 @@ class Ticket extends modResource {
 			$pls['vl'][] = '';
 		}
 
-		$uri = rtrim($section->getAliasPath($section->get('alias')),'/') .'/'. str_replace($pls['pl'], $pls['vl'], $template);
+		$uri = rtrim($section->getAliasPath($section->get('alias')), '/') . '/' . str_replace($pls['pl'], $pls['vl'], $template);
 		$this->set('uri', $uri);
 		$this->set('uri_override', true);
 		return $uri;
@@ -450,6 +494,7 @@ class Ticket extends modResource {
 	 * Get the properties for the specific namespace for the Resource
 	 *
 	 * @param string $namespace
+	 *
 	 * @return array
 	 */
 	public function getProperties($namespace = 'tickets') {
@@ -458,7 +503,7 @@ class Ticket extends modResource {
 		// Convert old settings
 		if (empty($this->reloadOnly)) {
 			$flag = false;
-			$tmp = array('disable_jevix','process_tags','rating');
+			$tmp = array('disable_jevix', 'process_tags', 'rating');
 			if ($old = parent::get('properties')) {
 				foreach ($tmp as $v) {
 					if (array_key_exists($v, $old)) {
@@ -504,7 +549,12 @@ class Ticket extends modResource {
 	}
 
 
-	public function save($cacheFlag= null) {
+	/**
+	 * @param null $cacheFlag
+	 *
+	 * @return bool
+	 */
+	public function save($cacheFlag = null) {
 		if ($this->isDirty('parent') || $this->isDirty('alias') || $this->isDirty('published') || ($this->get('uri_override') && !$this->get('uri'))) {
 			$this->setUri($this->get('alias'));
 		}

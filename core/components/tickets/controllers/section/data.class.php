@@ -1,2 +1,4 @@
 <?php
-class TicketsSectionDataManagerController extends ResourceDataManagerController {}
+
+class TicketsSectionDataManagerController extends ResourceDataManagerController {
+}

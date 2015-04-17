@@ -1,2 +1,4 @@
 <?php
-class TicketView extends xPDOObject {}
+
+class TicketView extends xPDOObject {
+}

@@ -1,8 +1,9 @@
 <?php
 /* @var array $scriptProperties */
 /* @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
+$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
 $Tickets->initialize($modx->context->key);
+
 /** @var pdoFetch $pdoFetch */
 $fqn = $modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
 if ($pdoClass = $modx->loadClass($fqn, '', false, true)) {
@@ -43,22 +44,26 @@ $leftJoin = array(
 
 // Fields to select
 $select = array(
-	'TicketsSection' => !empty($includeContent) ?  $modx->getSelectColumns($class, $class) : $modx->getSelectColumns($class, $class, '', array('content'), true)
-	,'Ticket' => 'COUNT(DISTINCT `Ticket`.`id`) as `tickets`'
-	,'View' => 'COUNT(`View`.`parent`) as `views`'
+	'TicketsSection' => !empty($includeContent)
+		? $modx->getSelectColumns($class, $class)
+		: $modx->getSelectColumns($class, $class, '', array('content'), true),
+	'Ticket' => 'COUNT(DISTINCT `Ticket`.`id`) as `tickets`',
+	'View' => 'COUNT(`View`.`parent`) as `views`',
 	//,'Vote' => 'SUM(DISTINCT `Vote`.`value`) as `votes`'
 );
 
 $default = array(
-	'class' => $class
-	,'where' => $modx->toJSON($where)
-	,'leftJoin' => $modx->toJSON($leftJoin)
-	,'select' => $modx->toJSON($select)
-	,'groupby' => $class.'.id'
-	,'sortby' => 'views'
-	,'sortdir' => 'DESC'
-	,'return' => !empty($returnIds) ? 'ids' : 'data'
-	,'nestedChunkPrefix' => 'tickets_'
+	'class' => $class,
+	'where' => $modx->toJSON($where),
+	'leftJoin' => $modx->toJSON($leftJoin),
+	'select' => $modx->toJSON($select),
+	'groupby' => $class . '.id',
+	'sortby' => 'views',
+	'sortdir' => 'DESC',
+	'return' => !empty($returnIds)
+		? 'ids'
+		: 'data',
+	'nestedChunkPrefix' => 'tickets_',
 );
 
 // Merge all properties and run!
@@ -66,7 +71,9 @@ $pdoFetch->setConfig(array_merge($default, $scriptProperties));
 $pdoFetch->addTime('Query parameters are prepared.');
 $rows = $pdoFetch->run();
 
-if (!empty($returnIds)) {return $rows;}
+if (!empty($returnIds)) {
+	return $rows;
+}
 
 // Processing rows
 $output = array();
@@ -75,7 +82,7 @@ if (!empty($rows) && is_array($rows)) {
 		// Processing main fields
 		$add = $pdoFetch->getObject('TicketThread', array('deleted' => 0), array(
 			'innerJoin' => array(
-				'Ticket' => array('class' => 'Ticket', 'on' => 'Ticket.id = TicketThread.resource AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key="Ticket" AND Ticket.parent='.$row['id']),
+				'Ticket' => array('class' => 'Ticket', 'on' => 'Ticket.id = TicketThread.resource AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key="Ticket" AND Ticket.parent=' . $row['id']),
 			),
 			'select' => array(
 				'TicketThread' => 'SUM(TicketThread.comments) as `comments`'
@@ -91,12 +98,14 @@ if (!empty($rows) && is_array($rows)) {
 		// Processing chunk
 		$tpl = $pdoFetch->defineChunk($row);
 		$output[] = empty($tpl)
-			? '<pre>'.$pdoFetch->getChunk('', $row).'</pre>'
+			? '<pre>' . $pdoFetch->getChunk('', $row) . '</pre>'
 			: $pdoFetch->getChunk($tpl, $row, $pdoFetch->config['fastMode']);
 	}
 }
 $pdoFetch->addTime('Returning processed chunks');
-if (empty($outputSeparator)) {$outputSeparator = "\n";}
+if (empty($outputSeparator)) {
+	$outputSeparator = "\n";
+}
 $output = implode($outputSeparator, $output);
 
 $log = '';

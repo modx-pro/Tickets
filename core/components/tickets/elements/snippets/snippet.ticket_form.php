@@ -1,22 +1,28 @@
 <?php
 /* @var array $scriptProperties */
 /* @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
+$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 if (!$Tickets->authenticated) {
 	return $modx->lexicon('ticket_err_no_auth');
 }
-if (empty($tplSectionRow)) {$tplSectionRow = 'tpl.Tickets.sections.row';}
-if (empty($tplFormCreate)) {$tplFormCreate = 'tpl.Tickets.form.create';}
-if (empty($tplFormUpdate)) {$tplFormUpdate = 'tpl.Tickets.form.update';}
-if (empty($tplFiles)) {$tplFiles = 'tpl.Tickets.form.files';}
-if (empty($tplFile)) {$tplFile = $Tickets->config['tplFile'] = 'tpl.Tickets.form.file';}
-if (empty($tplImage)) {$tplImage = $Tickets->config['tplImage'] = 'tpl.Tickets.form.image';}
-if (empty($source)) {$source = $Tickets->config['source'] = $modx->getOption('tickets.source_default', null, $modx->getOption('default_media_source'));}
 
-$tid = !empty($_REQUEST['tid']) ? (integer) $_REQUEST['tid'] : 0;
-$parent = !empty($_REQUEST['parent']) ? $_REQUEST['parent'] : '';
+$tplSectionRow = $modx->getOption('tplSectionRow', $scriptProperties, 'tpl.Tickets.sections.row');
+$tplFormCreate = $modx->getOption('tplFormCreate', $scriptProperties, 'tpl.Tickets.form.create');
+$tplFormUpdate = $modx->getOption('tplFormUpdate', $scriptProperties, 'tpl.Tickets.form.update');
+$tplFiles = $modx->getOption('tplFiles', $scriptProperties, 'tpl.Tickets.form.files');
+$tplFile = $Tickets->config['tplFile'] = $modx->getOption('tplFile', $scriptProperties, 'tpl.Tickets.form.file', true);
+$tplImage = $Tickets->config['tplImage'] = $modx->getOption('tplImage', $scriptProperties, 'tpl.Tickets.form.image', true);
+if (empty($source)) {
+	$source = $Tickets->config['source'] = $modx->getOption('tickets.source_default', null, $modx->getOption('default_media_source'));
+}
+$tid = !empty($_REQUEST['tid'])
+	? (int)$_REQUEST['tid']
+	: 0;
+$parent = !empty($_REQUEST['parent'])
+	? $_REQUEST['parent']
+	: '';
 $data = array();
 
 // Update of ticket
@@ -24,12 +30,12 @@ if (!empty($tid)) {
 	$tplWrapper = $tplFormUpdate;
 	/* @var Ticket $ticket */
 	if ($ticket = $modx->getObject('Ticket', array('class_key' => 'Ticket', 'id' => $tid))) {
-		if ($ticket->get('createdby') != $modx->user->id  && !$modx->hasPermission('edit_document')) {
+		if ($ticket->get('createdby') != $modx->user->id && !$modx->hasPermission('edit_document')) {
 			return $modx->lexicon('ticket_err_wrong_user');
 		}
 		$charset = $modx->getOption('modx_charset');
 		$allowedFields = array_map('trim', explode(',', $scriptProperties['allowedFields']));
-		$allowedFields = array_unique(array_merge($allowedFields, array('parent','pagetitle','content')));
+		$allowedFields = array_unique(array_merge($allowedFields, array('parent', 'pagetitle', 'content')));
 
 		$fields = array_keys($modx->getFieldMeta('Ticket'));
 		foreach ($allowedFields as $field) {
@@ -38,7 +44,7 @@ if (!empty($tid)) {
 				: $ticket->getTVValue($field);
 			if (is_string($value)) {
 				$value = html_entity_decode($value, ENT_QUOTES, $charset);
-				$value = str_replace(array('[^','^]','[',']'), array('&#91;^','^&#93;','*{*{*{*{*{*','*}*}*}*}*}*'), $value);
+				$value = str_replace(array('[^', '^]', '[', ']'), array('&#91;^', '^&#93;', '*{*{*{*{*{*', '*}*}*}*}*}*'), $value);
 				$value = htmlentities($value, ENT_QUOTES, $charset);
 			}
 			$data[$field] = $value;
@@ -64,10 +70,18 @@ $response = $Tickets->runProcessor('web/section/getlist', array(
 	'parents' => $scriptProperties['parents'],
 	'resources' => $scriptProperties['resources'],
 	'permissions' => $scriptProperties['permissions'],
-	'sortby' => !empty($scriptProperties['sortby']) ? $scriptProperties['sortby'] : 'pagetitle',
-	'sortdir' => !empty($scriptProperties['sortdir']) ? $scriptProperties['sortdir'] : 'asc',
-	'depth' => isset($scriptProperties['depth']) ? $scriptProperties['depth'] : 0,
-	'context' => !empty($scriptProperties['context']) ? $scriptProperties['context'] : $modx->context->key,
+	'sortby' => !empty($scriptProperties['sortby'])
+		? $scriptProperties['sortby']
+		: 'pagetitle',
+	'sortdir' => !empty($scriptProperties['sortdir'])
+		? $scriptProperties['sortdir']
+		: 'asc',
+	'depth' => isset($scriptProperties['depth'])
+		? $scriptProperties['depth']
+		: 0,
+	'context' => !empty($scriptProperties['context'])
+		? $scriptProperties['context']
+		: $modx->context->key,
 	'limit' => 0,
 ));
 $response = $modx->fromJSON($response->getResponse());
@@ -108,35 +122,40 @@ if (!empty($allowFiles)) {
 			$files .= $Tickets->getChunk($tpl, $item);
 		}
 	}
-
 	$data['files'] = $Tickets->getChunk($tplFiles, array(
 		'files' => $files,
 	));
-
 	/** @var modMediaSource $source */
 	if ($source = $modx->getObject('sources.modMediaSource', $source)) {
 		$properties = $source->getPropertyList();
-		$modx->regClientStartupScript(preg_replace("/\t{2}/s", '', '
-		<script type="text/javascript">
-		TicketsConfig.source = {
-			size: '.(!empty($properties['maxUploadSize']) ? $properties['maxUploadSize'] : 3145728).'
-			,height: '.(!empty($properties['maxUploadHeight']) ? $properties['maxUploadHeight'] : 1080).'
-			,width: '.(!empty($properties['maxUploadWidth']) ? $properties['maxUploadWidth'] : 1920).'
-			,extensions: '.(!empty($properties['allowedFileTypes']) ? '"'.$properties['allowedFileTypes'].'"' : "jpg,jpeg,png,gif").'
-		};
-		</script>'), true);
+		$config = array(
+			'size' => !empty($properties['maxUploadSize'])
+				? $properties['maxUploadSize']
+				: 3145728,
+			'height' => !empty($properties['maxUploadHeight'])
+				? $properties['maxUploadHeight']
+				: 1080,
+			'width' => !empty($properties['maxUploadWidth'])
+				? $properties['maxUploadWidth']
+				: 1920,
+			'extensions' => !empty($properties['allowedFileTypes'])
+				? $properties['allowedFileTypes']
+				: 'jpg,jpeg,png,gif'
+		);
+		$modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.source=' . $modx->toJSON($config) . '</script>', true);
 	}
 	$modx->regClientScript($Tickets->config['jsUrl'] . 'web/lib/plupload/plupload.full.min.js');
 	$modx->regClientScript($Tickets->config['jsUrl'] . 'web/files.js');
+
 	$lang = $modx->getOption('cultureKey');
-	if ($lang != 'en' && file_exists($Tickets->config['jsPath'] . 'web/lib/plupload/i18n/'.$lang.'.js')) {
-		$modx->regClientScript($Tickets->config['jsUrl'] . 'web/lib/plupload/i18n/'.$lang.'.js');
+	if ($lang != 'en' && file_exists($Tickets->config['jsPath'] . 'web/lib/plupload/i18n/' . $lang . '.js')) {
+		$modx->regClientScript($Tickets->config['jsUrl'] . 'web/lib/plupload/i18n/' . $lang . '.js');
 	}
 }
 
 $output = $Tickets->getChunk($tplWrapper, $data);
 $key = md5($modx->toJSON($Tickets->config));
 $_SESSION['TicketForm'][$key] = $Tickets->config;
-
 $output = str_ireplace('</form>', "\n<input type=\"hidden\" name=\"form_key\" value=\"{$key}\" class=\"disable-sisyphus\" />\n</form>", $output);
+
 return $output;

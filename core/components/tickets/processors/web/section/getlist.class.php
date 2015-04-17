@@ -1,28 +1,25 @@
 <?php
-/**
- * Get a list of Sections
- *
- * @package tickets
- * @subpackage processors
- */
+
 class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 	public $classKey = 'TicketsSection';
 	public $defaultSortField = 'pagetitle';
-	public $defaultSortDirection  = 'ASC';
+	public $defaultSortDirection = 'ASC';
 	private $current_category = 0;
 
+
 	/**
-	 * {@inheritDoc}
+	 * @param xPDOQuery $c
+	 *
 	 * @return xPDOQuery
 	 */
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 		$context = array_map('trim', explode(',', $this->getProperty('context', $this->modx->context->key)));
 
 		$c->where(array(
-			'class_key' => 'TicketsSection'
-			,'published' => 1
-			,'deleted' => 0
-			,'context_key:IN' => $context
+			'class_key' => 'TicketsSection',
+			'published' => 1,
+			'deleted' => 0,
+			'context_key:IN' => $context,
 		));
 
 		$sortby = $this->getProperty('sortby');
@@ -31,7 +28,7 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 			$c->sortby($sortby, $sortdir);
 		}
 
-		if (!empty($_REQUEST['tid']) && $tmp = $this->modx->getObject('Ticket', (integer) $_REQUEST['tid'])) {
+		if (!empty($_REQUEST['tid']) && $tmp = $this->modx->getObject('Ticket', (int)$_REQUEST['tid'])) {
 			$this->current_category = $tmp->get('parent');
 		}
 
@@ -57,8 +54,10 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 		return $c;
 	}
 
+
 	/**
-	 * {@inheritDoc}
+	 * @param array $data
+	 *
 	 * @return array
 	 */
 	public function iterate(array $data) {
@@ -70,7 +69,7 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 		/** @var xPDOObject|modAccessibleObject $object */
 		foreach ($data['results'] as $object) {
 			if (!empty($permissions)) {
-				if ($object instanceof modAccessibleObject && !$object->checkPolicy('section_add_children') && $object->id != $this->current_category) {
+				if ($object instanceof modAccessibleObject && !$object->checkPolicy('section_add_children') && $object->get('id') != $this->current_category) {
 					continue;
 				}
 			}
@@ -82,16 +81,18 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor {
 			}
 		}
 		$list = $this->afterIteration($list);
+
 		return $list;
 	}
 
+
 	/**
-	 * {@inheritDoc}
+	 * @param xPDOObject $object
+	 *
 	 * @return array
 	 */
 	public function prepareRow(xPDOObject $object) {
-		$array = $object->toArray();
-		return $array;
+		return $object->toArray();
 	}
 
 }

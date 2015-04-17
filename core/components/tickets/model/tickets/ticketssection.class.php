@@ -1,63 +1,77 @@
 <?php
-/**
- * The TicketsSection CRC for Tickets.
- *
- * @package tickets
- */
 
-require_once MODX_CORE_PATH.'components/tickets/processors/mgr/section/create.class.php';
-require_once MODX_CORE_PATH.'components/tickets/processors/mgr/section/update.class.php';
+/** @noinspection PhpIncludeInspection */
+require_once MODX_CORE_PATH . 'components/tickets/processors/mgr/section/create.class.php';
+/** @noinspection PhpIncludeInspection */
+require_once MODX_CORE_PATH . 'components/tickets/processors/mgr/section/update.class.php';
 
 class TicketsSection extends modResource {
 	public $showInContextMenu = true;
 	public $allowChildrenResources = false;
 	private $_oldUri = '';
 
-	function __construct(xPDO & $xpdo) {
-		parent :: __construct($xpdo);
 
-		$this->set('class_key','TicketsSection');
-		$this->set('comments',0);
-		$this->set('views',0);
-		$this->set('votes',0);
-		$this->set('tickets',0);
+	/**
+	 * @param xPDO $xpdo
+	 */
+	function __construct(xPDO & $xpdo) {
+		parent:: __construct($xpdo);
+
+		$this->set('class_key', 'TicketsSection');
+		$this->set('comments', 0);
+		$this->set('views', 0);
+		$this->set('votes', 0);
+		$this->set('tickets', 0);
 	}
 
 
 	/**
-	 * {@inheritDoc}
-	 * @return object|null
+	 * @param xPDO $xpdo
+	 * @param string $className
+	 * @param null $criteria
+	 * @param bool $cacheFlag
+	 *
+	 * @return modAccessibleObject|null|object
 	 */
-	public static function load(xPDO & $xpdo, $className, $criteria= null, $cacheFlag= true){
+	public static function load(xPDO & $xpdo, $className, $criteria = null, $cacheFlag = true) {
 		if (!is_object($criteria)) {
-			$criteria= $xpdo->getCriteria($className, $criteria, $cacheFlag);
+			$criteria = $xpdo->getCriteria($className, $criteria, $cacheFlag);
 		}
 		$xpdo->addDerivativeCriteria($className, $criteria);
+
 		return parent::load($xpdo, $className, $criteria, $cacheFlag);
 	}
 
 
 	/**
-	 * {@inheritDoc}
+	 * @param xPDO $xpdo
+	 * @param string $className
+	 * @param null $criteria
+	 * @param bool $cacheFlag
+	 *
 	 * @return array
 	 */
-	public static function loadCollection(xPDO & $xpdo, $className, $criteria= null, $cacheFlag= true){
+	public static function loadCollection(xPDO & $xpdo, $className, $criteria = null, $cacheFlag = true) {
 		if (!is_object($criteria)) {
-			$criteria= $xpdo->getCriteria($className, $criteria, $cacheFlag);
+			$criteria = $xpdo->getCriteria($className, $criteria, $cacheFlag);
 		}
 		$xpdo->addDerivativeCriteria($className, $criteria);
 		return parent::loadCollection($xpdo, $className, $criteria, $cacheFlag);
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @param xPDO $modx
+	 *
+	 * @return string
+	 */
 	public static function getControllerPath(xPDO &$modx) {
-		return $modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'controllers/section/';
+		return $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'controllers/section/';
 	}
 
 
 	/**
-	 * {@inheritDoc}
+	 * @return array
 	 */
 	public function getContextMenuText() {
 		$this->xpdo->lexicon->load('tickets:default');
@@ -69,7 +83,7 @@ class TicketsSection extends modResource {
 
 
 	/**
-	 * {@inheritDoc}
+	 * @return null|string
 	 */
 	public function getResourceTypeName() {
 		$this->xpdo->lexicon->load('tickets:default');
@@ -77,31 +91,51 @@ class TicketsSection extends modResource {
 	}
 
 
-	/** {@inheritDoc} */
-	public function set($k, $v= null, $vType= '') {
+	/**
+	 * @param string $k
+	 * @param null $v
+	 * @param string $vType
+	 *
+	 * @return bool
+	 */
+	public function set($k, $v = null, $vType = '') {
 		if (is_string($k) && ($k == 'alias' || $k == 'uri')) {
 			$this->_oldUri = parent::get('uri');
 		}
 
-		return parent::set($k,$v,$vType);
+		return parent::set($k, $v, $vType);
 	}
 
 
-	/** {@inheritDoc} */
-	public function get($k, $format = null, $formatTemplate= null) {
-		$fields = array('comments','views','votes','tickets');
-
+	/**
+	 * @param array|string $k
+	 * @param null $format
+	 * @param null $formatTemplate
+	 *
+	 * @return int|mixed
+	 */
+	public function get($k, $format = null, $formatTemplate = null) {
+		$fields = array('comments', 'views', 'votes', 'tickets');
 		if (is_array($k)) {
 			$k = array_merge($k, $fields);
 			$value = parent::get($k, $format, $formatTemplate);
 		}
 		else {
 			switch ($k) {
-				case 'comments': $value = $this->getCommentsCount(); break;
-				case 'views': $value = $this->getViewsCount(); break;
-				case 'votes': $value = $this->getVotesSum(); break;
-				case 'tickets': $value = $this->getTicketsCount(); break;
-				default: $value = parent::get($k, $format, $formatTemplate);
+				case 'comments':
+					$value = $this->getCommentsCount();
+					break;
+				case 'views':
+					$value = $this->getViewsCount();
+					break;
+				case 'votes':
+					$value = $this->getVotesSum();
+					break;
+				case 'tickets':
+					$value = $this->getTicketsCount();
+					break;
+				default:
+					$value = parent::get($k, $format, $formatTemplate);
 			}
 		}
 
@@ -110,9 +144,14 @@ class TicketsSection extends modResource {
 
 
 	/**
-	 * {@inheritDoc}
+	 * @param string $keyPrefix
+	 * @param bool $rawValues
+	 * @param bool $excludeLazy
+	 * @param bool $includeRelated
+	 *
+	 * @return array
 	 */
-	public function toArray($keyPrefix= '', $rawValues= false, $excludeLazy= false, $includeRelated= false) {
+	public function toArray($keyPrefix = '', $rawValues = false, $excludeLazy = false, $includeRelated = false) {
 		$array = array_merge(
 			parent::toArray($keyPrefix, $rawValues, $excludeLazy, $includeRelated),
 			$this->getVirtualFields()
@@ -123,7 +162,9 @@ class TicketsSection extends modResource {
 
 
 	/**
-	 * {@inheritDoc}
+	 * @param array $options
+	 *
+	 * @return string
 	 */
 	public function getContent(array $options = array()) {
 		$content = parent::getContent($options);
@@ -134,7 +175,9 @@ class TicketsSection extends modResource {
 
 	/**
 	 * Clearing cache of this resource
+	 *
 	 * @param string $context Key of context for clearing
+	 *
 	 * @return void
 	 */
 	public function clearCache($context = null) {
@@ -158,9 +201,9 @@ class TicketsSection extends modResource {
 	 */
 	function getVirtualFields() {
 		$array = array(
-			'comments' => $this->getCommentsCount()
-			,'views' => $this->getViewsCount()
-			,'tickets' => $this->getTicketsCount()
+			'comments' => $this->getCommentsCount(),
+			'views' => $this->getViewsCount(),
+			'tickets' => $this->getTicketsCount(),
 		);
 
 		return $array;
@@ -174,12 +217,12 @@ class TicketsSection extends modResource {
 	 */
 	public function getViewsCount() {
 		$q = $this->xpdo->newQuery('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
-		$q->leftJoin('TicketView','TicketView', "`TicketView`.`parent` = `Ticket`.`id`");
+		$q->leftJoin('TicketView', 'TicketView', "`TicketView`.`parent` = `Ticket`.`id`");
 		$q->select('COUNT(`TicketView`.`parent`) as `views`');
 
 		$count = 0;
 		if ($q->prepare() && $q->stmt->execute()) {
-			$count = (integer) $q->stmt->fetch(PDO::FETCH_COLUMN);
+			$count = (int)$q->stmt->fetch(PDO::FETCH_COLUMN);
 		}
 		return $count;
 	}
@@ -192,13 +235,13 @@ class TicketsSection extends modResource {
 	 */
 	public function getCommentsCount() {
 		$q = $this->xpdo->newQuery('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
-		$q->leftJoin('TicketThread','TicketThread', "`TicketThread`.`resource` = `Ticket`.`id`");
-		$q->leftJoin('TicketComment','TicketComment', "`TicketThread`.`id` = `TicketComment`.`thread`");
+		$q->leftJoin('TicketThread', 'TicketThread', "`TicketThread`.`resource` = `Ticket`.`id`");
+		$q->leftJoin('TicketComment', 'TicketComment', "`TicketThread`.`id` = `TicketComment`.`thread`");
 		$q->select('COUNT(`TicketComment`.`id`) as `comments`');
 
 		$count = 0;
 		if ($q->prepare() && $q->stmt->execute()) {
-			$count = (integer) $q->stmt->fetch(PDO::FETCH_COLUMN);
+			$count = (int)$q->stmt->fetch(PDO::FETCH_COLUMN);
 		}
 		return $count;
 	}
@@ -211,12 +254,12 @@ class TicketsSection extends modResource {
 	 */
 	public function getVotesSum() {
 		$q = $this->xpdo->newQuery('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
-		$q->leftJoin('TicketVote','TicketVote', "`TicketVote`.`id` = `Ticket`.`id` AND `TicketVote`.`class` = 'Ticket'");
+		$q->leftJoin('TicketVote', 'TicketVote', "`TicketVote`.`id` = `Ticket`.`id` AND `TicketVote`.`class` = 'Ticket'");
 		$q->select('SUM(`TicketVote`.`value`) as `votes`');
 
 		$sum = 0;
 		if ($q->prepare() && $q->stmt->execute()) {
-			$sum = (integer) $q->stmt->fetch(PDO::FETCH_COLUMN);
+			$sum = (int)$q->stmt->fetch(PDO::FETCH_COLUMN);
 		}
 		return $sum;
 	}
@@ -234,15 +277,18 @@ class TicketsSection extends modResource {
 
 	/**
 	 * @param array $node
+	 *
 	 * @return array
 	 */
 	public function prepareTreeNode(array $node = array()) {
 		$this->xpdo->lexicon->load('tickets:default');
 		$menu = array();
 
-		$idNote = $this->xpdo->hasPermission('tree_show_resource_ids') ? ' <span dir="ltr">('.$this->id.')</span>' : '';
+		$idNote = $this->xpdo->hasPermission('tree_show_resource_ids')
+			? ' <span dir="ltr">(' . $this->id . ')</span>'
+			: '';
 		$menu[] = array(
-			'text' => '<b>'.$this->get('pagetitle').'</b>'.$idNote,
+			'text' => '<b>' . $this->get('pagetitle') . '</b>' . $idNote,
 			'handler' => 'Ext.emptyFn',
 		);
 		$menu[] = '-';
@@ -264,7 +310,7 @@ class TicketsSection extends modResource {
 		*/
 		$menu[] = array(
 			'text' => $this->xpdo->lexicon('ticket_create_here')
-			,'handler' => 'function(itm,e) { var tree = Ext.getCmp("modx-resource-tree"); itm.classKey = "Ticket"; tree.createResourceHere(itm,e); }'
+		, 'handler' => 'function(itm,e) { var tree = Ext.getCmp("modx-resource-tree"); itm.classKey = "Ticket"; tree.createResourceHere(itm,e); }'
 		);
 
 		$menu[] = '-';
@@ -278,7 +324,8 @@ class TicketsSection extends modResource {
 				'text' => $this->xpdo->lexicon('tickets_section_unpublish'),
 				'handler' => 'this.unpublishDocument',
 			);
-		} else {
+		}
+		else {
 			$menu[] = array(
 				'text' => $this->xpdo->lexicon('tickets_section_publish'),
 				'handler' => 'this.publishDocument',
@@ -289,7 +336,8 @@ class TicketsSection extends modResource {
 				'text' => $this->xpdo->lexicon('tickets_section_undelete'),
 				'handler' => 'this.undeleteDocument',
 			);
-		} else {
+		}
+		else {
 			$menu[] = array(
 				'text' => $this->xpdo->lexicon('tickets_section_delete'),
 				'handler' => 'this.deleteDocument',
@@ -312,6 +360,7 @@ class TicketsSection extends modResource {
 	 * Get the properties for the specific namespace for the Resource
 	 *
 	 * @param string $namespace
+	 *
 	 * @return array
 	 */
 	public function getProperties($namespace = 'tickets') {
@@ -327,7 +376,7 @@ class TicketsSection extends modResource {
 			);
 
 			// Old default values
-			if (array_key_exists('tickets.ticket_id_as_alias',$this->xpdo->config)) {
+			if (array_key_exists('tickets.ticket_id_as_alias', $this->xpdo->config)) {
 				$default_properties['uri'] = $this->xpdo->context->getOption('tickets.ticket_id_as_alias')
 					? '%id'
 					: '%alias';
@@ -347,7 +396,7 @@ class TicketsSection extends modResource {
 					$properties[$key] = false;
 				}
 				elseif (is_numeric($value) && ($key == 'disable_jevix' || $key == 'process_tags')) {
-					$properties[$key] = (boolean) intval($value);
+					$properties[$key] = (bool)intval($value);
 				}
 			}
 		}
@@ -356,7 +405,11 @@ class TicketsSection extends modResource {
 	}
 
 
-	/** {@InheritDoc} */
+	/**
+	 * @param null $cacheFlag
+	 *
+	 * @return bool
+	 */
 	public function save($cacheFlag = null) {
 		$this->set('isfolder', 1);
 
@@ -387,8 +440,15 @@ class TicketsSection extends modResource {
 	}
 
 
+	/**
+	 * @param int $uid
+	 *
+	 * @return bool
+	 */
 	public function Subscribe($uid = 0) {
-		if (!$uid) {$uid = $this->xpdo->user->id;}
+		if (!$uid) {
+			$uid = $this->xpdo->user->id;
+		}
 
 		$subscribers = $this->getProperties('subscribers');
 		if (empty($subscribers) || !is_array($subscribers)) {
@@ -409,8 +469,15 @@ class TicketsSection extends modResource {
 	}
 
 
+	/**
+	 * @param int $uid
+	 *
+	 * @return bool
+	 */
 	public function isSubscribed($uid = 0) {
-		if (!$uid) {$uid = $this->xpdo->user->id;}
+		if (!$uid) {
+			$uid = $this->xpdo->user->id;
+		}
 
 		$properties = array();
 		$q = $this->xpdo->newQuery('TicketsSection', array('id' => $this->id));

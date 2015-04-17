@@ -1,4 +1,5 @@
 <?php
+
 class TicketGetListProcessor extends modObjectGetListProcessor {
 	public $objectType = 'Ticket';
 	public $classKey = 'Ticket';
@@ -6,6 +7,12 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 	public $defaultSortField = 'createdon';
 	public $defaultSortDirection = 'DESC';
 
+
+	/**
+	 * @param xPDOQuery $c
+	 *
+	 * @return xPDOQuery
+	 */
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 		if ($parents = $this->getProperty('parents')) {
 			if (!is_array($parents)) {
@@ -15,12 +22,13 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 		}
 
 		$c->where(array(
-			'class_key' => 'Ticket'
-			,'published' => 1
-			,'deleted' => 0
+			'class_key' => 'Ticket',
+			'published' => 1,
+			'deleted' => 0,
 		));
 		return $c;
 	}
 
 }
+
 return 'TicketGetListProcessor';

@@ -1,8 +1,12 @@
 <?php
 /** @var array $scriptProperties */
-if (empty($class)) {$class = 'Ticket';}
+if (empty($class)) {
+	$class = 'Ticket';
+}
 /** @var integer $user */
-if (empty($user)) {$user = $modx->user->id;}
+if (empty($user)) {
+	$user = $modx->user->get('id');
+}
 unset($scriptProperties['user']);
 
 $ids = array();
@@ -11,7 +15,7 @@ $q->select('id');
 $tstart = microtime(true);
 if ($q->prepare() && $q->stmt->execute()) {
 	$modx->queryTime = microtime(true) - $tstart;
-	$modx->executedQueries ++;
+	$modx->executedQueries++;
 
 	$ids = $q->stmt->fetchAll(PDO::FETCH_COLUMN);
 }
@@ -20,7 +24,7 @@ if (empty($ids)) {
 	return false;
 }
 
-$where = array($class.'.id:IN' => $ids);
+$where = array($class . '.id:IN' => $ids);
 if (!empty($scriptProperties['where'])) {
 	$tmp = $modx->fromJSON($scriptProperties['where']);
 	if (is_array($tmp)) {
@@ -28,8 +32,12 @@ if (!empty($scriptProperties['where'])) {
 	}
 }
 $scriptProperties['where'] = $modx->toJSON($where);
-if (empty($parents)) {$scriptProperties['parents'] = 0;}
-if (empty($tpl)) {unset($scriptProperties['tpl']);}
+if (empty($parents)) {
+	$scriptProperties['parents'] = 0;
+}
+if (empty($tpl)) {
+	unset($scriptProperties['tpl']);
+}
 
 return $class == 'Ticket'
 	? $modx->runSnippet('getTickets', $scriptProperties)

@@ -1,2 +1,4 @@
 <?php
-class TicketVote extends xPDOObject {}
+
+class TicketVote extends xPDOObject {
+}

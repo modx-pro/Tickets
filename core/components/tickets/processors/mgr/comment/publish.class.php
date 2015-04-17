@@ -1,5 +1,6 @@
 <?php
-class TicketCommentPublishProcessor extends modObjectUpdateProcessor  {
+
+class TicketCommentPublishProcessor extends modObjectUpdateProcessor {
 	/** @var TicketComment $object */
 	public $object;
 	public $objectType = 'TicketComment';
@@ -11,6 +12,9 @@ class TicketCommentPublishProcessor extends modObjectUpdateProcessor  {
 	protected $_sendEmails = false;
 
 
+	/**
+	 * @return bool
+	 */
 	public function beforeSave() {
 		if ($this->object->get('published')) {
 			$this->object->set('published', 0);
@@ -29,6 +33,9 @@ class TicketCommentPublishProcessor extends modObjectUpdateProcessor  {
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function afterSave() {
 		$this->object->clearTicketCache();
 		/* @var TicketThread $thread */
@@ -47,12 +54,9 @@ class TicketCommentPublishProcessor extends modObjectUpdateProcessor  {
 	}
 
 
-	public function logManagerAction($action = '') {
-		$action = $this->object->get('published') ? 'publish' : 'unpublish';
-		$this->modx->logManagerAction($this->objectType.'_'.$action, $this->classKey, $this->object->get($this->primaryKeyField));
-	}
-
-
+	/**
+	 *
+	 */
 	protected function sendCommentMails() {
 		/** @var TicketThread $thread */
 		if ($thread = $this->object->getOne('Thread')) {
@@ -62,6 +66,17 @@ class TicketCommentPublishProcessor extends modObjectUpdateProcessor  {
 				$Tickets->sendCommentMails($this->object->toArray());
 			}
 		}
+	}
+
+
+	/**
+	 * @param string $action
+	 */
+	public function logManagerAction($action = '') {
+		$action = $this->object->get('published')
+			? 'publish'
+			: 'unpublish';
+		$this->modx->logManagerAction($this->objectType . '_' . $action, $this->classKey, $this->object->get($this->primaryKeyField));
 	}
 
 }

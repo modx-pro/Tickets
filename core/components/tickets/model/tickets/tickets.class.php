@@ -1,9 +1,5 @@
 <?php
-/**
- * The base class for Tickets.
- *
- * @package tickets
- */
+
 class Tickets {
 	/* @var modX $modx */
 	public $modx;
@@ -19,32 +15,32 @@ class Tickets {
 	 * @param modX $modx
 	 * @param array $config
 	 */
-	function __construct(modX &$modx,array $config = array()) {
+	function __construct(modX &$modx, array $config = array()) {
 		$this->modx =& $modx;
 
-		$corePath = $this->modx->getOption('tickets.core_path',$config,$this->modx->getOption('core_path').'components/tickets/');
-		$assetsPath = $this->modx->getOption('tickets.assets_path', $config, $this->modx->getOption('assets_path').'components/tickets/');
-		$assetsUrl = $this->modx->getOption('tickets.assets_url', $config, $this->modx->getOption('assets_url').'components/tickets/');
-		$actionUrl = $this->modx->getOption('tickets.action_url', $config, $assetsUrl.'action.php');
-		$connectorUrl = $assetsUrl.'connector.php';
+		$corePath = $this->modx->getOption('tickets.core_path', $config, $this->modx->getOption('core_path') . 'components/tickets/');
+		$assetsPath = $this->modx->getOption('tickets.assets_path', $config, $this->modx->getOption('assets_path') . 'components/tickets/');
+		$assetsUrl = $this->modx->getOption('tickets.assets_url', $config, $this->modx->getOption('assets_url') . 'components/tickets/');
+		$actionUrl = $this->modx->getOption('tickets.action_url', $config, $assetsUrl . 'action.php');
+		$connectorUrl = $assetsUrl . 'connector.php';
 
 		$this->config = array_merge(array(
 			'assetsUrl' => $assetsUrl,
-			'cssUrl' => $assetsUrl.'css/',
-			'jsUrl' => $assetsUrl.'js/',
-			'jsPath' => $assetsPath.'js/',
-			'imagesUrl' => $assetsUrl.'img/',
+			'cssUrl' => $assetsUrl . 'css/',
+			'jsUrl' => $assetsUrl . 'js/',
+			'jsPath' => $assetsPath . 'js/',
+			'imagesUrl' => $assetsUrl . 'img/',
 
 			'connectorUrl' => $connectorUrl,
 			'actionUrl' => $actionUrl,
 
 			'corePath' => $corePath,
-			'modelPath' => $corePath.'model/',
-			'chunksPath' => $corePath.'elements/chunks/',
-			'templatesPath' => $corePath.'elements/templates/',
+			'modelPath' => $corePath . 'model/',
+			'chunksPath' => $corePath . 'elements/chunks/',
+			'templatesPath' => $corePath . 'elements/templates/',
 			'chunkSuffix' => '.chunk.tpl',
-			'snippetsPath' => $corePath.'elements/snippets/',
-			'processorsPath' => $corePath.'processors/',
+			'snippetsPath' => $corePath . 'elements/snippets/',
+			'processorsPath' => $corePath . 'processors/',
 
 			'fastMode' => false,
 			'dateFormat' => 'd F Y, H:i',
@@ -67,9 +63,9 @@ class Tickets {
 			'allowGuestEdit' => false,
 			'allowGuestEmails' => false,
 			'enableCaptcha' => false,
-		),$config);
+		), $config);
 
-		$this->modx->addPackage('tickets',$this->config['modelPath']);
+		$this->modx->addPackage('tickets', $this->config['modelPath']);
 		$this->modx->lexicon->load('tickets:default');
 
 		if ($name = $this->config['snippetPrepareComment']) {
@@ -92,7 +88,9 @@ class Tickets {
 	 */
 	public function initialize($ctx = 'web', $scriptProperties = array()) {
 		$this->config = array_merge($this->config, $scriptProperties);
-		if (!$this->pdoTools) {$this->loadPdoTools();}
+		if (!$this->pdoTools) {
+			$this->loadPdoTools();
+		}
 		$this->pdoTools->setConfig($this->config);
 
 		$this->config['ctx'] = $ctx;
@@ -100,56 +98,41 @@ class Tickets {
 			return true;
 		}
 		switch ($ctx) {
-			case 'mgr': break;
+			case 'mgr':
+				break;
 			default:
 				if (!defined('MODX_API_MODE') || !MODX_API_MODE) {
 					$config = $this->makePlaceholders($this->config);
-
-					if ($css = $this->modx->getOption('tickets.frontend_css')) {
-						$this->modx->regClientCSS(str_replace($config['pl'], $config['vl'], $css));
+					if ($css = trim($this->modx->getOption('tickets.frontend_css'))) {
+						if (!empty($css) && preg_match('/\.css/i', $css)) {
+							$this->modx->regClientCSS(str_replace($config['pl'], $config['vl'], $css));
+						}
 					}
-
-					$enable_editor = (integer) $this->modx->getOption('tickets.enable_editor');
-					$editorConfig = 'enable_editor: '.$enable_editor.'';
-					if ($enable_editor) {
-						$this->modx->regClientScript($this->config['jsUrl'].'web/editor/jquery.markitup.js');
-						$this->modx->regClientCSS($this->config['jsUrl'].'web/editor/editor.css');
-						$editorConfig .= '
-							,editor: {
-								ticket: '.$this->modx->getOption('tickets.editor_config.ticket').'
-								,comment: '.$this->modx->getOption('tickets.editor_config.comment').'
-							}';
-					}
-					$config_js = preg_replace(array('/^\n/', '/\t{6}/'), '', '
-						TicketsConfig = {
-							ctx: "'.$ctx.'"
-							,jsUrl: "'.$this->config['jsUrl'].'web/"
-							,cssUrl: "'.$this->config['cssUrl'].'web/"
-							,actionUrl: "'.$this->config['actionUrl'].'"
-							,close_all_message: "'.$this->modx->lexicon('tickets_message_close_all').'"
-							,tpanel: '.(integer) $this->authenticated.'
-							,'.$editorConfig.'
-						};
-					');
-					$this->modx->regClientStartupScript("<script type=\"text/javascript\">\n".$config_js."\n</script>", true);
-
 					if ($js = trim($this->modx->getOption('tickets.frontend_js'))) {
 						if (!empty($js) && preg_match('/\.js/i', $js)) {
-							$this->modx->regClientScript(preg_replace(array('/^\n/', '/\t{7}/'), '', '
-							<script type="text/javascript">
-								if(typeof jQuery == "undefined") {
-									document.write("<script src=\"'.$this->config['jsUrl'].'web/lib/jquery.min.js\" type=\"text/javascript\"><\/script>");
-								}
-							</script>
-							'), true);
 							$this->modx->regClientScript(str_replace($config['pl'], $config['vl'], $js));
 						}
 					}
+					$config_js = array(
+						'ctx' => $ctx,
+						'jsUrl' => $this->config['jsUrl'] . 'web/',
+						'cssUrl' => $this->config['cssUrl'] . 'web/',
+						'actionUrl' => $this->config['actionUrl'],
+						'close_all_message' => $this->modx->lexicon('tickets_message_close_all'),
+						'tpanel' => (int)$this->authenticated,
+						'enable_editor' => (int)$this->modx->getOption('tickets.enable_editor'),
+					);
+					$this->modx->regClientStartupScript('<script type="text/javascript">TicketsConfig=' . $this->modx->toJSON($config_js) . '</script>', true);
+					if ($config_js['enable_editor']) {
+						$this->modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.editor={ticket: ' . $this->modx->getOption('tickets.editor_config.ticket') . ',comment: ' . $this->modx->getOption('tickets.editor_config.comment') . '}</script>', true);
+						$this->modx->regClientScript($this->config['jsUrl'] . 'web/editor/jquery.markitup.js');
+						$this->modx->regClientCSS($this->config['jsUrl'] . 'web/editor/editor.css');
+					}
 				}
-
 				$this->initialized[$ctx] = true;
 				break;
 		}
+
 		return true;
 	}
 
@@ -158,12 +141,16 @@ class Tickets {
 	 * Shorthand for the call of processor
 	 *
 	 * @access public
+	 *
 	 * @param string $action Path to processor
 	 * @param array $data Data to be transmitted to the processor
+	 *
 	 * @return mixed The result of the processor
 	 */
 	public function runProcessor($action = '', $data = array()) {
-		if (empty($action)) {return false;}
+		if (empty($action)) {
+			return false;
+		}
 		return $this->modx->runProcessor($action, $data, array('processors_path' => $this->config['processorsPath']));
 	}
 
@@ -204,7 +191,7 @@ class Tickets {
 	 */
 	public function saveTicket($data = array()) {
 		$requiredFields = array_map('trim', explode(',', $this->config['requiredFields']));
-		$requiredFields = array_unique(array_merge($requiredFields, array('parent','pagetitle','content')));
+		$requiredFields = array_unique(array_merge($requiredFields, array('parent', 'pagetitle', 'content')));
 		$allowedFields = array_map('trim', explode(',', $this->config['allowedFields']));
 		$allowedFields = array_unique(array_merge($allowedFields, $requiredFields));
 		$bypassFields = array_map('trim', explode(',', $this->config['bypassFields']));
@@ -221,9 +208,14 @@ class Tickets {
 		}
 
 		switch ($data['action']) {
-			case 'ticket/save': $fields['published'] = null; break;
-			case 'ticket/draft': $fields['published'] = false; break;
-			default: $fields['published'] = true;
+			case 'ticket/save':
+				$fields['published'] = null;
+				break;
+			case 'ticket/draft':
+				$fields['published'] = false;
+				break;
+			default:
+				$fields['published'] = true;
 		}
 
 		$fields['requiredFields'] = $requiredFields;
@@ -232,7 +224,7 @@ class Tickets {
 			$fields['sections'] = $this->config['sections'];
 		}
 		if (!empty($data['tid'])) {
-			$fields['id'] = (integer) $data['tid'];
+			$fields['id'] = (int)$data['tid'];
 			if ($ticket = $this->modx->getObject('Ticket', array('class_key' => 'Ticket', 'id' => $fields['id']))) {
 				$fields['context_key'] = $ticket->get('context_key');
 				$fields['alias'] = $ticket->get('alias');
@@ -264,11 +256,11 @@ class Tickets {
 				break;
 			case 'ticket/draft':
 				if (!empty($this->config['redirectUnpublished'])) {
-					$url = $this->modx->makeUrl((int) $this->config['redirectUnpublished'],'','','full');
+					$url = $this->modx->makeUrl((int)$this->config['redirectUnpublished'], '', '', 'full');
 				}
 				else {
 					$url = $_SERVER['HTTP_REFERER'];
-					if (!preg_match('/\b'.$id.'\b/', $url)) {
+					if (!preg_match('/\b' . $id . '\b/', $url)) {
 						$url .= strpos($url, '?') !== false
 							? '&tid=' . $id
 							: '?tid=' . $id;
@@ -280,7 +272,7 @@ class Tickets {
 				$results['redirect'] = $url;
 				break;
 			default:
-				$url = $this->modx->makeUrl($id,'','','full');
+				$url = $this->modx->makeUrl($id, '', '', 'full');
 				if (empty($url)) {
 					$url = $this->modx->getOption('site_url');
 				}
@@ -289,7 +281,6 @@ class Tickets {
 
 		return $this->success($message, $results);
 	}
-
 
 
 	/**
@@ -302,7 +293,6 @@ class Tickets {
 	 */
 	public function voteTicket($id, $value = 1) {
 		$data = array('id' => $id, 'value' => $value);
-
 		/** @var modProcessorResponse $response */
 		if (!empty($id)) {
 			$response = $this->runProcessor('web/ticket/vote', $data);
@@ -316,7 +306,7 @@ class Tickets {
 					. $this->modx->lexicon('ticket_rating_and')
 					. " ↓{$data['rating_minus']}";
 				if ($data['rating'] > 0) {
-					$data['rating'] = '+'.$data['rating'];
+					$data['rating'] = '+' . $data['rating'];
 					$data['status'] = 1;
 				}
 				elseif ($data['rating'] < 0) {
@@ -342,7 +332,6 @@ class Tickets {
 	 */
 	public function starTicket($id) {
 		$data = array('id' => $id);
-
 		/** @var modProcessorResponse $response */
 		if (!empty($id)) {
 			$response = $this->runProcessor('web/ticket/star', $data);
@@ -363,6 +352,7 @@ class Tickets {
 	 * Returns sanitized preview of Comment
 	 *
 	 * @access public
+	 *
 	 * @param array $data section, pagetitle, comment, etc
 	 *
 	 * @return array
@@ -398,12 +388,16 @@ class Tickets {
 			$comment = array_merge($profile->toArray(), $user->toArray(), $comment);
 		}
 		else {
-			$comment['name'] = !empty($data['name']) ? $data['name'] : '';
-			$comment['email'] = !empty($data['email']) ? $data['email'] : '';
+			$comment['name'] = !empty($data['name'])
+				? $data['name']
+				: '';
+			$comment['email'] = !empty($data['email'])
+				? $data['email']
+				: '';
 		}
-
 		$preview = $this->templateNode($comment, $this->config['tplCommentGuest']);
 		$preview = preg_replace('/\[\[.*?\]\]/', '', $preview);
+
 		return $this->success('', array('preview' => $preview));
 	}
 
@@ -424,7 +418,6 @@ class Tickets {
 		$data['published'] = (!$this->authenticated && empty($this->config['autoPublishGuest'])) || ($this->authenticated && empty($this->config['autoPublish']))
 			? false
 			: true;
-
 		if ($this->authenticated) {
 			$data['name'] = $this->modx->user->Profile->fullname;
 			$data['email'] = $this->modx->user->Profile->email;
@@ -436,8 +429,12 @@ class Tickets {
 					return $this->error($this->modx->lexicon('ticket_comment_err_captcha'), array('captcha' => $captcha));
 				}
 			}
-			$data['name'] = !empty($data['name']) ? $data['name'] : '';
-			$data['email'] = !empty($data['email']) ? $data['email'] : '';
+			$data['name'] = !empty($data['name'])
+				? $data['name']
+				: '';
+			$data['email'] = !empty($data['email'])
+				? $data['email']
+				: '';
 		}
 
 		if (!empty($data['id'])) {
@@ -510,7 +507,7 @@ class Tickets {
 					. $this->modx->lexicon('ticket_rating_and')
 					. " ↓{$data['rating_minus']}";
 				if ($data['rating'] > 0) {
-					$data['rating'] = '+'.$data['rating'];
+					$data['rating'] = '+' . $data['rating'];
 					$data['status'] = 1;
 				}
 				elseif ($data['rating'] < 0) {
@@ -536,7 +533,6 @@ class Tickets {
 	 */
 	public function starComment($id) {
 		$data = array('id' => $id);
-
 		/** @var modProcessorResponse $response */
 		if (!empty($id)) {
 			$response = $this->runProcessor('web/comment/star', $data);
@@ -619,13 +615,13 @@ class Tickets {
 				$q->leftJoin('modUser', 'User', '`User`.`id` = `TicketComment`.`createdby`');
 				$q->leftJoin('modUserProfile', 'Profile', '`Profile`.`internalKey` = `TicketComment`.`createdby`');
 				$q->where(array(
-					'`TicketComment`.`published`' => 1
-					,'`TicketComment`.`thread`' => $thread->id
-					,'`TicketComment`.`createdby`:!=' => $this->modx->user->id
+					'`TicketComment`.`published`' => 1,
+					'`TicketComment`.`thread`' => $thread->id,
+					'`TicketComment`.`createdby`:!=' => $this->modx->user->id
 				));
 				$q->andCondition(array(
-					'`TicketComment`.`createdon`:>' => $date
-					,'OR:`TicketComment`.`editedon`:>' => $date
+					'`TicketComment`.`createdon`:>' => $date,
+					'OR:`TicketComment`.`editedon`:>' => $date
 				));
 
 				$q->sortby('`TicketComment`.`id`', 'ASC');
@@ -650,6 +646,7 @@ class Tickets {
 				}
 			}
 		}
+
 		return $this->error('');
 	}
 
@@ -664,7 +661,9 @@ class Tickets {
 	 * @return string
 	 */
 	public function Jevix($text = null, $setName = 'Ticket', $replaceTags = true) {
-		if (empty($text)) {return ' ';}
+		if (empty($text)) {
+			return ' ';
+		}
 		if (!$snippet = $this->modx->getObject('modSnippet', array('name' => 'Jevix'))) {
 			return 'Could not load snippet Jevix';
 		}
@@ -679,16 +678,16 @@ class Tickets {
 		}
 
 		$text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
-		$params['input'] =  str_replace(array('[',']'), array('*{*{*{*{*{*','*}*}*}*}*}*'), $text);
+		$params['input'] = str_replace(array('[', ']'), array('*{*{*{*{*{*', '*}*}*}*}*}*'), $text);
 
 		$snippet->setCacheable(false);
 		$filtered = $snippet->process($params);
 
 		if ($replaceTags) {
-			$filtered = str_replace(array('*{*{*{*{*{*','*}*}*}*}*}*','`'), array('&#91;','&#93;','&#96;'), $filtered);
+			$filtered = str_replace(array('*{*{*{*{*{*', '*}*}*}*}*}*', '`'), array('&#91;', '&#93;', '&#96;'), $filtered);
 		}
 		else {
-			$filtered = str_replace(array('*{*{*{*{*{*','*}*}*}*}*}*'), array('[',']'), $filtered);
+			$filtered = str_replace(array('*{*{*{*{*{*', '*}*}*}*}*}*'), array('[', ']'), $filtered);
 		}
 
 		return $filtered;
@@ -712,9 +711,9 @@ class Tickets {
 
 		$string = htmlentities(trim($string), ENT_QUOTES, "UTF-8");
 		$string = preg_replace('/^@.*\b/', '', $string);
+		$arr1 = array('[', ']', '`');
+		$arr2 = array('&#091;', '&#093;', '&#096;');
 
-		$arr1 = array('[',']','`');
-		$arr2 = array('&#091;','&#093;','&#096;');
 		return str_replace($arr1, $arr2, $string);
 	}
 
@@ -754,7 +753,7 @@ class Tickets {
 			}
 		}
 		if ($node['rating'] > 0) {
-			$node['rating'] = '+'.$node['rating'];
+			$node['rating'] = '+' . $node['rating'];
 			$node['rating_positive'] = 1;
 			$node['bad'] = '';
 		}
@@ -824,7 +823,7 @@ class Tickets {
 		else {
 			$node['children'] = '';
 		}
-		$node['comment_was_edited'] = (boolean) $node['editedon'];
+		$node['comment_was_edited'] = (bool)$node['editedon'];
 		$node['comment_new'] = $this->authenticated && $node['createdby'] != $this->modx->user->id && $this->last_view > 0 && strtotime($node['createdon']) > $this->last_view;
 
 		return $this->getChunk($tpl, $node, $this->config['fastMode']);
@@ -843,7 +842,7 @@ class Tickets {
 			return eval($this->prepareCommentCustom);
 		}
 		else {
-			$data['gravatar'] = $this->config['gravatarUrl'] . md5(strtolower($data['email'])) .'?s=' . $this->config['gravatarSize'] . '&d=' . $this->config['gravatarIcon'];
+			$data['gravatar'] = $this->config['gravatarUrl'] . md5(strtolower($data['email'])) . '?s=' . $this->config['gravatarSize'] . '&d=' . $this->config['gravatarIcon'];
 			$data['avatar'] = !empty($data['photo'])
 				? $data['photo']
 				: $data['gravatar'];
@@ -904,15 +903,15 @@ class Tickets {
 		if ($this->modx->getOption('tickets.mail_bcc_level') >= 1) {
 			if ($bcc = $this->modx->getOption('tickets.mail_bcc')) {
 				$bcc = array_map('trim', explode(',', $bcc));
-				if (!empty($bcc) ) {
+				if (!empty($bcc)) {
 					foreach ($bcc as $uid) {
 						if ($uid == $ticket['createdby']) {
 							continue;
 						}
 						$this->addQueue(
-							$uid
-							,$this->modx->lexicon('ticket_email_bcc', $ticket)
-							,$this->getChunk($this->config['tplTicketEmailBcc'], $ticket, false)
+							$uid,
+							$this->modx->lexicon('ticket_email_bcc', $ticket),
+							$this->getChunk($this->config['tplTicketEmailBcc'], $ticket, false)
 						);
 						$sent[] = $uid;
 					}
@@ -947,7 +946,7 @@ class Tickets {
 		$owner_uid = $reply_uid = $reply_email = null;
 		$subscribers = array();
 		$q = $this->modx->newQuery('TicketThread');
-		$q->leftJoin('modResource', 'modResource','TicketThread.resource = modResource.id');
+		$q->leftJoin('modResource', 'modResource', 'TicketThread.resource = modResource.id');
 		$q->select('modResource.createdby as uid, modResource.id as resource, modResource.pagetitle, TicketThread.subscribers');
 		$q->where(array('TicketThread.id' => $comment['thread']));
 		if ($q->prepare() && $q->stmt->execute()) {
@@ -1056,7 +1055,7 @@ class Tickets {
 	 * @return bool|string
 	 */
 	public function addQueue($uid, $subject, $body, $email = '') {
-		$uid = (integer) $uid;
+		$uid = (int)$uid;
 		$email = trim($email);
 
 		if (empty($uid) && (empty($this->config['allowGuestEmails']) || empty($email))) {
@@ -1097,7 +1096,9 @@ class Tickets {
 		}
 		/* @var TicketThread $thread */
 		if ($thread = $this->modx->getObject('TicketThread', array('name' => $name))) {
-			$message = $thread->Subscribe() ? 'ticket_thread_subscribed' : 'ticket_thread_unsubscribed';
+			$message = $thread->Subscribe()
+				? 'ticket_thread_subscribed'
+				: 'ticket_thread_unsubscribed';
 			return $this->success($this->modx->lexicon($message));
 		}
 		else {
@@ -1130,7 +1131,7 @@ class Tickets {
 	}
 
 
-		/**
+	/**
 	 * Loads an instance of pdoTools
 	 *
 	 * @return boolean
@@ -1177,27 +1178,33 @@ class Tickets {
 	/**
 	 * Formats date to "10 minutes ago" or "Yesterday in 22:10"
 	 * This algorithm taken from https://github.com/livestreet/livestreet/blob/7a6039b21c326acf03c956772325e1398801c5fe/engine/modules/viewer/plugs/function.date_format.php
-
+	 *
 	 * @param string $date Timestamp to format
 	 * @param string $dateFormat
 	 *
 	 * @return string
 	 */
 	public function dateFormat($date, $dateFormat = null) {
-		$date = preg_match('/^\d+$/',$date) ?  $date : strtotime($date);
-		$dateFormat = !empty($dateFormat) ? $dateFormat : $this->config['dateFormat'];
+		$date = preg_match('/^\d+$/', $date)
+			? $date
+			: strtotime($date);
+		$dateFormat = !empty($dateFormat)
+			? $dateFormat
+			: $this->config['dateFormat'];
 		$current = time();
 		$delta = $current - $date;
 
 		if ($this->config['dateNow']) {
-			if ($delta < $this->config['dateNow']) {return $this->modx->lexicon('ticket_date_now');}
+			if ($delta < $this->config['dateNow']) {
+				return $this->modx->lexicon('ticket_date_now');
+			}
 		}
 
 		if ($this->config['dateMinutes']) {
 			$minutes = round(($delta) / 60);
 			if ($minutes < $this->config['dateMinutes']) {
 				if ($minutes > 0) {
-					return $this->declension($minutes, $this->modx->lexicon('ticket_date_minutes_back',array('minutes' => $minutes)));
+					return $this->declension($minutes, $this->modx->lexicon('ticket_date_minutes_back', array('minutes' => $minutes)));
 				}
 				else {
 					return $this->modx->lexicon('ticket_date_minutes_back_less');
@@ -1209,7 +1216,7 @@ class Tickets {
 			$hours = round(($delta) / 3600);
 			if ($hours < $this->config['dateHours']) {
 				if ($hours > 0) {
-					return $this->declension($hours, $this->modx->lexicon('ticket_date_hours_back',array('hours' => $hours)));
+					return $this->declension($hours, $this->modx->lexicon('ticket_date_hours_back', array('hours' => $hours)));
 				}
 				else {
 					return $this->modx->lexicon('ticket_date_hours_back_less');
@@ -1218,21 +1225,22 @@ class Tickets {
 		}
 
 		if ($this->config['dateDay']) {
-			switch(date('Y-m-d', $date)) {
+			switch (date('Y-m-d', $date)) {
 				case date('Y-m-d'):
 					$day = $this->modx->lexicon('ticket_date_today');
 					break;
-				case date('Y-m-d', mktime(0, 0, 0, date('m')  , date('d')-1, date('Y')) ):
+				case date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'))):
 					$day = $this->modx->lexicon('ticket_date_yesterday');
 					break;
-				case date('Y-m-d', mktime(0, 0, 0, date('m')  , date('d')+1, date('Y')) ):
+				case date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') + 1, date('Y'))):
 					$day = $this->modx->lexicon('ticket_date_tomorrow');
 					break;
-				default: $day = null;
+				default:
+					$day = null;
 			}
-			if($day) {
-				$format = str_replace("day",preg_replace("#(\w{1})#",'\\\${1}',$day),$this->config['dateDay']);
-				return date($format,$date);
+			if ($day) {
+				$format = str_replace("day", preg_replace("#(\w{1})#", '\\\${1}', $day), $this->config['dateDay']);
+				return date($format, $date);
 			}
 		}
 
@@ -1240,9 +1248,9 @@ class Tickets {
 		$month_arr = $this->modx->fromJSON($this->modx->lexicon('ticket_date_months'));
 		$month = $month_arr[$m - 1];
 
-		$format = preg_replace("~(?<!\\\\)F~U", preg_replace('~(\w{1})~u','\\\${1}', $month), $dateFormat);
+		$format = preg_replace("~(?<!\\\\)F~U", preg_replace('~(\w{1})~u', '\\\${1}', $month), $dateFormat);
 
-		return date($format ,$date);
+		return date($format, $date);
 	}
 
 
@@ -1258,22 +1266,30 @@ class Tickets {
 	 */
 	public function declension($count, $forms, $lang = null) {
 		if (empty($lang)) {
-			$lang = $this->modx->getOption('cultureKey',null,'en');
+			$lang = $this->modx->getOption('cultureKey', null, 'en');
 		}
 		$forms = $this->modx->fromJSON($forms);
 
 		if ($lang == 'ru') {
 			$mod100 = $count % 100;
-			switch ($count%10) {
+			switch ($count % 10) {
 				case 1:
-					if ($mod100 == 11) {$text = $forms[2];}
-					else {$text = $forms[0];}
+					if ($mod100 == 11) {
+						$text = $forms[2];
+					}
+					else {
+						$text = $forms[0];
+					}
 					break;
 				case 2:
 				case 3:
 				case 4:
-					if (($mod100 > 10) && ($mod100 < 20)) {$text = $forms[2];}
-					else {$text = $forms[1];}
+					if (($mod100 > 10) && ($mod100 < 20)) {
+						$text = $forms[2];
+					}
+					else {
+						$text = $forms[1];
+					}
 					break;
 				case 5:
 				case 6:
@@ -1281,7 +1297,8 @@ class Tickets {
 				case 8:
 				case 9:
 				case 0:
-				default: $text = $forms[2];
+				default:
+					$text = $forms[2];
 			}
 		}
 		else {
@@ -1339,12 +1356,16 @@ class Tickets {
 	 * @return array
 	 */
 	public function getCaptcha() {
-		$min = !empty($this->config['minCaptcha']) ? (integer) $this->config['minCaptcha'] : 1;
-		$max = !empty($this->config['maxCaptcha']) ? (integer) $this->config['maxCaptcha'] : 10;
+		$min = !empty($this->config['minCaptcha'])
+			? (int)$this->config['minCaptcha']
+			: 1;
+		$max = !empty($this->config['maxCaptcha'])
+			? (int)$this->config['maxCaptcha']
+			: 10;
 		$a = mt_rand($min, $max);
 		$b = mt_rand($min, $max);
-
 		$_SESSION['TicketComments']['captcha'] = $a + $b;
+
 		return array('a' => $a, 'b' => $b);
 	}
 
@@ -1408,16 +1429,16 @@ class Tickets {
 	 * This method returns an error of the cart
 	 *
 	 * @param string $message A lexicon key for error message
-	 * @param array $data.Additional data, for example cart status
+	 * @param array $data Additional data
 	 * @param array $placeholders Array with placeholders for lexicon entry
 	 *
 	 * @return array|string $response
 	 */
 	public function error($message = '', $data = array(), $placeholders = array()) {
 		$response = array(
-			'success' => false
-			,'message' => $this->modx->lexicon($message, $placeholders)
-			,'data' => $data
+			'success' => false,
+			'message' => $this->modx->lexicon($message, $placeholders),
+			'data' => $data,
 		);
 
 		return $this->config['json_response']
@@ -1429,16 +1450,16 @@ class Tickets {
 	/* This method returns an success of the cart
 	 *
 	 * @param string $message A lexicon key for success message
-	 * @param array $data.Additional data, for example cart status
+	 * @param array $data Additional data
 	 * @param array $placeholders Array with placeholders for lexicon entry
 	 *
 	 * @return array|string $response
 	 * */
 	public function success($message = '', $data = array(), $placeholders = array()) {
 		$response = array(
-			'success' => true
-			,'message' => $this->modx->lexicon($message, $placeholders)
-			,'data' => $data
+			'success' => true,
+			'message' => $this->modx->lexicon($message, $placeholders),
+			'data' => $data,
 		);
 
 		return $this->config['json_response']

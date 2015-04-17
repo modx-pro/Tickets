@@ -12,9 +12,11 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 	private $guest = false;
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool
+	 */
 	public function checkPermissions() {
-		$this->guest = (boolean) $this->getProperty('allowGuest', false);
+		$this->guest = (bool)$this->getProperty('allowGuest', false);
 
 		return !empty($this->permission) && !$this->guest
 			? $this->modx->hasPermission($this->permission)
@@ -22,7 +24,9 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool|null|string
+	 */
 	public function beforeSet() {
 		$time = time() - strtotime($this->object->get('createdon'));
 		$ip = $this->modx->request->getClientIp();
@@ -66,7 +70,9 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 				$this->addFieldError($field, $this->modx->lexicon('ticket_comment_err_email'));
 			}
 			else {
-				if ($field == 'email') {$value = strtolower($value);}
+				if ($field == 'email') {
+					$value = strtolower($value);
+				}
 				$this->setProperty($field, $value);
 			}
 		}
@@ -93,14 +99,18 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 			'raw' => $this->getProperty('raw'),
 			'name' => $this->getProperty('name'),
 			'email' => $this->getProperty('email'),
-			'properties' => !empty($add) ? $add : $this->object->get('properties'),
+			'properties' => !empty($add)
+				? $add
+				: $this->object->get('properties'),
 		);
 
 		return parent::beforeSet();
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool
+	 */
 	public function beforeSave() {
 		$this->object->fromArray(array(
 			'editedon' => time(),
@@ -118,7 +128,9 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool
+	 */
 	public function afterSave() {
 		$this->object->clearTicketCache();
 		return parent::afterSave();

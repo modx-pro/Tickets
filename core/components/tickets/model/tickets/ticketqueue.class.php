@@ -1,6 +1,11 @@
 <?php
+
 class TicketQueue extends xPDOSimpleObject {
 
+
+	/**
+	 * @return bool|string
+	 */
 	public function Send() {
 		/* @var modPHPMailer $mail */
 		$mail = $this->xpdo->getService('mail', 'mail.modPHPMailer');
@@ -34,8 +39,8 @@ class TicketQueue extends xPDOSimpleObject {
 			$mail->reset();
 			return false;
 		}
-
 		$mail->reset();
+
 		return true;
 	}
 

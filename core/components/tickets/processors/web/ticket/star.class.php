@@ -5,7 +5,9 @@ class TicketStarProcessor extends modObjectProcessor {
 	public $permission = 'ticket_star';
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool|null|string
+	 */
 	public function initialize() {
 		if (!$this->modx->hasPermission($this->permission)) {
 			return $this->modx->lexicon('access_denied');
@@ -14,7 +16,9 @@ class TicketStarProcessor extends modObjectProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return array|string
+	 */
 	public function process() {
 		$id = $this->getProperty('id');
 
@@ -47,4 +51,5 @@ class TicketStarProcessor extends modObjectProcessor {
 	}
 
 }
+
 return 'TicketStarProcessor';

@@ -1,11 +1,11 @@
 <?php
 /* @var array $scriptProperties */
-if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.'.$cacheKey)) {
+if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.' . $cacheKey)) {
 	return $output;
 }
 
 /* @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
+$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 /** @var pdoFetch $pdoFetch */
@@ -22,7 +22,9 @@ else {
 }
 $pdoFetch->addTime('pdoTools loaded');
 
-if (empty($action)) {$action = 'comments';}
+if (empty($action)) {
+	$action = 'comments';
+}
 if ($action == 'tickets' && $scriptProperties['tpl'] == 'tpl.Tickets.comment.latest') {
 	$scriptProperties['tpl'] = 'tpl.Tickets.ticket.latest';
 }
@@ -31,35 +33,65 @@ $where = $action == 'tickets'
 	? array('class_key' => 'Ticket')
 	: array();
 
-if (empty($showUnpublished)) {$where['Ticket.published'] = 1;}
-if (empty($showHidden)) {$where['Ticket.hidemenu'] = 0;}
-if (empty($showDeleted)) {$where['Ticket.deleted'] = 0;}
-if (!isset($cacheTime)) {$cacheTime = 1800;}
+if (empty($showUnpublished)) {
+	$where['Ticket.published'] = 1;
+}
+if (empty($showHidden)) {
+	$where['Ticket.hidemenu'] = 0;
+}
+if (empty($showDeleted)) {
+	$where['Ticket.deleted'] = 0;
+}
+if (!isset($cacheTime)) {
+	$cacheTime = 1800;
+}
 if (!empty($user)) {
 	$user = array_map('trim', explode(',', $user));
 	$user_id = $user_username = array();
 	foreach ($user as $v) {
-		if (is_numeric($v)) {$user_id[] = $v;}
-		else {$user_username[] = $v;}
+		if (is_numeric($v)) {
+			$user_id[] = $v;
+		}
+		else {
+			$user_username[] = $v;
+		}
 	}
 	if (!empty($user_id) && !empty($user_username)) {
-		$where[] = '(`User`.`id` IN ('.implode(',',$user_id).') OR `User`.`username` IN (\''.implode('\',\'',$user_username).'\'))';
+		$where[] = '(`User`.`id` IN (' . implode(',', $user_id) . ') OR `User`.`username` IN (\'' . implode('\',\'', $user_username) . '\'))';
 	}
-	else if (!empty($user_id)) {$where['User.id:IN'] = $user_id;}
-	else if (!empty($user_username)) {$where['User.username:IN'] = $user_username;}
+	else {
+		if (!empty($user_id)) {
+			$where['User.id:IN'] = $user_id;
+		}
+		else {
+			if (!empty($user_username)) {
+				$where['User.username:IN'] = $user_username;
+			}
+		}
+	}
 }
 
 // Filter by ids
-if (!empty($resources)){
+if (!empty($resources)) {
 	$resources = array_map('trim', explode(',', $resources));
 	$in = $out = array();
 	foreach ($resources as $v) {
-		if (!is_numeric($v)) {continue;}
-		if ($v < 0) {$out[] = abs($v);}
-		else {$in[] = $v;}
+		if (!is_numeric($v)) {
+			continue;
+		}
+		if ($v < 0) {
+			$out[] = abs($v);
+		}
+		else {
+			$in[] = $v;
+		}
 	}
-	if (!empty($in)) {$where['id:IN'] = $in;}
-	if (!empty($out)) {$where['id:NOT IN'] = $out;}
+	if (!empty($in)) {
+		$where['id:IN'] = $in;
+	}
+	if (!empty($out)) {
+		$where['id:NOT IN'] = $out;
+	}
 }
 // Filter by parents
 else {
@@ -68,7 +100,9 @@ else {
 		$parents = $pids;
 		if (!empty($depth) && $depth > 0) {
 			foreach ($pids as $v) {
-				if (!is_numeric($v)) {continue;}
+				if (!is_numeric($v)) {
+					continue;
+				}
 				$parents = array_merge($parents, $modx->getChildIds($v, $depth));
 			}
 		}
@@ -96,11 +130,11 @@ if ($action == 'comments') {
 
 	$select = array(
 		'TicketComment' => !empty($includeContent)
-				? $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true)
-				: $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text','raw'), true),
+			? $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true)
+			: $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text', 'raw'), true),
 		'Ticket' => !empty($includeContent)
-				? $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.')
-				: $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.', array('content'), true)
+			? $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.')
+			: $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.', array('content'), true)
 	);
 	$groupby = empty($user)
 		? '`Ticket`.`id`'
@@ -120,8 +154,8 @@ elseif ($action == 'tickets') {
 
 	$select = array(
 		'Ticket' => !empty($includeContent)
-				? $modx->getSelectColumns('Ticket', 'Ticket')
-				: $modx->getSelectColumns('Ticket', 'Ticket', '', array('content'), true),
+			? $modx->getSelectColumns('Ticket', 'Ticket')
+			: $modx->getSelectColumns('Ticket', 'Ticket', '', array('content'), true),
 		'Thread' => '`Thread`.`id` as `thread`'
 	);
 	$groupby = '`Ticket`.`id`';
@@ -138,7 +172,7 @@ $select = array_merge($select, array(
 ));
 
 // Add custom parameters
-foreach (array('where','select','leftJoin','innerJoin') as $v) {
+foreach (array('where', 'select', 'leftJoin', 'innerJoin') as $v) {
 	if (!empty($scriptProperties[$v])) {
 		$tmp = $modx->fromJSON($scriptProperties[$v]);
 		if (is_array($tmp)) {
@@ -181,7 +215,7 @@ if (!empty($rows) && is_array($rows)) {
 				: $row['properties'];
 			if (empty($properties['process_tags'])) {
 				foreach ($row as $field => $value) {
-					$row[$field] = str_replace(array('[',']'), array('&#91;','&#93;'), $value);
+					$row[$field] = str_replace(array('[', ']'), array('&#91;', '&#93;'), $value);
 				}
 			}
 		}
@@ -204,11 +238,13 @@ if (!empty($rows) && is_array($rows)) {
 	}
 	$pdoFetch->addTime('Returning processed chunks');
 }
-if (empty($outputSeparator)) {$outputSeparator = "\n";}
+if (empty($outputSeparator)) {
+	$outputSeparator = "\n";
+}
 $output = implode($outputSeparator, $output);
 
 if (!empty($cacheKey)) {
-	$modx->cacheManager->set('tickets/latest.'.$cacheKey, $output, $cacheTime);
+	$modx->cacheManager->set('tickets/latest.' . $cacheKey, $output, $cacheTime);
 }
 
 if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {

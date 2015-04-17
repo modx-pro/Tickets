@@ -1,7 +1,7 @@
 <?php
 /* @var array $scriptProperties */
 /* @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
+$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 $scriptProperties['nestedChunkPrefix'] = 'tickets_';
@@ -19,10 +19,12 @@ else {
 }
 $pdoFetch->addTime('pdoTools loaded');
 
-if (empty($id)) {$id = $modx->resource->id;}
+if (empty($id)) {
+	$id = $modx->resource->id;
+}
 /** @var Ticket|modResource $ticket */
 if (!$ticket = $modx->getObject('modResource', $id)) {
-	return 'Could not load resource with id = '.$id;
+	return 'Could not load resource with id = ' . $id;
 }
 
 $class = $ticket instanceof Ticket
@@ -51,10 +53,14 @@ if ($class != 'Ticket') {
 		$tstart = microtime(true);
 		if ($q->prepare() && $q->stmt->execute()) {
 			$modx->startTime += microtime(true) - $tstart;
-			$modx->executedQueries ++;
+			$modx->executedQueries++;
 			$voted = $q->stmt->fetchColumn();
-			if ($voted > 0) {$voted = 1;}
-			elseif ($voted < 0) {$voted = -1;}
+			if ($voted > 0) {
+				$voted = 1;
+			}
+			elseif ($voted < 0) {
+				$voted = -1;
+			}
 			$data['voted'] = $voted;
 		}
 	}
@@ -70,25 +76,25 @@ if ($class != 'Ticket') {
 
 	// Comments
 	$data['comments'] = 0;
-	$q = $modx->newQuery('TicketThread', array('name' => 'resource-'.$ticket->id));
-	$q->leftJoin('TicketComment','TicketComment', "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1");
+	$q = $modx->newQuery('TicketThread', array('name' => 'resource-' . $ticket->id));
+	$q->leftJoin('TicketComment', 'TicketComment', "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1");
 	$q->select('COUNT(`TicketComment`.`id`) as `comments`');
 	$tstart = microtime(true);
 	if ($q->prepare() && $q->stmt->execute()) {
 		$modx->startTime += microtime(true) - $tstart;
-		$modx->executedQueries ++;
-		$data['comments'] = (integer) $q->stmt->fetchColumn();
+		$modx->executedQueries++;
+		$data['comments'] = (int)$q->stmt->fetchColumn();
 	}
 
 	// Date ago
 	$data['date_ago'] = $Tickets->dateFormat($data['createdon']);
-	
+
 	// Stars
 	$data['stars'] = $modx->getCount('TicketStar', array('id' => $ticket->id, 'class' => 'Ticket'));
 }
 
 if ($data['rating'] > 0) {
-	$data['rating'] = '+'.$data['rating'];
+	$data['rating'] = '+' . $data['rating'];
 	$data['rating_positive'] = 1;
 }
 elseif ($data['rating'] < 0) {
@@ -116,8 +122,8 @@ elseif (array_key_exists('vote', $data)) {
 	}
 }
 
-$data['active'] = (integer) !empty($data['can_vote']);
-$data['inactive'] = (integer) !empty($data['cant_vote']);
+$data['active'] = (int)!empty($data['can_vote']);
+$data['inactive'] = (int)!empty($data['cant_vote']);
 
 $data['can_star'] = $Tickets->authenticated;
 
@@ -126,7 +132,7 @@ if (!empty($getSection)) {
 	unset($fields['content']);
 	$section = $pdoFetch->getObject('modResource', $ticket->parent, array('select' => implode(',', array_keys($fields))));
 	foreach ($section as $k => $v) {
-		$data['section.'.$k] = $v;
+		$data['section.' . $k] = $v;
 	}
 }
 if (!empty($getUser)) {
@@ -161,8 +167,8 @@ if (!empty($getFiles)) {
 	}
 	$data['has_files'] = !empty($data['files']);
 }
+$data['id'] = $ticket->get('id');
 
-$data['id'] = $ticket->id;
 return !empty($tpl)
 	? $Tickets->getChunk($tpl, $data)
 	: $Tickets->getChunk('', $data);

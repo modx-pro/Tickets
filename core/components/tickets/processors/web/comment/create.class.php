@@ -1,21 +1,24 @@
 <?php
+
 class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 	/** @var TicketComment $object */
 	public $object;
-	/* @var TicketThread $thread */
-	private $thread;
 	public $objectType = 'TicketComment';
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets:default');
 	public $permission = 'comment_save';
 	public $beforeSaveEvent = 'OnBeforeCommentSave';
 	public $afterSaveEvent = 'OnCommentSave';
+	/* @var TicketThread $thread */
+	private $thread;
 	private $guest = false;
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool
+	 */
 	public function checkPermissions() {
-		$this->guest = (boolean) $this->getProperty('allowGuest', false);
+		$this->guest = (bool)$this->getProperty('allowGuest', false);
 		$this->unsetProperty('allowGuest');
 		$this->unsetProperty('allowGuestEdit');
 		$this->unsetProperty('captcha');
@@ -26,7 +29,9 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool|null|string
+	 */
 	public function beforeSet() {
 		$tid = $this->getProperty('thread');
 		if (!$this->thread = $this->modx->getObject('TicketThread', array('name' => $tid, 'deleted' => 0, 'closed' => 0))) {
@@ -50,7 +55,9 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 				$this->addFieldError($field, $this->modx->lexicon('ticket_comment_err_email'));
 			}
 			else {
-				if ($field == 'email') {$value = strtolower($value);}
+				if ($field == 'email') {
+					$value = strtolower($value);
+				}
 				$this->setProperty($field, $value);
 			}
 		}
@@ -96,7 +103,9 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool
+	 */
 	public function afterSave() {
 		$this->thread->fromArray(array(
 			'comment_last' => $this->object->get('id'),
@@ -118,6 +127,7 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 
 		return parent::afterSave();
 	}
+
 }
 
 return 'TicketCommentCreateProcessor';

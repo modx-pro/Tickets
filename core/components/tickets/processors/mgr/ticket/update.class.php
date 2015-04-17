@@ -1,27 +1,24 @@
 <?php
-/**
- * Overrides the modResourceUpdateProcessor to provide custom processor functionality for the Ticket type
- *
- * @package tickets
- */
 
-require_once MODX_CORE_PATH.'model/modx/modprocessor.class.php';
-require_once MODX_CORE_PATH.'model/modx/processors/resource/update.class.php';
+require_once MODX_CORE_PATH . 'model/modx/modprocessor.class.php';
+require_once MODX_CORE_PATH . 'model/modx/processors/resource/update.class.php';
 
 class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	/** @var Ticket $object */
 	public $object;
 	public $classKey = 'Ticket';
 	public $permission = 'ticket_save';
-	public $languageTopics = array('resource','tickets:default');
+	public $languageTopics = array('resource', 'tickets:default');
 	private $_published = null;
 	private $_sendEmails = false;
 
 
-	/** {inheritDoc} */
+	/**
+	 * @return bool|null|string
+	 */
 	public function initialize() {
-		$primaryKey = $this->getProperty($this->primaryKeyField,false);
-		if (empty($primaryKey)) return $this->modx->lexicon($this->objectType.'_err_ns');
+		$primaryKey = $this->getProperty($this->primaryKeyField, false);
+		if (empty($primaryKey)) return $this->modx->lexicon($this->objectType . '_err_ns');
 
 		if (!$this->modx->getCount($this->classKey, array('id' => $primaryKey, 'class_key' => $this->classKey)) && $res = $this->modx->getObject('modResource', $primaryKey)) {
 			$res->set('class_key', $this->classKey);
@@ -32,7 +29,9 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool|null|string
+	 */
 	public function beforeSet() {
 		$this->_published = $this->getProperty('published', null);
 		if ($this->_published && !$this->modx->hasPermission('ticket_publish')) {
@@ -44,7 +43,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		}
 
 		// Required fields
-		$requiredFields = $this->getProperty('requiredFields', array('parent','pagetitle','content'));
+		$requiredFields = $this->getProperty('requiredFields', array('parent', 'pagetitle', 'content'));
 		foreach ($requiredFields as $field) {
 			$value = trim($this->getProperty($field));
 			if (empty($value) && $this->modx->context->key != 'mgr') {
@@ -74,37 +73,9 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
-	public function beforeSave() {
-		$time = time();
-		if ($this->_published) {
-			$properties = $this->object->getProperties();
-			// First publication
-			if (isset($properties['was_published']) && empty($properties['was_published'])) {
-				$this->object->set('createdon', $time, 'integer');
-				$this->object->set('publishedon', $time, 'integer');
-				unset($properties['was_published']);
-				$this->object->set('properties', $properties);
-				$this->_sendEmails = true;
-			}
-		}
-		$this->object->set('editedby', $this->modx->user->get('id'));
-		$this->object->set('editedon', $time, 'integer');
-		return !$this->hasErrors();
-	}
-
-
-	/** {@inheritDoc} */
-	public function afterSave() {
-		$parent = parent::afterSave();
-		if ($this->_sendEmails && $this->modx->context->key == 'mgr') {
-			$this->sendTicketMails();
-		}
-		return $parent;
-	}
-
-
-	/** {@inheritDoc} */
+	/**
+	 * @return bool
+	 */
 	public function setFieldDefault() {
 		// Ticket properties
 		$properties = $this->modx->context->key == 'mgr'
@@ -145,11 +116,62 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			$properties['process_tags'] = !empty($properties['process_tags']);
 			$this->object->setProperties($properties, 'tickets', true);
 		}
+
 		return true;
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool
+	 */
+	public function beforeSave() {
+		$time = time();
+		if ($this->_published) {
+			$properties = $this->object->getProperties();
+			// First publication
+			if (isset($properties['was_published']) && empty($properties['was_published'])) {
+				$this->object->set('createdon', $time, 'integer');
+				$this->object->set('publishedon', $time, 'integer');
+				unset($properties['was_published']);
+				$this->object->set('properties', $properties);
+				$this->_sendEmails = true;
+			}
+		}
+		$this->object->set('editedby', $this->modx->user->get('id'));
+		$this->object->set('editedon', $time, 'integer');
+
+		return !$this->hasErrors();
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function afterSave() {
+		$parent = parent::afterSave();
+		if ($this->_sendEmails && $this->modx->context->key == 'mgr') {
+			$this->sendTicketMails();
+		}
+
+		return $parent;
+	}
+
+	/**
+	 * Call method for notify users about new ticket in section
+	 */
+	protected function sendTicketMails() {
+		/** @var Tickets $Tickets */
+		if ($Tickets = $this->modx->getService('Tickets')) {
+			$Tickets->config['tplTicketEmailBcc'] = 'tpl.Tickets.ticket.email.bcc';
+			$Tickets->config['tplTicketEmailSubscription'] = 'tpl.Tickets.ticket.email.subscription';
+			$Tickets->sendTicketMails($this->object->toArray());
+		}
+	}
+
+
+	/**
+	 * @return mixed|string
+	 */
 	public function checkFriendlyAlias() {
 		$alias = parent::checkFriendlyAlias();
 
@@ -165,7 +187,9 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return int|mixed|null|string
+	 */
 	public function handleParent() {
 		if ($this->modx->context->key == 'manager') {
 			return parent::handleParent();
@@ -178,7 +202,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			if (!empty($sections) && !in_array($parentId, $sections)) {
 				return $this->modx->lexicon('ticket_err_wrong_parent');
 			}
-			$this->parentResource = $this->modx->getObject('TicketsSection',$parentId);
+			$this->parentResource = $this->modx->getObject('TicketsSection', $parentId);
 			if ($this->parentResource) {
 				if ($this->parentResource->get('class_key') != 'TicketsSection') {
 					$this->addFieldError('parent', $this->modx->lexicon('ticket_err_wrong_parent'));
@@ -196,7 +220,9 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool
+	 */
 	public function checkPublishingPermissions() {
 		if ($this->modx->context->key == 'mgr') {
 			return parent::checkPublishingPermissions();
@@ -205,7 +231,9 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 *
+	 */
 	public function clearCache() {
 		$this->object->clearCache();
 		/** @var TicketsSection $section */
@@ -215,7 +243,9 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return array|mixed
+	 */
 	public function saveTemplateVariables() {
 		if ($this->modx->context->key != 'mgr') {
 			$values = array();
@@ -236,13 +266,14 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return array
+	 */
 	public function cleanup() {
 		$this->processFiles();
 
 		return parent::cleanup();
 	}
-
 
 	/**
 	 * Add uploaded files to ticket
@@ -252,7 +283,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 	public function processFiles() {
 		$q = $this->modx->newQuery('TicketFile');
 		$q->where(array('class' => 'Ticket'));
-		$q->andCondition(array('parent' => 0, 'createdby' => $this->modx->user->id), null, 1);
+		$q->andCondition(array('parent' => 0, 'createdby' => $this->modx->user->get('id')), null, 1);
 		$q->orCondition(array('parent' => $this->object->get('id')), null, 1);
 		$q->sortby('createdon', 'ASC');
 		$collection = $this->modx->getIterator('TicketFile', $q);
@@ -277,7 +308,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 				if ($old_url != $new_url) {
 					$replace[preg_replace('/\.[a-z]+$/i', '', $old_url)] = preg_replace('/\.[a-z]+$/i', '', $new_url);
 				}
-				$count ++;
+				$count++;
 			}
 		}
 
@@ -302,8 +333,8 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 							else {
 								$src[] = $from;
 								$dst[] = $to;
-								$src[] = preg_replace('/\.[a-z]+$/i','_thumb$0', $from);
-								$dst[] = preg_replace('/\.[a-z]+$/i','_thumb$0', $to);
+								$src[] = preg_replace('/\.[a-z]+$/i', '_thumb$0', $from);
+								$dst[] = preg_replace('/\.[a-z]+$/i', '_thumb$0', $to);
 							}
 							break;
 						}
@@ -325,16 +356,4 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 		return $count;
 	}
 
-
-	/**
-	 * Call method for notify users about new ticket in section
-	 */
-	protected function sendTicketMails() {
-		/** @var Tickets $Tickets */
-		if ($Tickets = $this->modx->getService('Tickets')) {
-			$Tickets->config['tplTicketEmailBcc'] = 'tpl.Tickets.ticket.email.bcc';
-			$Tickets->config['tplTicketEmailSubscription'] = 'tpl.Tickets.ticket.email.subscription';
-			$Tickets->sendTicketMails($this->object->toArray());
-		}
-	}
 }

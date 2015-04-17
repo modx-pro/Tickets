@@ -8,7 +8,7 @@ include_once('setting.inc.php');
 $_lang['tickets'] = 'Tickets';
 $_lang['comments'] = 'Comments';
 $_lang['threads'] = 'Comments threads';
-$_lang['tickets_section'] = 'Section';
+$_lang['tickets_section'] = 'Section with tickets';
 $_lang['ticket'] = 'Ticket';
 $_lang['ticket_all'] = 'All tickets';
 $_lang['ticket_menu_desc'] = 'Comments management and more.';

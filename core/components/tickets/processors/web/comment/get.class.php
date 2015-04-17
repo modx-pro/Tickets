@@ -6,7 +6,9 @@ class TicketCommentGetProcessor extends modObjectGetProcessor {
 	public $languageTopics = array('tickets:default');
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return array|string
+	 */
 	public function cleanup() {
 		$comment = $this->object->toArray();
 		$comment['text'] = html_entity_decode($comment['text']);
@@ -14,6 +16,7 @@ class TicketCommentGetProcessor extends modObjectGetProcessor {
 
 		return $this->success('', $comment);
 	}
+
 }
 
 return 'TicketCommentGetProcessor';

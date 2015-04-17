@@ -8,7 +8,7 @@ include_once('setting.inc.php');
 $_lang['tickets'] = 'Тикеты';
 $_lang['comments'] = 'Комментарии';
 $_lang['threads'] = 'Ветви комментариев';
-$_lang['tickets_section'] = 'Раздел';
+$_lang['tickets_section'] = 'Раздел с тикетами';
 $_lang['ticket'] = 'Тикет';
 $_lang['ticket_all'] = 'Все';
 $_lang['ticket_menu_desc'] = 'Управление комментариями и не только.';

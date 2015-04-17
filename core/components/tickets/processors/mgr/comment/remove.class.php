@@ -1,5 +1,6 @@
 <?php
-class TicketCommentRemoveProcessor extends modObjectRemoveProcessor  {
+
+class TicketCommentRemoveProcessor extends modObjectRemoveProcessor {
 	/** @var TicketComment $object */
 	public $object;
 	public $checkRemovePermission = true;
@@ -11,6 +12,10 @@ class TicketCommentRemoveProcessor extends modObjectRemoveProcessor  {
 	public $permission = 'comment_remove';
 	private $children;
 
+
+	/**
+	 * @return bool|null|string
+	 */
 	public function initialize() {
 		$parent = parent::initialize();
 		if ($this->checkRemovePermission && !$this->modx->hasPermission($this->permission)) {
@@ -19,12 +24,20 @@ class TicketCommentRemoveProcessor extends modObjectRemoveProcessor  {
 		return $parent;
 	}
 
+
+	/**
+	 * @return bool
+	 */
 	public function beforeRemove() {
 		$this->getChildren($this->object);
 		$this->modx->removeCollection('TicketComment', array('id:IN' => $this->children));
 		return true;
 	}
 
+
+	/**
+	 * @param TicketComment $parent
+	 */
 	protected function getChildren(TicketComment $parent) {
 		$children = $parent->getMany('Children');
 		if (count($children) > 0) {
@@ -36,6 +49,10 @@ class TicketCommentRemoveProcessor extends modObjectRemoveProcessor  {
 		}
 	}
 
+
+	/**
+	 * @return bool
+	 */
 	public function afterRemove() {
 		$this->object->clearTicketCache();
 		/* @var TicketThread $thread */
@@ -50,9 +67,13 @@ class TicketCommentRemoveProcessor extends modObjectRemoveProcessor  {
 	}
 
 
+	/**
+	 *
+	 */
 	public function logManagerAction() {
-		$this->modx->logManagerAction($this->objectType.'_remove', $this->classKey, $this->object->get($this->primaryKeyField));
+		$this->modx->logManagerAction($this->objectType . '_remove', $this->classKey, $this->object->get($this->primaryKeyField));
 	}
+
 }
 
 return 'TicketCommentRemoveProcessor';

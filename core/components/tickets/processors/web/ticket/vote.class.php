@@ -1,16 +1,19 @@
 <?php
+
 class TicketVoteProcessor extends modObjectCreateProcessor {
 	/** @var TicketVote $object */
 	public $object;
-	/* @var Ticket|modResource $ticket */
-	private $ticket;
 	public $objectType = 'TicketVote';
 	public $classKey = 'TicketVote';
 	public $languageTopics = array('tickets:default');
 	public $permission = 'ticket_vote';
+	/* @var Ticket|modResource $ticket */
+	private $ticket;
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool|null|string
+	 */
 	public function beforeSet() {
 		$id = $this->getProperty('id');
 
@@ -32,7 +35,9 @@ class TicketVoteProcessor extends modObjectCreateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool
+	 */
 	public function beforeSave() {
 		$this->modx->getRequest();
 		$ip = $this->modx->request->getClientIp();
@@ -60,7 +65,9 @@ class TicketVoteProcessor extends modObjectCreateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return array|string
+	 */
 	public function cleanup() {
 		if ($this->ticket instanceof Ticket) {
 			$rating = $this->ticket->updateRating();
@@ -74,7 +81,7 @@ class TicketVoteProcessor extends modObjectCreateProcessor {
 			$tstart = microtime(true);
 			if ($q->prepare() && $q->stmt->execute()) {
 				$this->modx->startTime += microtime(true) - $tstart;
-				$this->modx->executedQueries ++;
+				$this->modx->executedQueries++;
 				$rows = $q->stmt->fetchAll(PDO::FETCH_COLUMN);
 				foreach ($rows as $value) {
 					$rating['rating'] += $value;

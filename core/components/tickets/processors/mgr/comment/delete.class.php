@@ -1,5 +1,6 @@
 <?php
-class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
+
+class TicketCommentDeleteProcessor extends modObjectRemoveProcessor {
 	/** @var TicketComment $object */
 	public $object;
 	public $checkRemovePermission = true;
@@ -10,14 +11,23 @@ class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
 	public $afterRemoveEvent = 'OnCommentRemove';
 	public $permission = 'comment_delete';
 
+
+	/**
+	 * @return bool|null|string
+	 */
 	public function initialize() {
 		$parent = parent::initialize();
 		if ($this->checkRemovePermission && !$this->modx->hasPermission($this->permission)) {
 			return $this->modx->lexicon('access_denied');
 		}
+
 		return $parent;
 	}
 
+
+	/**
+	 * @return array|string
+	 */
 	public function process() {
 		$canRemove = $this->beforeRemove();
 		if ($canRemove !== true) {
@@ -27,42 +37,44 @@ class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
 		if (!empty($preventRemoval)) {
 			return $this->failure($preventRemoval);
 		}
-
 		// Toggle deleted status
 		if ($this->object->get('deleted')) {
 			$this->object->fromArray(array(
-				'deleted' => 0
-				,'deletedon' => null
-				,'deletedby' => 0
+				'deleted' => 0,
+				'deletedon' => null,
+				'deletedby' => 0,
 			));
 			$action = 'restore';
 		}
 		else {
 			$this->object->fromArray(array(
-				'deleted' => 1
-				,'deletedon' => time()
-				,'deletedby' => $this->modx->user->id
+				'deleted' => 1,
+				'deletedon' => time(),
+				'deletedby' => $this->modx->user->get('id'),
 			));
 			$action = 'delete';
 		}
-
 		if (!$this->object->save()) {
-			return $this->failure($this->modx->lexicon($this->objectType.'_err_remove'));
+			return $this->failure($this->modx->lexicon($this->objectType . '_err_remove'));
 		}
 		$this->afterRemove();
 		$this->fireAfterRemoveEvent();
 		$this->logManagerAction($action);
 		$this->cleanup();
-		return $this->success('',array($this->primaryKeyField => $this->object->get($this->primaryKeyField)));
+
+		return $this->success('', array($this->primaryKeyField => $this->object->get($this->primaryKeyField)));
 	}
 
+
+	/**
+	 * @return bool
+	 */
 	public function afterRemove() {
 		$this->object->clearTicketCache();
 		/* @var TicketThread $thread */
 		if ($thread = $this->object->getOne('Thread')) {
 			$thread->updateLastComment();
 		}
-
 		$this->modx->cacheManager->delete('tickets/latest.comments');
 		$this->modx->cacheManager->delete('tickets/latest.tickets');
 
@@ -70,9 +82,13 @@ class TicketCommentDeleteProcessor extends modObjectRemoveProcessor  {
 	}
 
 
+	/**
+	 * @param string $action
+	 */
 	public function logManagerAction($action = '') {
-		$this->modx->logManagerAction($this->objectType.'_'.$action, $this->classKey, $this->object->get($this->primaryKeyField));
+		$this->modx->logManagerAction($this->objectType . '_' . $action, $this->classKey, $this->object->get($this->primaryKeyField));
 	}
+
 }
 
 return 'TicketCommentDeleteProcessor';

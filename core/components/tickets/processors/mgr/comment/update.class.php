@@ -12,7 +12,9 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 	protected $old_thread = 0;
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool|null|string
+	 */
 	public function beforeSet() {
 		if (!$this->getProperty('name')) {
 			$this->unsetProperty('name');
@@ -37,22 +39,29 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool
+	 */
 	public function beforeSave() {
 		$text = $this->getProperty('text');
 
-		$this->object->fromArray(array(
-			'editedon' => time()
-			,'editedby' => $this->modx->user->id
-			,'text' => $this->modx->Tickets->Jevix($text, 'Comment')
-			,'raw' => $text
-		));
+		/** @var Tickets $Tickets */
+		if ($Tickets = $this->modx->getService('Tickets')) {
+			$this->object->fromArray(array(
+				'editedon' => time(),
+				'editedby' => $this->modx->user->id,
+				'text' => $Tickets->Jevix($text, 'Comment'),
+				'raw' => $text,
+			));
+		}
 
 		return parent::beforeSave();
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return bool
+	 */
 	public function afterSave() {
 		$new_thread = $this->object->get('thread');
 		if ($this->old_thread != $new_thread) {

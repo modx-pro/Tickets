@@ -1,6 +1,6 @@
 <?php
+
 class TicketFile extends xPDOSimpleObject {
-	public $file;
 	/* @var modPhpThumb $phpThumb */
 	public $phpThumb;
 	/* @var modMediaSource $mediaSource */
@@ -19,12 +19,13 @@ class TicketFile extends xPDOSimpleObject {
 		elseif (empty($this->mediaSource) && $source = $this->get('source')) {
 			/** @var modMediaSource $mediaSource */
 			if ($mediaSource = $this->xpdo->getObject('sources.modMediaSource', $source)) {
+				/** @noinspection PhpUndefinedFieldInspection */
 				$mediaSource->set('ctx', $this->xpdo->context->key);
 				$mediaSource->initialize();
 				$this->mediaSource = $mediaSource;
 			}
 			else {
-				return 'Could not initialize media source with id = '.$source;
+				return 'Could not initialize media source with id = ' . $source;
 			}
 		}
 
@@ -32,6 +33,9 @@ class TicketFile extends xPDOSimpleObject {
 	}
 
 
+	/**
+	 * @return array|mixed
+	 */
 	public function getSourceProperties() {
 		$properties = $this->mediaSource->getPropertyList();
 		$thumbnails = array();
@@ -69,19 +73,28 @@ class TicketFile extends xPDOSimpleObject {
 	 * @return bool|string
 	 */
 	public function generateThumbnail(modMediaSource $mediaSource = null) {
-		if ($this->get('type') != 'image') {return true;}
+		if ($this->get('type') != 'image') {
+			return true;
+		}
 
 		$prepare = $this->prepareSource($mediaSource);
-		if ($prepare !== true) {return $prepare;}
+		if ($prepare !== true) {
+			return $prepare;
+		}
 
-		$this->file = $this->mediaSource->getObjectContents($this->get('path').$this->get('file'));
-		if (!empty($this->mediaSource->errors['file'])) {
-			return 'Could not retrieve file "'.$this->path.$this->file.'" from media source. '.$this->mediaSource->errors['file'];
+		$this->mediaSource->errors = array();
+		$filename = $this->get('path') . $this->get('file');
+		$info = $this->mediaSource->getObjectContents($filename);
+		if (!is_array($info)) {
+			return "[Tickets] Could not retrieve contents of file {$filename} from media source.";
+		}
+		elseif (!empty($this->mediaSource->errors['file'])) {
+			return "[Tickets] Could not retrieve file {$filename} from media source: " . $this->mediaSource->errors['file'];
 		}
 
 		$properties = $this->getSourceProperties();
 		foreach ($properties as $name => $set) {
-			if ($image = $this->makeThumbnail($set)) {
+			if ($image = $this->makeThumbnail($set, $info)) {
 				$this->saveThumbnail($image, $set['f'], $name);
 			}
 		}
@@ -92,16 +105,20 @@ class TicketFile extends xPDOSimpleObject {
 
 	/**
 	 * @param array $options
+	 * @param array $info
 	 *
 	 * @return bool|null
 	 */
-	public function makeThumbnail($options = array()) {
-		require_once  MODX_CORE_PATH . 'model/phpthumb/modphpthumb.class.php';
+	public function makeThumbnail($options = array(), array $info) {
+		if (!class_exists('modPhpThumb')) {
+			/** @noinspection PhpIncludeInspection */
+			require MODX_CORE_PATH . 'model/phpthumb/modphpthumb.class.php';
+		}
 		$phpThumb = new modPhpThumb($this->xpdo);
 		$phpThumb->initialize();
 
-		$tf = tempnam(MODX_BASE_PATH, 'ms_');
-		file_put_contents($tf, $this->file['content']);
+		$tf = tempnam(MODX_BASE_PATH, 'tkt_');
+		file_put_contents($tf, $info['content']);
 		$phpThumb->setSourceFilename($tf);
 
 		foreach ($options as $k => $v) {
@@ -113,12 +130,15 @@ class TicketFile extends xPDOSimpleObject {
 			if ($phpThumb->RenderOutput()) {
 				@unlink($phpThumb->sourceFilename);
 				@unlink($tf);
+				$this->xpdo->log(modX::LOG_LEVEL_INFO, '[Tickets] phpThumb messages for "' . $this->get('url') . '". ' . print_r($phpThumb->debugmessages, 1));
+
 				return $phpThumb->outputImageData;
 			}
 		}
-		else {
-			$this->xpdo->log(xpdo::LOG_LEVEL_ERROR, 'Could not generate thumbnail for "'.$this->get('url').'". '.print_r($phpThumb->debugmessages,1));
-		}
+		@unlink($phpThumb->sourceFilename);
+		@unlink($tf);
+
+		$this->xpdo->log(modX::LOG_LEVEL_ERROR, '[Tickets] Could not generate thumbnail for "' . $this->get('url') . '". ' . print_r($phpThumb->debugmessages, 1));
 		return false;
 	}
 
@@ -134,7 +154,7 @@ class TicketFile extends xPDOSimpleObject {
 		$path = $this->get('path');
 		$filename = preg_replace('/\.[a-z]+$/i', '', $this->get('file')) . '_' . $name . '.' . $ext;
 		if ($file = $this->mediaSource->createObject($path, $filename, $raw_image)) {
-			$url = $this->mediaSource->getObjectUrl($path.$filename);
+			$url = $this->mediaSource->getObjectUrl($path . $filename);
 			// Add thumbs
 			$thumbs = $this->get('thumbs');
 			if (!is_array($thumbs)) {
@@ -153,7 +173,12 @@ class TicketFile extends xPDOSimpleObject {
 	}
 
 
-	public function save($cacheFlag= null) {
+	/**
+	 * @param null $cacheFlag
+	 *
+	 * @return bool
+	 */
+	public function save($cacheFlag = null) {
 		if ($this->isDirty('parent')) {
 			if ($this->prepareSource()) {
 				$old_path = $this->get('path');
@@ -161,21 +186,23 @@ class TicketFile extends xPDOSimpleObject {
 				$new_path = $this->get('parent') . '/';
 
 				$this->mediaSource->createContainer($new_path, '/');
-				if ($this->mediaSource->moveObject($old_path.$file, $new_path)) {
+				if ($this->mediaSource->moveObject($old_path . $file, $new_path)) {
 					$this->set('path', $new_path);
-					$this->set('url', $this->mediaSource->getObjectUrl($new_path.$file));
+					$this->set('url', $this->mediaSource->getObjectUrl($new_path . $file));
 				}
 				if (!$thumbs = $this->get('thumbs')) {
 					$thumbs = array('thumb' => $this->get('thumb'));
 				}
 				foreach ($thumbs as $key => $thumb) {
-					if (empty($thumb)) {continue;}
+					if (empty($thumb)) {
+						continue;
+					}
 					$tmp = explode('/', $thumb);
 					$thumb = end($tmp);
-					if ($this->mediaSource->moveObject($old_path.$thumb, $new_path)) {
-						$thumbs[$key] = $this->mediaSource->getObjectUrl($new_path.$thumb);
+					if ($this->mediaSource->moveObject($old_path . $thumb, $new_path)) {
+						$thumbs[$key] = $this->mediaSource->getObjectUrl($new_path . $thumb);
 						if ($key == 'thumb') {
-							$this->set('thumb', $this->mediaSource->getObjectUrl($new_path.$thumb));
+							$this->set('thumb', $this->mediaSource->getObjectUrl($new_path . $thumb));
 						}
 					}
 				}
@@ -191,25 +218,28 @@ class TicketFile extends xPDOSimpleObject {
 	 *
 	 * @return bool
 	 */
-	public function remove(array $ancestors= array ()) {
+	public function remove(array $ancestors = array()) {
 		if ($this->prepareSource() === true) {
-			if ($this->mediaSource->removeObject($this->get('path').$this->get('file'))) {
+			if ($this->mediaSource->removeObject($this->get('path') . $this->get('file'))) {
 				if (!$thumbs = $this->get('thumbs')) {
 					$thumbs = array('thumb' => $this->get('thumb'));
 				}
 				foreach ($thumbs as $thumb) {
-					if (empty($thumb)) {continue;}
+					if (empty($thumb)) {
+						continue;
+					}
 					$tmp = explode('/', $thumb);
 					$filename = end($tmp);
-					$this->mediaSource->removeObject($this->path . $filename);
+					$this->mediaSource->removeObject($this->get('path') . $filename);
 				}
 			}
 			else {
 				$this->xpdo->log(xPDO::LOG_LEVEL_ERROR,
-					'Could not remove file at "'.$this->get('path').$this->get('file').'": '.$this->mediaSource->errors['file']
+					'[Tickets] Could not remove file at "' . $this->get('path') . $this->get('file') . '": ' . $this->mediaSource->errors['file']
 				);
 			}
 		}
+
 		return parent::remove($ancestors);
 	}
 

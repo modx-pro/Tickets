@@ -1,13 +1,7 @@
 <?php
 
-/**
- * Overrides the modResourceCreateProcessor to provide custom processor functionality for the TicketsSection type
- *
- * @package tickets
- */
-
-require_once MODX_CORE_PATH.'model/modx/modprocessor.class.php';
-require_once MODX_CORE_PATH.'model/modx/processors/resource/create.class.php';
+require_once MODX_CORE_PATH . 'model/modx/modprocessor.class.php';
+require_once MODX_CORE_PATH . 'model/modx/processors/resource/create.class.php';
 
 class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
 	/** @var TicketsSection $object */
@@ -15,16 +9,21 @@ class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
 	public $classKey = 'TicketsSection';
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return array|string
+	 */
 	public function beforeSet() {
 		$this->setProperties(array(
 			'isfolder' => 1
 		));
+
 		return parent::beforeSet();
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return string
+	 */
 	public function prepareAlias() {
 		if ($this->workingContext->getOption('tickets.section_id_as_alias')) {
 			$alias = 'empty';
@@ -38,7 +37,9 @@ class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @return mixed
+	 */
 	public function afterSave() {
 		if ($this->object->alias == 'empty') {
 			$this->object->set('alias', $this->object->id);
@@ -47,10 +48,14 @@ class TicketsSectionCreateProcessor extends modResourceCreateProcessor {
 
 		// Updating resourceMap before OnDocSaveForm event
 		$results = $this->modx->cacheManager->generateContext($this->object->context_key);
-		if (isset($results['resourceMap'])) {$this->modx->context->resourceMap = $results['resourceMap'];}
-		if (isset($results['aliasMap'])) {$this->modx->context->aliasMap = $results['aliasMap'];}
-
+		if (isset($results['resourceMap'])) {
+			$this->modx->context->resourceMap = $results['resourceMap'];
+		}
+		if (isset($results['aliasMap'])) {
+			$this->modx->context->aliasMap = $results['aliasMap'];
+		}
 		$this->handleProperties();
+
 		return parent::afterSave();
 	}
 

@@ -3,13 +3,13 @@
 class TicketsSectionGetCatsProcessor extends modObjectGetListProcessor {
 	public $classKey = 'TicketsSection';
 	public $defaultSortField = 'pagetitle';
-	public $defaultSortDirection  = 'ASC';
+	public $defaultSortDirection = 'ASC';
 	public $checkListPermission = true;
 	public $item_id = 0;
 
+
 	/**
-	 * {@inheritDoc}
-	 * @return boolean
+	 * @return bool
 	 */
 	public function initialize() {
 		if ($this->getProperty('combo') && !$this->getProperty('limit') && $id = $this->getProperty('id')) {
@@ -26,9 +26,9 @@ class TicketsSectionGetCatsProcessor extends modObjectGetListProcessor {
 		return true;
 	}
 
+
 	/**
-	 * {@inheritDoc}
-	 * @return mixed
+	 * @return array|string
 	 */
 	public function process() {
 		$beforeQuery = $this->beforeQuery();
@@ -37,12 +37,13 @@ class TicketsSectionGetCatsProcessor extends modObjectGetListProcessor {
 		}
 		$data = $this->getData();
 		$list = $this->iterate($data);
-		return $this->outputArray($list,$data['total']);
+		return $this->outputArray($list, $data['total']);
 	}
 
 
 	/**
 	 * Get the data of the query
+	 *
 	 * @return array
 	 */
 	public function getData() {
@@ -50,18 +51,18 @@ class TicketsSectionGetCatsProcessor extends modObjectGetListProcessor {
 		$limit = intval($this->getProperty('limit'));
 		$start = intval($this->getProperty('start'));
 
-		/* query for chunks */
+		// query for chunks
 		$c = $this->modx->newQuery($this->classKey);
 		$c = $this->prepareQueryBeforeCount($c);
-		$data['total'] = $this->modx->getCount($this->classKey,$c);
+		$data['total'] = $this->modx->getCount($this->classKey, $c);
 		$c = $this->prepareQueryAfterCount($c);
 
 		$sortClassKey = $this->getSortClassKey();
-		$sortKey = $this->modx->getSelectColumns($sortClassKey,$this->getProperty('sortAlias',$sortClassKey),'',array($this->getProperty('sort')));
+		$sortKey = $this->modx->getSelectColumns($sortClassKey, $this->getProperty('sortAlias', $sortClassKey), '', array($this->getProperty('sort')));
 		if (empty($sortKey)) $sortKey = $this->getProperty('sort');
-		$c->sortby($sortKey,$this->getProperty('dir'));
+		$c->sortby($sortKey, $this->getProperty('dir'));
 		if ($limit > 0) {
-			$c->limit($limit,$start);
+			$c->limit($limit, $start);
 		}
 
 		if ($c->prepare() && $c->stmt->execute()) {
@@ -73,9 +74,34 @@ class TicketsSectionGetCatsProcessor extends modObjectGetListProcessor {
 
 
 	/**
+	 * @param xPDOQuery $c
+	 *
+	 * @return xPDOQuery
+	 */
+	public function prepareQueryBeforeCount(xPDOQuery $c) {
+		$c->select('id,parent,pagetitle,context_key');
+		$c->where(array(
+			'class_key' => 'TicketsSection'
+		));
+
+		if ($query = $this->getProperty('query')) {
+			$c->where(array('pagetitle:LIKE' => "%$query%"));
+		}
+		else {
+			if ($this->item_id) {
+				$c->where(array('id' => $this->item_id));
+			}
+		}
+
+		return $c;
+	}
+
+
+	/**
 	 * Iterate across the data
 	 *
 	 * @param array $data
+	 *
 	 * @return array
 	 */
 	public function iterate(array $data) {
@@ -94,28 +120,10 @@ class TicketsSectionGetCatsProcessor extends modObjectGetListProcessor {
 		return $list;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @return xPDOQuery
-	 */
-	public function prepareQueryBeforeCount(xPDOQuery $c) {
-		$c->select('id,parent,pagetitle,context_key');
-		$c->where(array(
-			'class_key' => 'TicketsSection'
-		));
-
-		if ($query = $this->getProperty('query')) {
-			$c->where(array('pagetitle:LIKE' => "%$query%"));
-		}
-		else if ($this->item_id) {
-			$c->where(array('id' => $this->item_id));
-		}
-
-		return $c;
-	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param array $resourceArray
+	 *
 	 * @return array
 	 */
 	public function prepareResult(array $resourceArray) {
@@ -140,6 +148,7 @@ class TicketsSectionGetCatsProcessor extends modObjectGetListProcessor {
 
 		return $resourceArray;
 	}
+
 }
 
 return 'TicketsSectionGetCatsProcessor';

@@ -1,26 +1,34 @@
 <?php
-/**
- * @package tickets
- */
+
 class TicketComment extends xPDOSimpleObject {
 	public $class_key = 'TicketComment';
 
+
 	/**
-	 * {@inheritDoc}
+	 * @param string $alias
+	 * @param null $criteria
+	 * @param bool $cacheFlag
+	 *
+	 * @return array
 	 */
-	public function & getMany($alias, $criteria= null, $cacheFlag= true) {
+	public function & getMany($alias, $criteria = null, $cacheFlag = true) {
 		if ($alias == 'Attachments' || $alias == 'Votes') {
 			$criteria = array('class' => $this->class_key);
 		}
 		return parent::getMany($alias, $criteria, $cacheFlag);
 	}
 
+
 	/**
-	 * {@inheritDoc}
+	 * @param mixed $obj
+	 * @param string $alias
+	 *
+	 * @return bool
 	 */
-	public function addMany(& $obj, $alias= '') {
-		$added= false;
+	public function addMany(& $obj, $alias = '') {
+		$added = false;
 		if (is_array($obj)) {
+			/** @var xPDOObject $o */
 			foreach ($obj as $o) {
 				if (is_object($o)) {
 					$o->set('class', $this->class_key);
@@ -53,6 +61,7 @@ class TicketComment extends xPDOSimpleObject {
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -100,6 +109,7 @@ class TicketComment extends xPDOSimpleObject {
 
 			return true;
 		}
+
 		return false;
 	}
 

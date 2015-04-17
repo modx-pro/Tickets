@@ -1,20 +1,18 @@
 <?php
-/**
- * Get a list of Tickets
- *
- * @package tickets
- * @subpackage processors
- */
+
 class TicketGetListProcessor extends modObjectGetListProcessor {
 	public $classKey = 'Ticket';
 	public $defaultSortField = 'id';
-	public $defaultSortDirection  = 'DESC';
+	public $defaultSortDirection = 'DESC';
 	/** @var modAction $editAction */
 	public $editAction;
 
-	/** {@inheritDoc} */
+
+	/**
+	 * @return bool
+	 */
 	public function initialize() {
-		$this->editAction = $this->modx->getObject('modAction',array(
+		$this->editAction = $this->modx->getObject('modAction', array(
 			'namespace' => 'core',
 			'controller' => 'resource/update',
 		));
@@ -22,57 +20,69 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @param xPDOQuery $c
+	 *
+	 * @return xPDOQuery
+	 */
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
-		if ($query = $this->getProperty('query',null)) {
+		if ($query = $this->getProperty('query', null)) {
 			$queryWhere = array(
-				'pagetitle:LIKE' => '%'.$query.'%'
-				,'OR:description:LIKE' => '%'.$query.'%'
-				,'OR:introtext:LIKE' => '%'.$query.'%'
+				'pagetitle:LIKE' => '%' . $query . '%'
+			, 'OR:description:LIKE' => '%' . $query . '%'
+			, 'OR:introtext:LIKE' => '%' . $query . '%'
 			);
 			$c->where($queryWhere);
 		}
-		$c->leftJoin('modUser','CreatedBy');
+		$c->leftJoin('modUser', 'CreatedBy');
 		$c->where(array(
 			'class_key' => 'Ticket'
-			,'parent' => $this->getProperty('parent')
+		, 'parent' => $this->getProperty('parent')
 		));
 		return $c;
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @param xPDOQuery $c
+	 *
+	 * @return xPDOQuery
+	 */
 	public function prepareQueryAfterCount(xPDOQuery $c) {
-		$c->select($this->modx->getSelectColumns('Ticket','Ticket'));
+		$c->select($this->modx->getSelectColumns('Ticket', 'Ticket'));
 		$c->select(array(
 			'createdby_username' => 'CreatedBy.username',
 		));
 
 		$commentsQuery = $this->modx->newQuery('TicketComment');
-		$commentsQuery->innerJoin('TicketThread','Thread');
+		$commentsQuery->innerJoin('TicketThread', 'Thread');
 		$commentsQuery->where(array(
 			'Thread.resource = Ticket.id',
 		));
 		$commentsQuery->select(array(
-			'COUNT('.$this->modx->getSelectColumns('TicketComment','TicketComment','',array('id')).')',
+			'COUNT(' . $this->modx->getSelectColumns('TicketComment', 'TicketComment', '', array('id')) . ')',
 		));
 		$commentsQuery->construct();
 		$c->select(array(
-			'('.$commentsQuery->toSQL().') AS '.$this->modx->escape('comments'),
+			'(' . $commentsQuery->toSQL() . ') AS ' . $this->modx->escape('comments'),
 		));
 
 		return $c;
 	}
 
 
-	/** {@inheritDoc} */
+	/**
+	 * @param xPDOObject $object
+	 *
+	 * @return array
+	 */
 	public function prepareRow(xPDOObject $object) {
 		$resourceArray = parent::prepareRow($object);
 
 		if (!empty($resourceArray['publishedon'])) {
-			$resourceArray['publishedon_date'] = strftime('%b %d',strtotime($resourceArray['publishedon']));
-			$resourceArray['publishedon_time'] = strftime('%H:%M %p',strtotime($resourceArray['publishedon']));
-			$resourceArray['publishedon'] = strftime('%b %d, %Y %H:%I %p',strtotime($resourceArray['publishedon']));
+			$resourceArray['publishedon_date'] = strftime('%b %d', strtotime($resourceArray['publishedon']));
+			$resourceArray['publishedon_time'] = strftime('%H:%M %p', strtotime($resourceArray['publishedon']));
+			$resourceArray['publishedon'] = strftime('%b %d, %Y %H:%I %p', strtotime($resourceArray['publishedon']));
 		}
 
 		$resourceArray['action_edit'] = '?a=' . (
@@ -81,10 +91,10 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 				: 'resource/update'
 			)
 			. '&id=' . $resourceArray['id'];
-		if (!array_key_exists('comments',$resourceArray)) $resourceArray['comments'] = 0;
+		if (!array_key_exists('comments', $resourceArray)) $resourceArray['comments'] = 0;
 
 		$this->modx->getContext($resourceArray['context_key']);
-		$resourceArray['preview_url'] = $this->modx->makeUrl($resourceArray['id'],$resourceArray['context_key']);
+		$resourceArray['preview_url'] = $this->modx->makeUrl($resourceArray['id'], $resourceArray['context_key']);
 
 		$resourceArray['content'] = '<br/>' . nl2br($this->ellipsis(strip_tags($resourceArray['content'])));
 
@@ -106,7 +116,8 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 				'className' => 'undelete green',
 				'text' => $this->modx->lexicon('undelete'),
 			);
-		} else {
+		}
+		else {
 			$resourceArray['actions'][] = array(
 				'className' => 'delete',
 				'text' => $this->modx->lexicon('delete'),
@@ -117,7 +128,8 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 				'className' => 'unpublish',
 				'text' => $this->modx->lexicon('unpublish'),
 			);
-		} else {
+		}
+		else {
 			$resourceArray['actions'][] = array(
 				'className' => 'publish orange',
 				'text' => $this->modx->lexicon('publish'),
@@ -141,6 +153,7 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 		}
 		return $string;
 	}
+
 }
 
 return 'TicketGetListProcessor';

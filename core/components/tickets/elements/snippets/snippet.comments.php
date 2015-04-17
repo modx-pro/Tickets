@@ -1,26 +1,30 @@
 <?php
 /** @var array $scriptProperties */
-if (empty($thread)) {$scriptProperties['thread'] = $modx->getOption('thread', $scriptProperties, 'resource-'.$modx->resource->id, true);}
-$scriptProperties['resource'] = $modx->resource->id;
+if (empty($thread)) {
+	$scriptProperties['thread'] = $modx->getOption('thread', $scriptProperties, 'resource-' . $modx->resource->id, true);
+}
+$scriptProperties['resource'] = $modx->resource->get('id');
 $scriptProperties['snippetPrepareComment'] = $modx->getOption('tickets.snippet_prepare_comment');
 $scriptProperties['commentEditTime'] = $modx->getOption('tickets.comment_edit_time', null, 180);
 
-if (!isset($depth)) {$depth = 0;}
-if (empty($tplComments)) {$tplComments = 'tpl.Tickets.comment.wrapper';}
-if (empty($tplCommentForm)) {$tplCommentForm = 'tpl.Tickets.comment.form';}
-if (empty($tplCommentFormGuest)) {$tplCommentFormGuest = 'tpl.Tickets.comment.form.guest';}
-if (empty($tplCommentAuth)) {$tplCommentAuth = 'tpl.Tickets.comment.one.auth';}
-if (empty($tplCommentGuest)) {$tplCommentGuest = 'tpl.Tickets.comment.one.guest';}
-if (empty($tplLoginToComment)) {$tplLoginToComment = 'tpl.Tickets.comment.login';}
-if (empty($outputSeparator)) {$outputSeparator = "\n";}
+$depth = $modx->getOption('depth', $scriptProperties, 0);
+$tplComments = $modx->getOption('tplComments', $scriptProperties, 'tpl.Tickets.comment.wrapper');
+$tplCommentForm = $modx->getOption('tplCommentForm', $scriptProperties, 'tpl.Tickets.comment.form');
+$tplCommentFormGuest = $modx->getOption('tplCommentFormGuest', $scriptProperties, 'tpl.Tickets.comment.form.guest');
+$tplCommentAuth = $modx->getOption('tplCommentAuth', $scriptProperties, 'tpl.Tickets.comment.one.auth');
+$tplCommentGuest = $modx->getOption('tplCommentGuest', $scriptProperties, 'tpl.Tickets.comment.one.guest');
+$tplLoginToComment = $modx->getOption('tplLoginToComment', $scriptProperties, 'tpl.Tickets.comment.login');
+$outputSeparator = $modx->getOption('outputSeparator', $scriptProperties, "\n");
 
 /** @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets','Tickets',$modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/tickets/',$scriptProperties);
+$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 /** @var pdoFetch $pdoFetch */
 $fqn = $modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
-if (!$pdoClass = $modx->loadClass($fqn, '', false, true)) {return false;}
+if (!$pdoClass = $modx->loadClass($fqn, '', false, true)) {
+	return false;
+}
 $pdoFetch = new $pdoClass($modx, $scriptProperties);
 $pdoFetch->addTime('pdoTools loaded');
 
@@ -54,13 +58,15 @@ $thread->save();
 // Prepare query to db
 $class = 'TicketComment';
 $where = array();
-if (empty($showUnpublished)) {$where['published'] = 1;}
+if (empty($showUnpublished)) {
+	$where['published'] = 1;
+}
 
 // Joining tables
 $innerJoin = array(
 	'Thread' => array(
 		'class' => 'TicketThread',
-		'on' => '`Thread`.`id` = `TicketComment`.`thread` AND `Thread`.`name` = "'.$thread->get('name').'"'
+		'on' => '`Thread`.`id` = `TicketComment`.`thread` AND `Thread`.`name` = "' . $thread->get('name') . '"'
 	)
 );
 $leftJoin = array(
@@ -70,11 +76,11 @@ $leftJoin = array(
 if ($Tickets->authenticated) {
 	$leftJoin['Vote'] = array(
 		'class' => 'TicketVote',
-		'on' => '`Vote`.`id` = `TicketComment`.`id` AND `Vote`.`class` = "TicketComment" AND `Vote`.`createdby` = '.$modx->user->id
+		'on' => '`Vote`.`id` = `TicketComment`.`id` AND `Vote`.`class` = "TicketComment" AND `Vote`.`createdby` = ' . $modx->user->id
 	);
 	$leftJoin['Star'] = array(
 		'class' => 'TicketStar',
-		'on' => '`Star`.`id` = `TicketComment`.`id` AND `Star`.`class` = "TicketComment" AND `Star`.`createdby` = '.$modx->user->id
+		'on' => '`Star`.`id` = `TicketComment`.`id` AND `Star`.`class` = "TicketComment" AND `Star`.`createdby` = ' . $modx->user->id
 	);
 }
 // Fields to select
@@ -82,7 +88,7 @@ $select = array(
 	'TicketComment' => $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true) . ', `parent` as `new_parent`, `rating` as `rating_total`',
 	'Thread' => '`Thread`.`resource`',
 	'User' => '`User`.`username`',
-	'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id','email'), true) . ',`Profile`.`email` as `user_email`',
+	'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id', 'email'), true) . ',`Profile`.`email` as `user_email`',
 );
 if ($Tickets->authenticated) {
 	$select['Vote'] = '`Vote`.`value` as `vote`';
@@ -90,7 +96,7 @@ if ($Tickets->authenticated) {
 }
 
 // Add custom parameters
-foreach (array('where','select','leftJoin','innerJoin') as $v) {
+foreach (array('where', 'select', 'leftJoin', 'innerJoin') as $v) {
 	if (!empty($scriptProperties[$v])) {
 		$tmp = $modx->fromJSON($scriptProperties[$v]);
 		if (is_array($tmp)) {
@@ -107,9 +113,9 @@ $default = array(
 	'innerJoin' => $modx->toJSON($innerJoin),
 	'leftJoin' => $modx->toJSON($leftJoin),
 	'select' => $modx->toJSON($select),
-	'sortby' => $class.'.id',
+	'sortby' => $class . '.id',
 	'sortdir' => 'ASC',
-	'groupby' => $class.'.id',
+	'groupby' => $class . '.id',
 	'limit' => 0,
 	'fastMode' => true,
 	'return' => 'data',
@@ -126,8 +132,8 @@ $output = $commentsThread = null;
 if (!empty($rows) && is_array($rows)) {
 	$tmp = array();
 	$i = 1;
-	foreach ($rows as $row)  {
-		$row['idx'] = $i ++;
+	foreach ($rows as $row) {
+		$row['idx'] = $i++;
 		$tmp[$row['id']] = $row;
 	}
 	$rows = $thread->buildTree($tmp, $depth);
@@ -182,7 +188,7 @@ if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
 	$output .= '<pre class="CommentsLog">' . print_r($pdoFetch->getTime(), 1) . '</pre>';
 }
 
-$modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.formBefore = '. (integer) !empty($formBefore).';TicketsConfig.thread_depth = '. (integer) $depth.';</script>', true);
+$modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.formBefore = ' . (int)!empty($formBefore) . ';TicketsConfig.thread_depth = ' . (int)$depth . ';</script>', true);
 
 // Return output
 if (!empty($toPlaceholder)) {

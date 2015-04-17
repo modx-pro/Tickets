@@ -1,21 +1,30 @@
 <?php
+
 class TicketThread extends xPDOSimpleObject {
 
-
+	/**
+	 * @return mixed
+	 */
 	public function getCommentsCount() {
 		return $this->get('comments');
 	}
 
 
+	/**
+	 *
+	 */
 	public function updateLastComment() {
 		$q = $this->xpdo->newQuery('TicketComment', array('thread' => $this->id, 'published' => 1, 'deleted' => 0));
-		$q->sortby('createdon','DESC');
+		$q->sortby('createdon', 'DESC');
 		$q->limit(1);
-		$q->select('id as comment_last,createdon as comment_time');
+		$q->select('id as comment_last, createdon as comment_time');
 		if ($q->prepare() && $q->stmt->execute()) {
 			$comment = $q->stmt->fetch(PDO::FETCH_ASSOC);
 			if (empty($comment)) {
-				$comment = array('comment_last' => 0, 'comment_time' => 0);
+				$comment = array(
+					'comment_last' => 0,
+					'comment_time' => 0
+				);
 			}
 			$this->fromArray($comment);
 			$this->save();
@@ -25,6 +34,9 @@ class TicketThread extends xPDOSimpleObject {
 	}
 
 
+	/**
+	 * @return int|mixed
+	 */
 	public function updateCommentsCount() {
 		$comments = 0;
 		$q = $this->xpdo->newQuery('TicketComment', array('thread' => $this->id, 'published' => 1));
@@ -39,6 +51,12 @@ class TicketThread extends xPDOSimpleObject {
 	}
 
 
+	/**
+	 * @param array $comments
+	 * @param int $depth
+	 *
+	 * @return array
+	 */
 	public function buildTree($comments = array(), $depth = 0) {
 		// Thank to Agel_Nash for the idea about how to limit comments by depth
 		$tree = array();
@@ -69,8 +87,16 @@ class TicketThread extends xPDOSimpleObject {
 	}
 
 
+	/**
+	 * @param int $uid
+	 *
+	 * @return bool
+	 */
 	public function Subscribe($uid = 0) {
-		if (!$uid) {$uid = $this->xpdo->user->id;}
+		if (!$uid) {
+			/** @noinspection PhpUndefinedFieldInspection */
+			$uid = $this->xpdo->user->id;
+		}
 
 		$subscribers = $this->get('subscribers');
 		if (empty($subscribers) || !is_array($subscribers)) {
@@ -91,8 +117,16 @@ class TicketThread extends xPDOSimpleObject {
 	}
 
 
+	/**
+	 * @param int $uid
+	 *
+	 * @return bool
+	 */
 	public function isSubscribed($uid = 0) {
-		if (!$uid) {$uid = $this->xpdo->user->id;}
+		if (!$uid) {
+			/** @noinspection PhpUndefinedFieldInspection */
+			$uid = $this->xpdo->user->id;
+		}
 
 		$subscribers = $this->get('subscribers');
 		if (empty($subscribers) || !is_array($subscribers)) {
@@ -101,4 +135,5 @@ class TicketThread extends xPDOSimpleObject {
 
 		return in_array($uid, $subscribers);
 	}
+
 }

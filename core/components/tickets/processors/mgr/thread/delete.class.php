@@ -1,5 +1,6 @@
 <?php
-class TicketThreadDeleteProcessor extends modObjectRemoveProcessor  {
+
+class TicketThreadDeleteProcessor extends modObjectRemoveProcessor {
 	public $checkRemovePermission = true;
 	public $classKey = 'TicketThread';
 	public $objectType = 'TicketThread';
@@ -7,6 +8,10 @@ class TicketThreadDeleteProcessor extends modObjectRemoveProcessor  {
 	public $beforeRemoveEvent = 'OnBeforeTicketThreadDelete';
 	public $afterRemoveEvent = 'OnTicketThreadDelete';
 
+
+	/**
+	 * @return array|string
+	 */
 	public function process() {
 		$canRemove = $this->beforeRemove();
 		if ($canRemove !== true) {
@@ -20,40 +25,45 @@ class TicketThreadDeleteProcessor extends modObjectRemoveProcessor  {
 		// Toggle deleted status
 		if ($this->object->get('deleted')) {
 			$this->object->fromArray(array(
-				'deleted' => 0
-				,'deletedon' => null
-				,'deletedby' => 0
+				'deleted' => 0,
+				'deletedon' => null,
+				'deletedby' => 0,
 			));
 			$action = 'restore';
 		}
 		else {
 			$this->object->fromArray(array(
-				'deleted' => 1
-				,'deletedon' => time()
-				,'deletedby' => $this->modx->user->id
+				'deleted' => 1,
+				'deletedon' => time(),
+				'deletedby' => $this->modx->user->id,
 			));
 			$action = 'delete';
 		}
 
 		if (!$this->object->save()) {
-			return $this->failure($this->modx->lexicon($this->objectType.'_err_remove'));
+			return $this->failure($this->modx->lexicon($this->objectType . '_err_remove'));
 		}
 		$this->afterRemove();
 		$this->fireAfterRemoveEvent();
 		$this->logManagerAction($action);
 		$this->cleanup();
-		return $this->success('',array($this->primaryKeyField => $this->object->get($this->primaryKeyField)));
+
+		return $this->success('', array($this->primaryKeyField => $this->object->get($this->primaryKeyField)));
 	}
 
+	/**
+	 * @param string $action
+	 */
+	public function logManagerAction($action = '') {
+		$this->modx->logManagerAction($this->objectType . '_' . $action, $this->classKey, $this->object->get($this->primaryKeyField));
+	}
 
+	/**
+	 *
+	 */
 	public function cleanup() {
 		$this->modx->cacheManager->delete('tickets/latest.comments');
 		$this->modx->cacheManager->delete('tickets/latest.tickets');
-	}
-
-
-	public function logManagerAction($action = '') {
-		$this->modx->logManagerAction($this->objectType.'_'.$action, $this->classKey, $this->object->get($this->primaryKeyField));
 	}
 }
 

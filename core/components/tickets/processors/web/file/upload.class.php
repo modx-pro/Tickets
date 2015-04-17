@@ -11,7 +11,7 @@ class TicketFileUploadProcessor extends modObjectProcessor {
 	private $class = 'Ticket';
 
 
-	/** {@inheritDoc} */
+
 	public function initialize() {
 		if (!$this->modx->hasPermission($this->permission)) {
 			return $this->modx->lexicon('access_denied');
@@ -41,36 +41,40 @@ class TicketFileUploadProcessor extends modObjectProcessor {
 	}
 
 
-	/** {@inheritDoc} */
+
 	public function process() {
 		if (!$data = $this->handleFile()) {
 			return $this->failure($this->modx->lexicon('ticket_err_file_ns'));
 		}
 
 		$properties = $this->mediaSource->getPropertyList();
-		$tmp = explode('.',$data['name']);
+		$tmp = explode('.', $data['name']);
 		$extension = strtolower(end($tmp));
 
 		$image_extensions = $allowed_extensions = array();
 		if (!empty($properties['imageExtensions'])) {
-			$image_extensions = array_map('trim', explode(',',strtolower($properties['imageExtensions'])));
+			$image_extensions = array_map('trim', explode(',', strtolower($properties['imageExtensions'])));
 		}
 		if (!empty($properties['allowedFileTypes'])) {
-			$allowed_extensions = array_map('trim', explode(',',strtolower($properties['allowedFileTypes'])));
+			$allowed_extensions = array_map('trim', explode(',', strtolower($properties['allowedFileTypes'])));
 		}
 		if (!empty($allowed_extensions) && !in_array($extension, $allowed_extensions)) {
 			return $this->failure($this->modx->lexicon('ticket_err_file_ext'));
 		}
-		elseif (in_array($extension, $image_extensions)) {$type = 'image';}
-		else {$type = $extension;}
+		elseif (in_array($extension, $image_extensions)) {
+			$type = 'image';
+		}
+		else {
+			$type = $extension;
+		}
 		$hash = sha1($data['stream']);
 
 		$path = '0/';
 		$filename = !empty($properties['imageNameType']) && $properties['imageNameType'] == 'friendly'
 			? $this->ticket->cleanAlias($data['name'])
 			: $hash . '.' . $extension;
-		if (strpos($filename, '.'.$extension) === false) {
-			$filename .= '.'.$extension;
+		if (strpos($filename, '.' . $extension) === false) {
+			$filename .= '.' . $extension;
 		}
 		// Check for existing file
 		$where = $this->modx->newQuery($this->classKey, array('class' => $this->class));
@@ -106,12 +110,12 @@ class TicketFileUploadProcessor extends modObjectProcessor {
 		unset($this->mediaSource->errors['file']);
 		$file = $this->mediaSource->createObject(
 			$ticket_file->get('path')
-			,$ticket_file->get('file')
-			,$data['stream']
+			, $ticket_file->get('file')
+			, $data['stream']
 		);
 
 		if ($file) {
-			$url = $this->mediaSource->getObjectUrl($ticket_file->get('path').$ticket_file->get('file'));
+			$url = $this->mediaSource->getObjectUrl($ticket_file->get('path') . $ticket_file->get('file'));
 			$ticket_file->set('url', $url);
 			$ticket_file->save();
 
@@ -119,7 +123,7 @@ class TicketFileUploadProcessor extends modObjectProcessor {
 			return $this->success('', $ticket_file->toArray());
 		}
 		else {
-			$this->modx->log(modX::LOG_LEVEL_ERROR, '[Tickets] Could not save file: '.print_r($this->mediaSource->getErrors(), 1));
+			$this->modx->log(modX::LOG_LEVEL_ERROR, '[Tickets] Could not save file: ' . print_r($this->mediaSource->getErrors(), 1));
 			return $this->failure($this->modx->lexicon('ticket_err_file_save'));
 		}
 	}
