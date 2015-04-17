@@ -45,7 +45,7 @@ class TicketThread extends xPDOSimpleObject {
 		foreach ($comments as $id => &$row) {
 			$row['has_children'] = $row['level'] = 0;
 
-			if (empty($row['parent'])) {
+			if (empty($row['parent']) || !isset($comments[$row['parent']])) {
 				$tree[$id] = &$row;
 			}
 			else {
