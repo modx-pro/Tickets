@@ -66,6 +66,7 @@ if (!empty($parents) || !empty($resources) || !empty($threads)) {
 $class = 'TicketComment';
 $where = array();
 if (empty($showUnpublished)) {$where['published'] = 1;}
+if (empty($showDeleted)) {$where['deleted'] = 0;}
 
 // Filter by user
 if (!empty($user)) {
