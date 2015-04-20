@@ -96,43 +96,41 @@ class Tickets {
 		$this->pdoTools->setConfig($this->config);
 
 		$this->config['ctx'] = $ctx;
-		if (!empty($this->initialized[$ctx])) {
-			return true;
+		if (empty($this->initialized[$ctx])) {
+			$config_js = array(
+				'ctx' => $ctx,
+				'jsUrl' => $this->config['jsUrl'] . 'web/',
+				'cssUrl' => $this->config['cssUrl'] . 'web/',
+				'actionUrl' => $this->config['actionUrl'],
+				'close_all_message' => $this->modx->lexicon('tickets_message_close_all'),
+				'tpanel' => (int)$this->authenticated,
+				'enable_editor' => (int)$this->modx->getOption('tickets.enable_editor'),
+			);
+			$this->modx->regClientStartupScript('<script type="text/javascript">TicketsConfig=' . $this->modx->toJSON($config_js) . '</script>', true);
+			if ($config_js['enable_editor']) {
+				$this->modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.editor={ticket: ' . $this->modx->getOption('tickets.editor_config.ticket') . ',comment: ' . $this->modx->getOption('tickets.editor_config.comment') . '}</script>', true);
+				$this->modx->regClientScript($this->config['jsUrl'] . 'web/editor/jquery.markitup.js');
+				$this->modx->regClientCSS($this->config['jsUrl'] . 'web/editor/editor.css');
+			}
+			$this->initialized[$ctx] = true;
 		}
-		switch ($ctx) {
-			case 'mgr':
-				break;
-			default:
-				if (!defined('MODX_API_MODE') || !MODX_API_MODE) {
-					$config = $this->makePlaceholders($this->config);
-					if ($css = trim($this->modx->getOption('tickets.frontend_css'))) {
-						if (!empty($css) && preg_match('/\.css/i', $css)) {
-							$this->modx->regClientCSS(str_replace($config['pl'], $config['vl'], $css));
-						}
-					}
-					if ($js = trim($this->modx->getOption('tickets.frontend_js'))) {
-						if (!empty($js) && preg_match('/\.js/i', $js)) {
-							$this->modx->regClientScript(str_replace($config['pl'], $config['vl'], $js));
-						}
-					}
-					$config_js = array(
-						'ctx' => $ctx,
-						'jsUrl' => $this->config['jsUrl'] . 'web/',
-						'cssUrl' => $this->config['cssUrl'] . 'web/',
-						'actionUrl' => $this->config['actionUrl'],
-						'close_all_message' => $this->modx->lexicon('tickets_message_close_all'),
-						'tpanel' => (int)$this->authenticated,
-						'enable_editor' => (int)$this->modx->getOption('tickets.enable_editor'),
-					);
-					$this->modx->regClientStartupScript('<script type="text/javascript">TicketsConfig=' . $this->modx->toJSON($config_js) . '</script>', true);
-					if ($config_js['enable_editor']) {
-						$this->modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.editor={ticket: ' . $this->modx->getOption('tickets.editor_config.ticket') . ',comment: ' . $this->modx->getOption('tickets.editor_config.comment') . '}</script>', true);
-						$this->modx->regClientScript($this->config['jsUrl'] . 'web/editor/jquery.markitup.js');
-						$this->modx->regClientCSS($this->config['jsUrl'] . 'web/editor/editor.css');
-					}
-				}
-				$this->initialized[$ctx] = true;
-				break;
+
+		if (!defined('MODX_API_MODE') || !MODX_API_MODE) {
+			$config = $this->makePlaceholders($this->config);
+
+			$css = !empty($this->config['frontend_css'])
+				? $this->config['frontend_css']
+				: $this->modx->getOption('tickets.frontend_css');
+			if (!empty($css) && preg_match('/\.css/i', $css)) {
+				$this->modx->regClientCSS(str_replace($config['pl'], $config['vl'], $css));
+			}
+
+			$js = !empty($this->config['frontend_js'])
+				? $this->config['frontend_js']
+				: $this->modx->getOption('tickets.frontend_js');
+			if (!empty($js) && preg_match('/\.js/i', $js)) {
+				$this->modx->regClientScript(str_replace($config['pl'], $config['vl'], $js));
+			}
 		}
 
 		return true;
