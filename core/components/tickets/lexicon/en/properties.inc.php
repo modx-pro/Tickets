@@ -60,7 +60,7 @@ $_lang['tickets_prop_gravatarSize'] = 'The size, in pixels, of the Gravatar.';
 $_lang['tickets_prop_gravatarUrl'] = 'The URL of Gravatar';
 
 $_lang['tickets_prop_allowedFields'] = 'Fields of the ticket, which allowed to fill the user. You can specify the names of the TVs.';
-$_lang['tickets_prop_requiredFields'] = 'The required fields of the ticket, which the user must fill in to send the form.';
+$_lang['tickets_prop_requiredFields'] = 'The required fields, which the user must fill in to send the form.';
 $_lang['tickets_prop_bypassFields'] = 'Field of the ticket that you do not want to filter when saving.';
 $_lang['tickets_prop_redirectUnpublished'] = 'You can specify what document to send the user when creating unpublished ticket.';
 $_lang['tickets_prop_sections_parents'] = 'There is all sections are displayed by default, but you can limit them, specifying comma-separated list of particular parents of sections.';

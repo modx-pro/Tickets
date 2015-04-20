@@ -1,5 +1,10 @@
 Changelog for Tickets.
 
+1.6.0 rc
+==========
+- [#122] [TicketComments] Added parameter &requiredFields for snippet.
+- [#122] [TicketComments] Improved frontend errors handling.
+
 1.6.0 beta
 ==========
 - Code reformat.

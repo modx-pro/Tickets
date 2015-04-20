@@ -63,6 +63,8 @@ class Tickets {
 			'allowGuestEdit' => false,
 			'allowGuestEmails' => false,
 			'enableCaptcha' => false,
+
+			'requiredFields' => '',
 		), $config);
 
 		$this->modx->addPackage('tickets', $this->config['modelPath']);
@@ -415,12 +417,15 @@ class Tickets {
 		$data['text'] = $this->Jevix($data['text'], 'Comment');
 		$data['allowGuest'] = !empty($this->config['allowGuest']);
 		$data['allowGuestEdit'] = !empty($this->config['allowGuestEdit']);
+		$data['requiredFields'] = $this->config['requiredFields'];
 		$data['published'] = (!$this->authenticated && empty($this->config['autoPublishGuest'])) || ($this->authenticated && empty($this->config['autoPublish']))
 			? false
 			: true;
 		if ($this->authenticated) {
-			$data['name'] = $this->modx->user->Profile->fullname;
-			$data['email'] = $this->modx->user->Profile->email;
+			if (empty($data['name'])) {
+				$data['name'] = $this->modx->user->Profile->get('fullname');
+			}
+			$data['email'] = $this->modx->user->Profile->get('email');
 		}
 		else {
 			if (!empty($this->config['enableCaptcha'])) {

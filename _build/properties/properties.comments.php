@@ -117,6 +117,10 @@ $tmp = array(
 		'type' => 'numberfield',
 		'value' => 10,
 	),
+	'requiredFields' => array(
+		'type' => 'textfield',
+		'value' => 'name,email',
+	),
 );
 
 foreach ($tmp as $k => $v) {

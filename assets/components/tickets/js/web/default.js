@@ -320,10 +320,20 @@ var Tickets = {
 					else {
 						Tickets.Message.error(response.message);
 						if (response.data) {
+							var errors = [];
 							var i, field;
 							for (i in response.data) {
 								field = response.data[i];
-								$(form).find('[name="' + field.field + '"]').parent().find('.error').text(field.message)
+								var elem = $(form).find('[name="' + field.field + '"]').parent().find('.error');
+								if (elem.length > 0) {
+									elem.text(field.message)
+								}
+								else {
+									errors.push(field.field + ': ' + field.message);
+								}
+							}
+							if (errors.length > 0) {
+								Tickets.Message.error(errors.join('<br/>'));
 							}
 						}
 					}
