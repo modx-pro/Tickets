@@ -5,6 +5,7 @@ Changelog for Tickets.
 - [#122] [TicketComments] Added parameter &requiredFields for snippet.
 - [#122] [TicketComments] Improved frontend errors handling.
 - Updated MarkItUp to version 1.1.14.
+- Updated Plupload to version 2.1.2.
 
 1.6.0 beta
 ==========
