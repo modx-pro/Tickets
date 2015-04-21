@@ -1470,4 +1470,19 @@ class Tickets {
 			: $response;
 	}
 
+
+	/**
+	 * Compares MODX version
+	 *
+	 * @param string $version
+	 * @param string $dir
+	 *
+	 * @return bool
+	 */
+	public function systemVersion($version = '2.3.0', $dir = '>=') {
+		$this->modx->getVersionData();
+
+		return !empty($this->modx->version) && version_compare($this->modx->version['full_version'], $version, $dir);
+	}
+
 }

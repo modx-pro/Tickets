@@ -2,13 +2,11 @@
 switch ($modx->event->name) {
 
 	case 'OnManagerPageInit':
-		$modx->getVersionData();
-		$modx23 = !empty($modx->version) && version_compare($modx->version['full_version'], '2.3.0', '>=');
+		/** @var Tickets $Tickets */
+		$Tickets = $modx->getService('Tickets');
 		$modx->regClientStartupHTMLBlock('<script type="text/javascript">
-			MODx.modx23 = ' . (int)$modx23 . ';
+			MODx.modx23 = ' . (int)$Tickets->systemVersion() . ';
 		</script>');
-		$cssFile = $modx->getOption('tickets.assets_url', null, $modx->getOption('assets_url') . 'components/tickets/') . 'css/mgr/tickets.css';
-		$modx->regClientCSS($cssFile);
 		break;
 
 
@@ -116,6 +114,7 @@ switch ($modx->event->name) {
 		break;
 
 
+	// @TODO Move this to Ticket::remove() and add TicketFile
 	case 'OnEmptyTrash':
 		if (!empty($ids)) {
 			$collection = $modx->getIterator('TicketThread', array('resource:IN' => $ids));

@@ -34,14 +34,24 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
 	public function loadCustomCssJs() {
 		$mgrUrl = $this->modx->getOption('manager_url', null, MODX_MANAGER_URL);
 
-		$ticketsAssetsUrl = $this->modx->getOption('tickets.assets_url', null, $this->modx->getOption('assets_url', null, MODX_ASSETS_URL) . 'components/tickets/');
-		$connectorUrl = $ticketsAssetsUrl . 'connector.php';
-		$ticketsJsUrl = $ticketsAssetsUrl . 'js/mgr/';
+		/** @var Tickets $Tickets */
+		$Tickets = $this->modx->getService('Tickets');
+
+		$ticketsAssetsUrl = $Tickets->config['assetsUrl'];
+		$connectorUrl = $Tickets->config['connectorUrl'];
+		$ticketsCssUrl = $Tickets->config['cssUrl'] . 'mgr/';
+		$ticketsJsUrl = $Tickets->config['jsUrl'] . 'mgr/';
 
 		$this->resourceArray['properties'] = array(
 			'tickets' => $this->resource->getProperties('tickets')
 		);
 		$this->resourceArray['syncsite'] = 0;
+
+		$this->addCss($ticketsCssUrl . 'tickets.css');
+		$this->addCss($ticketsCssUrl . 'bootstrap.buttons.css');
+		if (!$Tickets->systemVersion()) {
+			$this->addCss($ticketsCssUrl . 'font-awesome.min.css');
+		}
 
 		$this->addJavascript($mgrUrl . 'assets/modext/util/datetime.js');
 		$this->addJavascript($mgrUrl . 'assets/modext/widgets/element/modx.panel.tv.renders.js');
@@ -51,6 +61,7 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
 		$this->addJavascript($mgrUrl . 'assets/modext/sections/resource/update.js');
 		$this->addJavascript($ticketsJsUrl . 'tickets.js');
 		$this->addLastJavascript($ticketsJsUrl . 'misc/utils.js');
+		$this->addLastJavascript($ticketsJsUrl . 'misc/combos.js');
 		$this->addLastJavascript($ticketsJsUrl . 'section/section.common.js');
 		$this->addLastJavascript($ticketsJsUrl . 'section/section.grid.js');
 		$this->addLastJavascript($ticketsJsUrl . 'comment/comments.common.js');

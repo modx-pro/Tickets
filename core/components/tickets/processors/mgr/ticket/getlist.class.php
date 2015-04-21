@@ -4,19 +4,20 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 	public $classKey = 'Ticket';
 	public $defaultSortField = 'id';
 	public $defaultSortDirection = 'DESC';
-	/** @var modAction $editAction */
-	public $editAction;
+	protected $_modx23;
 
 
 	/**
 	 * @return bool
 	 */
 	public function initialize() {
-		$this->editAction = $this->modx->getObject('modAction', array(
-			'namespace' => 'core',
-			'controller' => 'resource/update',
-		));
-		return parent::initialize();
+		$parent = parent::initialize();
+
+		/** @var Tickets $Tickets */
+		$Tickets = $this->modx->getService('Tickets');
+		$this->_modx23 = $Tickets->systemVersion();
+
+		return $parent;
 	}
 
 
@@ -26,50 +27,31 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 	 * @return xPDOQuery
 	 */
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
+		$c->leftJoin('modUser', 'CreatedBy');
+		$c->leftJoin('modUserProfile', 'UserProfile', 'UserProfile.internalKey = Ticket.createdby');
+		$c->leftJoin('TicketThread', 'Thread', 'Thread.resource = Ticket.id');
+		$c->select($this->modx->getSelectColumns('Ticket', 'Ticket'));
+		$c->select(array(
+			'username' => 'CreatedBy.username',
+			'author' => 'UserProfile.fullname',
+			'comments' => 'Thread.comments'
+		));
+		$c->where(array(
+			'class_key' => 'Ticket',
+			'parent' => $this->getProperty('parent'),
+		));
+
 		if ($query = $this->getProperty('query', null)) {
 			$queryWhere = array(
-				'pagetitle:LIKE' => '%' . $query . '%'
-			, 'OR:description:LIKE' => '%' . $query . '%'
-			, 'OR:introtext:LIKE' => '%' . $query . '%'
+				'pagetitle:LIKE' => "%{$query}%",
+				'OR:description:LIKE' => "%{$query}%",
+				'OR:introtext:LIKE' => "%{$query}%",
 			);
 			$c->where($queryWhere);
 		}
-		$c->leftJoin('modUser', 'CreatedBy');
-		$c->where(array(
-			'class_key' => 'Ticket'
-		, 'parent' => $this->getProperty('parent')
-		));
-		return $c;
-	}
-
-
-	/**
-	 * @param xPDOQuery $c
-	 *
-	 * @return xPDOQuery
-	 */
-	public function prepareQueryAfterCount(xPDOQuery $c) {
-		$c->select($this->modx->getSelectColumns('Ticket', 'Ticket'));
-		$c->select(array(
-			'createdby_username' => 'CreatedBy.username',
-		));
-
-		$commentsQuery = $this->modx->newQuery('TicketComment');
-		$commentsQuery->innerJoin('TicketThread', 'Thread');
-		$commentsQuery->where(array(
-			'Thread.resource = Ticket.id',
-		));
-		$commentsQuery->select(array(
-			'COUNT(' . $this->modx->getSelectColumns('TicketComment', 'TicketComment', '', array('id')) . ')',
-		));
-		$commentsQuery->construct();
-		$c->select(array(
-			'(' . $commentsQuery->toSQL() . ') AS ' . $this->modx->escape('comments'),
-		));
 
 		return $c;
 	}
-
 
 	/**
 	 * @param xPDOObject $object
@@ -77,65 +59,108 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 	 * @return array
 	 */
 	public function prepareRow(xPDOObject $object) {
-		$resourceArray = parent::prepareRow($object);
+		$array = parent::prepareRow($object);
 
-		if (!empty($resourceArray['publishedon'])) {
-			$resourceArray['publishedon_date'] = strftime('%b %d', strtotime($resourceArray['publishedon']));
-			$resourceArray['publishedon_time'] = strftime('%H:%M %p', strtotime($resourceArray['publishedon']));
-			$resourceArray['publishedon'] = strftime('%b %d, %Y %H:%I %p', strtotime($resourceArray['publishedon']));
+		if (empty($array['author'])) {
+			$array['author'] = $array['username'];
+		}
+		$this->modx->getContext($array['context_key']);
+		$array['preview_url'] = $this->modx->makeUrl($array['id'], $array['context_key']);
+
+		$icon = $this->_modx23 ? 'icon' : 'fa';
+
+		$array['actions'] = array();
+		// View
+		if (!empty($array['preview_url'])) {
+			$array['actions'][] = array(
+				'cls' => '',
+				'icon' => "$icon $icon-eye",
+				'title' => $this->modx->lexicon('view'),
+				'action' => 'viewTicket',
+				'button' => true,
+				'menu' => true,
+			);
 		}
 
-		$resourceArray['action_edit'] = '?a=' . (
-			!empty($this->editAction)
-				? $this->editAction->get('id')
-				: 'resource/update'
-			)
-			. '&id=' . $resourceArray['id'];
-		if (!array_key_exists('comments', $resourceArray)) $resourceArray['comments'] = 0;
-
-		$this->modx->getContext($resourceArray['context_key']);
-		$resourceArray['preview_url'] = $this->modx->makeUrl($resourceArray['id'], $resourceArray['context_key']);
-
-		$resourceArray['content'] = '<br/>' . nl2br($this->ellipsis(strip_tags($resourceArray['content'])));
-
-		$resourceArray['actions'] = array();
-		$resourceArray['actions'][] = array(
-			'className' => 'edit',
-			'text' => $this->modx->lexicon('edit'),
+		// Edit
+		$array['actions'][] = array(
+			'cls' => '',
+			'icon' => "$icon $icon-edit",
+			'title' => $this->modx->lexicon('edit'),
+			'action' => 'editTicket',
+			'button' => false,
+			'menu' => true,
 		);
-		$resourceArray['actions'][] = array(
-			'className' => 'view',
-			'text' => $this->modx->lexicon('view'),
+
+		// Duplicate
+		$array['actions'][] = array(
+			'cls' => '',
+			'icon' => "$icon $icon-files-o",
+			'title' => $this->modx->lexicon('duplicate'),
+			'action' => 'duplicateTicket',
+			'button' => false,
+			'menu' => true,
 		);
-		$resourceArray['actions'][] = array(
-			'className' => 'duplicate',
-			'text' => $this->modx->lexicon('duplicate'),
-		);
-		if (!empty($resourceArray['deleted'])) {
-			$resourceArray['actions'][] = array(
-				'className' => 'undelete green',
-				'text' => $this->modx->lexicon('undelete'),
+
+		// Publish
+		if (!$array['published']) {
+			$array['actions'][] = array(
+				'cls' => '',
+				'icon' => "$icon $icon-power-off action-green",
+				'title' => $this->modx->lexicon('publish'),
+				'multiple' => $this->modx->lexicon('publish'),
+				'action' => 'publishTicket',
+				'button' => true,
+				'menu' => true,
 			);
 		}
 		else {
-			$resourceArray['actions'][] = array(
-				'className' => 'delete',
-				'text' => $this->modx->lexicon('delete'),
+			$array['actions'][] = array(
+				'cls' => '',
+				'icon' => "$icon $icon-power-off action-gray",
+				'title' => $this->modx->lexicon('unpublish'),
+				'multiple' => $this->modx->lexicon('unpublish'),
+				'action' => 'unpublishTicket',
+				'button' => true,
+				'menu' => true,
 			);
 		}
-		if (!empty($resourceArray['published'])) {
-			$resourceArray['actions'][] = array(
-				'className' => 'unpublish',
-				'text' => $this->modx->lexicon('unpublish'),
+
+		// Delete
+		if (!$array['deleted']) {
+			$array['actions'][] = array(
+				'cls' => '',
+				'icon' => "$icon $icon-trash-o action-red",
+				'title' => $this->modx->lexicon('delete'),
+				'multiple' => $this->modx->lexicon('delete'),
+				'action' => 'deleteTicket',
+				'button' => false,
+				'menu' => true,
 			);
 		}
 		else {
-			$resourceArray['actions'][] = array(
-				'className' => 'publish orange',
-				'text' => $this->modx->lexicon('publish'),
+			$array['actions'][] = array(
+				'cls' => '',
+				'icon' => "$icon $icon-undo action-green",
+				'title' => $this->modx->lexicon('undelete'),
+				'multiple' => $this->modx->lexicon('undelete'),
+				'action' => 'undeleteTicket',
+				'button' => true,
+				'menu' => true,
 			);
 		}
-		return $resourceArray;
+
+		// Menu
+		$array['actions'][] = array(
+			'cls' => '',
+			'icon' => "$icon $icon-cog actions-menu",
+			'menu' => false,
+			'button' => true,
+			'action' => 'showMenu',
+			'type' => 'menu',
+		);
+
+		return $array;
 	}
 
 
@@ -151,6 +176,7 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 		if (mb_strlen($string) > $length) {
 			$string = mb_substr($string, 0, $length, 'UTF-8') . '...';
 		}
+
 		return $string;
 	}
 

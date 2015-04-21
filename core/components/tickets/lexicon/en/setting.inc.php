@@ -14,6 +14,8 @@ $_lang['setting_tickets.frontend_css_desc'] = 'Path to file with styles of the s
 $_lang['setting_tickets.frontend_js'] = 'Frontend scripts';
 $_lang['setting_tickets.frontend_js_desc'] = 'Path to file with scripts of the shop. If you want to use your own sscripts - specify them here, or clean this parameter and load them in site template.';
 
+$_lang['setting_tickets.date_format'] = 'Date format';
+$_lang['setting_tickets.date_format_desc'] = 'The date output format in the design of the tickets.';
 $_lang['setting_tickets.default_template'] = 'Default template for new tickets';
 $_lang['setting_tickets.default_template_desc'] = 'Default template for new tickets. Using in manager and when creating tickets on frontend.';
 $_lang['setting_tickets.ticket_isfolder_force'] = 'Force "isfolder"';

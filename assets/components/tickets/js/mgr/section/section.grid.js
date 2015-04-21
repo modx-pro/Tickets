@@ -1,224 +1,265 @@
 Tickets.grid.Section = function(config) {
 	config = config || {};
-	this.exp = new Ext.grid.RowExpander({
-		tpl : new Ext.Template(
-			'<p class="desc">{content}</p>'
-		)
-	});
-	Ext.applyIf(config,{
-		id: 'tickets-grid-section'
-		,url: Tickets.config.connector_url
-		,baseParams: {
-			action: 'mgr/ticket/getlist'
-			,parent: config.resource
-		}
-		,fields: ['id','pagetitle',
-			'publishedon','publishedon_date','publishedon_time',
-			'uri','uri_override','preview_url',
-			'createdby','createdby_username',
-			'actions','action_edit','content','comments']
-		,autoHeight: true
-		,paging: true
-		,remoteSort: true
-		,bodyCssClass: 'grid-with-buttons'
-		,cls: 'tickets-grid'
-		,plugins: [this.exp]
-		,columns: [this.exp
-			,{header: _('ticket_publishedon'),dataIndex: 'publishedon',width: 50,sortable: true,renderer: {fn:this._renderPublished,scope:this}}
-			,{header: _('ticket_pagetitle'),dataIndex: 'pagetitle',id: 'main',width: 200,sortable: true,renderer: {fn:this._renderPageTitle,scope:this}}
-			,{header: _('ticket_author'),dataIndex: 'createdby_username',width: 150,sortable: true,renderer: {fn:this._renderAuthor,scope:this}}
-			,{header: '<img src="'+Tickets.config.assets_url+'img/comments-icon-w.png" alt="" class="tickets-comments-col-header" />',dataIndex: 'comments',width: 50,sortable: true,renderer: {fn:this._renderComments,scope:this}}
-		]
-		,tbar: [{
-			text: _('ticket_create')
-			,handler: this.createTicket
-			,scope: this
+
+	Ext.applyIf(config, {
+		id: 'tickets-grid-section',
+		url: Tickets.config.connector_url,
+		baseParams: {
+			action: 'mgr/ticket/getlist',
+			parent: config.resource,
 		},
-			'->'
-		,{
-			xtype: 'textfield'
-			,name: 'query'
-			,width: 200
-			,id: 'tickets-ticket-search'
-			,emptyText: _('search')
-			,listeners: {render: {fn: function(tf) {tf.getEl().addKeyListener(Ext.EventObject.ENTER, function() {this.search(tf);}, this);},scope: this}}
-		},{
-			xtype: 'button'
-			,id: 'modx-filter-tickets-clear'
-			,text: _('ticket_clear')
-			,listeners: {
-				'click': {fn: this.clearFilter, scope: this}
+		fields: this.getFields(),
+		columns: this.getColumns(config),
+		tbar: this.getTopBar(config),
+		sm: new Ext.grid.CheckboxSelectionModel(),
+		autoHeight: true,
+		paging: true,
+		remoteSort: true,
+		viewConfig: {
+			forceFit: true,
+			enableRowBody: true,
+			autoFill: true,
+			showPreview: true,
+			scrollOffset: 0,
+			getRowClass: function (rec, ri, p) {
+				var cls = [];
+				if (!rec.data.published) {
+					cls.push('tickets-row-unpublished');
+				}
+				if (rec.data.deleted) {
+					cls.push('tickets-row-deleted');
+				}
+				return cls.join(' ');
 			}
-		}]
+		},
+		cls: MODx.modx23
+			? 'modx23'
+			: 'modx22'
 	});
 	Tickets.grid.Section.superclass.constructor.call(this,config);
-	this._makeTemplates();
-	//this.on('rowclick',MODx.fireResourceFormChange);
-	//this.on('click', this.onClick, this);
 };
-Ext.extend(Tickets.grid.Section,MODx.grid.Grid,{
+Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 
-	_makeTemplates: function() {
-		this.tplPublished = new Ext.XTemplate('<tpl for=".">'
-			+'<div class="tickets-grid-date">{publishedon_date}<span class="tickets-grid-time">{publishedon_time}</span></div>'
-			+'</tpl>',{
-			compiled: true
-		});
-		this.tplComments = new Ext.XTemplate('<tpl for=".">'
-			+'<div class="tickets-grid-comments"><span>{comments}</span></div>'
-			+'</tpl>',{
-			compiled: true
-		});
-		this.tplPageTitle = new Ext.XTemplate('<tpl for="."><div class="ticket-title-column">'
-											+'<h3 class="main-column"><a href="{action_edit}" title="Edit {pagetitle}">{pagetitle}</a><span class="ticket-id">({id})</span></h3>'
-												+'<tpl if="actions">'
-				 									+'<ul class="actions">'
-														+'<tpl for="actions">'
-															+'<li><a href="#" class="controlBtn {className}">{text}</a></li>'
-														+'</tpl>'
-													+'</ul>'
-												+'</tpl>'
-											+'</div></tpl>',{
-			compiled: true
-		});
-	}
-	,_renderPublished:function(v,md,rec) {
-		return this.tplPublished.apply(rec.data);
-	}
-	,_renderPageTitle:function(v,md,rec) {
-		return this.tplPageTitle.apply(rec.data);
-	}
-	,_renderComments:function(v,md,rec) {
-		return this.tplComments.apply(rec.data);
-	}
-	,onClick: function(e) {
-		var t = e.getTarget();
-		var elm = t.className.split(' ')[0];
-		if (elm == 'controlBtn') {
-			var action = t.className.split(' ')[1];
-			this.menu.record = this.getSelectionModel().getSelected();
-			switch (action) {
-				case 'delete':
-					this.deleteTicket();
-					break;
-				case 'undelete':
-					this.undeleteTicket();
-					break;
-				case 'edit':
-					this.editTicket();
-					break;
-				case 'publish':
-					this.publishTicket();
-					break;
-				case 'unpublish':
-					this.unpublishTicket();
-					break;
-				case 'view':
-					this.viewTicket();
-					break;
-				case 'duplicate':
-					this.duplicateTicket();
-					break;
+	getFields: function(config) {
+		return [
+			'id','pagetitle','published','deleted',
+			'publishedon','createdon',
+			'createdby','author',
+			'preview_url', 'comments', 'actions'
+		];
+	},
+
+	getColumns: function(config) {
+		return [{
+				header: _('id'),
+				dataIndex: 'id',
+				width: 35,
+				sortable: true,
+			},{
+				header: _('ticket_pagetitle'),
+				dataIndex: 'pagetitle',
+				width: 150,
+				sortable: true,
+				renderer: {fn: Tickets.utils.ticketLink, scope: this},
+				id: 'pagetitle'
+			},{
+				header: _('ticket_publishedon'),
+				dataIndex: 'publishedon',
+				width: 75,
+				sortable: true,
+				renderer: {fn: Tickets.utils.formatDate, scope: this}
+			},{
+				header: _('ticket_author'),
+				dataIndex: 'author',
+				width: 75,
+				sortable: true,
+				renderer: {fn: Tickets.utils.userLink, scope: this}
+			},{
+				header: _('ticket_comments'),
+				dataIndex: 'comments',
+				width: 50,
+				sortable: true,
+			},{
+				header: _('ticket_actions'),
+				dataIndex: 'actions',
+				renderer: Tickets.utils.renderActions,
+				sortable: false,
+				width: 75,
+				id: 'actions'
+			}
+		];
+	},
+
+	getTopBar: function(config) {
+		return [{
+			text: (MODx.modx23
+				? '<i class="icon icon-plus"></i> '
+				: '<i class="fa fa-plus"></i> ')
+					+ _('ticket_create'),
+			handler: this.createTicket,
+			scope: this,
+		}, {
+			text: MODx.modx23
+				? '<i class="icon icon-trash-o action-red"></i>'
+				: '<i class="fa fa-trash-o action-red"></i>',
+			handler: this._emptyRecycleBin,
+			scope: this,
+		}, '->', {
+			xtype: 'tickets-field-search',
+			width: 250,
+			listeners: {
+				search: {fn: function(field) {
+					this._doSearch(field);
+				}, scope: this},
+				clear: {fn: function(field) {
+					field.setValue('');
+					this._clearSearch();
+				}, scope: this},
+			}
+		}];
+	},
+
+	getMenu: function (grid, rowIndex) {
+		var ids = this._getSelectedIds();
+
+		var row = grid.getStore().getAt(rowIndex);
+		var menu = Tickets.utils.getMenu(row.data['actions'], this, ids);
+
+		this.addContextMenuItem(menu);
+	},
+
+	onClick: function (e) {
+		var elem = e.getTarget();
+		if (elem.nodeName == 'BUTTON') {
+			var row = this.getSelectionModel().getSelected();
+			if (typeof(row) != 'undefined') {
+				var action = elem.getAttribute('action');
+				if (action == 'showMenu') {
+					var ri = this.getStore().find('id', row.id);
+					return this._showMenu(this, ri, e);
+				}
+				else if (typeof this[action] === 'function') {
+					this.menu.record = row.data;
+					return this[action](this, e);
+				}
 			}
 		}
-		this.processEvent('click', e);
-	}
+		return this.processEvent('click', e);
+	},
 
-	,search: function(tf, nv, ov) {
-		var s = this.getStore();
-		s.baseParams.query = tf.getValue();
-		this.getBottomToolbar().changePage(1);
-		this.refresh();
-	}
+	createTicket: function() {
+		var createPage = MODx.action
+			? MODx.action['resource/create']
+			: 'resource/create';
+		location.href = 'index.php?a=' + createPage + '&class_key=Ticket&parent=' + MODx.request.id + '&context_key=' + MODx.ctx;
+	},
 
-	,clearFilter: function() {
-		var s = this.getStore();
-		s.baseParams.query = '';
-		Ext.getCmp('tickets-ticket-search').reset();
-		this.getBottomToolbar().changePage(1);
-		this.refresh();
-	}
+	editTicket: function() {
+		location.href = 'index.php?a=' + MODx.request.a + '&id=' + this.menu.record.id;
+	},
 
-	,editTicket: function(btn,e) {
-		location.href = 'index.php?a='+MODx.request.a+'&id='+this.menu.record.id;
-	}
-
-	,createTicket: function(btn,e) {
-		var createPage = MODx.action ? MODx.action['resource/create'] : 'resource/create';
-		location.href = 'index.php?a='+createPage+'&class_key=Ticket&parent='+MODx.request.id+'&context_key='+MODx.ctx;
-	}
-
-	,viewTicket: function(btn,e) {
-		window.open(this.menu.record.data.preview_url);
+	viewTicket: function() {
+		window.open(this.menu.record['preview_url']);
 		return false;
-	}
+	},
 
-	,deleteTicket: function(btn,e) {
+	ticketAction: function(action) {
+		var ids = this._getSelectedIds();
+		if (!ids.length) {
+			return false;
+		}
 		MODx.Ajax.request({
-			url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'resource/index.php'
-			,params: {
-				action: MODx.modx23 ? 'resource/delete' : 'delete'
-				,id: this.menu.record.id
+			url: Tickets.config.connector_url,
+			params: {
+				action: 'mgr/ticket/' + action,
+				ids: Ext.util.JSON.encode(ids),
+			},
+			listeners: {
+				success: {
+					fn: function () {
+						this.refresh();
+					}, scope: this
+				}
 			}
-			,listeners: {
-				'success':{fn:this.refresh,scope:this}
-			}
-		});
-	}
+		})
+	},
 
-	,undeleteTicket: function(btn,e) {
-		MODx.Ajax.request({
-			url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'resource/index.php'
-			,params: {
-				action: MODx.modx23 ? 'resource/undelete' : 'undelete'
-				,id: this.menu.record.id
-			}
-			,listeners: {
-				'success':{fn:this.refresh,scope:this}
-			}
-		});
-	}
+	deleteTicket: function(btn,e) {
+		this.ticketAction('delete');
+	},
 
-	,publishTicket: function(btn,e) {
-		MODx.Ajax.request({
-			url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'resource/index.php'
-			,params: {
-				action: MODx.modx23 ? 'resource/publish' : 'publish'
-				,id: this.menu.record.id
-			}
-			,listeners: {
-				success: {fn:this.refresh,scope:this}
-			}
-		});
-	}
+	undeleteTicket: function(btn,e) {
+		this.ticketAction('undelete');
+	},
 
-	,unpublishTicket: function(btn,e) {
-		MODx.Ajax.request({
-			url: MODx.modx23 ? MODx.config.connector_url : MODx.config.connectors_url + 'resource/index.php'
-			,params: {
-				action: MODx.modx23 ? 'resource/unpublish' : 'unpublish'
-				,id: this.menu.record.id
-			}
-			,listeners: {
-				'success':{fn:this.refresh,scope:this}
-			}
-		});
-	}
+	publishTicket: function(btn,e) {
+		this.ticketAction('publish');
+	},
 
-	,duplicateTicket: function(btn,e) {
+	unpublishTicket: function(btn,e) {
+		this.ticketAction('unpublish');
+	},
+
+	duplicateTicket: function(btn,e) {
 		var r = this.menu.record;
 		var w = MODx.load({
-			xtype: 'modx-window-resource-duplicate'
-			,resource: r.id
-			,hasChildren: 0
-			,listeners: {
-				'success': {fn:function() {this.refresh();},scope:this}
+			xtype: 'modx-window-resource-duplicate',
+			resource: r.id,
+			hasChildren: 0,
+			listeners: {
+				success: {fn:function() {
+					this.refresh();
+				},scope:this}
 			}
 		});
 		w.config.hasChildren = 0;
 		w.setValues(r.data);
 		w.show();
-	}
+	},
+
+	_getSelectedIds: function() {
+		var ids = [];
+		var selected = this.getSelectionModel().getSelections();
+
+		for (var i in selected) {
+			if (!selected.hasOwnProperty(i)) {
+				continue;
+			}
+			ids.push(selected[i]['id']);
+		}
+
+		return ids;
+	},
+
+	_doSearch: function (tf) {
+		this.getStore().baseParams.query = tf.getValue();
+		this.getBottomToolbar().changePage(1);
+	},
+
+	_clearSearch: function() {
+		this.getStore().baseParams.query = '';
+		this.getBottomToolbar().changePage(1);
+	},
+
+	_emptyRecycleBin: function() {
+		MODx.msg.confirm({
+			title: _('empty_recycle_bin'),
+			text: _('empty_recycle_bin_confirm'),
+			url: MODx.modx23
+				? MODx.config.connector_url
+				: MODx.config.connectors_url + 'resource/index.php',
+			params: {
+				action: MODx.modx23
+					? 'resource/emptyRecycleBin'
+					: 'emptyRecycleBin',
+			},
+			listeners: {
+				success: {fn:function() {
+					this.refresh();
+				},scope:this}
+			}
+		});
+	},
 
 });
-Ext.reg('tickets-grid-section',Tickets.grid.Section);
+Ext.reg('tickets-grid-section', Tickets.grid.Section);

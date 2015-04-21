@@ -7,6 +7,11 @@
 $settings = array();
 
 $tmp = array(
+	'date_format' => array(
+		'xtype' => 'textfield',
+		'value' => '%d.%m.%y <small>%H:%M</small>',
+		'area' => 'tickets.main',
+	),
 	'enable_editor' => array(
 		'xtype' => 'combo-boolean',
 		'value' => true,

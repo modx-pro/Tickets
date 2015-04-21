@@ -3,7 +3,7 @@ var Tickets = function(config) {
 	Tickets.superclass.constructor.call(this,config);
 };
 Ext.extend(Tickets,Ext.Component,{
-	page:{},window:{},grid:{},tree:{},panel:{},combo:{},config: {},view: {}
+	page: {}, window: {}, grid: {}, tree: {}, panel: {}, combo: {}, config: {}, view: {}, utils: {}
 });
 Ext.reg('tickets',Tickets);
 

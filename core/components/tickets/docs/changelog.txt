@@ -7,6 +7,7 @@ Changelog for Tickets.
 - [#111] Ability to load any js and css files on Tickets initialization.
 - Updated MarkItUp to version 1.1.14.
 - Updated Plupload to version 2.1.2.
+- [mgr] Improved Tickets grid on TicketsSection page.
 
 1.6.0 beta
 ==========
