@@ -165,7 +165,7 @@ Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 		return false;
 	},
 
-	ticketAction: function(action) {
+	ticketAction: function(method) {
 		var ids = this._getSelectedIds();
 		if (!ids.length) {
 			return false;
@@ -173,7 +173,8 @@ Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 		MODx.Ajax.request({
 			url: Tickets.config.connector_url,
 			params: {
-				action: 'mgr/ticket/' + action,
+				action: 'mgr/ticket/multiple',
+				method: method,
 				ids: Ext.util.JSON.encode(ids),
 			},
 			listeners: {

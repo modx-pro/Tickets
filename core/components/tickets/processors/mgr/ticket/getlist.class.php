@@ -75,7 +75,7 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 			$array['actions'][] = array(
 				'cls' => '',
 				'icon' => "$icon $icon-eye",
-				'title' => $this->modx->lexicon('view'),
+				'title' => $this->modx->lexicon('tickets_action_view'),
 				'action' => 'viewTicket',
 				'button' => true,
 				'menu' => true,
@@ -86,7 +86,7 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 		$array['actions'][] = array(
 			'cls' => '',
 			'icon' => "$icon $icon-edit",
-			'title' => $this->modx->lexicon('edit'),
+			'title' => $this->modx->lexicon('tickets_action_edit'),
 			'action' => 'editTicket',
 			'button' => false,
 			'menu' => true,
@@ -96,7 +96,7 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 		$array['actions'][] = array(
 			'cls' => '',
 			'icon' => "$icon $icon-files-o",
-			'title' => $this->modx->lexicon('duplicate'),
+			'title' => $this->modx->lexicon('tickets_action_duplicate'),
 			'action' => 'duplicateTicket',
 			'button' => false,
 			'menu' => true,
@@ -107,8 +107,8 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 			$array['actions'][] = array(
 				'cls' => '',
 				'icon' => "$icon $icon-power-off action-green",
-				'title' => $this->modx->lexicon('publish'),
-				'multiple' => $this->modx->lexicon('publish'),
+				'title' => $this->modx->lexicon('tickets_action_publish'),
+				'multiple' => $this->modx->lexicon('tickets_action_publish'),
 				'action' => 'publishTicket',
 				'button' => true,
 				'menu' => true,
@@ -118,8 +118,8 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 			$array['actions'][] = array(
 				'cls' => '',
 				'icon' => "$icon $icon-power-off action-gray",
-				'title' => $this->modx->lexicon('unpublish'),
-				'multiple' => $this->modx->lexicon('unpublish'),
+				'title' => $this->modx->lexicon('tickets_action_unpublish'),
+				'multiple' => $this->modx->lexicon('tickets_action_unpublish'),
 				'action' => 'unpublishTicket',
 				'button' => true,
 				'menu' => true,
@@ -131,8 +131,8 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 			$array['actions'][] = array(
 				'cls' => '',
 				'icon' => "$icon $icon-trash-o action-red",
-				'title' => $this->modx->lexicon('delete'),
-				'multiple' => $this->modx->lexicon('delete'),
+				'title' => $this->modx->lexicon('tickets_action_delete'),
+				'multiple' => $this->modx->lexicon('tickets_action_delete'),
 				'action' => 'deleteTicket',
 				'button' => false,
 				'menu' => true,
@@ -142,8 +142,8 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 			$array['actions'][] = array(
 				'cls' => '',
 				'icon' => "$icon $icon-undo action-green",
-				'title' => $this->modx->lexicon('undelete'),
-				'multiple' => $this->modx->lexicon('undelete'),
+				'title' => $this->modx->lexicon('tickets_action_undelete'),
+				'multiple' => $this->modx->lexicon('tickets_action_undelete'),
 				'action' => 'undeleteTicket',
 				'button' => true,
 				'menu' => true,

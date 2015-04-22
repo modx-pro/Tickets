@@ -1,28 +1,10 @@
 <?php
 
-class TicketsDeleteProcessor extends modProcessor {
+require_once MODX_CORE_PATH . 'model/modx/processors/resource/delete.class.php';
 
-	/**
-	 * @return array|string
-	 */
-	public function process() {
-		$ids = $this->modx->fromJSON($this->getProperty('ids'));
-		if (empty($ids)) {
-			return $this->success();
-		}
-
-		foreach ($ids as $id) {
-			/** @var modProcessorResponse $response */
-			$this->modx->error->reset();
-			$response = $this->modx->runProcessor('resource/delete', array('id' => $id));
-			if ($response->isError()) {
-				return $response->getResponse();
-			}
-		}
-
-		return $this->success();
-	}
+class TicketDeleteProcessor extends modResourceDeleteProcessor {
+	public $permission = 'ticket_delete';
 
 }
 
-return 'TicketsDeleteProcessor';
+return 'TicketDeleteProcessor';

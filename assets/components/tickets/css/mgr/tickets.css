@@ -4,6 +4,7 @@
 
 .tickets-row-unpublished div,
 .tickets-row-unpublished a {
+	font-style: italic;
 	color: #AAA !important;
 }
 .tickets-row-deleted div,

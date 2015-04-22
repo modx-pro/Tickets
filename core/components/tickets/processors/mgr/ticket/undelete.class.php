@@ -1,28 +1,10 @@
 <?php
 
-class TicketsUnDeleteProcessor extends modProcessor {
+require_once MODX_CORE_PATH . 'model/modx/processors/resource/undelete.class.php';
 
-	/**
-	 * @return array|string
-	 */
-	public function process() {
-		$ids = $this->modx->fromJSON($this->getProperty('ids'));
-		if (empty($ids)) {
-			return $this->success();
-		}
-
-		foreach ($ids as $id) {
-			/** @var modProcessorResponse $response */
-			$this->modx->error->reset();
-			$response = $this->modx->runProcessor('resource/undelete', array('id' => $id));
-			if ($response->isError()) {
-				return $response->getResponse();
-			}
-		}
-
-		return $this->success();
-	}
+class TicketUnDeleteProcessor extends modResourceUnDeleteProcessor {
+	public $permission = 'ticket_delete';
 
 }
 
-return 'TicketsUnDeleteProcessor';
+return 'TicketUnDeleteProcessor';
