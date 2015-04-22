@@ -23,21 +23,14 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 			}
 			,items: this.getMainFields(config)
 		});
+		if (config.show_tvs && MODx.config.tvs_below_content != 1) {
+			it.push(this.getTemplateVariablesPanel(config));
+		}
 		if (config.mode == 'update') {
 			it.push({
 				title: _('comments')
-				,id: 'modx-tickets-comments'
-				,cls: 'modx-resource-tab'
-				,layout: 'form'
-				,labelAlign: 'top'
-				,labelSeparator: ''
-				,bodyCssClass: 'tab-panel-wrapper main-wrapper'
-				,autoHeight: true
 				,items: this.getComments(config)
 			});
-		}
-		if (config.show_tvs && MODx.config.tvs_below_content != 1) {
-			it.push(this.getTemplateVariablesPanel(config));
 		}
 		if (MODx.perm.resourcegroup_resource_list == 1) {
 			it.push(this.getAccessPermissionsTab(config));
@@ -332,7 +325,7 @@ Ext.extend(Tickets.panel.Ticket,MODx.panel.Resource,{
 
 	,getComments: function(config) {
 		return [{
-			xtype: 'tickets-tab-comments'
+			xtype: 'tickets-panel-comments'
 			,record: config.record
 			,parents: config.record.id
 			,layout: 'form'

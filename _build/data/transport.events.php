@@ -5,6 +5,7 @@ $events = array();
 $tmp = array(
 	'OnBeforeCommentSave' => array(),
 	'OnCommentSave' => array(),
+
 	'OnBeforeCommentPublish' => array(),
 	'OnCommentPublish' => array(),
 	'OnBeforeCommentUnpublish' => array(),
@@ -13,10 +14,19 @@ $tmp = array(
 	'OnCommentDelete' => array(),
 	'OnBeforeCommentUndelete' => array(),
 	'OnCommentUndelete' => array(),
+
 	'OnBeforeCommentRemove' => array(),
 	'OnCommentRemove' => array(),
+
+	'OnBeforeTicketThreadClose' => array(),
+	'OnTicketThreadClose' => array(),
+	'OnBeforeTicketThreadOpen' => array(),
+	'OnTicketThreadOpen' => array(),
 	'OnBeforeTicketThreadDelete' => array(),
 	'OnTicketThreadDelete' => array(),
+	'OnBeforeTicketThreadUndelete' => array(),
+	'OnTicketThreadUndelete' => array(),
+
 	'OnBeforeTicketThreadRemove' => array(),
 	'OnTicketThreadRemove' => array(),
 );

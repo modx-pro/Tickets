@@ -48,6 +48,7 @@ Tickets.utils.getMenu = function (actions, grid, selected) {
 	var menu = [];
 	var cls, icon, title, action = '';
 
+	var has_delete = false;
 	for (var i in actions) {
 		if (!actions.hasOwnProperty(i)) {
 			continue;
@@ -60,8 +61,9 @@ Tickets.utils.getMenu = function (actions, grid, selected) {
 			}
 			continue;
 		}
-		else if (menu.length > 0 && (/^remove/i.test(a['action']) || /^delete/i.test(a['action']))) {
+		else if (menu.length > 0 && !has_delete && (/^remove/i.test(a['action']) || /^delete/i.test(a['action']))) {
 			menu.push('-');
+			has_delete = true;
 		}
 
 		if (selected.length > 1) {

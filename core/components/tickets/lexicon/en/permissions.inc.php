@@ -20,3 +20,6 @@ $_lang['comment_star'] = 'Permission for adding comments to favorites.';
 $_lang['section_add_children'] = 'Permission for create new tickets in section.';
 $_lang['ticket_file_upload'] = 'Permission for upload files.';
 $_lang['ticket_file_delete'] = 'Permission for delete files.';
+$_lang['thread_close'] = 'Allows to close\open thread of comments.';
+$_lang['thread_delete'] = 'Allow delete\undelete the thread of comments.';
+$_lang['thread_remove'] = 'Allows permanently delete the thread with all the comments.';

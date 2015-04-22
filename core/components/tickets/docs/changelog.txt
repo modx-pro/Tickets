@@ -7,8 +7,10 @@ Changelog for Tickets.
 - [#111] Ability to load any js and css files on Tickets initialization.
 - [#61] Ability to specify url of comments thread for opening from manager.
 - [mgr] Improved Tickets grid on TicketsSection page.
+- [mgr] Improved Threads grid.
 - [mgr] Improved Comments grid.
 - [mgr] More Comments events.
+- [mgr] More Threads events.
 - [mgr] New method Tickets::loadManagerFiles for 3rd party components.
 - Updated MarkItUp to version 1.1.14.
 - Updated Plupload to version 2.1.2.

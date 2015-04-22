@@ -182,7 +182,12 @@ Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 					fn: function () {
 						this.refresh();
 					}, scope: this
-				}
+				},
+				failure: {
+					fn: function (response) {
+						MODx.msg.alert(_('error'), response.message);
+					}, scope: this
+				},
 			}
 		})
 	},

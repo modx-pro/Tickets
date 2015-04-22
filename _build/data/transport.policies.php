@@ -19,6 +19,9 @@ $tmp = array(
 			'comment_star' => true,
 			'ticket_file_upload' => true,
 			'ticket_file_delete' => true,
+			'thread_close' => true,
+			'thread_delete' => true,
+			'thread_remove' => true,
 		),
 	),
 	'TicketSectionPolicy' => array(
@@ -44,6 +47,9 @@ $tmp = array(
 			'ticket_view_private' => true,
 			'ticket_file_upload' => true,
 			'ticket_file_delete' => true,
+			'thread_close' => true,
+			'thread_delete' => true,
+			'thread_remove' => true,
 		),
 	),
 );

@@ -1,13 +1,10 @@
-Tickets.grid.Comments = function(config) {
+Tickets.grid.Threads = function(config) {
 	config = config || {};
 
-	Ext.applyIf(config,{
+	Ext.applyIf(config, {
 		url: Tickets.config.connector_url,
 		baseParams: {
-			action: 'mgr/comment/getlist',
-			section: config.section,
-			parents: config.parents,
-			threads: config.threads,
+			action: 'mgr/thread/getlist',
 		},
 		fields: this.getFields(),
 		columns: this.getColumns(config),
@@ -23,7 +20,7 @@ Tickets.grid.Comments = function(config) {
 			showPreview: true,
 			getRowClass: function(rec, ri, p) {
 				var cls = [];
-				if (!rec.data.published) {
+				if (rec.data.closed) {
 					cls.push('tickets-row-unpublished');
 				}
 				if (rec.data.deleted) {
@@ -33,59 +30,50 @@ Tickets.grid.Comments = function(config) {
 			},
 		},
 	});
-	Tickets.grid.Comments.superclass.constructor.call(this,config);
+	Tickets.grid.Threads.superclass.constructor.call(this,config);
 };
-Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
+Ext.extend(Tickets.grid.Threads,MODx.grid.Grid,{
 
 	getFields: function(config) {
 		return [
-			'id', 'text', 'name', 'parent', 'email', 'ip', 'thread_name',
-			'createdby', 'createdon', 'editedon', 'editedby', 'deletedon', 'deletedby',
-			'published', 'deleted', 'resource', 'pagetitle', 'preview_url', 'actions',
+			'id', 'resource', 'name',
+			'createdon', 'createdby', 'deletedon', 'deletedby',
+			'closed', 'deleted',
+			'pagetitle', 'comments', 'url', 'actions',
 		];
 	},
 
-	getColumns: function(config) {
+	getColumns: function (config) {
 		return [{
 			header: _('id'),
 			dataIndex: 'id',
 			width: 35,
 			sortable: true,
-		},{
-			header: _('ticket_comment_text'),
-			dataIndex: 'text',
-			width: 100,
-			sortable: true
-		},{
-			header: _('ticket_comment_name'),
+		}, {
+			header: _('ticket_thread_name'),
 			dataIndex: 'name',
+			width: 100,
 			sortable: true,
-			width: 75,
-			renderer: function(value, metaData, record) {
-				return Tickets.utils.userLink(value, record['data']['createdby'])
-			},
-		},{
-			header: _('ticket_comment_createdon'),
+		}, {
+			header: _('ticket_thread_createdon'),
 			dataIndex: 'createdon',
 			width: 75,
 			sortable: true,
-			renderer: Tickets.utils.formatDate
-		},{
+			renderer: Tickets.utils.formatDate,
+		}, {
+			header: _('ticket_thread_comments'),
+			dataIndex: 'comments',
+			width: 75,
+			sortable: true,
+		}, {
 			header: _('ticket'),
 			dataIndex: 'pagetitle',
 			width: 75,
-			sortable: true,
 			renderer: function(value, metaData, record) {
 				return Tickets.utils.ticketLink(value, record['data']['resource'])
 			},
-			hidden: config.parents || config.threads ? 1 : 0
-		},{
-			header: _('ticket_comment_thread'),
-			dataIndex: 'thread_name',
-			width: 75,
 			sortable: true,
-			hidden: config.threads != '' && config.threads != 0,
-		},{
+		}, {
 			header: _('ticket_actions'),
 			dataIndex: 'actions',
 			renderer: Tickets.utils.renderActions,
@@ -115,7 +103,7 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 		return {
 			rowDblClick: function(grid, rowIndex, e) {
 				var row = grid.store.getAt(rowIndex);
-				this.editComment(grid, e, row);
+				this.viewThread(grid, e, row);
 			}
 		};
 	},
@@ -158,44 +146,7 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 		this.getBottomToolbar().changePage(1);
 	},
 
-	editComment: function(btn, e, row) {
-		var record = typeof(row) != 'undefined'
-			? row.data
-			: this.menu.record;
-
-		MODx.Ajax.request({
-			url: Tickets.config.connector_url,
-			params: {
-				action: 'mgr/comment/get',
-				id: record.id,
-			},
-			listeners: {
-				success: {fn:function(r) {
-					var record = r.object;
-					var w = MODx.load({
-						xtype: 'tickets-window-comment-update',
-						record: record,
-						listeners: {
-							success: {
-								fn: this.refresh,
-								scope: this
-							},
-						},
-					});
-					w.fp.getForm().reset();
-					w.fp.getForm().setValues(record);
-					w.show(e.target);
-				},scope:this}
-			}
-		});
-	},
-
-	viewComment: function(btn,e) {
-		window.open(this.menu.record['preview_url'] + '#comment-' + this.menu.record['id']);
-		return false;
-	},
-
-	commentAction: function(method) {
+	threadAction: function(method) {
 		var ids = this._getSelectedIds();
 		if (!ids.length) {
 			return false;
@@ -203,7 +154,7 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 		MODx.Ajax.request({
 			url: Tickets.config.connector_url,
 			params: {
-				action: 'mgr/comment/multiple',
+				action: 'mgr/thread/multiple',
 				method: method,
 				ids: Ext.util.JSON.encode(ids),
 			},
@@ -222,33 +173,46 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 		})
 	},
 
-	publishComment: function(btn,e) {
-		this.commentAction('publish');
+	deleteThread: function(btn,e) {
+		this.threadAction('delete');
 	},
 
-	unpublishComment: function(btn,e) {
-		this.commentAction('unpublish');
+	undeleteThread: function(btn,e) {
+		this.threadAction('undelete');
 	},
 
-	deleteComment: function(btn,e) {
-		this.commentAction('delete');
+	closeThread: function(btn,e) {
+		this.threadAction('close');
 	},
 
-	undeleteComment: function(btn,e) {
-		this.commentAction('undelete');
+	openThread: function(btn,e) {
+		this.threadAction('open');
 	},
 
-	removeComment: function() {
+	removeThread: function(btn,e) {
 		Ext.MessageBox.confirm(
-			_('ticket_comment_remove'),
-			_('ticket_comment_remove_confirm'),
+			_('ticket_thread_remove'),
+			_('ticket_thread_remove_confirm'),
 			function(val) {
 				if (val == 'yes') {
-					this.commentAction('remove');
+					this.threadAction('remove');
 				}
 			},
 			this
 		);
+	},
+
+	viewThread: function(btn, e, row) {
+		var record = typeof(row) != 'undefined'
+			? row.data
+			: this.menu.record;
+
+		var w = MODx.load({
+			xtype: 'tickets-window-thread',
+			title: record.name,
+			threads: record.id,
+		});
+		w.show(e.target);
 	},
 
 	_getSelectedIds: function() {
@@ -265,8 +229,5 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 		return ids;
 	},
 
-	// Grid onremove fix
-	remove: function() {},
-
 });
-Ext.reg('tickets-grid-comments',Tickets.grid.Comments);
+Ext.reg('tickets-grid-threads',Tickets.grid.Threads);

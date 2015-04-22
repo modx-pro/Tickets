@@ -1,19 +1,27 @@
 <?php
 
 class TicketThreadRemoveProcessor extends modObjectRemoveProcessor {
+	/** @var TicketThread $object */
+	public $object;
 	public $checkRemovePermission = true;
 	public $classKey = 'TicketThread';
 	public $objectType = 'TicketThread';
 	public $languageTopics = array('tickets');
 	public $beforeRemoveEvent = 'OnBeforeTicketThreadRemove';
 	public $afterRemoveEvent = 'OnTicketThreadRemove';
+	public $permission = 'thread_remove';
 
 
 	/**
 	 * @return bool
 	 */
 	public function beforeRemove() {
-		$this->modx->removeCollection('TicketComment', array('thread' => $this->object->get('id')));
+		$comments = $this->modx->getIterator('TicketComment', array('thread' => $this->object->get('id')));
+		/** @var TicketComment $comment */
+		foreach ($comments as $comment) {
+			$comment->remove();
+		}
+
 		return true;
 	}
 
@@ -29,9 +37,11 @@ class TicketThreadRemoveProcessor extends modObjectRemoveProcessor {
 	/**
 	 *
 	 */
-	public function cleanup() {
+	public function afterRemove() {
 		$this->modx->cacheManager->delete('tickets/latest.comments');
 		$this->modx->cacheManager->delete('tickets/latest.tickets');
+
+		return true;
 	}
 
 }

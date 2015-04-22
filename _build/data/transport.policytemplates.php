@@ -21,6 +21,9 @@ $tmp = array(
 			'comment_star' => array(),
 			'ticket_file_upload' => array(),
 			'ticket_file_delete' => array(),
+			'thread_close' => array(),
+			'thread_delete' => array(),
+			'thread_remove' => array(),
 		),
 	),
 	'TicketsSectionPolicyTemplate' => array(

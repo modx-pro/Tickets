@@ -204,3 +204,5 @@ $_lang['tickets_action_delete'] = 'Delete';
 $_lang['tickets_action_undelete'] = 'Restore';
 $_lang['tickets_action_remove'] = 'Remove';
 $_lang['tickets_action_duplicate'] = 'Duplicate';
+$_lang['tickets_action_open'] = 'Open';
+$_lang['tickets_action_close'] = 'Close';

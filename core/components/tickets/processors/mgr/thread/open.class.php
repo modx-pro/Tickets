@@ -1,13 +1,13 @@
 <?php
 
-class TicketThreadCloseProcessor extends modObjectUpdateProcessor {
+class TicketThreadOpenProcessor extends modObjectUpdateProcessor {
 	/** @var TicketThread $object */
 	public $object;
 	public $classKey = 'TicketThread';
 	public $objectType = 'TicketThread';
 	public $languageTopics = array('tickets:default');
-	public $beforeSaveEvent = 'OnBeforeTicketThreadClose';
-	public $afterSaveEvent = 'OnTicketThreadClose';
+	public $beforeSaveEvent = 'OnBeforeTicketThreadOpen';
+	public $afterSaveEvent = 'OnTicketThreadOpen';
 	public $permission = 'thread_close';
 
 
@@ -26,7 +26,7 @@ class TicketThreadCloseProcessor extends modObjectUpdateProcessor {
 	 */
 	public function beforeSave() {
 		$this->object->fromArray(array(
-			'closed' => 1,
+			'closed' => 0,
 		));
 
 		return parent::beforeSave();
@@ -48,9 +48,9 @@ class TicketThreadCloseProcessor extends modObjectUpdateProcessor {
 	 * @param string $action
 	 */
 	public function logManagerAction($action = '') {
-		$this->modx->logManagerAction($this->objectType . '_close', $this->classKey, $this->object->get($this->primaryKeyField));
+		$this->modx->logManagerAction($this->objectType . '_open', $this->classKey, $this->object->get($this->primaryKeyField));
 	}
 
 }
 
-return 'TicketThreadCloseProcessor';
+return 'TicketThreadOpenProcessor';

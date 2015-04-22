@@ -1532,11 +1532,14 @@ class Tickets {
 			$controller->addLastJavascript($ticketsJsUrl . 'ticket/ticket.common.js');
 		}
 		if (!empty($properties['threads'])) {
-			$controller->addJavascript($ticketsJsUrl . 'thread/thread.grid.js');
-			$controller->addJavascript($ticketsJsUrl . 'thread/thread.panel.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'thread/threads.panel.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'thread/threads.grid.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'thread/thread.window.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'comment/comments.grid.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'comment/comment.window.js');
 		}
 		if (!empty($properties['comments'])) {
-			$controller->addLastJavascript($ticketsJsUrl . 'comment/comments.common.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'comment/comments.panel.js');
 			$controller->addLastJavascript($ticketsJsUrl . 'comment/comments.grid.js');
 			$controller->addLastJavascript($ticketsJsUrl . 'comment/comment.window.js');
 		}
