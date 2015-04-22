@@ -1,116 +1,186 @@
 Tickets.grid.Comments = function(config) {
 	config = config || {};
 	Ext.applyIf(config,{
-		id: 'tickets-grid-comments'
-		,url: Tickets.config.connector_url
-		,baseParams: {
-			action: 'mgr/comment/getlist'
-			,section: config.section
-			,parents: config.parents
-			,threads: config.threads
-		}
-		,fields: ['id','text','name','createdby','parent','pagetitle','createdon','createdby','editedon','editedby','published','deleted','deletedon','deletedby','resource_url','comment_url','email','ip']
-		,autoHeight: true
-		,paging: true
-		,remoteSort: true
-		,columns: [
-			{header: _('id'),dataIndex: 'id',width: 50, sortable: true}
-			,{header: _('parent'),dataIndex: 'parent',width: 50, sortable: true}
-			,{header: _('text'),dataIndex: 'text',width: 300}
-			,{header: _('name'),dataIndex: 'name',width: 100, renderer: this.renderUserLink}
-			,{header: _('createdon'),dataIndex: 'createdon',width: 100, sortable: true}
-			,{header: _('ticket'),dataIndex: 'pagetitle', width: 100, renderer: this.renderResourceLink, hidden: config.parents || config.threads ? 1 : 0}
-		]
-		,tbar: ['->'
-		,{
-			xtype: 'textfield'
-			,name: 'query'
-			,width: 200
-			,id: 'tickets-comment-search'
-			,emptyText: _('search')
-			,listeners: {render: {fn: function(tf) {tf.getEl().addKeyListener(Ext.EventObject.ENTER, function() {this.search(tf);}, this);},scope: this}}
-		},{
-			xtype: 'button'
-			,id: 'modx-filter-comments-clear'
-			,text: _('ticket_clear')
-			,listeners: {
-				'click': {fn: this.clearFilter, scope: this}
-			}
-		}]
-		,listeners: {
-			rowDblClick: function(grid, rowIndex, e) {
-				var row = grid.store.getAt(rowIndex);
-				this.updateComment(grid, e, row);
-			}
-		}
-		,viewConfig: {
-			forceFit:true,
-			enableRowBody:true,
-			showPreview:true,
-			getRowClass : function(rec, ri, p){
-				var cls = 'tickets-comment-row';
-				if (rec.data.deleted) {cls += ' comment-deleted';}
-				if (rec.data.published == 0) {cls += ' comment-unpublished';}
-				return cls;
-			}
-		}
+		id: 'tickets-grid-comments',
+		url: Tickets.config.connector_url,
+		baseParams: {
+			action: 'mgr/comment/getlist',
+			section: config.section,
+			parents: config.parents,
+			threads: config.threads,
+		},
+		fields: this.getFields(),
+		columns: this.getColumns(config),
+		tbar: this.getTopBar(config),
+		listeners: this.getListeners(config),
+		sm: new Ext.grid.CheckboxSelectionModel(),
+		autoHeight: true,
+		paging: true,
+		remoteSort: true,
+		viewConfig: {
+			forceFit: true,
+			enableRowBody: true,
+			showPreview: true,
+			getRowClass: function(rec, ri, p) {
+				var cls = [];
+				if (!rec.data.published) {
+					cls.push('tickets-row-unpublished');
+				}
+				if (rec.data.deleted) {
+					cls.push('tickets-row-deleted');
+				}
+				return cls.join(' ');
+			},
+		},
+		cls: MODx.modx23 ? 'modx23' : 'modx22',
 	});
 	Tickets.grid.Comments.superclass.constructor.call(this,config);
 };
 Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
-	windows: {}
 
-	,remove: function() {}	// Grid onremove fix
+	getFields: function(config) {
+		return [
+			'id', 'text', 'name', 'parent', 'email', 'ip', 'thread_name',
+			'createdby', 'createdon', 'editedon', 'editedby', 'deletedon', 'deletedby',
+			'published', 'deleted', 'resource', 'pagetitle', 'preview_url', 'actions',
+		];
+	},
 
-	,getMenu: function(grid, rowIndex, event) {
-		var row = grid.store.data.items[rowIndex].data;
-		var m = [];
-		m.push({text: _('ticket_comment_update'),handler: this.updateComment});
-		if (row.comment_url) {
-			m.push({text: _('ticket_comment_view'),handler: this.viewComment});
-		}
-		//m.push({text: _('ticket_comment_viewauthor'),handler: this.viewAuthor});
-		m.push({text: row.published ? _('ticket_comment_unpublish') : _('ticket_comment_publish'),handler: this.publishComment});
-		m.push('-');
-		m.push({text: row.deleted ? _('ticket_comment_undelete') : _('ticket_comment_delete'),handler: this.deleteComment});
-		m.push({text: _('ticket_comment_remove'),handler: this.removeComment});
-		this.addContextMenuItem(m);
-	}
+	getColumns: function(config) {
+		return [{
+			header: _('id'),
+			dataIndex: 'id',
+			width: 35,
+			sortable: true,
+		},{
+			header: _('ticket_comment_text'),
+			dataIndex: 'text',
+			width: 100,
+			sortable: true
+		},{
+			header: _('ticket_comment_name'),
+			dataIndex: 'name',
+			sortable: true,
+			width: 75,
+			renderer: function(value, metaData, record) {
+				return Tickets.utils.userLink(value, record['data']['createdby'])
+			},
+		},{
+			header: _('ticket_comment_createdon'),
+			dataIndex: 'createdon',
+			width: 75,
+			sortable: true,
+			renderer: Tickets.utils.formatDate
+		},{
+			header: _('ticket'),
+			dataIndex: 'pagetitle',
+			width: 75,
+			sortable: true,
+			renderer: function(value, metaData, record) {
+				return Tickets.utils.ticketLink(value, record['data']['resource'])
+			},
+			hidden: config.parents || config.threads ? 1 : 0
+		},{
+			header: _('ticket_comment_thread'),
+			dataIndex: 'thread_name',
+			width: 75,
+			sortable: true
+		},{
+			header: _('ticket_actions'),
+			dataIndex: 'actions',
+			renderer: Tickets.utils.renderActions,
+			sortable: false,
+			width: 75,
+			id: 'actions'
+		}];
+	},
 
-	,search: function(tf, nv, ov) {
-		var s = this.getStore();
-		s.baseParams.query = tf.getValue();
-		this.getBottomToolbar().changePage(1);
-		this.refresh();
-	}
-
-	,clearFilter: function() {
-		var s = this.getStore();
-		s.baseParams.query = '';
-		Ext.getCmp('tickets-comment-search').reset();
-		this.getBottomToolbar().changePage(1);
-		this.refresh();
-	}
-
-	,updateComment: function(btn, e, row) {
-		if (typeof(row) != 'undefined') {var record = row.data;}
-		else {var record = this.menu.record;}
-		MODx.Ajax.request({
-			url: Tickets.config.connector_url
-			,params: {
-				action: 'mgr/comment/get'
-				,id: record.id
+	getTopBar: function(config) {
+		return ['->', {
+			xtype: 'tickets-field-search',
+			width: 250,
+			listeners: {
+				search: {fn: function(field) {
+					this._doSearch(field);
+				}, scope: this},
+				clear: {fn: function(field) {
+					field.setValue('');
+					this._clearSearch();
+				}, scope: this},
 			}
-			,listeners: {
-				'success': {fn:function(r) {
+		}];
+	},
+
+	getListeners: function(config) {
+		return {
+			rowDblClick: function(grid, rowIndex, e) {
+				var row = grid.store.getAt(rowIndex);
+				this.editComment(grid, e, row);
+			}
+		};
+	},
+
+	getMenu: function (grid, rowIndex) {
+		var ids = this._getSelectedIds();
+
+		var row = grid.getStore().getAt(rowIndex);
+		var menu = Tickets.utils.getMenu(row.data['actions'], this, ids);
+
+		this.addContextMenuItem(menu);
+	},
+
+	onClick: function (e) {
+		var elem = e.getTarget();
+		if (elem.nodeName == 'BUTTON') {
+			var row = this.getSelectionModel().getSelected();
+			if (typeof(row) != 'undefined') {
+				var action = elem.getAttribute('action');
+				if (action == 'showMenu') {
+					var ri = this.getStore().find('id', row.id);
+					return this._showMenu(this, ri, e);
+				}
+				else if (typeof this[action] === 'function') {
+					this.menu.record = row.data;
+					return this[action](this, e);
+				}
+			}
+		}
+		return this.processEvent('click', e);
+	},
+
+	_doSearch: function (tf) {
+		this.getStore().baseParams.query = tf.getValue();
+		this.getBottomToolbar().changePage(1);
+	},
+
+	_clearSearch: function() {
+		this.getStore().baseParams.query = '';
+		this.getBottomToolbar().changePage(1);
+	},
+
+	editComment: function(btn, e, row) {
+		var record = typeof(row) != 'undefined'
+			? row.data
+			: this.menu.record;
+
+		MODx.Ajax.request({
+			url: Tickets.config.connector_url,
+			params: {
+				action: 'mgr/comment/get',
+				id: record.id,
+			},
+			listeners: {
+				success: {fn:function(r) {
 					var record = r.object;
-					w = MODx.load({
-						xtype: 'tickets-window-comment-update'
-						,record: record
-						,listeners: {
-							'success': {fn:this.refresh,scope:this}
-							,'hide': {fn:function() {this.getEl().remove()}}
-						}
+					var w = MODx.load({
+						xtype: 'tickets-window-comment-update',
+						record: record,
+						listeners: {
+							success: {fn: this.refresh, scope: this},
+							hide: {fn: function () {
+								this.getEl().remove()
+							}},
+						},
 					});
 					w.fp.getForm().reset();
 					w.fp.getForm().setValues(record);
@@ -118,82 +188,80 @@ Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 				},scope:this}
 			}
 		});
-	}
+	},
 
-	,deleteComment: function(btn,e) {
-		if (!this.menu.record) return false;
+	viewComment: function(btn,e) {
+		window.open(this.menu.record['preview_url'] + '#comment-' + this.menu.record['id']);
+		return false;
+	},
 
+	commentAction: function(method) {
+		var ids = this._getSelectedIds();
+		if (!ids.length) {
+			return false;
+		}
 		MODx.Ajax.request({
-			url: Tickets.config.connector_url
-			,params: {
-				action: 'mgr/comment/delete'
-				,id: this.menu.record.id
-			}
-			,listeners: {
-				'success': {fn:function(r) {this.refresh();},scope:this}
+			url: Tickets.config.connector_url,
+			params: {
+				action: 'mgr/comment/multiple',
+				method: method,
+				ids: Ext.util.JSON.encode(ids),
+			},
+			listeners: {
+				success: {
+					fn: function () {
+						this.refresh();
+					}, scope: this
+				}
 			}
 		})
-	}
+	},
 
-	,publishComment: function(btn,e) {
-		if (!this.menu.record) return false;
+	publishComment: function(btn,e) {
+		this.commentAction('publish');
+	},
 
-		MODx.Ajax.request({
-			url: Tickets.config.connector_url
-			,params: {
-				action: 'mgr/comment/publish'
-				,id: this.menu.record.id
+	unpublishComment: function(btn,e) {
+		this.commentAction('unpublish');
+	},
+
+	deleteComment: function(btn,e) {
+		this.commentAction('delete');
+	},
+
+	undeleteComment: function(btn,e) {
+		this.commentAction('undelete');
+	},
+
+	removeComment: function() {
+		Ext.MessageBox.confirm(
+			_('ticket_comment_remove'),
+			_('ticket_comment_remove_confirm'),
+			function(val) {
+				if (val == 'yes') {
+					this.commentAction('remove');
+				}
+			},
+			this
+		);
+	},
+
+	_getSelectedIds: function() {
+		var ids = [];
+		var selected = this.getSelectionModel().getSelections();
+
+		for (var i in selected) {
+			if (!selected.hasOwnProperty(i)) {
+				continue;
 			}
-			,listeners: {
-				'success': {fn:function(r) {this.refresh();},scope:this}
-			}
-		})
-	}
-
-	,removeComment: function() {
-		MODx.msg.confirm({
-			url: Tickets.config.connector_url
-			,title: _('ticket_comment_remove')
-			,text: _('ticket_comment_remove_confirm')
-			,params: {
-				action: 'mgr/comment/remove'
-				,id: this.menu.record.id
-			}
-			,listeners: {
-				'success': {fn:function(r) { this.refresh(); },scope:this}
-			}
-		});
-	}
-
-	,viewComment: function(btn,e) {
-		if (!this.menu.record) return false;
-		if (this.menu.record.comment_url) {
-			var url = this.menu.record.comment_url
-			window.open(url);
+			ids.push(selected[i]['id']);
 		}
 
-	}
+		return ids;
+	},
 
-	,renderResourceLink: function(val,cell,row) {
-		if (row.data.resource_url) {
-			return '<a href="' + row.data.resource_url+ '" target="_blank" class="resource-link">' + val + '</a>'
-		}
-		else {
-			return '';
-		}
-	}
-
-	,renderUserLink: function(val,cell,row) {
-		if (row.data.createdby) {
-			var updateUser = MODx.action ? MODx.action['security/user/update'] : 'security/user/update';
-			var url = 'index.php?a='+updateUser+'&id='+row.data.createdby;
-
-			return '<a href="' + url + '" target="_blank" class="resource-link">' + val + '</a>'
-		}
-		else {
-			return val;
-		}
-	}
+	// Grid onremove fix
+	remove: function() {},
 
 });
 Ext.reg('tickets-grid-comments',Tickets.grid.Comments);

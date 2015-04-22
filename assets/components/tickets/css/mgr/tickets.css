@@ -3,33 +3,24 @@
 }
 
 .tickets-row-unpublished div,
-.tickets-row-unpublished a,
-.tickets-comment-row.comment-unpublished div,
-.tickets-thread-row.thread-closed div {
+.tickets-row-unpublished a {
 	color: #AAA !important;
 }
 .tickets-row-deleted div,
-.tickets-row-deleted a,
-.tickets-comment-row.comment-deleted div,
-.tickets-thread-row.thread-deleted div {
+.tickets-row-deleted a {
 	color: brown !important;
 	text-decoration: line-through !important;
-}
-
-.tickets-comment-row .resource-link, .tickets-thread-row .resource-link {
-	color: #005580;
-	text-decoration: none;
-}
-.tickets-comment-row .resource-link:hover, .tickets-thread-row .resource-link:hover {
-	text-decoration: underline;
 }
 
 a.link, a.tickets-link {color: #005580;}
 .x-grid3-col-pagetitle {font-weight: bold;}
 
 /* Row actions */
-.x-grid3-col-actions {
+.modx23 .x-grid3-col-actions {
 	padding: 3px 0 3px 5px;
+}
+.modx22 .x-grid3-col-actions {
+	padding: 8px 0 3px 5px;
 }
 
 ul.tickets-row-actions {
@@ -120,3 +111,9 @@ a.x-menu-item .x-menu-item-text .icon {
 	height: 23px;
 	border-left: 1px solid #e4e4e4 !important;
 }
+
+/* Windows */
+.tickets-window.modx23 .x-form-label-top .x-form-item:first-of-type label.x-form-item-label {padding: 15px 0 4px !important;}
+.tickets-window .x-form-display-field {padding: 7px 0;}
+.tickets-window.modx23 .right-column {margin-right: 4px;}
+.tickets-window.modx22 .right-column {margin-right: 3px;}

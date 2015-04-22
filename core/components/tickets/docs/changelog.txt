@@ -5,10 +5,13 @@ Changelog for Tickets.
 - [#122] [TicketComments] Added parameter &requiredFields for snippet.
 - [#122] [TicketComments] Improved frontend errors handling.
 - [#111] Ability to load any js and css files on Tickets initialization.
+- [#61] Ability to specify url of comments thread for opening from manager.
+- [mgr] Improved Tickets grid on TicketsSection page.
+- [mgr] Improved Comments grid.
+- [mgr] More Comments events.
+- [mgr] New method Tickets::loadManagerFiles for 3rd party components.
 - Updated MarkItUp to version 1.1.14.
 - Updated Plupload to version 2.1.2.
-- [mgr] Improved Tickets grid on TicketsSection page.
-- [mgr] New method Tickets::loadManagerFiles for 3rd party components.
 
 1.6.0 beta
 ==========

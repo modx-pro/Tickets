@@ -1,13 +1,13 @@
 <?php
 
-class TicketCommentPublishProcessor extends modObjectUpdateProcessor {
+class TicketCommentUnpublishProcessor extends modObjectUpdateProcessor {
 	/** @var TicketComment $object */
 	public $object;
 	public $objectType = 'TicketComment';
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets:default');
-	public $beforeSaveEvent = 'OnBeforeCommentPublish';
-	public $afterSaveEvent = 'OnCommentPublish';
+	public $beforeSaveEvent = 'OnBeforeCommentUnpublish';
+	public $afterSaveEvent = 'OnCommentUnpublish';
 	public $permission = 'comment_publish';
 	protected $_sendEmails = false;
 
@@ -26,13 +26,7 @@ class TicketCommentPublishProcessor extends modObjectUpdateProcessor {
 	 * @return bool
 	 */
 	public function beforeSave() {
-		$this->object->set('published', 1);
-		$properties = $this->object->get('properties');
-		if (array_key_exists('was_published', $properties)) {
-			unset($properties['was_published']);
-			$this->object->set('properties', $properties);
-			$this->_sendEmails = true;
-		}
+		$this->object->set('published', 0);
 
 		return parent::beforeSave();
 	}
@@ -78,9 +72,9 @@ class TicketCommentPublishProcessor extends modObjectUpdateProcessor {
 	 * @param string $action
 	 */
 	public function logManagerAction($action = '') {
-		$this->modx->logManagerAction($this->objectType . '_publish', $this->classKey, $this->object->get($this->primaryKeyField));
+		$this->modx->logManagerAction($this->objectType . '_unpublish', $this->classKey, $this->object->get($this->primaryKeyField));
 	}
 
 }
 
-return 'TicketCommentPublishProcessor';
+return 'TicketCommentUnpublishProcessor';

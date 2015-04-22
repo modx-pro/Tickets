@@ -328,7 +328,7 @@ var Tickets = {
 								if (elem.length > 0) {
 									elem.text(field.message)
 								}
-								else {
+								else if (field.field && field.message) {
 									errors.push(field.field + ': ' + field.message);
 								}
 							}

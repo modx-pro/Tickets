@@ -10,7 +10,7 @@ class TicketCommentRemoveProcessor extends modObjectRemoveProcessor {
 	public $beforeRemoveEvent = 'OnBeforeCommentRemove';
 	public $afterRemoveEvent = 'OnCommentRemove';
 	public $permission = 'comment_remove';
-	private $children;
+	private $children = array();
 
 
 	/**
@@ -30,7 +30,11 @@ class TicketCommentRemoveProcessor extends modObjectRemoveProcessor {
 	 */
 	public function beforeRemove() {
 		$this->getChildren($this->object);
-		$this->modx->removeCollection('TicketComment', array('id:IN' => $this->children));
+		$children = $this->modx->getIterator('TicketComment', array('id:IN' => $this->children));
+		/** @var TicketComment $child */
+		foreach ($children as $child) {
+			$child->remove();
+		}
 		return true;
 	}
 

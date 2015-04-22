@@ -1,13 +1,13 @@
 <?php
 
-class TicketCommentDeleteProcessor extends modObjectUpdateProcessor {
+class TicketCommentUndeleteProcessor extends modObjectUpdateProcessor {
 	/** @var TicketComment $object */
 	public $object;
 	public $objectType = 'TicketComment';
 	public $classKey = 'TicketComment';
 	public $languageTopics = array('tickets:default');
-	public $beforeSaveEvent = 'OnBeforeCommentDelete';
-	public $afterSaveEvent = 'OnCommentDelete';
+	public $beforeSaveEvent = 'OnBeforeCommentUndelete';
+	public $afterSaveEvent = 'OnCommentUndelete';
 	public $permission = 'comment_delete';
 
 
@@ -26,9 +26,9 @@ class TicketCommentDeleteProcessor extends modObjectUpdateProcessor {
 	 */
 	public function beforeSave() {
 		$this->object->fromArray(array(
-			'deleted' => 1,
-			'deletedon' => time(),
-			'deletedby' => $this->modx->user->get('id'),
+			'deleted' => 0,
+			'deletedon' => null,
+			'deletedby' => 0,
 		));
 
 		return parent::beforeSave();
@@ -55,9 +55,9 @@ class TicketCommentDeleteProcessor extends modObjectUpdateProcessor {
 	 *
 	 */
 	public function logManagerAction() {
-		$this->modx->logManagerAction($this->objectType . '_delete', $this->classKey, $this->object->get($this->primaryKeyField));
+		$this->modx->logManagerAction($this->objectType . '_undelete', $this->classKey, $this->object->get($this->primaryKeyField));
 	}
 
 }
 
-return 'TicketCommentDeleteProcessor';
+return 'TicketCommentUndeleteProcessor';

@@ -14,26 +14,34 @@ Tickets.utils.formatDate = function(string) {
 	}
 };
 
-Tickets.utils.userLink = function(val,cell,row) {
-	if (!val) {return '';}
+Tickets.utils.userLink = function(value, id) {
+	if (!value) {
+		return '';
+	}
+	else if (!id) {
+		return value;
+	}
 	var action = MODx.action
 		? MODx.action['security/user/update']
 		: 'security/user/update';
-	var url = 'index.php?a=' + action + '&id=' + row.data['createdby'];
+	var url = 'index.php?a=' + action + '&id=' + id;
 
-	return '<a href="' + url + '" target="_blank" class="tickets-link">' + val + '</a>'
+	return '<a href="' + url + '" target="_blank" class="tickets-link">' + value + '</a>'
 };
 
-Tickets.utils.ticketLink = function(val,cell,row) {
-	if (!val) {return '';}
-	else if (!row.data['id']) {return val;}
-
+Tickets.utils.ticketLink = function(value, id) {
+	if (!value) {
+		return '';
+	}
+	else if (!id) {
+		return value;
+	}
 	var action = MODx.action
 		? MODx.action['resource/update']
 		: 'resource/update';
-	var url = 'index.php?a=' + action + '&id=' + row.data['id'];
+	var url = 'index.php?a=' + action + '&id=' + id;
 
-	return '<a href="' + url + '" class="tickets-link">' + val + '</a>'
+	return '<a href="' + url + '" class="tickets-link">' + value + '</a>'
 };
 
 Tickets.utils.getMenu = function (actions, grid, selected) {

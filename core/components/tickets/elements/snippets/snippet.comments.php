@@ -34,7 +34,7 @@ if (!$thread = $modx->getObject('TicketThread', array('name' => $scriptPropertie
 	$thread = $modx->newObject('TicketThread');
 	$thread->fromArray(array(
 		'name' => $scriptProperties['thread'],
-		'resource' => $modx->resource->id,
+		'resource' => $modx->resource->get('id'),
 		'createdby' => $modx->user->id,
 		'createdon' => date('Y-m-d H:i:s'),
 		'subscribers' => array($modx->resource->get('createdby')),
@@ -52,6 +52,7 @@ if (!empty($allowGuest) && !isset($_SESSION['TicketComments'])) {
 if (!is_array($thread->get('subscribers'))) {
 	$thread->set('subscribers', array($modx->resource->get('createdby')));
 }
+$thread->set('resource', $modx->resource->get('id'));
 $thread->set('properties', $scriptProperties);
 $thread->save();
 

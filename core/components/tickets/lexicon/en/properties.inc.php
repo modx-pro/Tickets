@@ -49,6 +49,7 @@ $_lang['tickets_prop_tplCommentEmailBcc'] = 'Chunk for bcc notification about ne
 $_lang['tickets_prop_tplTicketEmailBcc'] = 'Chunk for bcc notification about new comment.';
 $_lang['tickets_prop_tplCommentEmailUnpublished'] = 'Chunk for notification about unpublished new comment.';
 $_lang['tickets_prop_tplWrapper'] = 'Name of a chunk serving as a wrapper template for the output. This does not work with toSeparatePlaceholders.';
+$_lang['tickets_prop_threadUrl'] = 'Absolute url to go to a comment from manager. Used when commenting not a resources.';
 
 $_lang['tickets_prop_commentsDepth'] = 'Integer value indicating maximum depth of comments thread.';
 $_lang['tickets_prop_autoPublish'] = 'If true, all comments of authenticated users in thread will be published without moderation.';

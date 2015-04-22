@@ -32,9 +32,7 @@ Tickets.grid.Section = function(config) {
 				return cls.join(' ');
 			}
 		},
-		cls: MODx.modx23
-			? 'modx23'
-			: 'modx22'
+		cls: MODx.modx23 ? 'modx23' : 'modx22'
 	});
 	Tickets.grid.Section.superclass.constructor.call(this,config);
 };
@@ -60,20 +58,24 @@ Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 				dataIndex: 'pagetitle',
 				width: 150,
 				sortable: true,
-				renderer: {fn: Tickets.utils.ticketLink, scope: this},
+				renderer: function(value, metaData, record) {
+					return Tickets.utils.ticketLink(value, record['data']['id'])
+				},
 				id: 'pagetitle'
 			},{
 				header: _('ticket_publishedon'),
 				dataIndex: 'publishedon',
 				width: 75,
 				sortable: true,
-				renderer: {fn: Tickets.utils.formatDate, scope: this}
+				renderer: Tickets.utils.formatDate,
 			},{
 				header: _('ticket_author'),
 				dataIndex: 'author',
 				width: 75,
 				sortable: true,
-				renderer: {fn: Tickets.utils.userLink, scope: this}
+				renderer: function(value, metaData, record) {
+					return Tickets.utils.userLink(value, record['data']['createdby'])
+				},
 			},{
 				header: _('ticket_comments'),
 				dataIndex: 'comments',

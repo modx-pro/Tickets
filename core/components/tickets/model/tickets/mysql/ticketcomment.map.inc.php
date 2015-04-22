@@ -297,6 +297,14 @@ $xpdo_meta_map['TicketComment']= array (
       'cardinality' => 'one',
       'owner' => 'foreign',
     ),
+    'UserProfile' => 
+    array (
+      'class' => 'modUserProfile',
+      'local' => 'createdby',
+      'foreign' => 'internalKey',
+      'cardinality' => 'one',
+      'owner' => 'foreign',
+    ),
     'Thread' => 
     array (
       'class' => 'TicketThread',

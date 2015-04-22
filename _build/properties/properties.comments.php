@@ -121,6 +121,10 @@ $tmp = array(
 		'type' => 'textfield',
 		'value' => 'name,email',
 	),
+	'threadUrl' => array(
+		'type' => 'textfield',
+		'value' => '',
+	),
 );
 
 foreach ($tmp as $k => $v) {

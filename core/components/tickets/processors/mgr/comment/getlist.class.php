@@ -6,8 +6,21 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 	public $languageTopics = array('tickets:default');
 	public $defaultSortField = 'createdon';
 	public $defaultSortDirection = 'DESC';
-	/** @var array $resources Cache for parent resources */
-	private $resources = array();
+	protected $_modx23;
+
+
+	/**
+	 * @return bool
+	 */
+	public function initialize() {
+		$parent = parent::initialize();
+
+		/** @var Tickets $Tickets */
+		$Tickets = $this->modx->getService('Tickets');
+		$this->_modx23 = $Tickets->systemVersion();
+
+		return $parent;
+	}
 
 
 	/**
@@ -23,7 +36,7 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 				if (empty($parents)) {
 					$parents = array('0');
 				}
-				$c->where(array('TicketThread.resource:IN' => $parents));
+				$c->where(array('Thread.resource:IN' => $parents));
 			}
 		}
 		/* OR get all comments by threads list */
@@ -41,12 +54,12 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 				$parents = explode(',', $parents);
 			}
 			if (!empty($parents)) {
-				$c->where(array('TicketThread.resource:IN' => $parents));
+				$c->where(array('Thread.resource:IN' => $parents));
 			}
 		}
 		/* OR get all comments */
 		else {
-			$c->where(array('TicketThread.resource:!=' => 0));
+			//$c->where(array('Thread.resource:!=' => 0));
 		}
 
 		if ($query = $this->getProperty('query', null)) {
@@ -67,16 +80,20 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 			}
 		}
 
-		if (!$this->getProperty('sort')) {
-			$c->sortby('TicketComment.createdon', 'DESC');
-		}
-
-		$c->leftJoin('TicketThread', 'TicketThread', '`TicketThread`.`id` = `TicketComment`.`thread`');
-		$c->leftJoin('modUserProfile', 'modUserProfile', '`TicketComment`.`createdby` = `modUserProfile`.`internalKey`');
-		//$c->select('`TicketThread`.`resource`, `modResource`.`pagetitle`,`modResource`.`parent` AS `section`');
-		$c->select('SQL_CALC_FOUND_ROWS ' . $this->modx->getSelectColumns('TicketComment', 'TicketComment'));
-		$c->select('`TicketThread`.`resource`, `modUserProfile`.`fullname`');
-		//$c->leftJoin('modResource','modResource', '`TicketThread`.`resource` = `modResource`.`id`');
+		$c->leftJoin('TicketThread', 'Thread');
+		$c->leftJoin('modUser', 'User');
+		$c->leftJoin('modUserProfile', 'UserProfile');
+		$c->leftJoin('modResource', 'Resource', 'Thread.resource = Resource.id');
+		$c->select($this->modx->getSelectColumns('TicketComment', 'TicketComment'));
+		$c->select(array(
+			'Thread.resource',
+			'Thread.properties',
+			'thread_name' => 'Thread.name',
+			'User.username',
+			'UserProfile.fullname',
+			'Resource.pagetitle',
+			'Resource.context_key',
+		));
 		$c->groupby('TicketComment.id');
 
 		return $c;
@@ -89,44 +106,119 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor {
 	 * @return array
 	 */
 	public function prepareRow(xPDOObject $object) {
-		$comment = $object->toArray();
-		$resources = &$this->resources;
-		if (!array_key_exists($comment['resource'], $resources)) {
-			if ($resource = $this->modx->getObject('modResource', $comment['resource'])) {
-				$resources[$comment['resource']] = array(
-					'resource_url' => $this->modx->makeUrl($comment['resource'], '', '', 'full'),
-					'pagetitle' => $resource->get('pagetitle'),
-				);
-			}
+		$array = parent::prepareRow($object);
+
+		$array['text'] = strip_tags(html_entity_decode($array['text'], ENT_QUOTES, 'UTF-8'));
+		if (!empty($array['fullname'])) {
+			$array['name'] = $array['fullname'];
+		}
+		elseif (!empty($array['username'])) {
+			$array['name'] = $array['username'];
+		}
+		if (!empty($array['properties']['threadUrl'])) {
+			$array['preview_url'] = $array['properties']['threadUrl'];
+		}
+		elseif (!empty($array['resource'])) {
+			$this->modx->getContext($array['context_key']);
+			$array['preview_url'] = $this->modx->makeUrl($array['resource'], $array['context_key']);
+		}
+		unset($array['properties']);
+
+		$icon = $this->_modx23 ? 'icon' : 'fa';
+
+		$array['actions'] = array();
+
+		// Edit
+		$array['actions'][] = array(
+			'cls' => '',
+			'icon' => "$icon $icon-edit",
+			'title' => $this->modx->lexicon('tickets_action_edit'),
+			'action' => 'editComment',
+			'button' => empty($array['deleted']) || !empty($array['published']),
+			'menu' => true,
+		);
+
+		// View
+		if (!empty($array['preview_url']) && !empty($array['published']) && empty($array['deleted'])) {
+			$array['actions'][] = array(
+				'cls' => '',
+				'icon' => "$icon $icon-eye",
+				'title' => $this->modx->lexicon('tickets_action_view'),
+				'action' => 'viewComment',
+				'button' => true,
+				'menu' => true,
+			);
 		}
 
-		if (!empty($resources[$comment['resource']])) {
-			$comment = array_merge($comment, $resources[$comment['resource']]);
-			$comment['comment_url'] = $comment['resource_url'] . '#comment-' . $comment['id'];
+		// Publish
+		if (!$array['published']) {
+			$array['actions'][] = array(
+				'cls' => '',
+				'icon' => "$icon $icon-power-off action-green",
+				'title' => $this->modx->lexicon('tickets_action_publish'),
+				'multiple' => $this->modx->lexicon('tickets_action_publish'),
+				'action' => 'publishComment',
+				'button' => true,
+				'menu' => true,
+			);
+		}
+		else {
+			$array['actions'][] = array(
+				'cls' => '',
+				'icon' => "$icon $icon-power-off action-gray",
+				'title' => $this->modx->lexicon('tickets_action_unpublish'),
+				'multiple' => $this->modx->lexicon('tickets_action_unpublish'),
+				'action' => 'unpublishComment',
+				'button' => false,
+				'menu' => true,
+			);
 		}
 
-		$comment['text'] = strip_tags(html_entity_decode($comment['text']));
-		$comment['createdon'] = $this->formatDate($comment['createdon']);
-		$comment['editedon'] = $this->formatDate($comment['editedon']);
-		$comment['deletedon'] = $this->formatDate($comment['deletedon']);
-		if (!empty($comment['fullname'])) {
-			$comment['name'] = $comment['fullname'];
+		// Delete
+		if (!$array['deleted']) {
+			$array['actions'][] = array(
+				'cls' => '',
+				'icon' => "$icon $icon-trash-o action-yellow",
+				'title' => $this->modx->lexicon('tickets_action_delete'),
+				'multiple' => $this->modx->lexicon('tickets_action_delete'),
+				'action' => 'deleteComment',
+				'button' => false,
+				'menu' => true,
+			);
+		}
+		else {
+			$array['actions'][] = array(
+				'cls' => '',
+				'icon' => "$icon $icon-undo action-green",
+				'title' => $this->modx->lexicon('tickets_action_undelete'),
+				'multiple' => $this->modx->lexicon('tickets_action_undelete'),
+				'action' => 'undeleteComment',
+				'button' => true,
+				'menu' => true,
+			);
 		}
 
-		return $comment;
-	}
+		$array['actions'][] = array(
+			'cls' => '',
+			'icon' => "$icon $icon-trash-o action-red",
+			'title' => $this->modx->lexicon('tickets_action_remove'),
+			'multiple' => $this->modx->lexicon('tickets_action_remove'),
+			'action' => 'removeComment',
+			'button' => false,
+			'menu' => true,
+		);
 
+		// Menu
+		$array['actions'][] = array(
+			'cls' => '',
+			'icon' => "$icon $icon-cog actions-menu",
+			'menu' => false,
+			'button' => true,
+			'action' => 'showMenu',
+			'type' => 'menu',
+		);
 
-	/**
-	 * @param string $date
-	 *
-	 * @return null|string
-	 */
-	public function formatDate($date = '') {
-		if (empty($date) || $date == '0000-00-00 00:00:00') {
-			return $this->modx->lexicon('no');
-		}
-		return strftime('%d %b %Y %H:%M', strtotime($date));
+		return $array;
 	}
 
 }

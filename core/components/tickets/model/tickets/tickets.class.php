@@ -151,7 +151,12 @@ class Tickets {
 		if (empty($action)) {
 			return false;
 		}
-		return $this->modx->runProcessor($action, $data, array('processors_path' => $this->config['processorsPath']));
+		$this->modx->error->reset();
+		$processorsPath = !empty($this->config['processorsPath'])
+			? $this->config['processorsPath']
+			: MODX_CORE_PATH . 'components/tickets/processors/';
+
+		return $this->modx->runProcessor($action, $data, array('processors_path' => $processorsPath));
 	}
 
 
