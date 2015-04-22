@@ -1450,14 +1450,15 @@ class Tickets {
 	}
 
 
-	/* This method returns an success of the cart
+	/**
+	 * This method returns an success of the cart
 	 *
-	 * @param string $message A lexicon key for success message
-	 * @param array $data Additional data
-	 * @param array $placeholders Array with placeholders for lexicon entry
+	 * @param string $message
+	 * @param array $data
+	 * @param array $placeholders
 	 *
-	 * @return array|string $response
-	 * */
+	 * @return array|string
+	 */
 	public function success($message = '', $data = array(), $placeholders = array()) {
 		$response = array(
 			'success' => true,
@@ -1483,6 +1484,57 @@ class Tickets {
 		$this->modx->getVersionData();
 
 		return !empty($this->modx->version) && version_compare($this->modx->version['full_version'], $version, $dir);
+	}
+
+
+	/**
+	 * @param modManagerController $controller
+	 * @param array $properties
+	 */
+	public function loadManagerFiles(modManagerController $controller, array $properties = array()) {
+		$modx23 = (int)$this->systemVersion();
+		$ticketsAssetsUrl = $this->config['assetsUrl'];
+		$connectorUrl = $this->config['connectorUrl'];
+		$ticketsCssUrl = $this->config['cssUrl'] . 'mgr/';
+		$ticketsJsUrl = $this->config['jsUrl'] . 'mgr/';
+
+		if (!empty($properties['config'])) {
+			$tmp = array(
+				'assets_js' => $ticketsAssetsUrl,
+				'connector_url' => $connectorUrl,
+			);
+			$controller->addHtml('<script type="text/javascript">MODx.modx23 = ' . $modx23 . ';</script>', true);
+			$controller->addHtml('<script type="text/javascript">Tickets.config = ' . $this->modx->toJSON($tmp) . ';</script>', true);
+		}
+		if (!empty($properties['utils'])) {
+			$controller->addJavascript($ticketsJsUrl . 'tickets.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'misc/utils.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'misc/combos.js');
+		}
+		if (!empty($properties['css'])) {
+			$controller->addCss($ticketsCssUrl . 'tickets.css');
+			$controller->addCss($ticketsCssUrl . 'bootstrap.buttons.css');
+			if (!$modx23) {
+				$controller->addCss($ticketsCssUrl . 'font-awesome.min.css');
+			}
+		}
+
+		if (!empty($properties['section'])) {
+			$controller->addLastJavascript($ticketsJsUrl . 'section/section.common.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'section/section.grid.js');
+		}
+		if (!empty($properties['ticket'])) {
+			$controller->addLastJavascript($ticketsJsUrl . 'ticket/ticket.common.js');
+		}
+		if (!empty($properties['threads'])) {
+			$controller->addJavascript($ticketsJsUrl . 'thread/thread.grid.js');
+			$controller->addJavascript($ticketsJsUrl . 'thread/thread.panel.js');
+		}
+		if (!empty($properties['comments'])) {
+			$controller->addLastJavascript($ticketsJsUrl . 'comment/comments.common.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'comment/comments.grid.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'comment/comment.window.js');
+		}
 	}
 
 }

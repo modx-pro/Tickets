@@ -8,7 +8,6 @@ $tmp = array(
 		,'events' => array(
 			'OnDocFormSave',
 			'OnSiteRefresh',
-			'OnManagerPageInit',
 			'OnWebPagePrerender',
 			'OnPageNotFound',
 			'OnLoadWebDocument',

@@ -7,23 +7,38 @@ if (!class_exists('TicketsMainController')) {
 class TicketsHomeManagerController extends TicketsMainController {
 
 
+	/**
+	 * @return null|string
+	 */
 	public function getPageTitle() {
 		return $this->modx->lexicon('tickets');
 	}
 
+
+	/**
+	 *
+	 */
 	public function loadCustomCssJs() {
-		$this->addJavascript($this->Tickets->config['jsUrl'] . 'mgr/comment/comments.grid.js');
-		$this->addJavascript($this->Tickets->config['jsUrl'] . 'mgr/thread/thread.grid.js');
-		$this->addJavascript($this->Tickets->config['jsUrl'] . 'mgr/thread/thread.panel.js');
-		$this->addLastJavascript($this->Tickets->config['jsUrl'] . 'mgr/misc/utils.js');
+		$this->Tickets->loadManagerFiles($this, array(
+			'config' => true,
+			'utils' => true,
+			'css' => true,
+			'threads' => true,
+			'comments' => true,
+		));
 		$this->addLastJavascript($this->Tickets->config['jsUrl'] . 'mgr/home.js');
-		$this->addHtml('<script type="text/javascript">
+		$this->addHtml('
+		<script type="text/javascript">
 		Ext.onReady(function() {
 			MODx.load({xtype: "tickets-page-home"});
 		});
 		</script>');
 	}
 
+
+	/**
+	 * @return string
+	 */
 	public function getTemplateFile() {
 		return $this->Tickets->config['templatesPath'] . 'home.tpl';
 	}

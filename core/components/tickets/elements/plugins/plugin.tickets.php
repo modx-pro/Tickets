@@ -1,15 +1,6 @@
 <?php
 switch ($modx->event->name) {
 
-	case 'OnManagerPageInit':
-		/** @var Tickets $Tickets */
-		$Tickets = $modx->getService('Tickets');
-		$modx->regClientStartupHTMLBlock('<script type="text/javascript">
-			MODx.modx23 = ' . (int)$Tickets->systemVersion() . ';
-		</script>');
-		break;
-
-
 	case 'OnSiteRefresh':
 		if ($modx->cacheManager->refresh(array('default/tickets' => array()))) {
 			$modx->log(modX::LOG_LEVEL_INFO, $modx->lexicon('refresh_default') . ': Tickets');

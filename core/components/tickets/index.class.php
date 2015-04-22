@@ -11,7 +11,7 @@ abstract class TicketsMainController extends modExtraManagerController {
 	 *
 	 */
 	public function initialize() {
-		$this->Tickets = new Tickets($this->modx);
+		$this->Tickets = $this->modx->getService('Tickets');
 
 		$this->addCSS($this->Tickets->config['cssUrl'] . 'mgr/tickets.css');
 		$this->addJavascript($this->Tickets->config['jsUrl'] . 'mgr/tickets.js');
@@ -40,6 +40,7 @@ abstract class TicketsMainController extends modExtraManagerController {
 	public function checkPermissions() {
 		return true;
 	}
+
 }
 
 

@@ -47,31 +47,29 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 	 * @return void
 	 */
 	public function loadCustomCssJs() {
-		$mgrUrl = $this->modx->getOption('manager_url', null, MODX_MANAGER_URL);
-
-		$ticketsAssetsUrl = $this->modx->getOption('tickets.assets_url', null, $this->modx->getOption('assets_url', null, MODX_ASSETS_URL) . 'components/tickets/');
-		$connectorUrl = $ticketsAssetsUrl . 'connector.php';
-		$ticketsJsUrl = $ticketsAssetsUrl . 'js/mgr/';
-
 		$properties = $this->parent->getProperties();
 		$this->resourceArray = array_merge($this->resourceArray, $properties);
 		$this->resourceArray['properties'] = $properties;
 
+		/** @var Tickets $Tickets */
+		$Tickets = $this->modx->getService('Tickets');
+		$ticketsJsUrl = $Tickets->config['jsUrl'] . 'mgr/';
+		$mgrUrl = $this->modx->getOption('manager_url', null, MODX_MANAGER_URL);
+
+		$Tickets->loadManagerFiles($this, array(
+			'config' => true,
+			'utils' => true,
+			//'css' => true,
+			'ticket' => true,
+		));
 		$this->addJavascript($mgrUrl . 'assets/modext/util/datetime.js');
 		$this->addJavascript($mgrUrl . 'assets/modext/widgets/element/modx.panel.tv.renders.js');
 		$this->addJavascript($mgrUrl . 'assets/modext/widgets/resource/modx.grid.resource.security.local.js');
 		$this->addJavascript($mgrUrl . 'assets/modext/widgets/resource/modx.panel.resource.tv.js');
 		$this->addJavascript($mgrUrl . 'assets/modext/widgets/resource/modx.panel.resource.js');
 		$this->addJavascript($mgrUrl . 'assets/modext/sections/resource/create.js');
-		$this->addJavascript($ticketsJsUrl . 'tickets.js');
-		$this->addLastJavascript($ticketsJsUrl . 'misc/utils.js');
-		$this->addLastJavascript($ticketsJsUrl . 'ticket/ticket.common.js');
 		$this->addLastJavascript($ticketsJsUrl . 'ticket/create.js');
 
-		$config = array(
-			'assets_url' => $ticketsAssetsUrl,
-			'connector_url' => $connectorUrl,
-		);
 		$ready = array(
 			'xtype' => 'tickets-page-ticket-create',
 			'record' => $this->resourceArray,
@@ -84,7 +82,6 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 		$this->addHtml('
 		<script type="text/javascript">
 		// <![CDATA[
-		Tickets.config = ' . $this->modx->toJSON($config) . ';
 		MODx.config.publish_document = ' . (int)$this->canPublish . ';
 		MODx.config.default_template = ' . $this->modx->getOption('tickets.default_template', null, $this->modx->getOption('default_template'), true) . ';
 		MODx.onDocFormRender = "' . $this->onDocFormRender . '";
