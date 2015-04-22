@@ -1508,8 +1508,7 @@ class Tickets {
 				'assets_js' => $ticketsAssetsUrl,
 				'connector_url' => $connectorUrl,
 			);
-			$controller->addHtml('<script type="text/javascript">MODx.modx23 = ' . $modx23 . ';</script>', true);
-			$controller->addHtml('<script type="text/javascript">Tickets.config = ' . $this->modx->toJSON($tmp) . ';</script>', true);
+			$controller->addHtml('<script type="text/javascript">MODx.modx23 = ' . $modx23 . ';Tickets.config = ' . $this->modx->toJSON($tmp) . ';</script>', true);
 		}
 		if (!empty($properties['utils'])) {
 			$controller->addJavascript($ticketsJsUrl . 'tickets.js');

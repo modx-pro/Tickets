@@ -1,10 +1,13 @@
 <?php
 
-if (!class_exists('TicketsMainController')) {
-	require_once dirname(dirname(__FILE__)) . '/index.class.php';
-}
+class TicketsHomeManagerController extends modExtraManagerController {
 
-class TicketsHomeManagerController extends TicketsMainController {
+	/**
+	 * @return array
+	 */
+	public function getLanguageTopics() {
+		return array('tickets:default');
+	}
 
 
 	/**
@@ -19,14 +22,17 @@ class TicketsHomeManagerController extends TicketsMainController {
 	 *
 	 */
 	public function loadCustomCssJs() {
-		$this->Tickets->loadManagerFiles($this, array(
+		/** @var Tickets $Tickets */
+		$Tickets = $this->modx->getService('Tickets');
+
+		$Tickets->loadManagerFiles($this, array(
 			'config' => true,
 			'utils' => true,
 			'css' => true,
 			'threads' => true,
 			'comments' => true,
 		));
-		$this->addLastJavascript($this->Tickets->config['jsUrl'] . 'mgr/home.js');
+		$this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/home.js');
 		$this->addHtml('
 		<script type="text/javascript">
 		Ext.onReady(function() {
@@ -40,7 +46,10 @@ class TicketsHomeManagerController extends TicketsMainController {
 	 * @return string
 	 */
 	public function getTemplateFile() {
-		return $this->Tickets->config['templatesPath'] . 'home.tpl';
+		/** @var Tickets $Tickets */
+		$Tickets = $this->modx->getService('Tickets');
+
+		return $Tickets->config['templatesPath'] . 'home.tpl';
 	}
 
 }

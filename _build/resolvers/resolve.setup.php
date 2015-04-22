@@ -1,11 +1,6 @@
 <?php
-/**
- * Resolves setup-options settings
- *
- * @package tickets
- * @subpackage build
- */
-$success= false;
+
+$success = false;
 switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 	case xPDOTransport::ACTION_INSTALL:
 	case xPDOTransport::ACTION_UPGRADE:
@@ -22,13 +17,19 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 		);
 		foreach ($packages as $package => $options) {
 			$query = array('package_name' => $package);
-			if (!empty($options)) {$query = array_merge($query, $options);}
+			if (!empty($options)) {
+				$query = array_merge($query, $options);
+			}
 			if (!$modx->getObject('transport.modTransportPackage', $query)) {
-				$modx->log(modX::LOG_LEVEL_INFO, 'Trying to install <b>'.$package.'</b>. Please wait...');
+				$modx->log(modX::LOG_LEVEL_INFO, 'Trying to install <b>' . $package . '</b>. Please wait...');
 
 				$response = installPackage($package);
-				if ($response['success']) {$level = modX::LOG_LEVEL_INFO;}
-				else {$level = modX::LOG_LEVEL_ERROR;}
+				if ($response['success']) {
+					$level = modX::LOG_LEVEL_INFO;
+				}
+				else {
+					$level = modX::LOG_LEVEL_ERROR;
+				}
 
 				$modx->log($level, $response['message']);
 			}
@@ -39,82 +40,81 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 			if (!$prop_ticket = $modx->getObject('modPropertySet', array('name' => 'Ticket'))) {
 				$prop_ticket = $modx->newObject('modPropertySet', array(
 					'name' => 'Ticket'
-					,'description' => 'Filter rules for Tickets'
-					,'properties' => array(
-						'cfgAllowTagParams' => array (
-							'name' => 'cfgAllowTagParams','desc' => 'cfgAllowTagParams','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
+				, 'description' => 'Filter rules for Tickets'
+				, 'properties' => array(
+						'cfgAllowTagParams' => array(
+							'name' => 'cfgAllowTagParams', 'desc' => 'cfgAllowTagParams', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
 							'value' => '{"pre":{"class":["prettyprint"]},"cut":{"title":["#text"]},"a":["title","href"],"img":{"0":"src","alt":"#text","1":"title","align":["right","left","center"],"width":"#int","height":"#int","hspace":"#int","vspace":"#int"}}',
 						),
-						'cfgAllowTags' => array (
-							'name' => 'cfgAllowTags','desc' => 'cfgAllowTags','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
+						'cfgAllowTags' => array(
+							'name' => 'cfgAllowTags', 'desc' => 'cfgAllowTags', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
 							'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,pre,acronym,h1,h2,h3,h4,h5,h6,cut,br,code,s,blockquote,table,tr,th,td,video',
 						),
 						'cfgSetTagChilds' => array(
-							'name' => 'cfgSetTagChilds','desc' => 'cfgSetTagChilds','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
+							'name' => 'cfgSetTagChilds', 'desc' => 'cfgSetTagChilds', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
 							'value' => '[["ul",["li"],false,true],["ol",["li"],false,true],["table",["tr"],false,true],["tr",["td","th"],false,true]]'
 						),
-						'cfgSetAutoReplace' => array (
-							'name' => 'cfgSetAutoReplace','desc' => 'cfgSetAutoReplace','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
+						'cfgSetAutoReplace' => array(
+							'name' => 'cfgSetAutoReplace', 'desc' => 'cfgSetAutoReplace', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
 							'value' => '[["+/-","(c)","(с)","(r)","(C)","(С)","(R)","<code","code>"],["±","©","©","®","©","©","®","<pre class=\\"prettyprint\\"","pre>"]]',
 						),
 						'cfgSetTagShort' => array(
-							'name' => 'cfgSetTagShort','desc' => 'cfgSetTagShort','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
+							'name' => 'cfgSetTagShort', 'desc' => 'cfgSetTagShort', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
 							'value' => 'br,img,cut',
 						)
 					)
 				));
 				if ($prop_ticket->save() && $snippet->addPropertySet($prop_ticket)) {
-					$modx->log(xPDO::LOG_LEVEL_INFO,'[Tickets] Property set "Ticket" for snippet <b>Jevix</b> was created');
+					$modx->log(xPDO::LOG_LEVEL_INFO, '[Tickets] Property set "Ticket" for snippet <b>Jevix</b> was created');
 				}
 				else {
-					$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not create property set "Ticket" for <b>Jevix</b>');
+					$modx->log(xPDO::LOG_LEVEL_ERROR, '[Tickets] Could not create property set "Ticket" for <b>Jevix</b>');
 				}
 			}
 
 			if (!$prop_comment = $modx->getObject('modPropertySet', array('name' => 'Comment'))) {
 				$prop_comment = $modx->newObject('modPropertySet', array(
 					'name' => 'Comment'
-					,'description' => 'Filter rules for Tickets comments'
-					,'properties' => array(
-						'cfgAllowTagParams' => array (
-							'name' => 'cfgAllowTagParams','desc' => 'cfgAllowTagParams','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
+				, 'description' => 'Filter rules for Tickets comments'
+				, 'properties' => array(
+						'cfgAllowTagParams' => array(
+							'name' => 'cfgAllowTagParams', 'desc' => 'cfgAllowTagParams', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
 							'value' => '{"pre":{"class":["prettyprint"]},"a":["title","href"],"img":{"0":"src","alt":"#text","1":"title","align":["right","left","center"],"width":"#int","height":"#int","hspace":"#int","vspace":"#int"}}',
 						),
-						'cfgAllowTags' => array (
-							'name' => 'cfgAllowTags','desc' => 'cfgAllowTags','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
+						'cfgAllowTags' => array(
+							'name' => 'cfgAllowTags', 'desc' => 'cfgAllowTags', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
 							'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,pre,acronym,br,code,s,blockquote',
 						),
 						'cfgSetTagChilds' => array(
-							'name' => 'cfgSetTagChilds','desc' => 'cfgSetTagChilds','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
+							'name' => 'cfgSetTagChilds', 'desc' => 'cfgSetTagChilds', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
 							'value' => '[["ul",["li"],false,true],["ol",["li"],false,true]]'
 						),
-						'cfgSetAutoReplace' => array (
-							'name' => 'cfgSetAutoReplace','desc' => 'cfgSetAutoReplace','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
+						'cfgSetAutoReplace' => array(
+							'name' => 'cfgSetAutoReplace', 'desc' => 'cfgSetAutoReplace', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
 							'value' => '[["+/-","(c)","(с)","(r)","(C)","(С)","(R)","<code","code>"],["±","©","©","®","©","©","®","<pre class=\\"prettyprint\\"","pre>"]]',
 						),
 						'cfgSetTagShort' => array(
-							'name' => 'cfgSetTagShort','desc' => 'cfgSetTagShort','type' => 'textfield','options' => array (),'lexicon' => 'jevix:properties','area' => '',
+							'name' => 'cfgSetTagShort', 'desc' => 'cfgSetTagShort', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
 							'value' => 'br,img',
 						)
 					)
 				));
 				if ($prop_comment->save() && $snippet->addPropertySet($prop_comment)) {
-					$modx->log(xPDO::LOG_LEVEL_INFO,'[Tickets] Property set "Comment" for snippet <b>Jevix</b> was created');
+					$modx->log(xPDO::LOG_LEVEL_INFO, '[Tickets] Property set "Comment" for snippet <b>Jevix</b> was created');
 				}
 				else {
-					$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not create property set "Comment" for <b>Jevix</b>');
+					$modx->log(xPDO::LOG_LEVEL_ERROR, '[Tickets] Could not create property set "Comment" for <b>Jevix</b>');
 				}
 			};
 		}
 
-		$success= true;
+		$success = true;
 		break;
 	case xPDOTransport::ACTION_UNINSTALL:
-		$success= true;
+		$success = true;
 		break;
 }
 return $success;
-
 
 
 /*---------------------------------*/
@@ -128,40 +128,40 @@ function installPackage($packageName) {
 
 	$provider->getClient();
 	$modx->getVersionData();
-	$productVersion = $modx->version['code_name'].'-'.$modx->version['full_version'];
+	$productVersion = $modx->version['code_name'] . '-' . $modx->version['full_version'];
 
-	$response = $provider->request('package','GET',array(
+	$response = $provider->request('package', 'GET', array(
 		'supports' => $productVersion,
 		'query' => $packageName
 	));
 
-	if(!empty($response)) {
+	if (!empty($response)) {
 		$foundPackages = simplexml_load_string($response->response);
-		foreach($foundPackages as $foundPackage) {
+		foreach ($foundPackages as $foundPackage) {
 			/* @var modTransportPackage $foundPackage */
-			if($foundPackage->name == $packageName) {
-				$sig = explode('-',$foundPackage->signature);
-				$versionSignature = explode('.',$sig[1]);
+			if ($foundPackage->name == $packageName) {
+				$sig = explode('-', $foundPackage->signature);
+				$versionSignature = explode('.', $sig[1]);
 				$url = $foundPackage->location;
 
-				if (!download($url, $modx->getOption('core_path').'packages/'.$foundPackage->signature.'.transport.zip')) {
+				if (!download($url, $modx->getOption('core_path') . 'packages/' . $foundPackage->signature . '.transport.zip')) {
 					return array(
 						'success' => 0,
-						'message' => 'Could not download package <b>'.$packageName.'</b>.',
+						'message' => 'Could not download package <b>' . $packageName . '</b>.',
 					);
 				}
 
 				/* add in the package as an object so it can be upgraded */
 				/** @var modTransportPackage $package */
 				$package = $modx->newObject('transport.modTransportPackage');
-				$package->set('signature',$foundPackage->signature);
+				$package->set('signature', $foundPackage->signature);
 				$package->fromArray(array(
 					'created' => date('Y-m-d h:i:s'),
 					'updated' => null,
 					'state' => 1,
 					'workspace' => 1,
 					'provider' => $provider->id,
-					'source' => $foundPackage->signature.'.transport.zip',
+					'source' => $foundPackage->signature . '.transport.zip',
 					'package_name' => $packageName,
 					'version_major' => $versionSignature[0],
 					'version_minor' => !empty($versionSignature[1]) ? $versionSignature[1] : 0,
@@ -169,25 +169,26 @@ function installPackage($packageName) {
 				));
 
 				if (!empty($sig[2])) {
-					$r = preg_split('/([0-9]+)/',$sig[2],-1,PREG_SPLIT_DELIM_CAPTURE);
+					$r = preg_split('/([0-9]+)/', $sig[2], -1, PREG_SPLIT_DELIM_CAPTURE);
 					if (is_array($r) && !empty($r)) {
-						$package->set('release',$r[0]);
-						$package->set('release_index',(isset($r[1]) ? $r[1] : '0'));
-					} else {
-						$package->set('release',$sig[2]);
+						$package->set('release', $r[0]);
+						$package->set('release_index', (isset($r[1]) ? $r[1] : '0'));
+					}
+					else {
+						$package->set('release', $sig[2]);
 					}
 				}
 
-				if($package->save() && $package->install()) {
+				if ($package->save() && $package->install()) {
 					return array(
 						'success' => 1,
-						'message' => '<b>'.$packageName.'</b> was successfully installed',
+						'message' => '<b>' . $packageName . '</b> was successfully installed',
 					);
 				}
 				else {
 					return array(
 						'success' => 0,
-						'message' => 'Could not save package <b>'.$packageName.'</b>',
+						'message' => 'Could not save package <b>' . $packageName . '</b>',
 					);
 				}
 				break;
@@ -197,35 +198,36 @@ function installPackage($packageName) {
 	else {
 		return array(
 			'success' => 0,
-			'message' => 'Could not find <b>'.$packageName.'</b> in MODX repository',
+			'message' => 'Could not find <b>' . $packageName . '</b> in MODX repository',
 		);
 	}
 	return true;
 }
 
 
-
 function download($src, $dst) {
 	if (ini_get('allow_url_fopen')) {
 		$file = @file_get_contents($src);
 	}
-	else if (function_exists('curl_init')) {
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $src);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_TIMEOUT,180);
-		$safeMode = @ini_get('safe_mode');
-		$openBasedir = @ini_get('open_basedir');
-		if (empty($safeMode) && empty($openBasedir)) {
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-		}
-
-		$file = curl_exec($ch);
-		curl_close($ch);
-	}
 	else {
-		return false;
+		if (function_exists('curl_init')) {
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $src);
+			curl_setopt($ch, CURLOPT_HEADER, 0);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 180);
+			$safeMode = @ini_get('safe_mode');
+			$openBasedir = @ini_get('open_basedir');
+			if (empty($safeMode) && empty($openBasedir)) {
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+			}
+
+			$file = curl_exec($ch);
+			curl_close($ch);
+		}
+		else {
+			return false;
+		}
 	}
 	file_put_contents($dst, $file);
 

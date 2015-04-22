@@ -1,11 +1,4 @@
 <?php
-/**
- * Resolve creating policies
- * @var xPDOObject $object
- * @var array $options
- * @package tickets
- * @subpackage build
- */
 
 if ($object->xpdo) {
 	$modx =& $object->xpdo;
@@ -15,37 +8,43 @@ if ($object->xpdo) {
 		case xPDOTransport::ACTION_UPGRADE:
 
 			/* assign policy to template */
-			if ($policy = $modx->getObject('modAccessPolicy',array('name' => 'TicketUserPolicy'))) {
-				if ($template = $modx->getObject('modAccessPolicyTemplate',array('name' => 'TicketsUserPolicyTemplate'))) {
-					$policy->set('template',$template->get('id'));
+			if ($policy = $modx->getObject('modAccessPolicy', array('name' => 'TicketUserPolicy'))) {
+				if ($template = $modx->getObject('modAccessPolicyTemplate', array('name' => 'TicketsUserPolicyTemplate'))) {
+					$policy->set('template', $template->get('id'));
 					$policy->save();
-				} else {
-					$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not find TicketsUserPolicyTemplate Access Policy Template!');
 				}
-			} else {
-				$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not find TicketUserPolicy Access Policy!');
+				else {
+					$modx->log(xPDO::LOG_LEVEL_ERROR, '[Tickets] Could not find TicketsUserPolicyTemplate Access Policy Template!');
+				}
+			}
+			else {
+				$modx->log(xPDO::LOG_LEVEL_ERROR, '[Tickets] Could not find TicketUserPolicy Access Policy!');
 			}
 
-		if ($policy = $modx->getObject('modAccessPolicy',array('name' => 'TicketVipPolicy'))) {
-			if ($template = $modx->getObject('modAccessPolicyTemplate',array('name' => 'TicketsUserPolicyTemplate'))) {
-				$policy->set('template',$template->get('id'));
-				$policy->save();
-			} else {
-				$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not find TicketsUserPolicyTemplate Access Policy Template!');
-			}
-		} else {
-			$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not find TicketVipPolicy Access Policy!');
-		}
-
-			if ($policy = $modx->getObject('modAccessPolicy',array('name' => 'TicketSectionPolicy'))) {
-				if ($template = $modx->getObject('modAccessPolicyTemplate',array('name' => 'TicketsSectionPolicyTemplate'))) {
-					$policy->set('template',$template->get('id'));
+			if ($policy = $modx->getObject('modAccessPolicy', array('name' => 'TicketVipPolicy'))) {
+				if ($template = $modx->getObject('modAccessPolicyTemplate', array('name' => 'TicketsUserPolicyTemplate'))) {
+					$policy->set('template', $template->get('id'));
 					$policy->save();
-				} else {
-					$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not find TicketsSectionPolicyTemplate Access Policy Template!');
 				}
-			} else {
-				$modx->log(xPDO::LOG_LEVEL_ERROR,'[Tickets] Could not find TicketSectionPolicy Access Policy!');
+				else {
+					$modx->log(xPDO::LOG_LEVEL_ERROR, '[Tickets] Could not find TicketsUserPolicyTemplate Access Policy Template!');
+				}
+			}
+			else {
+				$modx->log(xPDO::LOG_LEVEL_ERROR, '[Tickets] Could not find TicketVipPolicy Access Policy!');
+			}
+
+			if ($policy = $modx->getObject('modAccessPolicy', array('name' => 'TicketSectionPolicy'))) {
+				if ($template = $modx->getObject('modAccessPolicyTemplate', array('name' => 'TicketsSectionPolicyTemplate'))) {
+					$policy->set('template', $template->get('id'));
+					$policy->save();
+				}
+				else {
+					$modx->log(xPDO::LOG_LEVEL_ERROR, '[Tickets] Could not find TicketsSectionPolicyTemplate Access Policy Template!');
+				}
+			}
+			else {
+				$modx->log(xPDO::LOG_LEVEL_ERROR, '[Tickets] Could not find TicketSectionPolicy Access Policy!');
 			}
 
 			break;

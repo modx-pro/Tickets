@@ -72,8 +72,17 @@ $_lang['setting_tickets.count_guests_desc'] = 'When enabled, component will coun
 //$_lang['setting_tickets.ticket_id_as_alias'] = 'Use id of ticket as alias';
 //$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'If true, aliases for friendly urls of tickets will don`t be generated. Id will be set as alias.';
 
+$_lang['setting_mgr_tree_icon_ticket'] = 'Icon of ticket';
+$_lang['setting_mgr_tree_icon_ticket_desc'] = 'Icon of ticket in the resource tree.';
+$_lang['setting_mgr_tree_icon_ticketssection'] = 'Icon of tickets section';
+$_lang['setting_mgr_tree_icon_ticketssection_desc'] = 'Icon of tickets section in the resource tree.';
+
+$_lang['setting_tickets.source_default'] = 'Media source for tickets';
+$_lang['setting_tickets.source_default_desc'] = 'Specify media source that will be used for uploading tickets files.';
+
 $_lang['tickets.source_thumbnail_desc'] = 'JSON encoded array of options for generating thumbnail.';
 $_lang['tickets.source_maxUploadWidth_desc'] = 'Maximum width of image for upload. All images, that exceeds this parameter, will be resized to fit..';
 $_lang['tickets.source_maxUploadHeight_desc'] = 'Maximum height of image for upload. All images, that exceeds this parameter, will be resized to fit.';
 $_lang['tickets.source_maxUploadSize_desc'] = 'Maximum size of file for upload (in bytes).';
 $_lang['tickets.source_imageNameType_desc'] = 'This setting specifies how to rename a file after upload. Hash is the generation of a unique name depending on the contents of the file. Friendly - generation behalf of the algorithm friendly URLs of pages of the site (they are managed by system settings).';
+

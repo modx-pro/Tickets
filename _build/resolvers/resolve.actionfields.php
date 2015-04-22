@@ -4,14 +4,18 @@ $actionFields = array(
 	array(
 		'name' => 'tickets-box-publishing-information',
 		'tab' => 'modx-resource-main-right',
-		'fields' => array('publishedon', 'pub_date', 'unpub_date', 'template', 'modx-resource-createdby',
-			'tickets-combo-section', 'alias'),
+		'fields' => array(
+			'publishedon', 'pub_date', 'unpub_date', 'template', 'modx-resource-createdby',
+			'tickets-combo-section', 'alias'
+		),
 	),
 	array(
 		'name' => 'tickets-box-options',
 		'tab' => 'modx-resource-main-right',
-		'fields' => array('searchable', 'properties[disable_jevix]','cacheable', 'properties[process_tags]',
-			'published', 'private', 'richtext', 'hidemenu', 'isfolder'),
+		'fields' => array(
+			'searchable', 'properties[disable_jevix]', 'cacheable', 'properties[process_tags]',
+			'published', 'private', 'richtext', 'hidemenu', 'isfolder'
+		),
 	),
 	array(
 		'name' => 'modx-tickets-comments',
@@ -39,7 +43,7 @@ if ($object->xpdo) {
 			if (!$modx23) {
 				$actions = array();
 				foreach ($resourceActions as $controller) {
-					$actionObj = $modx->getObject('modAction',array(
+					$actionObj = $modx->getObject('modAction', array(
 						'controller' => $controller,
 						'namespace' => 'core',
 					));
@@ -100,10 +104,10 @@ if ($object->xpdo) {
 					}
 				}
 			}
-		break;
-	case xPDOTransport::ACTION_UNINSTALL:
-		$modx->removeCollection('modActionField', array('other' => 'tickets'));
-		break;
+			break;
+		case xPDOTransport::ACTION_UNINSTALL:
+			$modx->removeCollection('modActionField', array('other' => 'tickets'));
+			break;
 	}
 }
 

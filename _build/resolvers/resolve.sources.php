@@ -1,10 +1,4 @@
 <?php
-/**
- * Resolve creating media sources
- *
- * @var xPDOObject $object
- * @var array $options
- */
 
 if ($object->xpdo) {
 	/* @var modX $modx */
@@ -69,8 +63,8 @@ if ($object->xpdo) {
 						),
 						'value' => 'hash',
 					),
-				)
-			,'is_stream' => 1
+				),
+				'is_stream' => 1
 			);
 			/* @var $source modMediaSource */
 			if (!$source = $modx->getObject('sources.modMediaSource', array('name' => $properties['name']))) {

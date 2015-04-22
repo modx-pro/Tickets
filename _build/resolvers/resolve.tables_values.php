@@ -1,19 +1,13 @@
 <?php
-/**
- * Resolve update comments count
- * @var xPDOObject $object
- * @var array $options
- * @package tickets
- * @subpackage build
- */
+
 if ($object->xpdo) {
 	$modx =& $object->xpdo;
-	$modelPath = $modx->getOption('tickets.core_path',null,$modx->getOption('core_path').'components/tickets/').'model/';
+	$modelPath = $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/';
 
 	switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 		case xPDOTransport::ACTION_INSTALL:
 		case xPDOTransport::ACTION_UPGRADE:
-			$modx->addPackage('tickets',$modelPath);
+			$modx->addPackage('tickets', $modelPath);
 
 			// Update comments count
 			$threads = $modx->getCollection('TicketThread', array('comments' => 0));
@@ -47,17 +41,15 @@ if ($object->xpdo) {
 								$sql .= "UPDATE {$table} SET `owner` = {$row['createdby']} WHERE `id` = {$row['id']} AND `class` = '{$k}';\n";
 							}
 						}
-
-						$q->stmt->closeCursor();
 						$modx->exec($sql);
 					}
 
 				}
 			}
-		break;
+			break;
 
 		case xPDOTransport::ACTION_UNINSTALL:
-		break;
+			break;
 	}
 }
 return true;
