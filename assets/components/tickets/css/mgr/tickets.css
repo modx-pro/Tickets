@@ -1,7 +1,3 @@
-.icon-ticketssection .x-tree-node-icon {
-	background-image: url(../../img/tickets_section.png) !important;
-}
-
 .tickets-row-unpublished div,
 .tickets-row-unpublished a {
 	font-style: italic;
@@ -116,7 +112,11 @@ a.x-menu-item .x-menu-item-text .icon {
 }
 
 /* Windows */
-.tickets-window.modx23 .x-form-label-top .x-form-item:first-of-type label.x-form-item-label {padding: 15px 0 4px !important;}
+.tickets-window.modx23 .x-form-label-top .x-form-item:first-of-type label.x-form-item-label,
+.tickets-section-settings.modx23 .x-form-label-top .x-form-item:first-of-type label.x-form-item-label  {
+	padding: 15px 0 4px !important;
+}
+.tickets-section-settings.modx22 .panel-desc {margin-bottom: 10px;}
 .tickets-window .x-form-display-field {padding: 7px 0;}
 .tickets-window.modx23 .right-column {margin-right: 4px;}
 .tickets-window.modx22 .right-column {margin-right: 3px;}
