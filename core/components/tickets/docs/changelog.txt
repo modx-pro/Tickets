@@ -6,6 +6,7 @@ Changelog for Tickets.
 - [#122] [TicketComments] Improved frontend errors handling.
 - [#111] Ability to load any js and css files on Tickets initialization.
 - [#87] Added new tab with the all tickets of the site.
+- [#87] Improved extension of TicketsSection page.
 - [#61] Ability to specify url of comments thread for opening from manager.
 - [mgr] Improved Tickets grid on TicketsSection page.
 - [mgr] Improved Threads grid.

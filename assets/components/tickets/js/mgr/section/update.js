@@ -1,129 +1,117 @@
 Tickets.page.UpdateTicketsSection = function(config) {
-	config = config || {record:{}};
+	config = config || {record: {}};
 	config.record = config.record || {};
-	Ext.applyIf(config,{
-		panelXType: 'tickets-panel-section'
-		,actions: {
-			'new': MODx.action ? MODx.action['resource/create'] : 'resource/create'
-			,edit: MODx.action ? MODx.action['resource/update'] : 'resource/update'
-			,preview: MODx.action ? MODx.action['resource/preview'] : 'resource/preview'
-		}
+	Ext.applyIf(config, {
+		panelXType: 'tickets-panel-section-update',
 	});
 	config.canDuplicate = false;
 	config.canDelete = false;
-	Tickets.page.UpdateTicketsSection.superclass.constructor.call(this,config);
+	Tickets.page.UpdateTicketsSection.superclass.constructor.call(this, config);
 };
-Ext.extend(Tickets.page.UpdateTicketsSection,MODx.page.UpdateResource);
-Ext.reg('tickets-page-section-update',Tickets.page.UpdateTicketsSection);
+Ext.extend(Tickets.page.UpdateTicketsSection, MODx.page.UpdateResource);
+Ext.reg('tickets-page-section-update', Tickets.page.UpdateTicketsSection);
 
 
-
-Tickets.panel.Section = function(config) {
+Tickets.panel.UpdateTicketsSection = function(config) {
 	config = config || {};
-	Tickets.panel.Section.superclass.constructor.call(this,config);
+	Tickets.panel.UpdateTicketsSection.superclass.constructor.call(this,config);
 };
-Ext.extend(Tickets.panel.Section,MODx.panel.Resource,{
+Ext.extend(Tickets.panel.UpdateTicketsSection,MODx.panel.Resource,{
 
 	getFields: function(config) {
-		var it = [];
-		it.push({
-			title: _('tickets_section')
-			,id: 'modx-resource-settings'
-			,cls: 'modx-resource-tab'
-			,layout: 'form'
-			,labelAlign: 'top'
-			,labelSeparator: ''
-			,bodyCssClass: 'tab-panel-wrapper main-wrapper'
-			,autoHeight: true
-			,defaults: {
-				border: false
-				,msgTarget: 'side'
-				,width: 400
+		var fields = [];
+		var originals = MODx.panel.Resource.prototype.getFields.call(this,config);
+		for (var i in originals) {
+			if (!originals.hasOwnProperty(i)) {
+				continue;
 			}
-			,items: this.getMainFields(config)
+			var item = originals[i];
+
+			if (item.id == 'modx-resource-tabs') {
+				item.stateful = true;
+				item.stateId = 'tickets-section-upd-tabpanel';
+				item.stateEvents = ['tabchange'];
+				item.getState = function() {
+					return {activeTab: this.items.indexOf(this.getActiveTab())};
+				};
+				var tabs = [];
+				for (var i2 in item.items) {
+					if (!item.items.hasOwnProperty(i2)) {
+						continue;
+					}
+					var tab = item.items[i2];
+					if (tab.id == 'modx-resource-settings') {
+						tab.title = _('tickets_section');
+						tab.items = this.getMainFields(config);
+					}
+					else if (tab.id == 'modx-page-settings') {
+						tab.title = _('tickets_section_settings');
+						tab.items = this.getSectionSettings(config);
+						tab.cls =  'modx-resource-tab';
+						tab.bodyCssClass = 'tab-panel-wrapper form-with-labels';
+						tab.labelAlign = 'top';
+					}
+					tabs.push(tab);
+					if (tab.id == 'modx-page-settings') {
+						tabs.push(this.getComments(config));
+					}
+				}
+				item.items = tabs;
+			}
+			if (item.id == 'modx-resource-content') {
+				fields.push(this.getTickets(config));
+			}
+			else {
+				fields.push(item);
+			}
+		}
+
+		return fields;
+	},
+
+	getMainFields: function(config) {
+		var fields = MODx.panel.Resource.prototype.getMainFields.call(this, config);
+		fields.push({
+			xtype: 'hidden',
+			name: 'class_key',
+			id: 'modx-resource-class-key',
+			value: 'TicketsSection'
 		});
-		 it.push({
-			 title: _('tickets_section_settings')
-			 ,id: 'modx-tickets-template'
-			 ,cls: 'modx-resource-tab'
-			 ,bodyCssClass: 'tab-panel-wrapper form-with-labels'
-			 ,autoHeight: true
-			 //,layout: 'form'
-			 ,labelAlign: 'top'
-			 ,labelSeparator: ''
-		 	,items: this.getSectionSettings(config)
-		 });
-		 it.push({
-			 title: _('comments')
-		 	,items: this.getComments(config)
-		 });
-
-		if (config.show_tvs && MODx.config.tvs_below_content != 1) {
-			it.push(this.getTemplateVariablesPanel(config));
-		}
-		if (MODx.perm.resourcegroup_resource_list == 1) {
-			it.push(this.getAccessPermissionsTab(config));
-		}
-		var its = [];
-		its.push(this.getPageHeader(config),{
-			id:'modx-resource-tabs'
-			,xtype: 'modx-tabs'
-			,forceLayout: true
-			,deferredRender: false
-			,collapsible: true
-			,itemId: 'tabs'
-			,stateful: true
-			,stateId: 'tickets-section-upd-tabpanel'
-			,stateEvents: ['tabchange']
-			,getState:function() {return { activeTab:this.items.indexOf(this.getActiveTab())};}
-			,items: it
+		fields.push({
+			xtype: 'hidden',
+			name: 'content_type',
+			id: 'modx-resource-content-type',
+			value: MODx.config['default_content_type'] || 1
 		});
 
-		var ct = this.getTickets(config);
-		if (ct) {
-			its.push(Tickets.PanelSpacer);
-			its.push(ct);
-			its.push(Tickets.PanelSpacer);
-		}
-		if (MODx.config.tvs_below_content == 1) {
-			var tvs = this.getTemplateVariablesPanel(config);
-			tvs.style += ';margin-top: 10px;';
-			its.push(tvs);
-		}
-		return its;
-	}
+		return fields;
+	},
 
-	,getTickets: function(config) {
+	getSectionSettings: function(config) {
+		return [{
+			xtype: 'tickets-section-tab-settings',
+			record: config.record,
+		}];
+	},
+
+	getTickets: function(config) {
 		return [{
 			xtype: 'tickets-panel-tickets',
 			parent: config.resource,
 			standalone: false,
-			border: false,
 		}];
-	}
+	},
 
-	 ,getSectionSettings: function(config) {
-		 return [{
-		 	xtype: 'tickets-section-tab-settings'
-		 	,record: config.record
-		 }];
-	 }
+	getComments: function(config) {
+		return {
+			title: _('comments'),
+			items: [{
+				xtype: 'tickets-panel-comments',
+				record: config.record,
+				section: config.record.id,
+			}]
+		};
+	},
 
-	 ,getComments: function(config) {
-		 return [{
-		 	xtype: 'tickets-panel-comments'
-		 	,record: config.record
-			,section: config.record.id
-			,layout: 'form'
-		 }];
-	 }
-
-	,getMainFields: function(config) {
-		var fields = MODx.panel.Resource.prototype.getMainFields.apply(this, [config]);
-		fields.push({xtype: 'hidden',name: 'class_key',id: 'modx-resource-class-key',value: 'TicketsSection'});
-		fields.push({xtype: 'hidden',name: 'content_type',id: 'modx-resource-content-type', value: MODx.config.default_content_type || 1});
-
-		return fields;
-	}
 });
-Ext.reg('tickets-panel-section',Tickets.panel.Section);
+Ext.reg('tickets-panel-section-update', Tickets.panel.UpdateTicketsSection);

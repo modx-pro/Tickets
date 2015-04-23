@@ -12,6 +12,7 @@ class TicketsSectionCreateManagerController extends ResourceCreateManagerControl
 
 	/**
 	 * Returns language topics
+	 *
 	 * @return array
 	 */
 	public function getLanguageTopics() {
@@ -20,19 +21,15 @@ class TicketsSectionCreateManagerController extends ResourceCreateManagerControl
 
 
 	/**
-	 * Check for any permissions or requirements to load page
-	 * @return bool
-	 */
-	public function checkPermissions() {
-		return $this->modx->hasPermission('new_document');
-	}
-
-
-	/**
 	 * Register custom CSS/JS for the page
+	 *
 	 * @return void
 	 */
 	public function loadCustomCssJs() {
+		$html = $this->head['html'];
+		parent::loadCustomCssJs();
+		$this->head['html'] = $html;
+
 		$this->resourceArray['properties'] = array(
 			'tickets' => $this->resource->getProperties('tickets')
 		);
@@ -40,22 +37,13 @@ class TicketsSectionCreateManagerController extends ResourceCreateManagerControl
 
 		/** @var Tickets $Tickets */
 		$Tickets = $this->modx->getService('Tickets');
-		$ticketsJsUrl = $Tickets->config['jsUrl'] . 'mgr/';
-		$mgrUrl = $this->modx->getOption('manager_url', null, MODX_MANAGER_URL);
-
 		$Tickets->loadManagerFiles($this, array(
 			'config' => true,
 			'utils' => true,
-			//'css' => true,
+			'css' => true,
 			'section' => true,
 		));
-		$this->addJavascript($mgrUrl . 'assets/modext/util/datetime.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/widgets/element/modx.panel.tv.renders.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/widgets/resource/modx.grid.resource.security.local.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/widgets/resource/modx.panel.resource.tv.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/widgets/resource/modx.panel.resource.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/sections/resource/create.js');
-		$this->addLastJavascript($ticketsJsUrl . 'section/create.js');
+		$this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/section/create.js');
 
 		$ready = array(
 			'xtype' => 'tickets-page-section-create',
@@ -65,7 +53,6 @@ class TicketsSectionCreateManagerController extends ResourceCreateManagerControl
 			'show_tvs' => (int)!empty($this->tvCounts),
 			'mode' => 'create',
 		);
-
 		$this->addHtml('
 		<script type="text/javascript">
 		// <![CDATA[
@@ -77,8 +64,6 @@ class TicketsSectionCreateManagerController extends ResourceCreateManagerControl
 		});
 		// ]]>
 		</script>');
-
-		$this->loadRichTextEditor();
 	}
 
 }

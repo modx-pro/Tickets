@@ -12,6 +12,7 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
 
 	/**
 	 * Returns language topics
+	 *
 	 * @return array
 	 */
 	public function getLanguageTopics() {
@@ -20,18 +21,15 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
 
 
 	/**
-	 * Check for any permissions or requirements to load page
-	 * @return bool
-	 */
-	public function checkPermissions() {
-		return $this->modx->hasPermission('edit_document');
-	}
-
-	/**
 	 * Register custom CSS/JS for the page
+	 *
 	 * @return void
 	 */
 	public function loadCustomCssJs() {
+		$html = $this->head['html'];
+		parent::loadCustomCssJs();
+		$this->head['html'] = $html;
+
 		$this->resourceArray['properties'] = array(
 			'tickets' => $this->resource->getProperties('tickets')
 		);
@@ -39,9 +37,6 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
 
 		/** @var Tickets $Tickets */
 		$Tickets = $this->modx->getService('Tickets');
-		$ticketsJsUrl = $Tickets->config['jsUrl'] . 'mgr/';
-		$mgrUrl = $this->modx->getOption('manager_url', null, MODX_MANAGER_URL);
-
 		$Tickets->loadManagerFiles($this, array(
 			'config' => true,
 			'utils' => true,
@@ -49,13 +44,7 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
 			'section' => true,
 			'comments' => true,
 		));
-		$this->addJavascript($mgrUrl . 'assets/modext/util/datetime.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/widgets/element/modx.panel.tv.renders.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/widgets/resource/modx.grid.resource.security.local.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/widgets/resource/modx.panel.resource.tv.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/widgets/resource/modx.panel.resource.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/sections/resource/update.js');
-		$this->addLastJavascript($ticketsJsUrl . 'section/update.js');
+		$this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/section/update.js');
 
 		$ready = array(
 			'xtype' => 'tickets-page-section-update',
@@ -73,7 +62,6 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
 			'show_tvs' => (int)!empty($this->tvCounts),
 			'mode' => 'update',
 		);
-
 		$this->addHtml('
 		<script type="text/javascript">
 		// <![CDATA[
@@ -85,8 +73,6 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
 		});
 		// ]]>
 		</script>');
-
-		$this->loadRichTextEditor();
 	}
 
 }
