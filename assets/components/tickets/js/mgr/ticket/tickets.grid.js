@@ -2,11 +2,10 @@ Tickets.grid.Section = function(config) {
 	config = config || {};
 
 	Ext.applyIf(config, {
-		id: 'tickets-grid-section',
 		url: Tickets.config.connector_url,
 		baseParams: {
 			action: 'mgr/ticket/getlist',
-			parent: config.resource,
+			parent: config.parent || 0,
 		},
 		fields: this.getFields(),
 		columns: this.getColumns(config),
@@ -32,7 +31,8 @@ Tickets.grid.Section = function(config) {
 				return cls.join(' ');
 			}
 		},
-		cls: MODx.modx23 ? 'modx23' : 'modx22'
+		cls: MODx.modx23 ? 'modx23' : 'modx22',
+		standalone: false,
 	});
 	Tickets.grid.Section.superclass.constructor.call(this,config);
 };
@@ -40,9 +40,9 @@ Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 
 	getFields: function(config) {
 		return [
-			'id','pagetitle','published','deleted',
-			'publishedon','createdon',
-			'createdby','author',
+			'id', 'pagetitle', 'published', 'deleted',
+			'publishedon', 'createdon',
+			'createdby', 'author', 'section_id', 'section',
 			'preview_url', 'comments', 'actions'
 		];
 	},
@@ -56,16 +56,22 @@ Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 			},{
 				header: _('ticket_pagetitle'),
 				dataIndex: 'pagetitle',
-				width: 150,
+				width: config.standalone ? 100 : 150,
 				sortable: true,
 				renderer: function(value, metaData, record) {
 					return Tickets.utils.ticketLink(value, record['data']['id'])
 				},
 				id: 'pagetitle'
 			},{
+				header: _('ticket_createdon'),
+				dataIndex: 'createdon',
+				width: 50,
+				sortable: true,
+				renderer: Tickets.utils.formatDate,
+			},{
 				header: _('ticket_publishedon'),
 				dataIndex: 'publishedon',
-				width: 75,
+				width: 50,
 				sortable: true,
 				renderer: Tickets.utils.formatDate,
 			},{
@@ -82,6 +88,15 @@ Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 				width: 50,
 				sortable: true,
 			},{
+				header: _('ticket_parent'),
+				dataIndex: 'section',
+				width: 75,
+				sortable: true,
+				renderer: function(value, metaData, record) {
+					return Tickets.utils.ticketLink(value, record['data']['section_id'], true)
+				},
+				hidden: !config.standalone
+			},{
 				header: _('ticket_actions'),
 				dataIndex: 'actions',
 				renderer: Tickets.utils.renderActions,
@@ -93,20 +108,26 @@ Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 	},
 
 	getTopBar: function(config) {
-		return [{
-			text: (MODx.modx23
-				? '<i class="icon icon-plus"></i> '
-				: '<i class="fa fa-plus"></i> ')
-					+ _('ticket_create'),
-			handler: this.createTicket,
-			scope: this,
-		}, {
+		var tbar = [];
+		if (!config.standalone) {
+			tbar.push({
+				text: (MODx.modx23
+					? '<i class="icon icon-plus"></i> '
+					: '<i class="fa fa-plus"></i> ')
+				+ _('ticket_create'),
+				handler: this.createTicket,
+				scope: this,
+			});
+		}
+		tbar.push({
 			text: MODx.modx23
 				? '<i class="icon icon-trash-o action-red"></i>'
 				: '<i class="fa fa-trash-o action-red"></i>',
 			handler: this._emptyRecycleBin,
 			scope: this,
-		}, '->', {
+		});
+		tbar.push('->');
+		tbar.push({
 			xtype: 'tickets-field-search',
 			width: 250,
 			listeners: {
@@ -118,7 +139,9 @@ Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 					this._clearSearch();
 				}, scope: this},
 			}
-		}];
+		});
+
+		return tbar;
 	},
 
 	getMenu: function (grid, rowIndex) {
@@ -270,4 +293,4 @@ Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 	},
 
 });
-Ext.reg('tickets-grid-section', Tickets.grid.Section);
+Ext.reg('tickets-grid-tickets', Tickets.grid.Section);

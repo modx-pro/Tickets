@@ -50,19 +50,19 @@ ul.tickets-row-actions .btn {
 }
 
 .action-red {color: darkred !important;}
-.action-red.x-btn-over:hover {color: white !important;}
+.x-btn-over .action-red {color: white !important;}
 
 .action-green {color: darkgreen !important;}
-.action-green.x-btn-over:hover {color: white !important;}
+.x-btn-over .action-green {color: white !important;}
 
 .action-blue {color: cadetblue !important;}
-.action-blue.x-btn-over:hover {color: white !important;}
+.x-btn-over .action-blue {color: white !important;}
 
 .action-yellow {color: goldenrod !important;}
-.action-yellow.x-btn-over:hover {color: white !important;}
+.x-btn-over .action-yellow {color: white !important;}
 
 .action-gray {color: dimgray !important;}
-.action-gray.x-btn-over:hover {color: white !important;}
+.x-btn-over .action-gray {color: white !important;}
 
 a.x-menu-item .x-menu-item-text, a.x-menu-item .x-menu-item-text .icon {
 	cursor: pointer;

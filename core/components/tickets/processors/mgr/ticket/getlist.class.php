@@ -38,16 +38,25 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 		));
 		$c->where(array(
 			'class_key' => 'Ticket',
-			'parent' => $this->getProperty('parent'),
 		));
-
+		if ($parent = $this->getProperty('parent', 0)) {
+			$c->where(array(
+				'parent' => $this->getProperty('parent')
+			));
+		}
+		else {
+			$c->leftJoin('modResource', 'Parent');
+			$c->select(array(
+				'section_id' => 'Parent.id',
+				'section' => 'Parent.pagetitle',
+			));
+		}
 		if ($query = $this->getProperty('query', null)) {
-			$queryWhere = array(
+			$c->where(array(
 				'pagetitle:LIKE' => "%{$query}%",
 				'OR:description:LIKE' => "%{$query}%",
 				'OR:introtext:LIKE' => "%{$query}%",
-			);
-			$c->where($queryWhere);
+			));
 		}
 
 		return $c;
@@ -161,23 +170,6 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 		);
 
 		return $array;
-	}
-
-
-	/**
-	 * Text cut
-	 *
-	 * @param $string
-	 * @param int $length
-	 *
-	 * @return string
-	 */
-	public function ellipsis($string, $length = 500) {
-		if (mb_strlen($string) > $length) {
-			$string = mb_substr($string, 0, $length, 'UTF-8') . '...';
-		}
-
-		return $string;
 	}
 
 }

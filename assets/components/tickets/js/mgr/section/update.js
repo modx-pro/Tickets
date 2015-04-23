@@ -95,9 +95,10 @@ Ext.extend(Tickets.panel.Section,MODx.panel.Resource,{
 
 	,getTickets: function(config) {
 		return [{
-			xtype: 'tickets-grid-section'
-			,resource: config.resource
-			,border: false
+			xtype: 'tickets-panel-tickets',
+			parent: config.resource,
+			standalone: false,
+			border: false,
 		}];
 	}
 

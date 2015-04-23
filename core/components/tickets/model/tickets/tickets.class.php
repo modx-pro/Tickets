@@ -1525,10 +1525,15 @@ class Tickets {
 
 		if (!empty($properties['section'])) {
 			$controller->addLastJavascript($ticketsJsUrl . 'section/section.common.js');
-			$controller->addLastJavascript($ticketsJsUrl . 'section/section.grid.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'ticket/tickets.panel.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'ticket/tickets.grid.js');
 		}
 		if (!empty($properties['ticket'])) {
 			$controller->addLastJavascript($ticketsJsUrl . 'ticket/ticket.common.js');
+		}
+		if (!empty($properties['tickets'])) {
+			$controller->addLastJavascript($ticketsJsUrl . 'ticket/tickets.panel.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'ticket/tickets.grid.js');
 		}
 		if (!empty($properties['threads'])) {
 			$controller->addLastJavascript($ticketsJsUrl . 'thread/threads.panel.js');

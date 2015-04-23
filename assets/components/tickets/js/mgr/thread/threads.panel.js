@@ -6,7 +6,6 @@ Tickets.panel.Threads = function(config) {
 		border: false,
 		anchor: '100%',
 		items: [{
-			id : 'tickets-grid-threads',
 			xtype: 'tickets-grid-threads',
 			cls: 'main-wrapper',
 		}],

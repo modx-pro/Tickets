@@ -31,6 +31,7 @@ class TicketsHomeManagerController extends modExtraManagerController {
 			'css' => true,
 			'threads' => true,
 			'comments' => true,
+			'tickets' => true,
 		));
 		$this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/home.js');
 		$this->addHtml('

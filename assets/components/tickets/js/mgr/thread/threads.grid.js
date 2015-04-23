@@ -70,7 +70,7 @@ Ext.extend(Tickets.grid.Threads,MODx.grid.Grid,{
 			dataIndex: 'pagetitle',
 			width: 75,
 			renderer: function(value, metaData, record) {
-				return Tickets.utils.ticketLink(value, record['data']['resource'])
+				return Tickets.utils.ticketLink(value, record['data']['resource'], true)
 			},
 			sortable: true,
 		}, {

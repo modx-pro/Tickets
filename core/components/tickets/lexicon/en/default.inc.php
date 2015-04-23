@@ -74,8 +74,7 @@ $_lang['permission_denied'] = 'You do not have permissions for this action.';
 $_lang['field_required'] = 'This field is required.';
 $_lang['ticket_clear'] = 'Clear';
 
-$_lang['ticket_comment_intro'] = '';
-$_lang['ticket_comment_all_intro'] = 'Here are comments from the entire site.';
+$_lang['ticket_comments_intro'] = 'Here are comments from the entire site.';
 $_lang['ticket_comment_deleted_text'] = 'This comment was deleted.';
 $_lang['ticket_comment_remove_confirm'] = 'Are you sure you want to permanently remove <b>comments thread</b>, starting with this? This operation is irreversible!';
 
@@ -114,8 +113,10 @@ $_lang['ticket_comment_err_guest_edit'] = 'You are not allowed to edit comments.
 $_lang['ticket_comment_err_captcha'] = 'Invalid code of protection against spam.';
 $_lang['ticket_comment_err_no_email'] = 'You need to specify the email in your account settings..';
 
+$_lang['ticket_tickets_intro'] = 'Here you can find the tickets from the whole site.';
 $_lang['ticket_publishedon'] = 'Published On';
 $_lang['ticket_pagetitle'] = 'Title';
+$_lang['ticket_parent'] = 'Section';
 $_lang['ticket_author'] = 'Author';
 $_lang['ticket_delete'] = 'Delete ticket';
 $_lang['ticket_delete_text'] = 'Are you sure you want to delete this ticket?';
@@ -128,7 +129,8 @@ $_lang['ticket_private'] = 'Private ticket';
 $_lang['ticket_private_help'] = 'If true, users will must be have permission "ticket_view_private" for reading this ticket.';
 $_lang['ticket_show_in_tree'] = 'Show in the tree';
 $_lang['ticket_show_in_tree_help'] = 'default they are not displayed in the resource tree MODX, so as not to burden him.';
-$_lang['ticket_pagetitle'] = 'Title';
+$_lang['ticket_createdon'] = 'Created On';
+$_lang['ticket_publishedon'] = 'Published On';
 $_lang['ticket_content'] = 'Content';
 $_lang['ticket_publish'] = 'Publish';
 $_lang['ticket_preview'] = 'Preview';
@@ -140,9 +142,9 @@ $_lang['ticket_open'] = 'Open';
 $_lang['ticket_read_more'] = 'Read more';
 $_lang['ticket_saved'] = 'Saved!';
 
+$_lang['ticket_threads_intro'] = 'Threads of comments. Usually, one thread is the comments of the one page.';
 $_lang['ticket_thread'] = 'Comments thread';
 $_lang['ticket_thread_name'] = 'Thread name';
-$_lang['ticket_thread_intro'] = 'Comments that are grouped on threads. Usually, one thread is the all comments of the one page.';
 $_lang['ticket_thread_createdon'] = 'Created on';
 $_lang['ticket_thread_editedon'] = 'Edited on';
 $_lang['ticket_thread_deletedon'] = 'Deleted on';

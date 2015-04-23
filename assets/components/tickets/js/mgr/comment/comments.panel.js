@@ -6,7 +6,6 @@ Tickets.panel.Comments = function(config) {
 		border: false,
 		anchor: '100%',
 		items: [{
-			id : 'tickets-grid-comments',
 			xtype: 'tickets-grid-comments',
 			cls: 'main-wrapper',
 			section: config.section || 0,

@@ -29,7 +29,7 @@ Tickets.utils.userLink = function(value, id) {
 	return '<a href="' + url + '" target="_blank" class="tickets-link">' + value + '</a>'
 };
 
-Tickets.utils.ticketLink = function(value, id) {
+Tickets.utils.ticketLink = function(value, id, blank) {
 	if (!value) {
 		return '';
 	}
@@ -41,7 +41,9 @@ Tickets.utils.ticketLink = function(value, id) {
 		: 'resource/update';
 	var url = 'index.php?a=' + action + '&id=' + id;
 
-	return '<a href="' + url + '" class="tickets-link">' + value + '</a>'
+	return blank
+		? '<a href="' + url + '" class="tickets-link" target="_blank">' + value + '</a>'
+		: '<a href="' + url + '" class="tickets-link">' + value + '</a>';
 };
 
 Tickets.utils.getMenu = function (actions, grid, selected) {

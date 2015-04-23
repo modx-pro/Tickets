@@ -8,3 +8,9 @@ Ext.extend(Tickets,Ext.Component,{
 Ext.reg('tickets',Tickets);
 
 Tickets = new Tickets();
+
+Tickets.PanelSpacer = {
+	html: '<br />',
+	cls: 'tickets-panel-spacer',
+	border: false,
+};

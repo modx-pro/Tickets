@@ -39,7 +39,7 @@ Tickets.panel.Home = function(config) {
 				title: _('comments'),
 				layout: 'anchor',
 				items: [{
-					html: _('ticket_comment_all_intro'),
+					html: _('ticket_comments_intro'),
 					border: false,
 					bodyCssClass: 'panel-desc',
 				},{
@@ -50,11 +50,22 @@ Tickets.panel.Home = function(config) {
 				title: _('threads'),
 				layout: 'anchor',
 				items: [{
-					html: _('ticket_thread_intro'),
+					html: _('ticket_threads_intro'),
 					border: false,
 					bodyCssClass: 'panel-desc',
 				},{
 					xtype: 'tickets-panel-threads',
+					preventRender: true,
+				}]
+			},{
+				title: _('tickets'),
+				layout: 'anchor',
+				items: [{
+					html: _('ticket_tickets_intro'),
+					border: false,
+					bodyCssClass: 'panel-desc',
+				},{
+					xtype: 'tickets-panel-tickets',
 					preventRender: true,
 				}]
 			}]
