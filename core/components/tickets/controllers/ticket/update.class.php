@@ -27,6 +27,10 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 	 * @return void
 	 */
 	public function loadCustomCssJs() {
+		$html = $this->head['html'];
+		parent::loadCustomCssJs();
+		$this->head['html'] = $html;
+
 		$properties = $this->resource->getProperties();
 		$this->resourceArray['properties'] = $properties;
 		if (is_null($this->resourceArray['properties'])) {
@@ -35,9 +39,6 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 
 		/** @var Tickets $Tickets */
 		$Tickets = $this->modx->getService('Tickets');
-		$ticketsJsUrl = $Tickets->config['jsUrl'] . 'mgr/';
-		$mgrUrl = $this->modx->getOption('manager_url', null, MODX_MANAGER_URL);
-
 		$Tickets->loadManagerFiles($this, array(
 			'config' => true,
 			'utils' => true,
@@ -45,13 +46,7 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 			'ticket' => true,
 			'comments' => true,
 		));
-		$this->addJavascript($mgrUrl . 'assets/modext/util/datetime.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/widgets/element/modx.panel.tv.renders.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/widgets/resource/modx.grid.resource.security.local.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/widgets/resource/modx.panel.resource.tv.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/widgets/resource/modx.panel.resource.js');
-		$this->addJavascript($mgrUrl . 'assets/modext/sections/resource/update.js');
-		$this->addLastJavascript($ticketsJsUrl . 'ticket/update.js');
+		$this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/ticket/update.js');
 
 		$ready = array(
 			'xtype' => 'tickets-page-ticket-update',
@@ -69,7 +64,6 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 			'show_tvs' => (int)!empty($this->tvCounts),
 			'mode' => 'update',
 		);
-
 		$this->addHtml('
 		<script type="text/javascript">
 		// <![CDATA[
@@ -81,8 +75,6 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 		});
 		// ]]>
 		</script>');
-
-		$this->loadRichTextEditor();
 	}
 
 }
