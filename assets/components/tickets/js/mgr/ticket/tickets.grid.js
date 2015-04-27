@@ -169,6 +169,18 @@ Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 				}
 			}
 		}
+		else if (elem.nodeName == 'A' && elem.href.match(/(\?|\&)a=resource/)) {
+			if (e.button == 1 || (e.button == 0 && e.ctrlKey == true)) {
+				// Bypass
+			}
+			else if (elem.target && elem.target == '_blank') {
+				// Bypass
+			}
+			else {
+				e.preventDefault();
+				MODx.loadPage('', elem.href);
+			}
+		}
 		return this.processEvent('click', e);
 	},
 
@@ -180,7 +192,10 @@ Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 	},
 
 	editTicket: function() {
-		location.href = 'index.php?a=' + MODx.request.a + '&id=' + this.menu.record.id;
+		var action = MODx.action
+			? MODx.action['resource/update']
+			: 'resource/update';
+		MODx.loadPage(action, 'id=' + this.menu.record.id);
 	},
 
 	viewTicket: function() {
