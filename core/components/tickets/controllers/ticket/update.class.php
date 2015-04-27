@@ -31,11 +31,10 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController {
 		parent::loadCustomCssJs();
 		$this->head['html'] = $html;
 
-		$properties = $this->resource->getProperties();
-		$this->resourceArray['properties'] = $properties;
 		if (is_null($this->resourceArray['properties'])) {
 			$this->resourceArray['properties'] = array();
 		}
+		$this->resourceArray['properties']['tickets'] = $this->resource->getProperties('tickets');
 
 		/** @var Tickets $Tickets */
 		$Tickets = $this->modx->getService('Tickets');

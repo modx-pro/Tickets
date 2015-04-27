@@ -30,9 +30,10 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
 		parent::loadCustomCssJs();
 		$this->head['html'] = $html;
 
-		$this->resourceArray['properties'] = array(
-			'tickets' => $this->resource->getProperties('tickets')
-		);
+		if (is_null($this->resourceArray['properties'])) {
+			$this->resourceArray['properties'] = array();
+		}
+		$this->resourceArray['properties']['tickets'] = $this->resource->getProperties('tickets');
 		$this->resourceArray['syncsite'] = 0;
 
 		/** @var Tickets $Tickets */

@@ -44,9 +44,12 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 		parent::loadCustomCssJs();
 		$this->head['html'] = $html;
 
-		$properties = $this->parent->getProperties();
+		if (is_null($this->resourceArray['properties'])) {
+			$this->resourceArray['properties'] = array();
+		}
+		$properties = $this->parent->getProperties('tickets');
 		$this->resourceArray = array_merge($this->resourceArray, $properties);
-		$this->resourceArray['properties'] = $properties;
+		$this->resourceArray['properties']['tickets'] = $properties;
 
 		/** @var Tickets $Tickets */
 		$Tickets = $this->modx->getService('Tickets');
