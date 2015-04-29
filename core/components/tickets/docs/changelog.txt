@@ -1,12 +1,14 @@
 Changelog for Tickets.
 
-1.6.0 rc1
+1.6.0 pl
 ==========
+- [#113] Added ratings for the authors.
 - [#122] [TicketComments] Added parameter &requiredFields for snippet.
 - [#122] [TicketComments] Improved frontend errors handling.
 - [#111] Ability to load any js and css files on Tickets initialization.
 - [#87] Added new tab with the all tickets of the site.
 - [#83] Improved extension of TicketsSection page.
+- [#84] Added profiles of authors.
 - [#83] Improved extension of Ticket page.
 - [#61] Ability to specify url of comments thread for opening from manager.
 - [mgr] Improved Tickets grid on TicketsSection page.
@@ -18,9 +20,6 @@ Changelog for Tickets.
 - Updated MarkItUp to version 1.1.14.
 - Updated Plupload to version 2.1.2.
 - Added system settings with tree icons for MODX 2.3.
-
-1.6.0 beta
-==========
 - Code reformat.
 - [#120] Fixed permissions in comments processors.
 - [#119] Fixed pagination in comments grid.
