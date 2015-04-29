@@ -74,8 +74,10 @@ switch ($modx->event->name) {
 
 
 	case 'OnLoadWebDocument':
+		$authenticated = $modx->user->isAuthenticated($modx->context->get('key'));
 		$key = 'Tickets_User';
-		if (!$modx->user->isAuthenticated($modx->context->get('key')) && !$modx->getOption('tickets.count_guests', false)) {
+
+		if (!$authenticated && !$modx->getOption('tickets.count_guests', false)) {
 			return;
 		}
 
@@ -95,13 +97,23 @@ switch ($modx->event->name) {
 		if (empty($_SESSION[$key])) {
 			$_SESSION[$key] = $guest_key;
 		}
+
+		if ($authenticated) {
+			/** @var TicketAuthor $profile */
+			if (!$profile = $modx->user->getOne('AuthorProfile')) {
+				$profile = $modx->newObject('TicketAuthor');
+				$modx->user->addOne($profile);
+			}
+			$profile->set('visitedon', time());
+			$profile->save();
+		}
 		break;
 
 
 	case 'OnWebPageComplete':
 		/** @var Tickets $Tickets */
 		$Tickets = $modx->getService('tickets');
-		$Tickets->logView($modx->resource->id);
+		$Tickets->logView($modx->resource->get('id'));
 		break;
 
 
@@ -125,6 +137,16 @@ switch ($modx->event->name) {
 			foreach ($collection as $item) {
 				$item->remove();
 			}
+		}
+		break;
+
+
+	case 'OnUserSave':
+		/** @var modUser $user */
+		if ($mode == 'new' && $user && !$user->getOne('AuthorProfile')) {
+			$profile = $modx->newObject('TicketAuthor');
+			$user->addOne($profile);
+			$profile->save();
 		}
 		break;
 

@@ -8,6 +8,7 @@ include_once('setting.inc.php');
 $_lang['tickets'] = 'Tickets';
 $_lang['comments'] = 'Comments';
 $_lang['threads'] = 'Comments threads';
+$_lang['authors'] = 'Authors';
 $_lang['tickets_section'] = 'Section with tickets';
 $_lang['ticket'] = 'Ticket';
 $_lang['ticket_all'] = 'All tickets';
@@ -26,9 +27,9 @@ $_lang['tickets_section_view'] = 'View on site';
 
 $_lang['tickets_section_settings'] = 'Settings';
 $_lang['tickets_section_tab_main'] = 'Main';
+
 $_lang['tickets_section_tab_tickets'] = 'Children tickets';
 $_lang['tickets_section_tab_tickets_intro'] = 'All settings on this page apply only to new tickets.';
-
 $_lang['tickets_section_settings_template'] = 'The template of children';
 $_lang['tickets_section_settings_template_desc'] = 'Select the template that will be assigned to all new tickets that are created in this section. If template is not specified, it will be taken from the system settings <b>tickets.default_template</b>.';
 $_lang['tickets_section_settings_uri'] = 'URI scheme';
@@ -45,6 +46,23 @@ $_lang['tickets_section_notify'] = 'Notify about new tickets';
 $_lang['tickets_section_subscribed'] = 'You have subscribe to notifications about new tickets in this section.';
 $_lang['tickets_section_subscribed'] = 'You will no longer receive notifications about new tickets in this section.';
 $_lang['tickets_section_email_subscription'] = 'New ticket in the section "[[+section.pagetitle]]"';
+
+$_lang['tickets_section_tab_ratings'] = 'Ratings';
+$_lang['tickets_section_tab_ratings_intro'] = 'Specify the rating points for different user actions in this section.';
+$_lang['tickets_section_rating_ticket'] = 'Tickets';
+$_lang['tickets_section_rating_ticket_desc'] = 'Rating for the creation of a ticket in this section.';
+$_lang['tickets_section_rating_comment'] = 'Comments';
+$_lang['tickets_section_rating_comment_desc'] = 'Rating for commenting tickets in this section.';
+$_lang['tickets_section_rating_view'] = 'Views';
+$_lang['tickets_section_rating_view_desc'] = 'Rating for the view tickets in this section.';
+$_lang['tickets_section_rating_vote_ticket'] = 'Vote for the ticket';
+$_lang['tickets_section_rating_vote_ticket_desc'] = 'Rating for the author of the ticket for each voting. Negative voices take up a rating.';
+$_lang['tickets_section_rating_vote_comment'] = 'Vote for the comment';
+$_lang['tickets_section_rating_vote_comment_desc'] = 'Rating for the author of the comment for each vote. Negative voices take up a rating.';
+$_lang['tickets_section_rating_star_ticket'] = 'Ticket in the favorites';
+$_lang['tickets_section_rating_star_ticket_desc'] = 'Rating for the author of the ticket for each add to favorites.';
+$_lang['tickets_section_rating_star_comment'] = 'Comment in the favorites';
+$_lang['tickets_section_rating_star_comment_desc'] = 'Rating for the author of the comment for each add to favorites.';
 
 $_lang['ticket_create_here'] = 'Create ticket';
 
@@ -112,6 +130,16 @@ $_lang['ticket_comment_err_email'] = 'You have specified an invalid email.';
 $_lang['ticket_comment_err_guest_edit'] = 'You are not allowed to edit comments.';
 $_lang['ticket_comment_err_captcha'] = 'Invalid code of protection against spam.';
 $_lang['ticket_comment_err_no_email'] = 'You need to specify the email in your account settings..';
+
+$_lang['ticket_authors_intro'] = 'This section contains profiles of authors with ratings. Settings for the calculation are specified separately in each section.<br/>You can see how many tickets, comments and views made by the author and added to favorites and voted for them by other users.';
+$_lang['ticket_author_createdon'] = 'Created On';
+$_lang['ticket_author_visitedon'] = 'Visited On';
+$_lang['ticket_author_rating'] = 'Rating';
+$_lang['ticket_author_tickets'] = 'Tickets';
+$_lang['ticket_author_comments'] = 'Comments';
+$_lang['ticket_author_views'] = 'Views';
+$_lang['ticket_author_stars'] = 'Favorites';
+$_lang['ticket_author_votes'] = 'Votes';
 
 $_lang['ticket_tickets_intro'] = 'Here you can find the tickets from the whole site.';
 $_lang['ticket_publishedon'] = 'Published On';

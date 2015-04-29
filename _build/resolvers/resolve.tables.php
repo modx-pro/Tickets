@@ -1,6 +1,7 @@
 <?php
 
 if ($object->xpdo) {
+	/** @var modX $modx */
 	$modx =& $object->xpdo;
 	$modelPath = $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/';
 
@@ -16,6 +17,8 @@ if ($object->xpdo) {
 			$manager->createObjectContainer('TicketStar');
 			$manager->createObjectContainer('TicketQueue');
 			$manager->createObjectContainer('TicketFile');
+			$manager->createObjectContainer('TicketAuthor');
+			$manager->createObjectContainer('TicketAuthorAction');
 
 			$tmp = $modx->getFieldMeta('TicketVote');
 			if (isset($tmp['parent']) && !$modx->getCount('TicketVote')) {

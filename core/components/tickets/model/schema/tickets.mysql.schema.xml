@@ -234,9 +234,105 @@
 		<index alias="deleted" name="deleted" primary="false" unique="false" type="BTREE">
 			<column key="deleted" length="" collation="A" null="false" />
 		</index>
-		<index alias="hash" name="hash" primary="false" unique="false" type="BTREE" >
+		<index alias="hash" name="hash" primary="false" unique="false" type="BTREE">
 			<column key="hash" length="" collation="A" null="false" />
 		</index>
+	</object>
+
+	<object class="TicketAuthor" table="tickets_authors" extends="xPDOObject">
+		<field key="id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" index="pk" />
+		<field key="rating" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0" />
+
+		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" default="0000-00-00 00:00:00" />
+		<field key="visitedon" dbtype="datetime" phptype="datetime" null="true" default="0000-00-00 00:00:00" />
+
+		<field key="tickets" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
+		<field key="comments" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
+		<field key="views" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
+		<field key="votes" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
+		<field key="stars" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
+
+		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true" type="BTREE">
+			<column key="id" length="" collation="A" null="false" />
+		</index>
+		<index alias="rating" name="rating" primary="false" unique="false" type="BTREE">
+			<column key="rating" length="" collation="A" null="false" />
+		</index>
+		<index alias="createdon" name="createdon" primary="false" unique="false" type="BTREE">
+			<column key="createdon" length="" collation="A" null="false" />
+		</index>
+		<index alias="visitedon" name="visitedon" primary="false" unique="false" type="BTREE">
+			<column key="visitedon" length="" collation="A" null="false" />
+		</index>
+		<index alias="tickets" name="tickets" primary="false" unique="false" type="BTREE">
+			<column key="tickets" length="" collation="A" null="false" />
+		</index>
+		<index alias="comments" name="comments" primary="false" unique="false" type="BTREE">
+			<column key="comments" length="" collation="A" null="false" />
+		</index>
+		<index alias="views" name="views" primary="false" unique="false" type="BTREE">
+			<column key="views" length="" collation="A" null="false" />
+		</index>
+		<index alias="votes" name="votes" primary="false" unique="false" type="BTREE">
+			<column key="votes" length="" collation="A" null="false" />
+		</index>
+		<index alias="stars" name="stars" primary="false" unique="false" type="BTREE">
+			<column key="stars" length="" collation="A" null="false" />
+		</index>
+
+		<composite alias="Actions" class="TicketAuthorAction" local="id" foreign="createdby" cardinality="many" owner="local" />
+		<aggregate alias="User" class="modUser" local="id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="UserProfile" class="modUserProfile" local="id" foreign="internalKey" cardinality="one" owner="foreign" />
+	</object>
+
+	<object class="TicketAuthorAction" table="tickets_author_actions" extends="xPDOObject">
+		<field key="id" dbtype="int" precision="10" phptype="integer" null="false" index="pk" />
+		<field key="action" dbtype="varchar" precision="50" phptype="string" null="false" index="pk" />
+		<field key="owner" dbtype="int" precision="10" phptype="integer" null="false" default="0" index="pk" />
+		<field key="rating" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0" />
+		<field key="multiplier" dbtype="int" precision="10" phptype="integer" null="true" default="1" />
+
+		<field key="ticket" dbtype="int" precision="10" phptype="integer" null="false" default="0" />
+		<field key="section" dbtype="int" precision="10" phptype="integer" null="false" default="0" />
+		<field key="createdby" dbtype="int" precision="10" phptype="integer" null="false" default="0" />
+		<field key="createdon" dbtype="datetime" phptype="datetime" null="false" default="0000-00-00 00:00:00" />
+
+		<field key="year" dbtype="year" precision="4" phptype="integer" null="true" default="0000" />
+		<field key="month" dbtype="int" precision="2" phptype="integer" null="true" default="0" />
+		<field key="day" dbtype="int" precision="2" phptype="integer" null="true" default="0" />
+
+		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true" type="BTREE">
+			<column key="id" length="" collation="A" null="false" />
+			<column key="action" length="" collation="A" null="false" />
+			<column key="owner" length="" collation="A" null="false" />
+		</index>
+		<index alias="createdon" name="createdon" primary="false" unique="false" type="BTREE">
+			<column key="createdon" length="" collation="A" null="false" />
+		</index>
+		<index alias="section" name="section" primary="false" unique="false" type="BTREE">
+			<column key="section" length="" collation="A" null="false" />
+		</index>
+		<index alias="ticket" name="ticket" primary="false" unique="false" type="BTREE">
+			<column key="ticket" length="" collation="A" null="false" />
+		</index>
+		<index alias="action" name="action" primary="false" unique="false" type="BTREE">
+			<column key="action" length="" collation="A" null="false" />
+		</index>
+		<index alias="owner" name="owner" primary="false" unique="false" type="BTREE">
+			<column key="owner" length="" collation="A" null="false" />
+		</index>
+		<index alias="date" name="date" primary="false" unique="false" type="BTREE">
+			<column key="year" length="" collation="A" null="false" />
+			<column key="month" length="" collation="A" null="false" />
+			<column key="day" length="" collation="A" null="false" />
+		</index>
+
+		<aggregate alias="User" class="modUser" local="createdby" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="UserProfile" class="modUser" local="createdby" foreign="internalKey" cardinality="one" owner="foreign" />
+		<aggregate alias="Author" class="TicketAuthor" local="createdby" foreign="id" cardinality="one" owner="foreign" />
+
+		<aggregate alias="Ticket" class="Ticket" local="ticket" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="TicketsSection" class="TicketsSection" local="section" foreign="id" cardinality="one" owner="foreign" />
 	</object>
 
 </model>

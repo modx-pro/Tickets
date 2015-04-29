@@ -3,9 +3,9 @@ $plugins = array();
 
 $tmp = array(
 	'Tickets' => array(
-		'file' => 'tickets'
-		,'description' => ''
-		,'events' => array(
+		'file' => 'tickets',
+		'description' => '',
+		'events' => array(
 			'OnDocFormSave',
 			'OnSiteRefresh',
 			'OnWebPagePrerender',
@@ -13,7 +13,8 @@ $tmp = array(
 			'OnLoadWebDocument',
 			'OnWebPageComplete',
 			'OnEmptyTrash',
-		)
+			'OnUserSave',
+		),
 	)
 );
 

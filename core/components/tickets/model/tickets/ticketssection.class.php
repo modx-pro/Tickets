@@ -9,6 +9,7 @@ class TicketsSection extends modResource {
 	public $showInContextMenu = true;
 	public $allowChildrenResources = false;
 	private $_oldUri = '';
+	private $_oldRatings = '';
 
 
 	/**
@@ -101,6 +102,13 @@ class TicketsSection extends modResource {
 	public function set($k, $v = null, $vType = '') {
 		if (is_string($k) && ($k == 'alias' || $k == 'uri')) {
 			$this->_oldUri = parent::get('uri');
+		}
+		elseif (is_string($k) && $k == 'properties' && empty($this->_oldRatings)) {
+			if ($properties = parent::get('properties')) {
+				if (!empty($properties['ratings'])) {
+					$this->_oldRatings = implode(array_values($properties['ratings']));
+				}
+			}
 		}
 
 		return parent::set($k, $v, $vType);
@@ -400,6 +408,23 @@ class TicketsSection extends modResource {
 				}
 			}
 		}
+		elseif ($namespace == 'ratings') {
+			$default_properties = array(
+				'ticket' => $this->xpdo->context->getOption('tickets.rating_ticket_default', 10),
+				'comment' => $this->xpdo->context->getOption('tickets.rating_comment_default', 1),
+				'view' => $this->xpdo->context->getOption('tickets.rating_view_default', 0.1),
+				'vote_ticket' => $this->xpdo->context->getOption('tickets.rating_vote_ticket_default', 1),
+				'vote_comment' => $this->xpdo->context->getOption('tickets.rating_vote_comment_default', 0.2),
+				'star_ticket' => $this->xpdo->context->getOption('tickets.rating_star_ticket_default', 3),
+				'star_comment' => $this->xpdo->context->getOption('tickets.rating_star_comment_default', 0.6),
+			);
+
+			foreach ($default_properties as $key => $value) {
+				if (!isset($properties[$key])) {
+					$properties[$key] = $value;
+				}
+			}
+		}
 
 		return $properties;
 	}
@@ -412,11 +437,21 @@ class TicketsSection extends modResource {
 	 */
 	public function save($cacheFlag = null) {
 		$this->set('isfolder', 1);
+		$update_actions = false;
+		if ($properties = parent::get('properties')) {
+			if (!empty($properties['ratings'])) {
+				$ratings = implode(array_values($properties['ratings']));
+				$update_actions = $ratings != $this->_oldRatings;
+			}
+		}
 
-		$isNew = $this->isNew();
+		$new = $this->isNew();
 		$saved = parent::save($cacheFlag);
-		if ($saved && !$isNew) {
+		if ($saved && !$new) {
 			$this->updateChildrenURIs();
+		}
+		if ($saved && $update_actions) {
+			$this->updateAuthorsActions();
 		}
 
 		return $saved;
@@ -493,6 +528,32 @@ class TicketsSection extends modResource {
 			: array();
 
 		return in_array($uid, $subscribers);
+	}
+
+
+	/**
+	 * Update ratings for authors actions in section
+	 */
+	public function updateAuthorsActions() {
+		$ratings = $this->getProperties('ratings');
+		$table = $this->xpdo->getTableName('TicketAuthorAction');
+		foreach ($ratings as $action => $rating) {
+			$sql = "UPDATE {$table} SET `rating` = `multiplier` * {$rating} WHERE `section` = {$this->id} AND `action` = '{$action}';";
+			$this->xpdo->exec($sql);
+		}
+
+		$c = $this->xpdo->newQuery('TicketAuthorAction', array('section' => $this->id));
+		$c->select('DISTINCT(owner)');
+		$owners = array();
+		if ($c->prepare() && $c->stmt->execute()) {
+			$owners = $c->stmt->fetchAll(PDO::FETCH_COLUMN);
+		}
+
+		$authors = $this->xpdo->getIterator('TicketAuthor', array('id:IN' => $owners));
+		/** @var TicketAuthor $author */
+		foreach ($authors as $author) {
+			$author->updateTotals();
+		}
 	}
 
 }

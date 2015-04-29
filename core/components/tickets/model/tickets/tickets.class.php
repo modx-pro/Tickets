@@ -1331,8 +1331,6 @@ class Tickets {
 	 */
 	public function logView($resource) {
 		$key = 'Tickets_User';
-		$table = $this->modx->getTableName('TicketView');
-		$sql = '';
 
 		if (!$this->authenticated) {
 			if (!$this->modx->getOption('tickets.count_guests', false)) {
@@ -1342,19 +1340,23 @@ class Tickets {
 		}
 		else {
 			if (!empty($_SESSION[$key])) {
-				$sql .= "DELETE FROM {$table} WHERE `uid` = 0 AND `guest_key` = '{$_SESSION[$key]}' AND `parent` = {$resource};";
+				$table = $this->modx->getTableName('TicketView');
+				$this->modx->exec("DELETE FROM {$table} WHERE `uid` = 0 AND `guest_key` = '{$_SESSION[$key]}' AND `parent` = {$resource};");
 			}
 			$guest_key = '';
 		}
 
-		$timestamp = date('Y-m-d H:i:s');
-		$sql .= "INSERT INTO {$table} (`uid`, `guest_key`, `parent`, `timestamp`)
-			VALUES ({$this->modx->user->id}, '{$guest_key}', {$resource}, '{$timestamp}')
-			ON DUPLICATE KEY UPDATE `timestamp` = '{$timestamp}'";
-
-		if ($stmt = $this->modx->prepare($sql)) {
-			$stmt->execute();
+		$key = array(
+			'uid' => $this->modx->user->get('id'),
+			'guest_key' => $guest_key,
+			'parent' => $resource,
+		);
+		if (!$view = $this->modx->getObject('TicketView', $key)) {
+			$view = $this->modx->newObject('TicketView');
+			$view->fromArray($key, '', true, true);
 		}
+		$view->set('timestamp', date('Y-m-d H:i:s'));
+		$view->save();
 	}
 
 
@@ -1546,6 +1548,35 @@ class Tickets {
 			$controller->addLastJavascript($ticketsJsUrl . 'comment/comments.panel.js');
 			$controller->addLastJavascript($ticketsJsUrl . 'comment/comments.grid.js');
 			$controller->addLastJavascript($ticketsJsUrl . 'comment/comment.window.js');
+		}
+		if (!empty($properties['authors'])) {
+			$controller->addLastJavascript($ticketsJsUrl . 'author/authors.panel.js');
+			$controller->addLastJavascript($ticketsJsUrl . 'author/authors.grid.js');
+		}
+	}
+
+
+	/**
+	 * Rebuild authors ratings
+	 */
+	public function rebuildRatings() {
+		$profiles = array();
+		// Clear all actions
+		$this->modx->removeCollection('TicketAuthorAction', array());
+		// Update authors profiles
+		$users = $this->modx->getIterator('modUser');
+		/** @var modUser $user */
+		foreach ($users as $user) {
+			/** @var TicketAuthor $profile */
+			if (!$profile = $user->getOne('AuthorProfile')) {
+				$profile = $this->modx->newObject('TicketAuthor');
+				$user->addOne($profile);
+			}
+			$profiles[] = $profile->refreshActions(false, false);
+		}
+		// Update authors totals
+		foreach ($profiles as $profile) {
+			$profile->updateTotals();
 		}
 	}
 

@@ -8,6 +8,7 @@ require_once MODX_CORE_PATH . 'components/tickets/processors/mgr/ticket/update.c
 class Ticket extends modResource {
 	public $showInContextMenu = false;
 	public $allowChildrenResources = false;
+	private $_oldAuthor = 0;
 
 
 	/**
@@ -548,6 +549,14 @@ class Ticket extends modResource {
 		return $properties;
 	}
 
+	public function set($k, $v = null, $vType = '') {
+		if (is_string($k) && $k == 'createdby' && empty($this->_oldAuthor)) {
+			$this->_oldAuthor = parent::get('createdby');
+		}
+
+		return parent::set($k, $v, $vType);
+	}
+
 
 	/**
 	 * @param null $cacheFlag
@@ -555,11 +564,80 @@ class Ticket extends modResource {
 	 * @return bool
 	 */
 	public function save($cacheFlag = null) {
-		if ($this->isDirty('parent') || $this->isDirty('alias') || $this->isDirty('published') || ($this->get('uri_override') && !$this->get('uri'))) {
+		$action = $this->isNew() || $this->isDirty('deleted') || $this->isDirty('published');
+		$enabled = $this->get('published') && !$this->get('deleted');
+		$new_parent = $this->isDirty('parent');
+		$new_author = $this->isDirty('createdby');
+		if ($new_parent || $this->isDirty('alias') || $this->isDirty('published') || ($this->get('uri_override') && !$this->get('uri'))) {
 			$this->setUri($this->get('alias'));
 		}
+		$save = parent::save();
 
-		return parent::save();
+		/** @var TicketAuthor $profile */
+		if ($new_author && $profile = $this->xpdo->getObject('TicketAuthor', $this->_oldAuthor)) {
+			$profile->removeAction('ticket', $this->id);
+		}
+		if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('createdby'))) {
+			if (($action || $new_author) && $enabled) {
+				$profile->addAction('ticket', $this->id, $this->id);
+			}
+			elseif (!$enabled) {
+				$profile->removeAction('ticket', $this->id);
+			}
+		}
+		if ($new_parent) {
+			$this->updateAuthorsActions();
+		}
+
+		return $save;
+	}
+
+
+	/**
+	 * @param array $ancestors
+	 *
+	 * @return bool
+	 */
+	public function remove(array $ancestors = array()) {
+		/** @var TicketAuthor $profile */
+		if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('createdby'))) {
+			$profile->removeAction('ticket', $this->id);
+		}
+
+		return parent::remove($ancestors);
+	}
+
+
+	/**
+	 * Update ratings for authors actions in section
+	 */
+	public function updateAuthorsActions() {
+		if (!$section = $this->getOne('Section')) {
+			$section = $this->xpdo->newObject('TicketsSection');
+		}
+
+		$ratings = $section->getProperties('ratings');
+		$table = $this->xpdo->getTableName('TicketAuthorAction');
+		foreach ($ratings as $action => $rating) {
+			$sql = "
+				UPDATE {$table} SET `rating` = `multiplier` * {$rating}, `section` = {$section->id}
+				WHERE `ticket` = {$this->id} AND `action` = '{$action}';
+			";
+			$this->xpdo->exec($sql);
+		}
+
+		$c = $this->xpdo->newQuery('TicketAuthorAction', array('ticket' => $this->id));
+		$c->select('DISTINCT(owner)');
+		$owners = array();
+		if ($c->prepare() && $c->stmt->execute()) {
+			$owners = $c->stmt->fetchAll(PDO::FETCH_COLUMN);
+		}
+
+		$authors = $this->xpdo->getIterator('TicketAuthor', array('id:IN' => $owners));
+		/** @var TicketAuthor $author */
+		foreach ($authors as $author) {
+			$author->updateTotals();
+		}
 	}
 
 }

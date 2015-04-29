@@ -37,4 +37,16 @@ rrmdir($sources['model'] . PKG_NAME_LOWER . '/mysql');
 // Generate a new one
 $generator->parseSchema($sources['xml'], $sources['model']);
 
+// Add connection to modUser
+$data = file_get_contents($sources['model'] . 'tickets/metadata.mysql.php');
+$data .= '
+$this->map[\'modUser\'][\'composites\'][\'AuthorProfile\'] = array(
+  \'class\' => \'TicketAuthor\',
+  \'local\' => \'id\',
+  \'foreign\' => \'id\',
+  \'cardinality\' => \'one\',
+  \'owner\' => \'local\',
+);';
+file_put_contents($sources['model'] . 'tickets/metadata.mysql.php', $data);
+
 $modx->log(modX::LOG_LEVEL_INFO, 'Model generated.');

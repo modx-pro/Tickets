@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Class TicketComment
+ *
+ * @property int $id
+ */
 class TicketComment extends xPDOSimpleObject {
 	public $class_key = 'TicketComment';
 
@@ -140,6 +145,53 @@ class TicketComment extends xPDOSimpleObject {
 		}
 
 		return $votes;
+	}
+
+
+	/**
+	 * @param null $cacheFlag
+	 *
+	 * @return bool
+	 */
+	public function save($cacheFlag = null) {
+		$action = $this->isNew() || $this->isDirty('deleted') || $this->isDirty('published');
+		$enabled = $this->get('published') && !$this->get('deleted');
+		$new_parent = $this->isDirty('thread');
+		$save = parent::save($cacheFlag);
+
+		/** @var TicketThread $thread */
+		$thread = $this->getOne('Thread');
+
+		/** @var TicketAuthor $profile */
+		if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('createdby'))) {
+			if ($action && $enabled) {
+				$profile->addAction('comment', $this->id, $thread->get('resource'));
+			}
+			elseif (!$enabled) {
+				$profile->removeAction('comment', $this->id);
+			}
+			elseif ($new_parent) {
+				$profile->removeAction('comment', $this->id);
+				$profile->addAction('comment', $this->id, $thread->get('resource'));
+			}
+		}
+
+		return $save;
+	}
+
+
+	/**
+	 * @param array $ancestors
+	 *
+	 * @return bool
+	 */
+	public function remove(array $ancestors = array()) {
+		/** @var TicketAuthor $profile */
+		if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('createdby'))) {
+			$profile->removeAction('comment', $this->id);
+		}
+
+		return parent::remove($ancestors);
 	}
 
 }

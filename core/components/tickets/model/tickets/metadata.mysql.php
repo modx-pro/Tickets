@@ -18,5 +18,14 @@ $xpdo_meta_map = array (
     0 => 'TicketVote',
     1 => 'TicketStar',
     2 => 'TicketView',
+    3 => 'TicketAuthor',
+    4 => 'TicketAuthorAction',
   ),
+);
+$this->map['modUser']['composites']['AuthorProfile'] = array(
+  'class' => 'TicketAuthor',
+  'local' => 'id',
+  'foreign' => 'id',
+  'cardinality' => 'one',
+  'owner' => 'local',
 );

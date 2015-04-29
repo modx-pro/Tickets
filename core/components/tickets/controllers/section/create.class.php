@@ -34,6 +34,7 @@ class TicketsSectionCreateManagerController extends ResourceCreateManagerControl
 			$this->resourceArray['properties'] = array();
 		}
 		$this->resourceArray['properties']['tickets'] = $this->resource->getProperties('tickets');
+		$this->resourceArray['properties']['ratings'] = $this->resource->getProperties('ratings');
 		$this->resourceArray['syncsite'] = 0;
 
 		/** @var Tickets $Tickets */

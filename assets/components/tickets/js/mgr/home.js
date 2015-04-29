@@ -21,7 +21,7 @@ Tickets.panel.Home = function(config) {
 			html: '<h2>' + _('tickets') + '</h2>',
 			border: false,
 			cls: 'modx-page-header container',
-		},{
+		}, {
 			xtype: 'modx-tabs',
 			id: 'tickets-home-tabs',
 			defaults: {border: false , autoHeight: true},
@@ -46,7 +46,7 @@ Tickets.panel.Home = function(config) {
 					xtype: 'tickets-panel-comments',
 					preventRender: true,
 				}]
-			},{
+			}, {
 				title: _('threads'),
 				layout: 'anchor',
 				items: [{
@@ -57,7 +57,7 @@ Tickets.panel.Home = function(config) {
 					xtype: 'tickets-panel-threads',
 					preventRender: true,
 				}]
-			},{
+			}, {
 				title: _('tickets'),
 				layout: 'anchor',
 				items: [{
@@ -66,6 +66,17 @@ Tickets.panel.Home = function(config) {
 					bodyCssClass: 'panel-desc',
 				},{
 					xtype: 'tickets-panel-tickets',
+					preventRender: true,
+				}]
+			}, {
+				title: _('authors'),
+				layout: 'anchor',
+				items: [{
+					html: _('ticket_authors_intro'),
+					border: false,
+					bodyCssClass: 'panel-desc',
+				},{
+					xtype: 'tickets-panel-authors',
 					preventRender: true,
 				}]
 			}]

@@ -8,6 +8,7 @@ include_once('setting.inc.php');
 $_lang['tickets'] = 'Тикеты';
 $_lang['comments'] = 'Комментарии';
 $_lang['threads'] = 'Ветви комментариев';
+$_lang['authors'] = 'Авторы';
 $_lang['tickets_section'] = 'Раздел с тикетами';
 $_lang['ticket'] = 'Тикет';
 $_lang['ticket_all'] = 'Все';
@@ -26,9 +27,9 @@ $_lang['tickets_section_view'] = 'Просмотреть на сайте';
 
 $_lang['tickets_section_settings'] = 'Настройки раздела';
 $_lang['tickets_section_tab_main'] = 'Основные';
+
 $_lang['tickets_section_tab_tickets'] = 'Дочерние тикеты';
 $_lang['tickets_section_tab_tickets_intro'] = 'Все настройки на этой странице действуют только на новые тикеты.';
-
 $_lang['tickets_section_settings_template'] = 'Шаблон дочерних документов';
 $_lang['tickets_section_settings_template_desc'] = 'Выберите шаблон, который будет присвоен всем новым тикетам, создаваемым в этой секции. Если шаблон не указан - он будет взят из системной настройки <b>tickets.default_template</b>.';
 $_lang['tickets_section_settings_uri'] = 'Формирование URI';
@@ -41,6 +42,24 @@ $_lang['tickets_section_settings_disable_jevix'] = 'Отключить Jevix';
 $_lang['tickets_section_settings_disable_jevix_desc'] = 'По умолчанию, в целях безопасности, все тикеты обрабатываются сниппетом Jevix. Вы можете отключить эту обработку для новых тикетов текущего раздела.';
 $_lang['tickets_section_settings_process_tags'] = 'Выполнять теги MODX';
 $_lang['tickets_section_settings_process_tags_desc'] = 'По умолчанию, в целях безопасности, в тикетах не выполняются теги MODX. Вы можете включить их выполнение в новых тикетах текущего раздела.';
+
+$_lang['tickets_section_tab_ratings'] = 'Рейтинги';
+$_lang['tickets_section_tab_ratings_intro'] = 'Укажите очки рейтинга для разных действий пользователей в этом разделе.';
+$_lang['tickets_section_rating_ticket'] = 'Тикеты';
+$_lang['tickets_section_rating_ticket_desc'] = 'Очки рейтинга за создание тикета в этом разделе.';
+$_lang['tickets_section_rating_comment'] = 'Комментарии';
+$_lang['tickets_section_rating_comment_desc'] = 'Очки рейтинга за комментирование тикетов этого раздела.';
+$_lang['tickets_section_rating_view'] = 'Просмотры';
+$_lang['tickets_section_rating_view_desc'] = 'Очки за просмотр тикетов в этом разделе.';
+$_lang['tickets_section_rating_vote_ticket'] = 'Голос за тикет';
+$_lang['tickets_section_rating_vote_ticket_desc'] = 'Очки рейтинга автору тикета за каждое голосование. Отрицательные голоса отнимают рейтинг.';
+$_lang['tickets_section_rating_vote_comment'] = 'Голос за комментарий';
+$_lang['tickets_section_rating_vote_comment_desc'] = 'Очки рейтинга автору комментария за каждое голосование. Отрицательные голоса отнимают рейтинг.';
+$_lang['tickets_section_rating_star_ticket'] = 'Тикет в избранном';
+$_lang['tickets_section_rating_star_ticket_desc'] = 'Очки рейтинга автору тикета за каждое добавление в избранное.';
+$_lang['tickets_section_rating_star_comment'] = 'Коммент в избранном';
+$_lang['tickets_section_rating_star_comment_desc'] = 'Очки рейтинга автору комментария за каждое добавление в избранное.';
+
 $_lang['tickets_section_notify'] = 'Уведомлять о новых тикетах';
 $_lang['tickets_section_subscribed'] = 'Вы подписались на уведомления о новых тикетах в этой секции.';
 $_lang['tickets_section_unsubscribed'] = 'Вы больше не будете получать уведомления о тикетах из этой секции.';
@@ -112,6 +131,16 @@ $_lang['ticket_comment_err_email'] = 'Вы указали неверный email
 $_lang['ticket_comment_err_guest_edit'] = 'Вам запрещено редактировать комментарии.';
 $_lang['ticket_comment_err_captcha'] = 'Указан неверный код защиты от спама.';
 $_lang['ticket_comment_err_no_email'] = 'Вам нужно указать email в настройках вашего аккаунта.';
+
+$_lang['ticket_authors_intro'] = 'В этом разделе собраны профили авторов с рейтингами. Настройки для подсчёта указываются раздельно у каждой секции.<br/>Вы видите сколько тикетов, комментариев и просмотров сделал автор, а также сколько добавили в избранное и проголосовали за них другие пользователи.';
+$_lang['ticket_author_createdon'] = 'Был создан';
+$_lang['ticket_author_visitedon'] = 'Заходил';
+$_lang['ticket_author_rating'] = 'Рейтинг';
+$_lang['ticket_author_tickets'] = 'Тикеты';
+$_lang['ticket_author_comments'] = 'Комментарии';
+$_lang['ticket_author_views'] = 'Просмотры';
+$_lang['ticket_author_stars'] = 'Избранное';
+$_lang['ticket_author_votes'] = 'Голоса';
 
 $_lang['ticket_tickets_intro'] = 'Здесь собраны тикеты со всего сайта.';
 $_lang['ticket_pagetitle'] = 'Заголовок';

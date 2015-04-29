@@ -59,6 +59,21 @@ Ext.extend(Tickets.panel.SectionSettings, MODx.VerticalTabs, {
 			items: this.getTicketsSettings(config)
 		});
 
+		tabs.push({
+			title: _('tickets_section_tab_ratings'),
+			hideMode: 'offsets',
+			anchor: '100%',
+			layout: 'form',
+			defaults: {
+				layout: 'form',
+				labelAlign: 'top',
+				anchor: '100%',
+				border: false,
+				labelSeparator: ''
+			},
+			items: this.getTicketsRatings(config)
+		});
+
 		return tabs;
 	},
 
@@ -227,7 +242,6 @@ Ext.extend(Tickets.panel.SectionSettings, MODx.VerticalTabs, {
 						name: 'properties[tickets][' + i + ']',
 						hiddenName: 'properties[tickets][' + i + ']',
 						fieldLabel: _('tickets_section_settings_' + i),
-						description: '<b>[[*' + i + ']]</b><br/>' + _('resource_' + i + '_help'),
 						id: 'tickets-settings-children-' + i,
 						value: config.record.properties['tickets'][i],
 						listeners: config.listeners,
@@ -244,7 +258,49 @@ Ext.extend(Tickets.panel.SectionSettings, MODx.VerticalTabs, {
 		}
 
 		return items;
-	}
+	},
+
+	getTicketsRatings: function(config) {
+		var items = [{
+			html: _('tickets_section_tab_ratings_intro'),
+			border: false,
+			bodyCssClass: 'panel-desc',
+		}];
+
+		var tmp = {
+			ticket: {},
+			comment: {},
+			view: {},
+			vote_ticket: {},
+			vote_comment: {},
+			star_ticket: {},
+			star_comment: {},
+		};
+
+		for (var i in tmp) {
+			if (tmp.hasOwnProperty(i)) {
+				items.push(Ext.apply({
+						xtype: 'numberfield',
+						name: 'properties[ratings][' + i + ']',
+						hiddenName: 'properties[ratings][' + i + ']',
+						fieldLabel: _('tickets_section_rating_' + i),
+						id: 'tickets-settings-rating-' + i,
+						value: config.record.properties['ratings'][i],
+						listeners: config.listeners,
+						anchor: '25%'
+					},
+					tmp[i]
+				));
+				items.push({
+					xtype: 'label',
+					html: _('tickets_section_rating_' + i + '_desc'),
+					cls: 'desc-under'
+				});
+			}
+		}
+
+		return items;
+	},
 
 });
 Ext.reg('tickets-section-tab-settings', Tickets.panel.SectionSettings);
