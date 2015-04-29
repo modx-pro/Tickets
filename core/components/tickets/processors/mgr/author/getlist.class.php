@@ -32,7 +32,7 @@ class TicketAuthorGetListProcessor extends modObjectGetListProcessor {
 		$c->select($this->modx->getSelectColumns($this->classKey, $this->classKey));
 		$c->select(array(
 			'username' => 'User.username',
-			'author' => 'UserProfile.fullname',
+			'fullname' => 'UserProfile.fullname',
 			'active' => 'User.active',
 			'blocked' => 'UserProfile.blocked',
 		));

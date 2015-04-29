@@ -1,6 +1,6 @@
 Changelog for Tickets.
 
-1.6.0 pl
+1.6.0 pl1
 ==========
 - [#113] Added ratings for the authors.
 - [#122] [TicketComments] Added parameter &requiredFields for snippet.
