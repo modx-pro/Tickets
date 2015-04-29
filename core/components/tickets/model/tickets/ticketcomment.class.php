@@ -168,10 +168,10 @@ class TicketComment extends xPDOSimpleObject {
 				$profile->addAction('comment', $this->id, $thread->get('resource'));
 			}
 			elseif (!$enabled) {
-				$profile->removeAction('comment', $this->id);
+				$profile->removeAction('comment', $this->id, $this->get('createdby'));
 			}
 			elseif ($new_parent) {
-				$profile->removeAction('comment', $this->id);
+				$profile->removeAction('comment', $this->id, $this->get('createdby'));
 				$profile->addAction('comment', $this->id, $thread->get('resource'));
 			}
 		}
@@ -188,7 +188,7 @@ class TicketComment extends xPDOSimpleObject {
 	public function remove(array $ancestors = array()) {
 		/** @var TicketAuthor $profile */
 		if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('createdby'))) {
-			$profile->removeAction('comment', $this->id);
+			$profile->removeAction('comment', $this->id, $this->get('createdby'));
 		}
 
 		return parent::remove($ancestors);

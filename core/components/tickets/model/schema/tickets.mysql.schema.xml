@@ -294,7 +294,7 @@
 
 		<field key="ticket" dbtype="int" precision="10" phptype="integer" null="false" default="0" />
 		<field key="section" dbtype="int" precision="10" phptype="integer" null="false" default="0" />
-		<field key="createdby" dbtype="int" precision="10" phptype="integer" null="false" default="0" />
+		<field key="createdby" dbtype="int" precision="10" phptype="integer" null="false" default="0" index="pk" />
 		<field key="createdon" dbtype="datetime" phptype="datetime" null="false" default="0000-00-00 00:00:00" />
 
 		<field key="year" dbtype="year" precision="4" phptype="integer" null="true" default="0000" />
@@ -305,6 +305,7 @@
 			<column key="id" length="" collation="A" null="false" />
 			<column key="action" length="" collation="A" null="false" />
 			<column key="owner" length="" collation="A" null="false" />
+			<column key="createdby" length="" collation="A" null="false" />
 		</index>
 		<index alias="createdon" name="createdon" primary="false" unique="false" type="BTREE">
 			<column key="createdon" length="" collation="A" null="false" />

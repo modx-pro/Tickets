@@ -575,14 +575,14 @@ class Ticket extends modResource {
 
 		/** @var TicketAuthor $profile */
 		if ($new_author && $profile = $this->xpdo->getObject('TicketAuthor', $this->_oldAuthor)) {
-			$profile->removeAction('ticket', $this->id);
+			$profile->removeAction('ticket', $this->id, $this->get('createdby'));
 		}
 		if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('createdby'))) {
 			if (($action || $new_author) && $enabled) {
 				$profile->addAction('ticket', $this->id, $this->id);
 			}
 			elseif (!$enabled) {
-				$profile->removeAction('ticket', $this->id);
+				$profile->removeAction('ticket', $this->id, $this->get('createdby'));
 			}
 		}
 		if ($new_parent) {
@@ -601,7 +601,7 @@ class Ticket extends modResource {
 	public function remove(array $ancestors = array()) {
 		/** @var TicketAuthor $profile */
 		if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('createdby'))) {
-			$profile->removeAction('ticket', $this->id);
+			$profile->removeAction('ticket', $this->id, $this->get('createdby'));
 		}
 
 		return parent::remove($ancestors);

@@ -31,22 +31,22 @@ class TicketAuthor extends xPDOObject {
 		$ratings = $section->getProperties('ratings');
 		if (isset($ratings[$type])) {
 			$rating = $ratings[$type] * $multiplier;
+			/** @noinspection PhpUndefinedFieldInspection */
 			$key = array(
 				'id' => $id,
 				'action' => $type,
 				'owner' => $this->get('id'),
+				'createdby' => $this->xpdo->user->get('id'),
 			);
 			/** @var TicketAuthorAction $action */
 			if (!$action = $this->xpdo->getObject('TicketAuthorAction', $key)) {
 				$action = $this->xpdo->newObject('TicketAuthorAction');
 				$action->fromArray($key, '', true, true);
-				/** @noinspection PhpUndefinedFieldInspection */
 				$action->fromArray(array(
 					'rating' => $rating,
 					'multiplier' => $multiplier,
 					'ticket' => $ticket->get('id'),
 					'section' => $section->get('id'),
-					'createdby' => $this->xpdo->user->get('id'),
 				));
 				if ($action->save()) {
 					if (!empty($rating)) {
@@ -70,14 +70,16 @@ class TicketAuthor extends xPDOObject {
 	/**
 	 * @param $type
 	 * @param int $id
+	 * @param int $createdby
 	 *
 	 * @return bool
 	 */
-	public function removeAction($type, $id = 0) {
+	public function removeAction($type, $id = 0, $createdby = 0) {
 		$key = array(
 			'id' => $id,
 			'action' => $type,
 			'owner' => $this->get('id'),
+			'createdby' => $createdby,
 		);
 		/** @var TicketAuthorAction $action */
 		if ($action = $this->xpdo->getObject('TicketAuthorAction', $key)) {
@@ -226,7 +228,7 @@ class TicketAuthor extends xPDOObject {
 		// Make new
 		$c = $this->xpdo->newQuery('TicketView', array('uid' => $this->id));
 		$c->innerJoin('Ticket', 'Ticket', 'Ticket.id = TicketView.parent AND Ticket.class_key = "Ticket"');
-		$c->select('uid, timestamp, Ticket.id, Ticket.parent as section, Ticket.createdby as owner');
+		$c->select('uid, timestamp, Ticket.id, Ticket.parent as section');
 		if ($c->prepare() && $c->stmt->execute()) {
 			while ($row = $c->stmt->fetch(PDO::FETCH_ASSOC)) {
 				$ratings = $this->_getRatings($row['section']);
@@ -240,7 +242,7 @@ class TicketAuthor extends xPDOObject {
 						'section' => $row['section'],
 						'createdby' => $row['uid'],
 						'createdon' => $row['timestamp'],
-						'owner' => $row['owner'],
+						'owner' => $row['uid'],
 						'year' => date('Y', strtotime($row['timestamp'])),
 						'month' => date('m', strtotime($row['timestamp'])),
 						'day' => date('d', strtotime($row['timestamp'])),
@@ -271,7 +273,7 @@ class TicketAuthor extends xPDOObject {
 				$c->innerJoin('Ticket', 'Ticket', 'Ticket.id = TicketStar.id AND Ticket.class_key = "Ticket"');
 				$c->select('
 					TicketStar.id, TicketStar.createdon, TicketStar.createdby,
-					Ticket.id as ticket, Ticket.parent as section, Ticket.createdby as owner
+					Ticket.id as ticket, Ticket.parent as section
 				');
 			}
 			else {
@@ -281,7 +283,7 @@ class TicketAuthor extends xPDOObject {
 				$c->innerJoin('Ticket', 'Ticket', 'Thread.resource = Ticket.id AND Ticket.class_key = "Ticket"');
 				$c->select('
 					TicketStar.id, TicketStar.createdon, TicketStar.createdby,
-					Ticket.id as ticket, Ticket.parent as section, Comment.createdby as owner
+					Ticket.id as ticket, Ticket.parent as section
 				');
 			}
 
@@ -298,7 +300,7 @@ class TicketAuthor extends xPDOObject {
 							'section' => $row['section'],
 							'createdby' => $row['createdby'],
 							'createdon' => $row['createdon'],
-							'owner' => $row['owner'],
+							'owner' => $this->id,
 							'year' => date('Y', strtotime($row['createdon'])),
 							'month' => date('m', strtotime($row['createdon'])),
 							'day' => date('d', strtotime($row['createdon'])),
@@ -330,7 +332,7 @@ class TicketAuthor extends xPDOObject {
 				$c->innerJoin('Ticket', 'Ticket', 'Ticket.id = TicketVote.id AND Ticket.class_key = "Ticket"');
 				$c->select('
 					TicketVote.id, TicketVote.createdon, TicketVote.createdby, TicketVote.value,
-					Ticket.id as ticket, Ticket.parent as section, Ticket.createdby as owner
+					Ticket.id as ticket, Ticket.parent as section
 				');
 			}
 			else {
@@ -339,8 +341,8 @@ class TicketAuthor extends xPDOObject {
 				$c->innerJoin('TicketThread', 'Thread', 'Thread.id = Comment.thread');
 				$c->innerJoin('Ticket', 'Ticket', 'Thread.resource = Ticket.id AND Ticket.class_key = "Ticket"');
 				$c->select('
-					TicketVote.id, TicketVote.createdon, TicketVote.createdby, TicketVote.value,
-					Ticket.id as ticket, Ticket.parent as section, TicketComment.createdby as owner
+					TicketVote.id, TicketVote.createdon, TicketVote.createdby, TicketVote.value, TicketVote.owner,
+					Ticket.id as ticket, Ticket.parent as section
 				');
 			}
 			if ($c->prepare() && $c->stmt->execute()) {
@@ -357,7 +359,7 @@ class TicketAuthor extends xPDOObject {
 							'section' => $row['section'],
 							'createdby' => $row['createdby'],
 							'createdon' => $row['createdon'],
-							'owner' => $row['owner'],
+							'owner' => $this->id,
 							'year' => date('Y', strtotime($row['createdon'])),
 							'month' => date('m', strtotime($row['createdon'])),
 							'day' => date('d', strtotime($row['createdon'])),

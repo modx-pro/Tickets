@@ -34,8 +34,8 @@ class TicketView extends xPDOObject {
 	 */
 	public function remove(array $ancestors = array()) {
 		/** @var TicketAuthor $profile */
-		if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('createdby'))) {
-			$profile->removeAction('view', $this->get('parent'));
+		if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('uid'))) {
+			$profile->removeAction('view', $this->get('parent'), $this->get('uid'));
 		}
 
 		return parent::remove($ancestors);

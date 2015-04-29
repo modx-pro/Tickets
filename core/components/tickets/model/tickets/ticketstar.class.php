@@ -62,7 +62,7 @@ class TicketStar extends xPDOObject {
 		if (!empty($type)) {
 			/** @var TicketAuthor $profile */
 			if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('owner'))) {
-				$profile->removeAction($type, $this->id);
+				$profile->removeAction($type, $this->id, $this->get('createdby'));
 			}
 		}
 

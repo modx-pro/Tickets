@@ -85,6 +85,7 @@ $xpdo_meta_map['TicketAuthorAction']= array (
       'phptype' => 'integer',
       'null' => false,
       'default' => 0,
+      'index' => 'pk',
     ),
     'createdon' => 
     array (
@@ -141,6 +142,12 @@ $xpdo_meta_map['TicketAuthorAction']= array (
           'null' => false,
         ),
         'owner' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+        'createdby' => 
         array (
           'length' => '',
           'collation' => 'A',
