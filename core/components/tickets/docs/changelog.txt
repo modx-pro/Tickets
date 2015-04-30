@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.6.1 pl
+==========
+- Improved counting of totals in AuthorProfile.
+
 1.6.0 pl3
 ==========
 - [#113] Added ratings for the authors.

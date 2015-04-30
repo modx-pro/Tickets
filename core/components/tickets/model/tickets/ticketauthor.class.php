@@ -226,7 +226,11 @@ class TicketAuthor extends xPDOObject {
 			$this->xpdo->removeCollection('TicketAuthorAction', array('owner' => $this->id, 'action' => $action));
 		}
 		// Make new
-		$c = $this->xpdo->newQuery('TicketView', array('uid' => $this->id));
+		$c = $this->xpdo->newQuery('TicketView', array(
+			'uid' => $this->id,
+			'Ticket.published' => 1,
+			'Ticket.deleted' => 0,
+		));
 		$c->innerJoin('Ticket', 'Ticket', 'Ticket.id = TicketView.parent AND Ticket.class_key = "Ticket"');
 		$c->select('uid, timestamp, Ticket.id, Ticket.parent as section');
 		if ($c->prepare() && $c->stmt->execute()) {
@@ -275,6 +279,10 @@ class TicketAuthor extends xPDOObject {
 					TicketStar.id, TicketStar.createdon, TicketStar.createdby,
 					Ticket.id as ticket, Ticket.parent as section
 				');
+				$c->where(array(
+					'Ticket.published' => 1,
+					'Ticket.deleted' => 0,
+				));
 			}
 			else {
 				$c->where(array('class' => 'TicketComment'));
@@ -285,6 +293,10 @@ class TicketAuthor extends xPDOObject {
 					TicketStar.id, TicketStar.createdon, TicketStar.createdby,
 					Ticket.id as ticket, Ticket.parent as section
 				');
+				$c->where(array(
+					'Comment.published' => 1,
+					'Comment.deleted' => 0,
+				));
 			}
 
 			if ($c->prepare() && $c->stmt->execute()) {
@@ -334,6 +346,10 @@ class TicketAuthor extends xPDOObject {
 					TicketVote.id, TicketVote.createdon, TicketVote.createdby, TicketVote.value,
 					Ticket.id as ticket, Ticket.parent as section
 				');
+				$c->where(array(
+					'Ticket.published' => 1,
+					'Ticket.deleted' => 0,
+				));
 			}
 			else {
 				$c->where(array('class' => 'TicketComment'));
@@ -344,6 +360,10 @@ class TicketAuthor extends xPDOObject {
 					TicketVote.id, TicketVote.createdon, TicketVote.createdby, TicketVote.value, TicketVote.owner,
 					Ticket.id as ticket, Ticket.parent as section
 				');
+				$c->where(array(
+					'Comment.published' => 1,
+					'Comment.deleted' => 0,
+				));
 			}
 			if ($c->prepare() && $c->stmt->execute()) {
 				while ($row = $c->stmt->fetch(PDO::FETCH_ASSOC)) {

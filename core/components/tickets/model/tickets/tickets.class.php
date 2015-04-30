@@ -1560,7 +1560,6 @@ class Tickets {
 	 * Rebuild authors ratings
 	 */
 	public function rebuildRatings() {
-		$profiles = array();
 		// Clear all actions
 		$this->modx->removeCollection('TicketAuthorAction', array());
 		// Update authors profiles
@@ -1572,11 +1571,7 @@ class Tickets {
 				$profile = $this->modx->newObject('TicketAuthor');
 				$user->addOne($profile);
 			}
-			$profiles[] = $profile->refreshActions(false, false);
-		}
-		// Update authors totals
-		foreach ($profiles as $profile) {
-			$profile->updateTotals();
+			$profile->refreshActions(false);
 		}
 	}
 
