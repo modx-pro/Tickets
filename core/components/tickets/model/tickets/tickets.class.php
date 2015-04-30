@@ -1555,24 +1555,4 @@ class Tickets {
 		}
 	}
 
-
-	/**
-	 * Rebuild authors ratings
-	 */
-	public function rebuildRatings() {
-		// Clear all actions
-		$this->modx->removeCollection('TicketAuthorAction', array());
-		// Update authors profiles
-		$users = $this->modx->getIterator('modUser');
-		/** @var modUser $user */
-		foreach ($users as $user) {
-			/** @var TicketAuthor $profile */
-			if (!$profile = $user->getOne('AuthorProfile')) {
-				$profile = $this->modx->newObject('TicketAuthor');
-				$user->addOne($profile);
-			}
-			$profile->refreshActions(false);
-		}
-	}
-
 }

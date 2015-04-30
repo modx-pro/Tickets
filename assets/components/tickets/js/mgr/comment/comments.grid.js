@@ -32,8 +32,14 @@ Tickets.grid.Comments = function(config) {
 				return cls.join(' ');
 			},
 		},
+		stateful: true,
+		stateId: 'tickets-comments-state',
 	});
 	Tickets.grid.Comments.superclass.constructor.call(this,config);
+	this.getStore().sortInfo = {
+		field: 'createdon',
+		direction: 'DESC'
+	};
 };
 Ext.extend(Tickets.grid.Comments,MODx.grid.Grid,{
 

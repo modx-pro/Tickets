@@ -9,8 +9,20 @@ if ($object->xpdo) {
 		case xPDOTransport::ACTION_INSTALL:
 		case xPDOTransport::ACTION_UPGRADE:
 			$modx->addPackage('tickets', $modelPath);
-
 			$manager = $modx->getManager();
+
+			// Remove old tables
+			$c = $modx->prepare("SHOW COLUMNS IN {$modx->getTableName('TicketAuthor')}");
+			$c->execute();
+			while ($tmp = $c->fetch(PDO::FETCH_ASSOC)) {
+				if ($tmp['Field'] == 'votes' || $tmp['Field'] == 'stars') {
+					$manager->removeObjectContainer('TicketAuthor');
+					$manager->removeObjectContainer('TicketAuthorAction');
+					break;
+				}
+			}
+
+			// Create or update new
 			$manager->createObjectContainer('TicketComment');
 			$manager->createObjectContainer('TicketThread');
 			$manager->createObjectContainer('TicketView');

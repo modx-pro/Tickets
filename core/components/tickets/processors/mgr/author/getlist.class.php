@@ -17,6 +17,11 @@ class TicketAuthorGetListProcessor extends modObjectGetListProcessor {
 		$Tickets = $this->modx->getService('Tickets');
 		$this->_modx23 = $Tickets->systemVersion();
 
+		if ($this->getProperty('sort') == 'stars') {
+			$dir = $this->getProperty('dir', 'DESC');
+			$this->setProperty('sort', "stars_tickets {$dir}, stars_comments");
+		}
+
 		return $parent;
 	}
 
@@ -58,6 +63,7 @@ class TicketAuthorGetListProcessor extends modObjectGetListProcessor {
 		if (empty($array['fullname'])) {
 			$array['fullname'] = $array['username'];
 		}
+		$array['stars'] = $array['stars_tickets'] + $array['stars_comments'];
 
 		return $array;
 	}

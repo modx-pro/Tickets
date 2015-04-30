@@ -52,6 +52,12 @@ class TicketAuthor extends xPDOObject {
 					if (!empty($rating)) {
 						$this->set('rating', $this->get('rating') + $rating);
 						if ($field = $this->_getTotalField($type)) {
+							if (strpos($type, 'vote_') === 0) {
+								$this->set($field, $this->get($field) + $rating);
+								$field .= $rating > 0
+									? '_up'
+									: '_down';
+							}
 							$this->set($field, $this->get($field) + 1);
 						}
 						$this->save();
@@ -88,6 +94,12 @@ class TicketAuthor extends xPDOObject {
 				if (!empty($rating)) {
 					$this->set('rating', $this->get('rating') - $rating);
 					if (!empty($rating) && $field = $this->_getTotalField($type)) {
+						if (strpos($type, 'vote_') === 0) {
+							$this->set($field, $this->get($field) - $rating);
+							$field .= $rating > 0
+								? '_up'
+								: '_down';
+						}
 						$this->set($field, $this->get($field) - 1);
 					}
 					$this->save();
@@ -405,23 +417,41 @@ class TicketAuthor extends xPDOObject {
 			'tickets' => 'ticket',
 			'comments' => 'comment',
 			'views' => 'view',
-			'votes' => array('vote_ticket', 'vote_comment'),
-			'stars' => array('star_ticket', 'star_comment'),
+			'stars_tickets' => 'star_ticket',
+			'stars_comments' => 'star_comment',
 		);
-		// Types of actions
-		foreach ($fields as $field => $actions) {
-			$c = $this->xpdo->newQuery('TicketAuthorAction', array('owner' => $this->id, 'rating:!=' => 0));
+		// Simple totals
+		foreach ($fields as $field => $action) {
+			$c = $this->xpdo->newQuery('TicketAuthorAction', array(
+				'owner' => $this->id,
+				'action' => $action,
+			));
 			$c->select('id');
-			if (is_array($actions)) {
-				$c->where(array('action:IN' => $actions));
-			}
-			else {
-				$c->where(array('action' => $actions));
-			}
 			$count = $this->xpdo->getCount('TicketAuthorAction', $c);
 			$this->set($field, $count);
 		}
-
+		// Votes
+		foreach (array('ticket', 'comment') as $field) {
+			foreach (array('up', 'down') as $type) {
+				$count = $this->xpdo->getCount('TicketAuthorAction', array(
+					'owner' => $this->id,
+					'rating:' . ($type == 'up' ? '>' : '<') => 0,
+					'action' => "vote_{$field}",
+				));
+				$this->set("votes_{$field}s_{$type}", $count);
+			}
+		}
+		// Votes rating
+		foreach (array('ticket', 'comment') as $field) {
+			$c = $this->xpdo->newQuery('TicketAuthorAction', array(
+				'owner' => $this->id,
+				'action' => "vote_{$field}",
+			));
+			$c->select('SUM(rating)');
+			if ($c->prepare() && $c->stmt->execute()) {
+				$this->set("votes_{$field}s", floatval($c->stmt->fetchColumn()));
+			}
+		}
 		// Total rating
 		$c = $this->xpdo->newQuery('TicketAuthorAction', array('owner' => $this->id));
 		$c->select('SUM(rating)');
@@ -450,12 +480,16 @@ class TicketAuthor extends xPDOObject {
 				$field = 'views';
 				break;
 			case 'vote_ticket':
+				$field = 'votes_tickets';
+				break;
 			case 'vote_comment':
-				$field = 'votes';
+				$field = 'votes_comments';
 				break;
 			case 'star_ticket':
+				$field = 'stars_tickets';
+				break;
 			case 'star_comment':
-				$field = 'stars';
+				$field = 'stars_comments';
 				break;
 			default:
 				$field = '';

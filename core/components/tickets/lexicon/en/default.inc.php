@@ -42,10 +42,6 @@ $_lang['tickets_section_settings_disable_jevix'] = 'Disable Jevix';
 $_lang['tickets_section_settings_disable_jevix_desc'] = 'By default, for security purposes, all tickets are processed snippet Jevix. You can disable this processing for new tickets current topic.';
 $_lang['tickets_section_settings_process_tags'] = 'Process MODX tags';
 $_lang['tickets_section_settings_process_tags_desc'] = 'By default, for security purposes, in the tickets are not run MODX tags. You can include progress in new tickets current topic.';
-$_lang['tickets_section_notify'] = 'Notify about new tickets';
-$_lang['tickets_section_subscribed'] = 'You have subscribe to notifications about new tickets in this section.';
-$_lang['tickets_section_subscribed'] = 'You will no longer receive notifications about new tickets in this section.';
-$_lang['tickets_section_email_subscription'] = 'New ticket in the section "[[+section.pagetitle]]"';
 
 $_lang['tickets_section_tab_ratings'] = 'Ratings';
 $_lang['tickets_section_tab_ratings_intro'] = 'Specify the rating points for different user actions in this section.';
@@ -63,6 +59,11 @@ $_lang['tickets_section_rating_star_ticket'] = 'Ticket in the favorites';
 $_lang['tickets_section_rating_star_ticket_desc'] = 'Rating for the author of the ticket for each add to favorites.';
 $_lang['tickets_section_rating_star_comment'] = 'Comment in the favorites';
 $_lang['tickets_section_rating_star_comment_desc'] = 'Rating for the author of the comment for each add to favorites.';
+
+$_lang['tickets_section_notify'] = 'Notify about new tickets';
+$_lang['tickets_section_subscribed'] = 'You have subscribe to notifications about new tickets in this section.';
+$_lang['tickets_section_subscribed'] = 'You will no longer receive notifications about new tickets in this section.';
+$_lang['tickets_section_email_subscription'] = 'New ticket in the section "[[+section.pagetitle]]"';
 
 $_lang['ticket_create_here'] = 'Create ticket';
 
@@ -132,6 +133,10 @@ $_lang['ticket_comment_err_captcha'] = 'Invalid code of protection against spam.
 $_lang['ticket_comment_err_no_email'] = 'You need to specify the email in your account settings..';
 
 $_lang['ticket_authors_intro'] = 'This section contains profiles of authors with ratings. Settings for the calculation are specified separately in each section.<br/>You can see how many tickets, comments and views made by the author and added to favorites and voted for them by other users.';
+$_lang['ticket_authors_rebuild'] = 'Update ratings';
+$_lang['ticket_authors_rebuild_confirm'] = 'Are you sure you want to rebuild the rankings of all the authors of the site? This operation may take a lot of time.';
+$_lang['ticket_authors_rebuild_wait'] = 'Processing profiles of authors...';
+$_lang['ticket_authors_rebuild_wait_ext'] = 'Processed: [[+processed]] from [[+total]].';
 $_lang['ticket_author_createdon'] = 'Created On';
 $_lang['ticket_author_visitedon'] = 'Visited On';
 $_lang['ticket_author_rating'] = 'Rating';
@@ -139,7 +144,16 @@ $_lang['ticket_author_tickets'] = 'Tickets';
 $_lang['ticket_author_comments'] = 'Comments';
 $_lang['ticket_author_views'] = 'Views';
 $_lang['ticket_author_stars'] = 'Favorites';
-$_lang['ticket_author_votes'] = 'Votes';
+$_lang['ticket_author_stars_tickets'] = 'Favorite tickets';
+$_lang['ticket_author_stars_comments'] = 'Favorite comments';
+$_lang['ticket_author_votes_tickets'] = 'Tickets rating';
+$_lang['ticket_author_votes_comments'] = 'Comments rating';
+$_lang['ticket_author_votes_tickets_up'] = 'Votes for tickets';
+$_lang['ticket_author_votes_tickets_down'] = 'Votes against tickets';
+$_lang['ticket_author_votes_comments_up'] = 'Votes for comments';
+$_lang['ticket_author_votes_comments_down'] = 'Votes against comments';
+$_lang['ticket_author_rating_desc'] = 'For / Against';
+$_lang['ticket_author_stars_desc'] = 'Tickets / Comments';
 
 $_lang['ticket_tickets_intro'] = 'Here you can find the tickets from the whole site.';
 $_lang['ticket_publishedon'] = 'Published On';

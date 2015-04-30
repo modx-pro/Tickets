@@ -33,8 +33,14 @@ Tickets.grid.Section = function(config) {
 		},
 		cls: MODx.modx23 ? 'modx23' : 'modx22',
 		standalone: false,
+		stateful: true,
+		stateId: 'tickets-grid-state',
 	});
 	Tickets.grid.Section.superclass.constructor.call(this,config);
+	this.getStore().sortInfo = {
+		field: 'createdon',
+		direction: 'DESC'
+	};
 };
 Ext.extend(Tickets.grid.Section, MODx.grid.Grid, {
 

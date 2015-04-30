@@ -249,8 +249,16 @@
 		<field key="tickets" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
 		<field key="comments" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
 		<field key="views" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
-		<field key="votes" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
-		<field key="stars" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
+
+		<field key="votes_tickets" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0" />
+		<field key="votes_comments" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0" />
+		<field key="stars_tickets" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
+		<field key="stars_comments" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
+
+		<field key="votes_tickets_up" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
+		<field key="votes_tickets_down" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
+		<field key="votes_comments_up" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
+		<field key="votes_comments_down" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
 
 		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true" type="BTREE">
 			<column key="id" length="" collation="A" null="false" />
@@ -273,11 +281,17 @@
 		<index alias="views" name="views" primary="false" unique="false" type="BTREE">
 			<column key="views" length="" collation="A" null="false" />
 		</index>
-		<index alias="votes" name="votes" primary="false" unique="false" type="BTREE">
-			<column key="votes" length="" collation="A" null="false" />
+		<index alias="votes_tickets" name="votes" primary="false" unique="false" type="BTREE">
+			<column key="votes_tickets" length="" collation="A" null="false" />
 		</index>
-		<index alias="stars" name="stars" primary="false" unique="false" type="BTREE">
-			<column key="stars" length="" collation="A" null="false" />
+		<index alias="votes_comments" name="votes" primary="false" unique="false" type="BTREE">
+			<column key="votes_comments" length="" collation="A" null="false" />
+		</index>
+		<index alias="stars_tickets" name="votes" primary="false" unique="false" type="BTREE">
+			<column key="stars_tickets" length="" collation="A" null="false" />
+		</index>
+		<index alias="stars_comments" name="votes" primary="false" unique="false" type="BTREE">
+			<column key="stars_comments" length="" collation="A" null="false" />
 		</index>
 
 		<composite alias="Actions" class="TicketAuthorAction" local="id" foreign="createdby" cardinality="many" owner="local" />

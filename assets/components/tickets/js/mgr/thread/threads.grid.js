@@ -29,8 +29,14 @@ Tickets.grid.Threads = function(config) {
 				return cls.join(' ');
 			},
 		},
+		stateful: true,
+		stateId: 'tickets-threads-state',
 	});
 	Tickets.grid.Threads.superclass.constructor.call(this,config);
+	this.getStore().sortInfo = {
+		field: 'createdon',
+		direction: 'DESC'
+	};
 };
 Ext.extend(Tickets.grid.Threads,MODx.grid.Grid,{
 

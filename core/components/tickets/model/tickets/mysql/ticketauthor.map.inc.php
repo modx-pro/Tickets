@@ -13,8 +13,14 @@ $xpdo_meta_map['TicketAuthor']= array (
     'tickets' => 0,
     'comments' => 0,
     'views' => 0,
-    'votes' => 0,
-    'stars' => 0,
+    'votes_tickets' => 0,
+    'votes_comments' => 0,
+    'stars_tickets' => 0,
+    'stars_comments' => 0,
+    'votes_tickets_up' => 0,
+    'votes_tickets_down' => 0,
+    'votes_comments_up' => 0,
+    'votes_comments_down' => 0,
   ),
   'fieldMeta' => 
   array (
@@ -76,7 +82,23 @@ $xpdo_meta_map['TicketAuthor']= array (
       'null' => true,
       'default' => 0,
     ),
-    'votes' => 
+    'votes_tickets' => 
+    array (
+      'dbtype' => 'decimal',
+      'precision' => '12,2',
+      'phptype' => 'float',
+      'null' => true,
+      'default' => 0,
+    ),
+    'votes_comments' => 
+    array (
+      'dbtype' => 'decimal',
+      'precision' => '12,2',
+      'phptype' => 'float',
+      'null' => true,
+      'default' => 0,
+    ),
+    'stars_tickets' => 
     array (
       'dbtype' => 'int',
       'precision' => '10',
@@ -85,7 +107,43 @@ $xpdo_meta_map['TicketAuthor']= array (
       'null' => true,
       'default' => 0,
     ),
-    'stars' => 
+    'stars_comments' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'attributes' => 'unsigned',
+      'null' => true,
+      'default' => 0,
+    ),
+    'votes_tickets_up' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'attributes' => 'unsigned',
+      'null' => true,
+      'default' => 0,
+    ),
+    'votes_tickets_down' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'attributes' => 'unsigned',
+      'null' => true,
+      'default' => 0,
+    ),
+    'votes_comments_up' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'attributes' => 'unsigned',
+      'null' => true,
+      'default' => 0,
+    ),
+    'votes_comments_down' => 
     array (
       'dbtype' => 'int',
       'precision' => '10',
@@ -211,29 +269,13 @@ $xpdo_meta_map['TicketAuthor']= array (
     ),
     'votes' => 
     array (
-      'alias' => 'votes',
+      'alias' => 'stars_comments',
       'primary' => false,
       'unique' => false,
       'type' => 'BTREE',
       'columns' => 
       array (
-        'votes' => 
-        array (
-          'length' => '',
-          'collation' => 'A',
-          'null' => false,
-        ),
-      ),
-    ),
-    'stars' => 
-    array (
-      'alias' => 'stars',
-      'primary' => false,
-      'unique' => false,
-      'type' => 'BTREE',
-      'columns' => 
-      array (
-        'stars' => 
+        'stars_comments' => 
         array (
           'length' => '',
           'collation' => 'A',
