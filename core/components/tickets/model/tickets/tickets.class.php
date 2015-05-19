@@ -245,6 +245,7 @@ class Tickets {
 
 		/* @var modProcessorResponse $response */
 		if ($response->isError()) {
+			$this->modx->log(modX::LOG_LEVEL_INFO, '[Tickets] Unable to save Ticket: ' . $response->getMessage() . print_r($response->getFieldErrors(), 1));
 			return $this->error($response->getMessage(), $response->getFieldErrors());
 		}
 		elseif ($ticket = $this->modx->getObject('Ticket', $response->response['object']['id'])) {
@@ -453,6 +454,7 @@ class Tickets {
 		}
 		/** @var modProcessorResponse $response */
 		if ($response->isError()) {
+			$this->modx->log(modX::LOG_LEVEL_INFO, '[Tickets] Unable to save Comment: ' . $response->getMessage() . print_r($response->getFieldErrors(), 1));
 			return $this->error($response->getMessage(), $response->getFieldErrors());
 		}
 		else {

@@ -3,6 +3,7 @@ Changelog for Tickets.
 1.6.2 pl
 ==========
 - [mgr] Fixed special checkboxes handling in Ticket panel.
+- Improved performance of Tickets saving.
 
 1.6.1 pl
 ==========

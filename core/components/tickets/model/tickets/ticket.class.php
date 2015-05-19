@@ -566,6 +566,7 @@ class Ticket extends modResource {
 	public function save($cacheFlag = null) {
 		$action = $this->isNew() || $this->isDirty('deleted') || $this->isDirty('published');
 		$enabled = $this->get('published') && !$this->get('deleted');
+		$isNew = $this->isNew();
 		$new_parent = $this->isDirty('parent');
 		$new_author = $this->isDirty('createdby');
 		if ($new_parent || $this->isDirty('alias') || $this->isDirty('published') || ($this->get('uri_override') && !$this->get('uri'))) {
@@ -585,7 +586,7 @@ class Ticket extends modResource {
 				$profile->removeAction('ticket', $this->id, $this->get('createdby'));
 			}
 		}
-		if ($new_parent) {
+		if ($new_parent && !$isNew) {
 			$this->updateAuthorsActions();
 		}
 

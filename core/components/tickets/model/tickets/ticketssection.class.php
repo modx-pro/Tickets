@@ -441,7 +441,7 @@ class TicketsSection extends modResource {
 		if ($properties = parent::get('properties')) {
 			if (!empty($properties['ratings'])) {
 				$ratings = implode(array_values($properties['ratings']));
-				$update_actions = $ratings != $this->_oldRatings;
+				$update_actions = !empty($this->_oldRatings) && $this->_oldRatings != $ratings;
 			}
 		}
 
