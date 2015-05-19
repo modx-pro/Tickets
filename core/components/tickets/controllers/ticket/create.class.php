@@ -47,9 +47,7 @@ class TicketCreateManagerController extends ResourceCreateManagerController {
 		if (is_null($this->resourceArray['properties'])) {
 			$this->resourceArray['properties'] = array();
 		}
-		$properties = $this->parent->getProperties('tickets');
-		$this->resourceArray = array_merge($this->resourceArray, $properties);
-		$this->resourceArray['properties']['tickets'] = $properties;
+		$this->resourceArray['properties']['tickets'] = $this->parent->getProperties('tickets');
 
 		/** @var Tickets $Tickets */
 		$Tickets = $this->modx->getService('Tickets');

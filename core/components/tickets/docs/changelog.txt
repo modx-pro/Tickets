@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.6.2 pl
+==========
+- [mgr] Fixed special checkboxes handling in Ticket panel.
+
 1.6.1 pl
 ==========
 - Improved counting of totals in AuthorProfile.

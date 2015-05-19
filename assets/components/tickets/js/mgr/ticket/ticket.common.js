@@ -296,14 +296,14 @@ Ext.extend(Tickets.panel.Ticket, MODx.panel.Resource, {
 				name: 'properties[disable_jevix]',
 				boxLabel: _('ticket_disable_jevix'),
 				description: _('ticket_disable_jevix_help'),
-				checked: config.record.properties['disable_jevix']
+				checked: config.record.properties['tickets']['disable_jevix']
 			},
 			cacheable: {},
 			process_tags: {
 				name: 'properties[process_tags]',
 				boxLabel: _('ticket_process_tags'),
 				description: _('ticket_process_tags_help'),
-				checked: config.record.properties['process_tags']
+				checked: config.record.properties['tickets']['process_tags']
 			},
 			published: {},
 			private: {name: 'privateweb', boxLabel: _('ticket_private'), description: _('ticket_private_help')},
