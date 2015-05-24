@@ -37,6 +37,7 @@ if ($object->xpdo) {
 				$modx->addExtensionPackage('tickets', '[[++core_path]]components/tickets/model/');
 			}
 
+			/*
 			$level = $modx->getLogLevel();
 			$modx->setLogLevel(xPDO::LOG_LEVEL_FATAL);
 
@@ -71,6 +72,7 @@ if ($object->xpdo) {
 			$manager->addIndex('TicketView', 'unique_key');
 
 			$modx->setLogLevel($level);
+			*/
 			break;
 
 		case xPDOTransport::ACTION_UNINSTALL:

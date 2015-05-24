@@ -80,6 +80,7 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 		if (!$this->getProperty('published')) {
 			$add['was_published'] = false;
 		}
+		unset($properties['requiredFields']);
 
 		// Comment values
 		$ip = $this->modx->request->getClientIp();

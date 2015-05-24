@@ -445,6 +445,7 @@ class Tickets {
 				? $data['email']
 				: '';
 		}
+		unset($data['rating'], $data['rating_plus'], $data['rating_minus']);
 
 		if (!empty($data['id'])) {
 			$response = $this->runProcessor('web/comment/update', $data);

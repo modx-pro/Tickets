@@ -232,10 +232,6 @@ if (!empty($rows) && is_array($rows)) {
 	}
 }
 $pdoFetch->addTime('Returning processed chunks');
-if (empty($outputSeparator)) {
-	$outputSeparator = "\n";
-}
-$output = implode($outputSeparator, $output);
 
 $log = '';
 if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
@@ -248,6 +244,10 @@ if (!empty($toSeparatePlaceholders)) {
 	$modx->setPlaceholders($output, $toSeparatePlaceholders);
 }
 else {
+	if (empty($outputSeparator)) {
+		$outputSeparator = "\n";
+	}
+	$output = implode($outputSeparator, $output);
 	$output .= $log;
 
 	if (!empty($tplWrapper) && (!empty($wrapIfEmpty) || !empty($output))) {

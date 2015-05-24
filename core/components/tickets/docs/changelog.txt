@@ -1,5 +1,11 @@
 Changelog for Tickets.
 
+1.6.3 pl
+==========
+- Improved performance of installer.
+- Fixed possibility to create a new comment with specified rating.
+- [getTickets] Fixed parameter &toSeparatePlaceholders.
+
 1.6.2 pl
 ==========
 - [mgr] Fixed special checkboxes handling in Ticket panel.
