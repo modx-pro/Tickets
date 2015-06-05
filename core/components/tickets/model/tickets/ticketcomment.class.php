@@ -186,6 +186,12 @@ class TicketComment extends xPDOSimpleObject {
 	 * @return bool
 	 */
 	public function remove(array $ancestors = array()) {
+		$collection = $this->xpdo->getIterator('TicketComment', array('parent' => $this->id));
+		/** @var TicketComment $item */
+		foreach ($collection as $item) {
+			$item->remove();
+		}
+
 		/** @var TicketAuthor $profile */
 		if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('createdby'))) {
 			$profile->removeAction('comment', $this->id, $this->get('createdby'));

@@ -233,11 +233,13 @@ class TicketFile extends xPDOSimpleObject {
 					$this->mediaSource->removeObject($this->get('path') . $filename);
 				}
 			}
+			/*
 			else {
 				$this->xpdo->log(xPDO::LOG_LEVEL_ERROR,
 					'[Tickets] Could not remove file at "' . $this->get('path') . $this->get('file') . '": ' . $this->mediaSource->errors['file']
 				);
 			}
+			*/
 		}
 
 		return parent::remove($ancestors);

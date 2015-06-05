@@ -549,6 +549,14 @@ class Ticket extends modResource {
 		return $properties;
 	}
 
+
+	/**
+	 * @param string $k
+	 * @param null $v
+	 * @param string $vType
+	 *
+	 * @return bool
+	 */
 	public function set($k, $v = null, $vType = '') {
 		if (is_string($k) && $k == 'createdby' && empty($this->_oldAuthor)) {
 			$this->_oldAuthor = parent::get('createdby');
@@ -600,6 +608,12 @@ class Ticket extends modResource {
 	 * @return bool
 	 */
 	public function remove(array $ancestors = array()) {
+		$collection = $this->xpdo->getIterator('TicketThread', array('name' => 'resource-' . $this->id));
+		/** @var TicketThread $item */
+		foreach ($collection as $item) {
+			$item->remove();
+		}
+
 		/** @var TicketAuthor $profile */
 		if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('createdby'))) {
 			$profile->removeAction('ticket', $this->id, $this->get('createdby'));

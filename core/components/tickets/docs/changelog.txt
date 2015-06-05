@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.6.4 pl
+==========
+- [#125] fixed deletion of dependent objects.
+
 1.6.3 pl
 ==========
 - Improved performance of installer.

@@ -263,14 +263,6 @@ $xpdo_meta_map['TicketComment']= array (
   ),
   'composites' => 
   array (
-    'Children' => 
-    array (
-      'class' => 'TicketComment',
-      'local' => 'id',
-      'foreign' => 'parent',
-      'cardinality' => 'many',
-      'owner' => 'local',
-    ),
     'Votes' => 
     array (
       'class' => 'TicketVote',
@@ -320,6 +312,14 @@ $xpdo_meta_map['TicketComment']= array (
       'foreign' => 'id',
       'cardinality' => 'one',
       'owner' => 'foreign',
+    ),
+    'Children' => 
+    array (
+      'class' => 'TicketComment',
+      'local' => 'id',
+      'foreign' => 'parent',
+      'cardinality' => 'many',
+      'owner' => 'local',
     ),
   ),
 );

@@ -19,17 +19,24 @@ $xpdo_meta_map['Ticket']= array (
       'cardinality' => 'many',
       'owner' => 'local',
     ),
-    'Threads' => 
-    array (
-      'class' => 'TicketThread',
-      'local' => 'id',
-      'foreign' => 'resource',
-      'cardinality' => 'many',
-      'owner' => 'local',
-    ),
     'Votes' => 
     array (
       'class' => 'TicketVote',
+      'local' => 'id',
+      'foreign' => 'id',
+      'cardinality' => 'many',
+      'owner' => 'local',
+      'criteria' => 
+      array (
+        'local' => 
+        array (
+          'class' => 'Ticket',
+        ),
+      ),
+    ),
+    'Stars' => 
+    array (
+      'class' => 'TicketStar',
       'local' => 'id',
       'foreign' => 'id',
       'cardinality' => 'many',
@@ -67,6 +74,14 @@ $xpdo_meta_map['Ticket']= array (
       'foreign' => 'id',
       'cardinality' => 'one',
       'owner' => 'foreign',
+    ),
+    'Threads' => 
+    array (
+      'class' => 'TicketThread',
+      'local' => 'id',
+      'foreign' => 'resource',
+      'cardinality' => 'many',
+      'owner' => 'local',
     ),
   ),
 );

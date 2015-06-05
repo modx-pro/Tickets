@@ -117,30 +117,6 @@ switch ($modx->event->name) {
 		break;
 
 
-	// @TODO Move this to Ticket::remove() and add TicketFile
-	case 'OnEmptyTrash':
-		if (!empty($ids)) {
-			$collection = $modx->getIterator('TicketThread', array('resource:IN' => $ids));
-			/** @var TicketThread $item */
-			foreach ($collection as $item) {
-				$item->remove();
-			}
-
-			$collection = $modx->getIterator('TicketVote', array('id:IN' => $ids, 'class' => 'Ticket'));
-			/** @var TicketVote $item */
-			foreach ($collection as $item) {
-				$item->remove();
-			}
-
-			$collection = $modx->getIterator('TicketStar', array('id:IN' => $ids, 'class' => 'Ticket'));
-			/** @var TicketStar $item */
-			foreach ($collection as $item) {
-				$item->remove();
-			}
-		}
-		break;
-
-
 	case 'OnUserSave':
 		/** @var modUser $user */
 		if ($mode == 'new' && $user && !$user->getOne('AuthorProfile')) {

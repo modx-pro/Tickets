@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @property int id
+ */
 class TicketThread extends xPDOSimpleObject {
 
 	/**
@@ -134,6 +137,22 @@ class TicketThread extends xPDOSimpleObject {
 		}
 
 		return in_array($uid, $subscribers);
+	}
+
+
+	/**
+	 * @param array $ancestors
+	 *
+	 * @return bool
+	 */
+	public function remove(array $ancestors = array()) {
+		$collection = $this->xpdo->getIterator('TicketComment', array('thread' => $this->id, 'parent' => 0));
+		/** @var TicketComment $item */
+		foreach ($collection as $item) {
+			$item->remove();
+		}
+
+		return parent::remove($ancestors);
 	}
 
 }
