@@ -108,11 +108,13 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 	 * @return bool
 	 */
 	public function afterSave() {
-		$this->thread->fromArray(array(
-			'comment_last' => $this->object->get('id'),
-			'comment_time' => $this->object->get('createdon'),
-		));
-		$this->thread->save();
+		if ($this->object->get('published')) {
+			$this->thread->fromArray(array(
+				'comment_last' => $this->object->get('id'),
+				'comment_time' => $this->object->get('createdon'),
+			));
+			$this->thread->save();
+		}
 
 		if ($this->guest) {
 			if (!isset($_SESSION['TicketComments'])) {
