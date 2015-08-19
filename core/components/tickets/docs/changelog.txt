@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.6.6 pl
+==========
+- Improved installation script for MODX 2.4.
+
 1.6.5 pl
 ==========
 - [#126] Fixed possible issue with thread latest comment
