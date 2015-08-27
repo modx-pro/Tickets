@@ -62,7 +62,7 @@ $_lang['tickets_section_rating_star_comment_desc'] = 'Rating for the author of t
 
 $_lang['tickets_section_notify'] = 'Notify about new tickets';
 $_lang['tickets_section_subscribed'] = 'You have subscribe to notifications about new tickets in this section.';
-$_lang['tickets_section_subscribed'] = 'You will no longer receive notifications about new tickets in this section.';
+$_lang['tickets_section_unsubscribed'] = 'You will no longer receive notifications about new tickets in this section.';
 $_lang['tickets_section_email_subscription'] = 'New ticket in the section "[[+section.pagetitle]]"';
 
 $_lang['ticket_create_here'] = 'Create ticket';
@@ -203,7 +203,7 @@ $_lang['ticket_thread_err_deleted'] = 'Commenting is disabled.';
 $_lang['ticket_thread_err_closed'] = 'Adding new comments is disabled.';
 $_lang['ticket_thread_manage_comments'] = 'Manage comments';
 $_lang['ticket_thread_subscribed'] = 'You have subscribe to notifications about new comments in this thread.';
-$_lang['ticket_thread_subscribed'] = 'You will no longer receive notifications about new comments in this thread.';
+$_lang['ticket_thread_unsubscribed'] = 'You will no longer receive notifications about new comments in this thread.';
 
 $_lang['ticket_date_now'] = 'Just now';
 $_lang['ticket_date_today'] = 'Today at';
