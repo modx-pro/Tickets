@@ -15,7 +15,7 @@ if (!function_exists('installPackage')) {
 
 		$response = $provider->request('package', 'GET', array(
 			'supports' => $productVersion,
-			'query' => $packageName
+			'query' => $packageName,
 		));
 
 		if (!empty($response)) {
@@ -84,6 +84,7 @@ if (!function_exists('installPackage')) {
 				'message' => "Could not find <b>{$packageName}</b> in MODX repository",
 			);
 		}
+
 		return true;
 	}
 }
@@ -146,6 +147,79 @@ switch (@$options[xPDOTransport::PACKAGE_ACTION]) {
 				? modX::LOG_LEVEL_INFO
 				: modX::LOG_LEVEL_ERROR;
 			$modx->log($level, $response['message']);
+		}
+
+		/** @var modSnippet $snippet */
+		if ($snippet = $modx->getObject('modSnippet', array('name' => 'Jevix'))) {
+			if (!$prop_ticket = $modx->getObject('modPropertySet', array('name' => 'Ticket'))) {
+				$prop_ticket = $modx->newObject('modPropertySet', array(
+					'name' => 'Ticket',
+					'description' => 'Filter rules for Tickets',
+					'properties' => array(
+						'cfgAllowTagParams' => array(
+							'name' => 'cfgAllowTagParams', 'desc' => 'cfgAllowTagParams', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
+							'value' => '{"pre":{"class":["prettyprint"]},"cut":{"title":["#text"]},"a":["title","href"],"img":{"0":"src","alt":"#text","1":"title","align":["right","left","center"],"width":"#int","height":"#int","hspace":"#int","vspace":"#int"}}',
+						),
+						'cfgAllowTags' => array(
+							'name' => 'cfgAllowTags', 'desc' => 'cfgAllowTags', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
+							'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,pre,acronym,h1,h2,h3,h4,h5,h6,cut,br,code,s,blockquote,table,tr,th,td,video',
+						),
+						'cfgSetTagChilds' => array(
+							'name' => 'cfgSetTagChilds', 'desc' => 'cfgSetTagChilds', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
+							'value' => '[["ul",["li"],false,true],["ol",["li"],false,true],["table",["tr"],false,true],["tr",["td","th"],false,true]]',
+						),
+						'cfgSetAutoReplace' => array(
+							'name' => 'cfgSetAutoReplace', 'desc' => 'cfgSetAutoReplace', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
+							'value' => '[["+/-","(c)","(с)","(r)","(C)","(С)","(R)","<code","code>"],["±","©","©","®","©","©","®","<pre class=\\"prettyprint\\"","pre>"]]',
+						),
+						'cfgSetTagShort' => array(
+							'name' => 'cfgSetTagShort', 'desc' => 'cfgSetTagShort', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
+							'value' => 'br,img,cut',
+						),
+					),
+				));
+				if ($prop_ticket->save() && $snippet->addPropertySet($prop_ticket)) {
+					$modx->log(xPDO::LOG_LEVEL_INFO, '[Tickets] Property set "Ticket" for snippet <b>Jevix</b> was created');
+				}
+				else {
+					$modx->log(xPDO::LOG_LEVEL_ERROR, '[Tickets] Could not create property set "Ticket" for <b>Jevix</b>');
+				}
+			}
+
+			if (!$prop_comment = $modx->getObject('modPropertySet', array('name' => 'Comment'))) {
+				$prop_comment = $modx->newObject('modPropertySet', array(
+					'name' => 'Comment',
+					'description' => 'Filter rules for Tickets comments',
+					'properties' => array(
+						'cfgAllowTagParams' => array(
+							'name' => 'cfgAllowTagParams', 'desc' => 'cfgAllowTagParams', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
+							'value' => '{"pre":{"class":["prettyprint"]},"a":["title","href"],"img":{"0":"src","alt":"#text","1":"title","align":["right","left","center"],"width":"#int","height":"#int","hspace":"#int","vspace":"#int"}}',
+						),
+						'cfgAllowTags' => array(
+							'name' => 'cfgAllowTags', 'desc' => 'cfgAllowTags', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
+							'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,pre,acronym,br,code,s,blockquote',
+						),
+						'cfgSetTagChilds' => array(
+							'name' => 'cfgSetTagChilds', 'desc' => 'cfgSetTagChilds', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
+							'value' => '[["ul",["li"],false,true],["ol",["li"],false,true]]',
+						),
+						'cfgSetAutoReplace' => array(
+							'name' => 'cfgSetAutoReplace', 'desc' => 'cfgSetAutoReplace', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
+							'value' => '[["+/-","(c)","(с)","(r)","(C)","(С)","(R)","<code","code>"],["±","©","©","®","©","©","®","<pre class=\\"prettyprint\\"","pre>"]]',
+						),
+						'cfgSetTagShort' => array(
+							'name' => 'cfgSetTagShort', 'desc' => 'cfgSetTagShort', 'type' => 'textfield', 'options' => array(), 'lexicon' => 'jevix:properties', 'area' => '',
+							'value' => 'br,img',
+						),
+					),
+				));
+				if ($prop_comment->save() && $snippet->addPropertySet($prop_comment)) {
+					$modx->log(xPDO::LOG_LEVEL_INFO, '[Tickets] Property set "Comment" for snippet <b>Jevix</b> was created');
+				}
+				else {
+					$modx->log(xPDO::LOG_LEVEL_ERROR, '[Tickets] Could not create property set "Comment" for <b>Jevix</b>');
+				}
+			};
 		}
 
 		$success = true;
