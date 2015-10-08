@@ -45,15 +45,15 @@ switch ($modx->event->name) {
 				if (is_numeric($ticket_uri)) {
 					$ticket_id = $ticket_uri;
 				}
-				elseif (preg_match('/^\d+/', $ticket_uri, $tmp)) {
+				elseif (preg_match('#^\d+#', $ticket_uri, $tmp)) {
 					$ticket_id = $tmp[0];
 				}
 				else {
 					$properties = $section->getProperties('tickets');
 					if (!empty($properties['uri']) && strpos($properties['uri'], '%id') !== false) {
 						$pcre = str_replace('%id', '([0-9]+)', $properties['uri']);
-						$pcre = preg_replace('/(\%[a-z]+)/', '(?:.*?)', $pcre);
-						if (preg_match('/' . $pcre . '/', $ticket_uri, $matches)) {
+						$pcre = preg_replace('#(\%[a-z]+)#', '(?:.*?)', $pcre);
+						if (preg_match($pcre, $ticket_uri, $matches)) {
 							$ticket_id = $matches[1];
 						}
 					}
