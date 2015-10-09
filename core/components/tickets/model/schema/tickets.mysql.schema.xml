@@ -99,7 +99,7 @@
 
 		<field key="properties" dbtype="text" phptype="json" null="true" />
 
-		<index alias="unique_key" name="unique_key" primary="false" unique="true" type="BTREE">
+		<index alias="name" name="name" primary="false" unique="true" type="BTREE">
 			<column key="name" length="" collation="A" null="false" />
 		</index>
 		<index alias="resource" name="resource" primary="false" unique="false" type="BTREE">
@@ -130,7 +130,7 @@
 		<field key="createdby" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
 		<field key="ip" dbtype="varchar" precision="16" phptype="string" null="true" default="0.0.0.0" />
 
-		<index alias="unique_key" name="unique_key" primary="true" unique="true" type="BTREE">
+		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true" type="BTREE">
 			<column key="id" length="" collation="A" null="false" />
 			<column key="createdby" length="" collation="A" null="false" />
 			<column key="class" length="" collation="A" null="false" />
@@ -151,7 +151,7 @@
 		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" index="index" />
 		<field key="createdby" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
 
-		<index alias="unique_key" name="unique_key" primary="true" unique="true" type="BTREE">
+		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true" type="BTREE">
 			<column key="id" length="" collation="A" null="false" />
 			<column key="createdby" length="" collation="A" null="false" />
 			<column key="class" length="" collation="A" null="false" />
@@ -170,7 +170,7 @@
 		<field key="guest_key" dbtype="char" precision="32" phptype="string" null="true" default="NULL" index="pk" />
 		<field key="timestamp" dbtype="datetime" phptype="datetime" null="false" />
 
-		<index alias="unique_key" name="unique_key" primary="true" unique="true" type="BTREE">
+		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true" type="BTREE">
 			<column key="parent" length="" collation="A" null="false" />
 			<column key="uid" length="" collation="A" null="false" />
 			<column key="guest_key" length="" collation="A" null="false" />

@@ -128,9 +128,9 @@ $xpdo_meta_map['TicketThread']= array (
   ),
   'indexes' => 
   array (
-    'unique_key' => 
+    'name' => 
     array (
-      'alias' => 'unique_key',
+      'alias' => 'name',
       'primary' => false,
       'unique' => true,
       'type' => 'BTREE',

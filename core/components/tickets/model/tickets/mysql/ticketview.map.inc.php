@@ -51,9 +51,9 @@ $xpdo_meta_map['TicketView']= array (
   ),
   'indexes' => 
   array (
-    'unique_key' => 
+    'PRIMARY' => 
     array (
-      'alias' => 'unique_key',
+      'alias' => 'PRIMARY',
       'primary' => true,
       'unique' => true,
       'type' => 'BTREE',

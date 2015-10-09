@@ -4,6 +4,7 @@ Changelog for Tickets.
 ==========
 - Fixed typo in redirect rule of plugin.
 - Returned missing Jevix property sets.
+- Improved tables resolver for update really old versions.
 
 1.6.6 pl
 ==========
