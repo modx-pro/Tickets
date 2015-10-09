@@ -1,17 +1,23 @@
 var Tickets = {
 	initialize: function() {
 		if (typeof window['prettyPrint'] != 'function') {
-			document.write('<script src="'+TicketsConfig.jsUrl+'lib/prettify/prettify.js"><\/script>');
-			document.write('<link href="'+TicketsConfig.jsUrl+'lib/prettify/prettify.css" rel="stylesheet">');
+			$.getScript(TicketsConfig.jsUrl + 'lib/prettify/prettify.js', function() {
+				prettyPrint();
+			});
+			$('<link/>', {
+				rel: 'stylesheet',
+				type: 'text/css',
+				href: TicketsConfig.jsUrl + 'lib/prettify/prettify.css'
+			}).appendTo('head');
 		}
-		if(!jQuery().ajaxForm) {
-			document.write('<script src="'+TicketsConfig.jsUrl+'lib/jquery.form.min.js"><\/script>');
+		if (!jQuery().ajaxForm) {
+			document.write('<script src="' + TicketsConfig.jsUrl + 'lib/jquery.form.min.js"><\/script>');
 		}
-		if(!jQuery().jGrowl) {
-			document.write('<script src="'+TicketsConfig.jsUrl+'lib/jquery.jgrowl.min.js"><\/script>');
+		if (!jQuery().jGrowl) {
+			document.write('<script src="' + TicketsConfig.jsUrl + 'lib/jquery.jgrowl.min.js"><\/script>');
 		}
-		if(!jQuery().sisyphus) {
-			document.write('<script src="'+TicketsConfig.jsUrl+'lib/jquery.sisyphus.min.js"><\/script>');
+		if (!jQuery().sisyphus) {
+			document.write('<script src="' + TicketsConfig.jsUrl + 'lib/jquery.sisyphus.min.js"><\/script>');
 		}
 
 		// Forms listeners
