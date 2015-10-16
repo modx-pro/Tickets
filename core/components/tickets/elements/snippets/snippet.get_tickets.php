@@ -187,12 +187,10 @@ if (!empty($rows) && is_array($rows)) {
 		$additional_fields = $pdoFetch->getObject('Ticket', $row['id'], array(
 			'leftJoin' => array(
 				'View' => array('class' => 'TicketView', 'on' => '`Ticket`.`id` = `View`.`parent`'),
-				'LastView' => array('class' => 'TicketView', 'on' => '`Ticket`.`id` = `LastView`.`parent` AND `LastView`.`uid` != 0 AND `LastView`.`uid` = ' . $modx->user->id),
 				'Thread' => array('class' => 'TicketThread', 'on' => '`Thread`.`resource` = `Ticket`.`id`  AND `Thread`.`deleted` = 0'),
 			),
 			'select' => array(
 				'View' => 'COUNT(`View`.`parent`) as `views`',
-				'LastView' => '`LastView`.`timestamp` as `new_comments`',
 				'Thread' => '`Thread`.`id` as `thread`',
 			),
 			'groupby' => $class . '.id'
@@ -208,11 +206,19 @@ if (!empty($rows) && is_array($rows)) {
 		$row['idx'] = $pdoFetch->idx++;
 		// Processing new comments
 		if ($Tickets->authenticated) {
-			if (!empty($row['new_comments'])) {
+			$last_view = $pdoFetch->getObject('TicketView', array(
+				'parent' => $row['id'],
+				'uid' => $modx->user->id,
+			), array(
+				'sortby' => 'timestamp',
+				'sortdir' => 'DESC',
+				'limit' => 1,
+			));
+			if (!empty($last_view['timestamp'])) {
 				$row['new_comments'] = $modx->getCount('TicketComment', array(
 					'published' => 1,
 					'thread' => $row['thread'],
-					'createdon:>' => $row['new_comments'],
+					'createdon:>' => $last_view['timestamp'],
 					'createdby:!=' => $modx->user->id,
 				));
 			}

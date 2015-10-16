@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.6.8 pl
+==========
+- [getTickets] Fixed counting wrong number of views.
+
 1.6.7 pl
 ==========
 - Fixed typo in redirect rule of plugin.
