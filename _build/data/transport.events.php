@@ -29,6 +29,9 @@ $tmp = array(
 
 	'OnBeforeTicketThreadRemove' => array(),
 	'OnTicketThreadRemove' => array(),
+
+	'OnTicketVote' => array(),
+	'OnCommentVote' => array(),
 );
 
 foreach ($tmp as $k => $v) {

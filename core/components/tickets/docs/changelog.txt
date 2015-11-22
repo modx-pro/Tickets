@@ -3,6 +3,7 @@ Changelog for Tickets.
 1.6.9 pl
 ==========
 - [mgr] Added search by author of ticket in tickets list.
+- Added new events: OnCommentVote and OnTicketVote.
 
 1.6.8 pl
 ==========

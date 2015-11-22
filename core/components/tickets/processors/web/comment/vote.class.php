@@ -6,6 +6,7 @@ class TicketCommentVoteProcessor extends modObjectCreateProcessor {
 	public $objectType = 'TicketVote';
 	public $classKey = 'TicketVote';
 	public $languageTopics = array('tickets:default');
+	public $afterSaveEvent = 'OnCommentVote';
 	public $permission = 'comment_vote';
 	/* @var TicketComment $comment */
 	private $comment;
