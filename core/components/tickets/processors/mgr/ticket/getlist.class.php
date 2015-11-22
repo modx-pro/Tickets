@@ -56,6 +56,8 @@ class TicketGetListProcessor extends modObjectGetListProcessor {
 				'pagetitle:LIKE' => "%{$query}%",
 				'OR:description:LIKE' => "%{$query}%",
 				'OR:introtext:LIKE' => "%{$query}%",
+				'OR:CreatedBy.username:LIKE' =>  "%{$query}%",
+				'OR:UserProfile.fullname:LIKE' =>  "%{$query}%",
 			));
 		}
 
