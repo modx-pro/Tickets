@@ -36,6 +36,11 @@ class TicketStarProcessor extends modObjectProcessor {
 		/** @var TicketStar $star */
 		if ($star = $this->modx->getObject($this->classKey, $data)) {
 			$star->remove();
+
+			$this->modx->invokeEvent('OnTicketUnStar', array(
+				$this->objectType => &$star,
+				'object' => &$star,
+			));
 		}
 		else {
 			$star = $this->modx->newObject($this->classKey);
@@ -44,6 +49,11 @@ class TicketStarProcessor extends modObjectProcessor {
 
 			$star->fromArray($data, '', true, true);
 			$star->save();
+
+			$this->modx->invokeEvent('OnTicketStar', array(
+				$this->objectType => &$star,
+				'object' => &$star,
+			));
 		}
 
 		$stars = $this->modx->getCount('TicketStar', array('id' => $id, 'class' => 'Ticket'));

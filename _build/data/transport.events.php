@@ -32,6 +32,11 @@ $tmp = array(
 
 	'OnTicketVote' => array(),
 	'OnCommentVote' => array(),
+
+	'OnTicketStar' => array(),
+	'OnTicketUnStar' => array(),
+	'OnCommentStar' => array(),
+	'OnCommentUnStar' => array(),
 );
 
 foreach ($tmp as $k => $v) {
