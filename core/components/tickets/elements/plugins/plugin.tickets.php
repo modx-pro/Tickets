@@ -24,7 +24,11 @@ switch ($modx->event->name) {
 
 	case 'OnWebPagePrerender':
 		$output = &$modx->resource->_output;
-		$output = str_replace(array('*{*{*{*{*{*', '*}*}*}*}*}*'), array('[', ']'), $output);
+		$output = str_replace(
+			array('*(*(*(*(*(*', '*)*)*)*)*)*', '~(~(~(~(~(~', '~)~)~)~)~)~'),
+			array('[', ']', '{', '}'),
+			$output
+		);
 		break;
 
 

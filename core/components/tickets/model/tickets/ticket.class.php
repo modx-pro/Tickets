@@ -76,7 +76,11 @@ class Ticket extends modResource {
 			if (isset($this->_fieldMeta[$k]) && $this->_fieldMeta[$k]['phptype'] == 'string') {
 				$properties = $this->getProperties();
 				if (!$properties['process_tags'] && !in_array($k, $fields)) {
-					$value = str_replace(array('[', ']', '`'), array('&#91;', '&#93;', '&#96;'), $value);
+					$value = str_replace(
+						array('[', ']', '`', '{', '}'),
+						array('&#91;', '&#93;', '&#96;', '&#123;', '&#125;'),
+						$value
+					);
 				}
 			}
 		}
@@ -132,7 +136,11 @@ class Ticket extends modResource {
 			$content = $this->Jevix($content, false);
 		}
 		if (!$properties['process_tags']) {
-			$content = str_replace(array('[', ']', '`'), array('&#91;', '&#93;', '&#96;'), $content);
+			$content = str_replace(
+				array('[', ']', '`', '{', '}'),
+				array('&#91;', '&#93;', '&#96;', '&#123;', '&#125;'),
+				$content
+			);
 		}
 		$content = preg_replace('/<cut(.*?)>/i', '<a name="cut"></a>', $content);
 

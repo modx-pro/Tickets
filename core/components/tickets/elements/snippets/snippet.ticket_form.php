@@ -44,7 +44,11 @@ if (!empty($tid)) {
 				: $ticket->getTVValue($field);
 			if (is_string($value)) {
 				$value = html_entity_decode($value, ENT_QUOTES, $charset);
-				$value = str_replace(array('[^', '^]', '[', ']'), array('&#91;^', '^&#93;', '*{*{*{*{*{*', '*}*}*}*}*}*'), $value);
+				$value = str_replace(
+					array('[^', '^]', '[', ']', '{', '}'),
+					array('&#91;^', '^&#93;', '*(*(*(*(*(*', '*)*)*)*)*)*', '~(~(~(~(~(~', '~)~)~)~)~)~'),
+					$value
+				);
 				$value = htmlentities($value, ENT_QUOTES, $charset);
 			}
 			$data[$field] = $value;

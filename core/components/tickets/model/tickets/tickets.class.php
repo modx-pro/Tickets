@@ -417,7 +417,7 @@ class Tickets {
 	 */
 	public function saveComment($data = array()) {
 		unset($data['action']);
-		$data['raw'] = $data['text'];
+		$data['raw'] = trim($data['text']);
 		$data['text'] = $this->Jevix($data['text'], 'Comment');
 		$data['allowGuest'] = !empty($this->config['allowGuest']);
 		$data['allowGuestEdit'] = !empty($this->config['allowGuestEdit']);
@@ -689,16 +689,28 @@ class Tickets {
 		}
 
 		$text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
-		$params['input'] = str_replace(array('[', ']'), array('*{*{*{*{*{*', '*}*}*}*}*}*'), $text);
+		$params['input'] = str_replace(
+			array('[', ']', '{', '}'),
+			array('*(*(*(*(*(*', '*)*)*)*)*)*', '~(~(~(~(~(~', '~)~)~)~)~)~'),
+			$text
+		);
 
 		$snippet->setCacheable(false);
 		$filtered = $snippet->process($params);
 
 		if ($replaceTags) {
-			$filtered = str_replace(array('*{*{*{*{*{*', '*}*}*}*}*}*', '`'), array('&#91;', '&#93;', '&#96;'), $filtered);
+			$filtered = str_replace(
+				array('*(*(*(*(*(*', '*)*)*)*)*)*', '`', '~(~(~(~(~(~', '~)~)~)~)~)~'),
+				array('&#91;', '&#93;', '&#96;', '&#123;', '&#125;'),
+				$filtered
+			);
 		}
 		else {
-			$filtered = str_replace(array('*{*{*{*{*{*', '*}*}*}*}*}*'), array('[', ']'), $filtered);
+			$filtered = str_replace(
+				array('*(*(*(*(*(*', '*)*)*)*)*)*', '~(~(~(~(~(~', '~)~)~)~)~)~'),
+				array('[', ']', '{', '}'),
+				$filtered
+			);
 		}
 
 		return $filtered;
@@ -722,10 +734,13 @@ class Tickets {
 
 		$string = htmlentities(trim($string), ENT_QUOTES, "UTF-8");
 		$string = preg_replace('/^@.*\b/', '', $string);
-		$arr1 = array('[', ']', '`');
-		$arr2 = array('&#091;', '&#093;', '&#096;');
+		$string = str_replace(
+			array('[', ']', '`', '{', '}'),
+			array('&#91;', '&#93;', '&#96;', '&#123;', '&#125;'),
+			$string
+		);
 
-		return str_replace($arr1, $arr2, $string);
+		return $string;
 	}
 
 

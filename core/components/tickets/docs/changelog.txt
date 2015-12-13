@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.6.10 pl
+==========
+- Added escaping of Fenom tags
+
 1.6.9 pl
 ==========
 - [mgr] Added search by author of ticket in tickets list.

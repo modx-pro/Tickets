@@ -131,7 +131,11 @@ if (!empty($rows) && is_array($rows)) {
 		}
 		if (empty($properties['process_tags'])) {
 			foreach ($row as $field => $value) {
-				$row[$field] = str_replace(array('[', ']'), array('&#91;', '&#93;'), $value);
+				$row[$field] = str_replace(
+					array('[', ']', '`', '{', '}'),
+					array('&#91;', '&#93;', '&#96;', '&#123;', '&#125;'),
+					$value
+				);
 			}
 		}
 		if (!is_array($properties)) {
