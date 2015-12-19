@@ -776,6 +776,7 @@ Tickets.tpanel = {
 	}
 
 };
-
-Tickets.initialize();
-Tickets.tpanel.initialize();
+if (typeof TicketsConfig != 'undefined'){
+	Tickets.initialize();
+	Tickets.tpanel.initialize();
+}
