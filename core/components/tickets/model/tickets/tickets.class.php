@@ -916,13 +916,19 @@ class Tickets {
 		}
 
 		/** @var TicketsSection $section */
-		$section = $this->modx->getObject('TicketsSection', $ticket['parent'], false);
-		$properties = $section->get('properties');
-		$subscribers = !empty($properties['subscribers'])
-			? $properties['subscribers']
-			: array();
-
-		$ticket = array_merge($ticket, $section->toArray('section.'));
+		if ($section = $this->modx->getObject('TicketsSection', $ticket['parent'], false)) {
+			$properties = $section->get('properties');
+			$subscribers = !empty($properties['subscribers'])
+				? $properties['subscribers']
+				: array();
+			$ticket = array_merge($ticket, $section->toArray('section.'));
+		}
+		/** @var modUser $user */
+		if ($user = $this->modx->getObject('modUser', $ticket['createdby'])) {
+			if ($profile = $user->getOne('Profile')) {
+				$ticket = array_merge($ticket, array_merge($profile->toArray('user.'), $user->toArray('user.')));
+			}
+		}
 
 		// Send notifications to admin
 		$sent = array();
@@ -946,16 +952,18 @@ class Tickets {
 		}
 
 		// Then we send emails to subscribers
-		foreach ($subscribers as $uid) {
-			if (in_array($uid, $sent) || $ticket['createdby'] == $uid) {
-				continue;
-			}
-			else {
-				$this->addQueue(
-					$uid,
-					$this->modx->lexicon('tickets_section_email_subscription', $ticket),
-					$this->getChunk($this->config['tplTicketEmailSubscription'], $ticket, false)
-				);
+		if (!empty($subscribers)) {
+			foreach ($subscribers as $uid) {
+				if (in_array($uid, $sent) || $ticket['createdby'] == $uid) {
+					continue;
+				}
+				else {
+					$this->addQueue(
+						$uid,
+						$this->modx->lexicon('tickets_section_email_subscription', $ticket),
+						$this->getChunk($this->config['tplTicketEmailSubscription'], $ticket, false)
+					);
+				}
 			}
 		}
 	}

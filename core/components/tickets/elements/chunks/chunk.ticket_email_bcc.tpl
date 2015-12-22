@@ -1,3 +1,11 @@
-<p>Кто-то создал новый тикет у вас на сайте: <a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>.
+[[%ticket_email_bcc_intro?
+    &fullname=`[[+user.fullname]]`
+    &email=`[[+user.email]]`
+    &id=`[[+id]]`
+    &pagetitle=`[[+pagetitle]]`
+]]
+
 <pre style="background-color:#efefef;">[[+introtext]]</pre>
-<p><b>[[+createdby:userinfo=`fullname`]]</b> ([[+createdby:userinfo=`email`]])</p>
+<br/><br/>
+
+<a href="[[~[[+id]]?scheme=`full`]]">[[%ticket_email_view]]</a>

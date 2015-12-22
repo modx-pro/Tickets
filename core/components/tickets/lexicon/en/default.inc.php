@@ -215,13 +215,6 @@ $_lang['ticket_date_hours_back'] = '["[[+hours]] hours ago","[[+hours]] hours ag
 $_lang['ticket_date_hours_back_less'] = 'Less than an hour ago';
 $_lang['ticket_date_months'] = '["january","february","march","april","may","june","july","august","september","october","november","december"]';
 
-$_lang['ticket_comment_email_owner'] = 'New comment for your ticket "[[+pagetitle]]"';
-$_lang['ticket_comment_email_reply'] = 'Reply to your comment for ticket "[[+pagetitle]]"';
-$_lang['ticket_comment_email_subscription'] = 'New comment for ticket "[[+pagetitle]]"';
-$_lang['ticket_comment_email_bcc'] = 'New comment for ticket "[[+pagetitle]]"';
-$_lang['ticket_comment_email_unpublished_bcc'] = 'Unpublished comment for ticket "[[+pagetitle]]"';
-$_lang['ticket_email_bcc'] = 'New ticket on site - "[[+pagetitle]]"';
-
 $_lang['ticket_like'] = 'Like';
 $_lang['ticket_dislike'] = 'Dislike';
 $_lang['ticket_refrain'] = 'See ratings';
@@ -250,3 +243,22 @@ $_lang['tickets_action_remove'] = 'Remove';
 $_lang['tickets_action_duplicate'] = 'Duplicate';
 $_lang['tickets_action_open'] = 'Open';
 $_lang['tickets_action_close'] = 'Close';
+
+$_lang['ticket_comment_email_owner'] = 'New comment for your ticket "[[+pagetitle]]"';
+$_lang['ticket_comment_email_reply'] = 'Reply to your comment for ticket "[[+pagetitle]]"';
+$_lang['ticket_comment_email_subscription'] = 'New comment for ticket "[[+pagetitle]]"';
+$_lang['ticket_comment_email_bcc'] = 'New comment for ticket "[[+pagetitle]]"';
+$_lang['ticket_comment_email_unpublished_bcc'] = 'Unpublished comment for ticket "[[+pagetitle]]"';
+$_lang['ticket_comment_email_unpublished_intro'] = 'The user <b>[[+name]]</b> left a comment in the topic "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>".<br/>Now you need to check and approve it in the manager:';
+$_lang['ticket_comment_email_subscription_intro'] = 'The user <b>[[+name]]</b> left a comment in the topic, on which you have been subscribed - "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>":';
+$_lang['ticket_comment_email_reply_intro'] = 'The user <b>[[+name]]</b> replied on your comment to topic "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>":';
+$_lang['ticket_comment_email_reply_text'] = 'The text of the comment:';
+$_lang['ticket_comment_email_owner_intro'] = 'The user <b>[[+name]]</b> left a comment to the your topic "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>":';
+$_lang['ticket_comment_email_bcc_intro'] = 'The user <b>[[+name]]</b> left a comment in the topic "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>":';
+
+$_lang['ticket_email_bcc'] = 'New ticket to your site - "[[+pagetitle]]"';
+$_lang['ticket_email_bcc_intro'] = 'The user <b>[[+fullname]]</b> ([[+email]]) was created the new topic to your site: <a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>';
+$_lang['ticket_email_subscribed_intro'] = 'The user <b>[[+fullname]]</b> published the new topic: "<a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>" to the section "<a href="[[~[[+section]]?scheme=`full`]]">[[+section_title]]</a>", on which you have been subscribed.';
+$_lang['ticket_email_all_comments'] = 'All comments';
+$_lang['ticket_email_view'] = 'View';
+$_lang['ticket_email_reply'] = 'Reply';

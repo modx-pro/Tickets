@@ -1,5 +1,10 @@
-<p>Пользователь <b>[[+name]]</b> оставил комментарий в тикете "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>".</p>
-Теперь вам нужно проверить его и опубликовать на сайте:
+[[%ticket_comment_email_unpublished_intro?
+    &name=`[[+name]]`
+    &resource=`[[+resource]]`
+    &pagetitle=`[[+pagetitle]]`
+]]
+
 <pre>[[+text]]</pre>
 <br/><br/>
-<a href="[[+manager_url]]">Все комментарии</a>
+
+<a href="[[+manager_url]]">[[%ticket_email_all_comments]]</a>

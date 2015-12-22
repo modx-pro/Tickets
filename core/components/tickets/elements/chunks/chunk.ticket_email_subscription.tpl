@@ -1,3 +1,12 @@
-<p>В секции "<a href="[[~[[+section.id]]?scheme=`full`]]">[[+section.pagetitle]]</a>", на которую вы подписаны, был опубликован новый тикет: "<a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>".
+[[%ticket_email_subscribed_intro?
+    &id=`[[+id]]`
+    &fullname=`[[+user.fullname]]`
+    &section=`[[+section.id]]`
+    &section_title=`[[+section.pagetitle]]`
+    &pagetitle=`[[+pagetitle]]`
+]]
+
 <pre style="background-color:#efefef;">[[+introtext]]</pre>
-<p>Автор: <b>[[+createdby:userinfo=`fullname`]]</b></p>
+<br/><br/>
+
+<a href="[[~[[+id]]?scheme=`full`]]">[[%ticket_email_view]]</a>

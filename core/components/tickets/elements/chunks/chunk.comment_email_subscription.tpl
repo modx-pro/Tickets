@@ -1,4 +1,10 @@
-Пользователь <b>[[+name]]</b> оставил комментарий в тикете, на который вы подписаны - "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>":
+[[%ticket_comment_email_subscription_intro?
+    &name=`[[+name]]`
+    &resource=`[[+resource]]`
+    &pagetitle=`[[+pagetitle]]`
+]]
+
 <pre>[[+text]]</pre>
 <br/><br/>
-<a href="[[~[[+resource]]?scheme=`full`]]#comment-[[+id]]">Просмотреть</a>
+
+<a href="[[~[[+resource]]?scheme=`full`]]#comment-[[+id]]">[[%ticket_email_view]]</a>

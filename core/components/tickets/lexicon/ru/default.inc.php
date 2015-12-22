@@ -68,9 +68,9 @@ $_lang['tickets_section_email_subscription'] = 'Новый тикет в сек�
 $_lang['ticket_create_here'] = 'Создать тикет';
 
 $_lang['ticket_no_comments'] = 'На этой странице еще нет комментариев. Вы можете написать первый.';
+$_lang['tickets_message_close_all'] = 'закрыть все';
 $_lang['err_no_jevix'] = 'Для работы необходим сниппет Jevix. Вы должны установить его из репозитория MODX.';
 $_lang['tickets_err_unknown'] = 'Произошла неизвестная ошибка.';
-$_lang['tickets_message_close_all'] = 'закрыть все';
 $_lang['ticket_err_id'] = 'Тикет с указанным id = [[+id]] не найден.';
 $_lang['ticket_err_wrong_user'] = 'Вы пытаетесь обновить тикет, который вам не принадлежит.';
 $_lang['ticket_err_no_auth'] = 'Вы должны авторизоваться, чтобы создать тикет.';
@@ -156,6 +156,7 @@ $_lang['ticket_author_rating_desc'] = 'За / Против';
 $_lang['ticket_author_stars_desc'] = 'Тикеты / Комментарии';
 
 $_lang['ticket_tickets_intro'] = 'Здесь собраны тикеты со всего сайта.';
+$_lang['ticket_publishedon'] = 'Опубликован';
 $_lang['ticket_pagetitle'] = 'Заголовок';
 $_lang['ticket_parent'] = 'Секция';
 $_lang['ticket_author'] = 'Автор';
@@ -214,13 +215,6 @@ $_lang['ticket_date_hours_back'] = '["[[+hours]] час назад","[[+hours]] 
 $_lang['ticket_date_hours_back_less'] = 'меньше часа назад';
 $_lang['ticket_date_months'] = '["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"]';
 
-$_lang['ticket_comment_email_owner'] = 'Новый комментарий к вашему тикету "[[+pagetitle]]"';
-$_lang['ticket_comment_email_reply'] = 'Ответ на ваш комментарий к тикету "[[+pagetitle]]"';
-$_lang['ticket_comment_email_subscription'] = 'Новый комментарий в теме "[[+pagetitle]]"';
-$_lang['ticket_comment_email_bcc'] = 'Новый комментарий в теме "[[+pagetitle]]"';
-$_lang['ticket_comment_email_unpublished_bcc'] = 'Неопубликованный комментарий в теме "[[+pagetitle]]"';
-$_lang['ticket_email_bcc'] = 'Новый тикет у вас на сайте - "[[+pagetitle]]"';
-
 $_lang['ticket_like'] = 'Нравится';
 $_lang['ticket_dislike'] = 'Не нравится';
 $_lang['ticket_refrain'] = 'Посмотреть рейтинг';
@@ -249,3 +243,22 @@ $_lang['tickets_action_remove'] = 'Уничтожить';
 $_lang['tickets_action_duplicate'] = 'Копировать';
 $_lang['tickets_action_open'] = 'Открыть';
 $_lang['tickets_action_close'] = 'Закрыть';
+
+$_lang['ticket_comment_email_owner'] = 'Новый комментарий к вашему тикету "[[+pagetitle]]"';
+$_lang['ticket_comment_email_reply'] = 'Ответ на ваш комментарий к тикету "[[+pagetitle]]"';
+$_lang['ticket_comment_email_subscription'] = 'Новый комментарий в теме "[[+pagetitle]]"';
+$_lang['ticket_comment_email_bcc'] = 'Новый комментарий в теме "[[+pagetitle]]"';
+$_lang['ticket_comment_email_unpublished_bcc'] = 'Неопубликованный комментарий в теме "[[+pagetitle]]"';
+$_lang['ticket_comment_email_unpublished_intro'] = 'Пользователь <b>[[+name]]</b> оставил комментарий в тикете "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>".<br/>Теперь вам нужно проверить его и опубликовать на сайте:';
+$_lang['ticket_comment_email_subscription_intro'] = 'Пользователь <b>[[+name]]</b> оставил комментарий в тикете, на который вы подписаны - "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>":';
+$_lang['ticket_comment_email_reply_intro'] = 'Пользователь <b>[[+name]]</b> ответил на ваш комментарий к тикету "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>":';
+$_lang['ticket_comment_email_reply_text'] = 'Текст комментария:';
+$_lang['ticket_comment_email_owner_intro'] = 'Пользователь <b>[[+name]]</b> оставил комментарий к вашему тикету "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>":';
+$_lang['ticket_comment_email_bcc_intro'] = 'Пользователь <b>[[+name]]</b> оставил комментарий в тикете "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>":';
+
+$_lang['ticket_email_bcc'] = 'Новый тикет у вас на сайте - "[[+pagetitle]]"';
+$_lang['ticket_email_bcc_intro'] = 'Пользователь <b>[[+fullname]]</b> ([[+email]]) создал новый тикет у вас на сайте: <a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>';
+$_lang['ticket_email_subscribed_intro'] = 'Пользователь <b>[[+fullname]]</b> опубликовал новый тикет: "<a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>" в секции "<a href="[[~[[+section]]?scheme=`full`]]">[[+section_title]]</a>", на которую вы подписаны.';
+$_lang['ticket_email_all_comments'] = 'Все комментарии';
+$_lang['ticket_email_view'] = 'Просмотреть';
+$_lang['ticket_email_reply'] = 'Ответить';
