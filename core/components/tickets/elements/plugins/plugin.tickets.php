@@ -81,7 +81,7 @@ switch ($modx->event->name) {
 		$authenticated = $modx->user->isAuthenticated($modx->context->get('key'));
 		$key = 'Tickets_User';
 
-		if (!$authenticated && !$modx->getOption('tickets.count_guests', false)) {
+		if (!$authenticated && !$modx->getOption('tickets.count_guests')) {
 			return;
 		}
 
