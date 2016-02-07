@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.6.12 pl
+==========
+[#130] Respect section settings on ticket create in manager.
+
 1.6.11 pl
 ==========
 - Chunks of emails now use the lexicons.
