@@ -8,7 +8,7 @@ class TicketAuthorRebuildProcessor extends modProcessor {
 	 */
 	public function process() {
 		$time = time();
-		$time_limit = @ini_get('max_execution_time') - 5;
+		$time_limit = @ini_get('max_execution_time') - 20;
 		if ($time_limit <= 5) {
 			$time_limit = 5;
 		}

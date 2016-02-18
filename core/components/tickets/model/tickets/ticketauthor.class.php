@@ -51,17 +51,17 @@ class TicketAuthor extends xPDOObject {
 				if ($action->save()) {
 					if (!empty($rating)) {
 						$this->set('rating', $this->get('rating') + $rating);
-						if ($field = $this->_getTotalField($type)) {
-							if (strpos($type, 'vote_') === 0) {
-								$this->set($field, $this->get($field) + $rating);
-								$field .= $rating > 0
-									? '_up'
-									: '_down';
-							}
-							$this->set($field, $this->get($field) + 1);
-						}
-						$this->save();
 					}
+					if ($field = $this->_getTotalField($type)) {
+						if (strpos($type, 'vote_') === 0) {
+							$this->set($field, $this->get($field) + $rating);
+							$field .= $rating > 0
+								? '_up'
+								: '_down';
+						}
+						$this->set($field, $this->get($field) + 1);
+					}
+					$this->save();
 				}
 				else {
 					return false;
@@ -93,17 +93,17 @@ class TicketAuthor extends xPDOObject {
 			if ($action->remove()) {
 				if (!empty($rating)) {
 					$this->set('rating', $this->get('rating') - $rating);
-					if (!empty($rating) && $field = $this->_getTotalField($type)) {
-						if (strpos($type, 'vote_') === 0) {
-							$this->set($field, $this->get($field) - $rating);
-							$field .= $rating > 0
-								? '_up'
-								: '_down';
-						}
-						$this->set($field, $this->get($field) - 1);
-					}
-					$this->save();
 				}
+				if (!empty($rating) && $field = $this->_getTotalField($type)) {
+					if (strpos($type, 'vote_') === 0) {
+						$this->set($field, $this->get($field) - $rating);
+						$field .= $rating > 0
+							? '_up'
+							: '_down';
+					}
+					$this->set($field, $this->get($field) - 1);
+				}
+				$this->save();
 			}
 			else {
 				return false;
