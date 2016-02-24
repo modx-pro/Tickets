@@ -189,7 +189,7 @@ if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
 	$output .= '<pre class="CommentsLog">' . print_r($pdoFetch->getTime(), 1) . '</pre>';
 }
 
-$modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.formBefore = ' . (int)!empty($formBefore) . ';TicketsConfig.thread_depth = ' . (int)$depth . ';</script>', true);
+$modx->regClientStartupScript('<script type="text/javascript">;TicketsConfig.formBefore = ' . (int)!empty($formBefore) . ';TicketsConfig.thread_depth = ' . (int)$depth . ';</script>', true);
 
 // Return output
 if (!empty($toPlaceholder)) {
