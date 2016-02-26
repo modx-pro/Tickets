@@ -68,6 +68,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor {
 			return $this->modx->lexicon('ticket_err_form');
 		}
 		$this->setFieldDefault();
+		$this->unsetProperty('action');
 
 		return $set;
 	}

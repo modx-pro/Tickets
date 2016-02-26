@@ -49,6 +49,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor {
 		if ($this->hasErrors()) {
 			return $this->modx->lexicon('ticket_err_form');
 		}
+		$this->unsetProperty('action');
 
 		return $set;
 	}

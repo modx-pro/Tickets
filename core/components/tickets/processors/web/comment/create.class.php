@@ -99,6 +99,7 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor {
 			'deletedby' => 0,
 			'properties' => $add,
 		));
+		$this->unsetProperty('action');
 
 		return parent::beforeSet();
 	}

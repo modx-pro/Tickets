@@ -103,6 +103,7 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 				? $add
 				: $this->object->get('properties'),
 		);
+		$this->unsetProperty('action');
 
 		return parent::beforeSet();
 	}

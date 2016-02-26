@@ -34,6 +34,7 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor {
 				$this->setProperty('thread', $parent->get('thread'));
 			}
 		}
+		$this->unsetProperty('action');
 
 		return parent::beforeSet();
 	}
