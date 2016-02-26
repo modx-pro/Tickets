@@ -106,9 +106,9 @@ class Tickets {
 				'tpanel' => (int)$this->authenticated,
 				'enable_editor' => (int)$this->modx->getOption('tickets.enable_editor'),
 			);
-			$this->modx->regClientStartupScript('<script type="text/javascript">TicketsConfig=' . $this->modx->toJSON($config_js) . '</script>', true);
+			$this->modx->regClientStartupScript('<script type="text/javascript">TicketsConfig=' . $this->modx->toJSON($config_js) . ';</script>', true);
 			if ($config_js['enable_editor']) {
-				$this->modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.editor={ticket: ' . $this->modx->getOption('tickets.editor_config.ticket') . ',comment: ' . $this->modx->getOption('tickets.editor_config.comment') . '}</script>', true);
+				$this->modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.editor={ticket: ' . $this->modx->getOption('tickets.editor_config.ticket') . ',comment: ' . $this->modx->getOption('tickets.editor_config.comment') . '};</script>', true);
 				$this->modx->regClientScript($this->config['jsUrl'] . 'web/editor/jquery.markitup.js');
 				$this->modx->regClientCSS($this->config['jsUrl'] . 'web/editor/editor.css');
 			}

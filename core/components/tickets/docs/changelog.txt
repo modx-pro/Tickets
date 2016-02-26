@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.6.14 pl
+==========
+- [#133] Added trailing semicolon for inline scripts.
+
 1.6.13 pl
 ==========
 - Fixed save of TicketAuthorAction with empty rating.

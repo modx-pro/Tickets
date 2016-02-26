@@ -146,7 +146,7 @@ if (!empty($allowFiles)) {
 				? $properties['allowedFileTypes']
 				: 'jpg,jpeg,png,gif'
 		);
-		$modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.source=' . $modx->toJSON($config) . '</script>', true);
+		$modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.source=' . $modx->toJSON($config) . ';</script>', true);
 	}
 	$modx->regClientScript($Tickets->config['jsUrl'] . 'web/lib/plupload/plupload.full.min.js');
 	$modx->regClientScript($Tickets->config['jsUrl'] . 'web/files.js');
