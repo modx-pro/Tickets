@@ -1,9 +1,9 @@
 <?php
 
 class Tickets {
-	/* @var modX $modx */
+	/** @var modX $modx */
 	public $modx;
-	/* @var pdoTools $pdoTools */
+	/** @var pdoFetch $pdoTools */
 	public $pdoTools;
 	public $initialized = array();
 	public $authenticated = false;
@@ -1172,17 +1172,8 @@ class Tickets {
 	 */
 	public function loadPdoTools() {
 		if (!is_object($this->pdoTools) || !($this->pdoTools instanceof pdoTools)) {
-			/** @var pdoFetch $pdoFetch */
-			$fqn = $this->modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
-			if ($pdoClass = $this->modx->loadClass($fqn, '', false, true)) {
-				$this->pdoTools = new $pdoClass($this->modx, $this->config);
-			}
-			elseif ($pdoClass = $this->modx->loadClass($fqn, MODX_CORE_PATH . 'components/pdotools/model/', false, true)) {
-				$this->pdoTools = new $pdoClass($this->modx, $this->config);
-			}
-			else {
-				$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not load pdoFetch from "MODX_CORE_PATH/components/pdotools/model/".');
-			}
+			$this->pdoTools = $this->modx->getService('pdoFetch');
+			$this->pdoTools->setConfig($this->config);
 		}
 		return !empty($this->pdoTools) && $this->pdoTools instanceof pdoTools;
 	}

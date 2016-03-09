@@ -21,11 +21,8 @@ $Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.cor
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 /** @var pdoFetch $pdoFetch */
-$fqn = $modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
-if (!$pdoClass = $modx->loadClass($fqn, '', false, true)) {
-	return false;
-}
-$pdoFetch = new $pdoClass($modx, $scriptProperties);
+$pdoFetch = $modx->getService('pdoFetch');
+$pdoFetch->setConfig($scriptProperties);
 $pdoFetch->addTime('pdoTools loaded');
 
 // Prepare Ticket Thread
