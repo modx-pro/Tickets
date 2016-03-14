@@ -67,7 +67,8 @@ if ($class != 'Ticket') {
 
 	// Comments
 	$data['comments'] = 0;
-	$q = $modx->newQuery('TicketThread', array('name' => 'resource-' . $ticket->id));
+	$thread = empty($thread) ? 'resource-'.$ticket->id : $thread;
+ +	$q = $modx->newQuery('TicketThread', array('name' => $thread));
 	$q->leftJoin('TicketComment', 'TicketComment', "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1");
 	$q->select('COUNT(`TicketComment`.`id`) as `comments`');
 	$tstart = microtime(true);
