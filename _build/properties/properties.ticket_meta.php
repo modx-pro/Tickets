@@ -29,6 +29,10 @@ $tmp = array(
 		'type' => 'combo-boolean',
 		'value' => true,
 	),
+	'thread' => array(
+		'type' => 'textfield',
+		'value' => '',
+	),
 );
 
 foreach ($tmp as $k => $v) {
