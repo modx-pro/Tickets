@@ -331,6 +331,7 @@ var Tickets = {
 							for (i in response.data) {
 								field = response.data[i];
 								var elem = $(form).find('[name="' + field.field + '"]').parent().find('.error');
+								var elem = elem.length > 0 ? elem : $(form).find('#' + field.field + '-error');
 								if (elem.length > 0) {
 									elem.text(field.message)
 								}
