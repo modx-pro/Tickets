@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.6.17 pl
+==========
+- Fix loading custom class "pdoTools"
+
 1.6.16 pl
 ==========
 - [#134] [TicketMeta] Added ability to specify &thread.
