@@ -1172,7 +1172,9 @@ class Tickets {
 	 */
 	public function loadPdoTools() {
 		if (!is_object($this->pdoTools) || !($this->pdoTools instanceof pdoTools)) {
-			$this->pdoTools = $this->modx->getService('pdoFetch');
+			$fqn = $this->modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
+			$path = $this->modx->getOption('pdotools_class_path', null, MODX_CORE_PATH . 'components/pdotools/model/', true);
+			$this->pdoTools = $this->modx->getService($fqn, '', $path);
 			$this->pdoTools->setConfig($this->config);
 		}
 		return !empty($this->pdoTools) && $this->pdoTools instanceof pdoTools;
