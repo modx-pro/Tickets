@@ -31,6 +31,7 @@ $xpdo_meta_map['TicketVote']= array (
       'dbtype' => 'varchar',
       'precision' => '100',
       'phptype' => 'string',
+      'null' => false,
       'index' => 'pk',
     ),
     'owner' => 

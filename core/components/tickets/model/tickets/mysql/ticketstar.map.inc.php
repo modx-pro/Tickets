@@ -29,6 +29,7 @@ $xpdo_meta_map['TicketStar']= array (
       'dbtype' => 'varchar',
       'precision' => '100',
       'phptype' => 'string',
+      'null' => false,
       'default' => 'Ticket',
       'index' => 'pk',
     ),

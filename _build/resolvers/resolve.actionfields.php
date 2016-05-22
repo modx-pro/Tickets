@@ -55,9 +55,12 @@ if ($object->xpdo) {
 			}
 			foreach ($actions as $actionId) {
 				$c = $modx->newQuery('modActionField', array('type' => 'tab', 'action' => $actionId));
-				$c->select('id, max(`rank`) as tabrank');
-				$obj = $modx->getObject('modActionField', $c);
-				$tabIdx = $obj->tabrank + 1;
+				$c->select('max(`rank`)');
+				$tabIdx = 0;
+				if ($c->prepare() && $c->stmt->execute()) {
+					$tabIdx = $c->stmt->fetchColumn();
+					$tabIdx += 1;
+				}
 
 				foreach ($actionFields as $tab) {
 					/** @var modActionField $tabObj */

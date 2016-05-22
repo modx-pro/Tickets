@@ -7,14 +7,14 @@ $xpdo_meta_map['TicketAuthor']= array (
   'fields' => 
   array (
     'id' => NULL,
-    'rating' => 0,
-    'createdon' => '0000-00-00 00:00:00',
-    'visitedon' => '0000-00-00 00:00:00',
+    'rating' => 0.0,
+    'createdon' => NULL,
+    'visitedon' => NULL,
     'tickets' => 0,
     'comments' => 0,
     'views' => 0,
-    'votes_tickets' => 0,
-    'votes_comments' => 0,
+    'votes_tickets' => 0.0,
+    'votes_comments' => 0.0,
     'stars_tickets' => 0,
     'stars_comments' => 0,
     'votes_tickets_up' => 0,
@@ -39,21 +39,19 @@ $xpdo_meta_map['TicketAuthor']= array (
       'precision' => '12,2',
       'phptype' => 'float',
       'null' => true,
-      'default' => 0,
+      'default' => 0.0,
     ),
     'createdon' => 
     array (
       'dbtype' => 'datetime',
       'phptype' => 'datetime',
       'null' => true,
-      'default' => '0000-00-00 00:00:00',
     ),
     'visitedon' => 
     array (
       'dbtype' => 'datetime',
       'phptype' => 'datetime',
       'null' => true,
-      'default' => '0000-00-00 00:00:00',
     ),
     'tickets' => 
     array (
@@ -88,7 +86,7 @@ $xpdo_meta_map['TicketAuthor']= array (
       'precision' => '12,2',
       'phptype' => 'float',
       'null' => true,
-      'default' => 0,
+      'default' => 0.0,
     ),
     'votes_comments' => 
     array (
@@ -96,7 +94,7 @@ $xpdo_meta_map['TicketAuthor']= array (
       'precision' => '12,2',
       'phptype' => 'float',
       'null' => true,
-      'default' => 0,
+      'default' => 0.0,
     ),
     'stars_tickets' => 
     array (

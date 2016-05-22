@@ -3,7 +3,7 @@
 /* define package */
 define('PKG_NAME','Tickets');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
-define('PKG_VERSION','1.6.16');
+define('PKG_VERSION','1.6.17');
 define('PKG_RELEASE','pl');
 define('PKG_AUTO_INSTALL', true);
 

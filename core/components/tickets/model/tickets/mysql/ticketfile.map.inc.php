@@ -15,7 +15,7 @@ $xpdo_meta_map['TicketFile']= array (
     'file' => NULL,
     'type' => NULL,
     'size' => 0,
-    'createdon' => '0000-00-00 00:00:00',
+    'createdon' => NULL,
     'createdby' => 0,
     'url' => NULL,
     'thumb' => NULL,
@@ -98,7 +98,6 @@ $xpdo_meta_map['TicketFile']= array (
       'dbtype' => 'datetime',
       'phptype' => 'datetime',
       'null' => true,
-      'default' => '0000-00-00 00:00:00',
     ),
     'createdby' => 
     array (

@@ -122,7 +122,7 @@
 
 	<object class="TicketVote" table="tickets_votes" extends="xPDOObject">
 		<field key="id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
-		<field key="class" dbtype="varchar" precision="100" phptype="string" index="pk" />
+		<field key="class" dbtype="varchar" precision="100" phptype="string" null="false" index="pk" />
 		<field key="owner" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="index" />
 		<field key="value" dbtype="tinyint" precision="1" phptype="integer" null="false" default="0" />
 
@@ -145,7 +145,7 @@
 
 	<object class="TicketStar" table="tickets_stars" extends="xPDOObject">
 		<field key="id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
-		<field key="class" dbtype="varchar" precision="100" phptype="string" default="Ticket" index="pk" />
+		<field key="class" dbtype="varchar" precision="100" phptype="string" null="false" default="Ticket" index="pk" />
 		<field key="owner" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="index" />
 
 		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" index="index" />
@@ -167,7 +167,7 @@
 	<object class="TicketView" table="tickets_views" extends="xPDOObject">
 		<field key="parent" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
 		<field key="uid" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" index="pk" />
-		<field key="guest_key" dbtype="char" precision="32" phptype="string" null="true" default="NULL" index="pk" />
+		<field key="guest_key" dbtype="char" precision="32" phptype="string" null="false" default="" index="pk" />
 		<field key="timestamp" dbtype="datetime" phptype="datetime" null="false" />
 
 		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true" type="BTREE">
@@ -208,7 +208,7 @@
 		<field key="type" dbtype="varchar" precision="50" phptype="string" null="true" />
 		<field key="size" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" default="0" />
 
-		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" default="0000-00-00 00:00:00" />
+		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="createdby" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" default="0" />
 
 		<field key="url" dbtype="varchar" precision="255" phptype="string" null="false" />
@@ -248,8 +248,8 @@
 		<field key="id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" index="pk" />
 		<field key="rating" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0" />
 
-		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" default="0000-00-00 00:00:00" />
-		<field key="visitedon" dbtype="datetime" phptype="datetime" null="true" default="0000-00-00 00:00:00" />
+		<field key="createdon" dbtype="datetime" phptype="datetime" null="true" />
+		<field key="visitedon" dbtype="datetime" phptype="datetime" null="true" />
 
 		<field key="tickets" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
 		<field key="comments" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="true" default="0" />
@@ -314,7 +314,7 @@
 		<field key="ticket" dbtype="int" precision="10" phptype="integer" null="false" default="0" />
 		<field key="section" dbtype="int" precision="10" phptype="integer" null="false" default="0" />
 		<field key="createdby" dbtype="int" precision="10" phptype="integer" null="false" default="0" index="pk" />
-		<field key="createdon" dbtype="datetime" phptype="datetime" null="false" default="0000-00-00 00:00:00" />
+		<field key="createdon" dbtype="datetime" phptype="datetime" null="false" />
 
 		<field key="year" dbtype="year" precision="4" phptype="integer" null="true" default="0000" />
 		<field key="month" dbtype="int" precision="2" phptype="integer" null="true" default="0" />

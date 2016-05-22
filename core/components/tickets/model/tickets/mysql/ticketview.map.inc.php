@@ -8,7 +8,7 @@ $xpdo_meta_map['TicketView']= array (
   array (
     'parent' => 0,
     'uid' => 0,
-    'guest_key' => NULL,
+    'guest_key' => '',
     'timestamp' => NULL,
   ),
   'fieldMeta' => 
@@ -38,8 +38,8 @@ $xpdo_meta_map['TicketView']= array (
       'dbtype' => 'char',
       'precision' => '32',
       'phptype' => 'string',
-      'null' => true,
-      'default' => NULL,
+      'null' => false,
+      'default' => '',
       'index' => 'pk',
     ),
     'timestamp' => 
