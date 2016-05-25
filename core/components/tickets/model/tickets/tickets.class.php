@@ -276,6 +276,7 @@ class Tickets {
 					$url = $this->modx->getOption('site_url');
 				}
 				$results['redirect'] = $url;
+				$results['id'] = $id;
 				break;
 			default:
 				$url = $this->modx->makeUrl($id, '', '', 'full');
