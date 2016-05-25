@@ -72,6 +72,7 @@ switch ($action) {
 
 	case 'ticket/file/upload': $response = $Tickets->fileUpload($_POST, 'Ticket'); break;
 	case 'ticket/file/delete': $response = $Tickets->fileDelete($_POST['id']); break;
+	case 'ticket/file/desc': $response = $Tickets->fileDesc($_POST['id'], $_POST['desc']); break;
 	default:
 		$message = $_REQUEST['action'] != $action ? 'tickets_err_register_globals' : 'tickets_err_unknown';
 		$response = $modx->toJSON(array('success' => false, 'message' => $modx->lexicon($message)));
