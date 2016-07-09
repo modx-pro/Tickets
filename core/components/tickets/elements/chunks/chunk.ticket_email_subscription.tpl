@@ -1,9 +1,9 @@
 [[%ticket_email_subscribed_intro?
-    &id=`[[+id]]`
-    &fullname=`[[+user.fullname]]`
-    &section=`[[+section.id]]`
-    &section_title=`[[+section.pagetitle]]`
-    &pagetitle=`[[+pagetitle]]`
+&id=`[[+id]]`
+&fullname=`[[+user.fullname]]`
+&section=`[[+section.id]]`
+&section_title=`[[+section.pagetitle]]`
+&pagetitle=`[[+pagetitle]]`
 ]]
 
 <pre style="background-color:#efefef;">[[+introtext]]</pre>

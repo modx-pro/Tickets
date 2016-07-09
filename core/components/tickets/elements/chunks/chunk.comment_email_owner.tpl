@@ -1,7 +1,7 @@
 [[%ticket_comment_email_owner_intro?
-    &name=`[[+name]]`
-    &resource=`[[+resource]]`
-    &pagetitle=`[[+pagetitle]]`
+&name=`[[+name]]`
+&resource=`[[+resource]]`
+&pagetitle=`[[+pagetitle]]`
 ]]
 
 <pre>[[+text]]</pre>

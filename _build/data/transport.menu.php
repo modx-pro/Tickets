@@ -3,49 +3,28 @@
 $menus = array();
 
 $tmp = array(
-	'tickets' => array(
-		'description' => 'ticket_menu_desc',
-		'action' => array(
-			'controller' => 'index',
-		),
-	),
+    'tickets' => array(
+        'description' => 'ticket_menu_desc',
+        'action' => 'home',
+        'icon' => '<i class="icon icon-large icon-comments-0"></i>',
+    ),
 );
 
-$i = 0;
+/** @var modx $modx */
 foreach ($tmp as $k => $v) {
-	$action = null;
-	if (!empty($v['action'])) {
-		/* @var modAction $action */
-		$action = $modx->newObject('modAction');
-		$action->fromArray(array_merge(array(
-			'namespace' => PKG_NAME_LOWER,
-			'id' => 0,
-			'parent' => 0,
-			'haslayout' => 1,
-			'lang_topics' => PKG_NAME_LOWER.':default',
-			'assets' => '',
-		), $v['action']), '', true, true);
-		unset($v['action']);
-	}
-
-	/* @var modMenu $menu */
-	$menu = $modx->newObject('modMenu');
-	$menu->fromArray(array_merge(array(
-		'text' => $k,
-		'parent' => 'components',
-		'icon' => 'images/icons/plugin.gif',
-		'menuindex' => $i,
-		'params' => '',
-		'handler' => '',
-		), $v), '', true, true);
-
-	if (!empty($action) && $action instanceof modAction) {
-		$menu->addOne($action);
-	}
-
-	$menus[] = $menu;
-	$i++;
+    /** @var modMenu $menu */
+    $menu = $modx->newObject('modMenu');
+    $menu->fromArray(array_merge(array(
+        'text' => $k,
+        'parent' => 'components',
+        'namespace' => PKG_NAME_LOWER,
+        'icon' => '',
+        'menuindex' => 0,
+        'params' => '',
+        'handler' => '',
+    ), $v), '', true, true);
+    $menus[] = $menu;
 }
+unset($menu);
 
-unset($action, $menu, $i);
 return $menus;

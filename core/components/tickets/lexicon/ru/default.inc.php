@@ -12,7 +12,7 @@ $_lang['authors'] = 'Авторы';
 $_lang['tickets_section'] = 'Раздел с тикетами';
 $_lang['ticket'] = 'Тикет';
 $_lang['ticket_all'] = 'Все';
-$_lang['ticket_menu_desc'] = 'Управление комментариями и не только.';
+$_lang['ticket_menu_desc'] = 'Управление комментариями и не только';
 $_lang['comments_all'] = 'Все комментарии';
 
 $_lang['tickets_section_create_here'] = 'Раздел с тикетами';

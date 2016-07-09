@@ -1,5 +1,11 @@
 Changelog for Tickets.
 
+1.7.0 pl
+==========
+- Requires MODX 2.3+
+- PSR-2
+- System setting "section_content_default" is now empty by default.
+
 1.6.17 pl
 ==========
 - Updated model for MySQL 5.7.

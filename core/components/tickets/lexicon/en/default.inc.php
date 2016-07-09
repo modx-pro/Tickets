@@ -12,7 +12,7 @@ $_lang['authors'] = 'Authors';
 $_lang['tickets_section'] = 'Section with tickets';
 $_lang['ticket'] = 'Ticket';
 $_lang['ticket_all'] = 'All tickets';
-$_lang['ticket_menu_desc'] = 'Comments management and more.';
+$_lang['ticket_menu_desc'] = 'Comments management and more';
 $_lang['comments_all'] = 'All comments';
 
 $_lang['tickets_section_create_here'] = 'Section with tickets';

@@ -12,16 +12,14 @@ $modx->setLogTarget('FILE');
 $modx->error->message = null;
 
 if ($modx->loadClass('TicketQueue')) {
+    $q = $modx->newQuery('TicketQueue');
+    $q->sortby('timestamp', 'ASC');
+    $queue = $modx->getCollection('TicketQueue', $q);
 
-	$q = $modx->newQuery('TicketQueue');
-	$q->sortby('timestamp', 'ASC');
-	$queue = $modx->getCollection('TicketQueue', $q);
-
-	/* @var TicketQueue $letter */
-	foreach ($queue as $letter) {
-		if ($letter->Send()) {
-			$letter->remove();
-		}
-	}
-
+    /** @var TicketQueue $letter */
+    foreach ($queue as $letter) {
+        if ($letter->Send()) {
+            $letter->remove();
+        }
+    }
 }
