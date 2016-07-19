@@ -265,7 +265,9 @@ class Tickets
 
         $id = $response->response['object']['id'];
         $message = '';
-        $results = array();
+        $results = array(
+            'id' => $id,
+        );
         switch ($data['action']) {
             case 'ticket/save':
                 $message = $this->modx->lexicon('ticket_saved');

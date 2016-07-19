@@ -5,6 +5,7 @@ Changelog for Tickets.
 - Requires MODX 2.3+
 - PSR-2
 - System setting "section_content_default" is now empty by default.
+- [#139] Added return of id of the saved ticket.
 
 1.6.17 pl
 ==========
