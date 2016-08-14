@@ -28,7 +28,7 @@ $xpdo_meta_map['Ticket']= array (
       'owner' => 'local',
       'criteria' => 
       array (
-        'local' => 
+        'foreign' => 
         array (
           'class' => 'Ticket',
         ),
@@ -43,7 +43,7 @@ $xpdo_meta_map['Ticket']= array (
       'owner' => 'local',
       'criteria' => 
       array (
-        'local' => 
+        'foreign' => 
         array (
           'class' => 'Ticket',
         ),
@@ -58,7 +58,22 @@ $xpdo_meta_map['Ticket']= array (
       'owner' => 'local',
       'criteria' => 
       array (
-        'local' => 
+        'foreign' => 
+        array (
+          'class' => 'Ticket',
+        ),
+      ),
+    ),
+    'Total' => 
+    array (
+      'class' => 'TicketTotal',
+      'local' => 'id',
+      'foreign' => 'id',
+      'cardinality' => 'one',
+      'owner' => 'local',
+      'criteria' => 
+      array (
+        'foreign' => 
         array (
           'class' => 'Ticket',
         ),

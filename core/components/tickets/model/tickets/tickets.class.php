@@ -777,19 +777,28 @@ class Tickets
             }
         }
         $node['has_parent'] = !empty($node['parent']);
-
-        // Handling rating
-        if (!$this->authenticated || $this->modx->user->id == $node['createdby']) {
-            $node['cant_vote'] = 1;
-        } elseif (array_key_exists('vote', $node)) {
-            if (empty($node['vote'])) {
-                $node['can_vote'] = 1;
-            } elseif ($node['vote'] > 0) {
-                $node['voted_plus'] = 1;
+        // Handle rating
+        if (isset($node['ratings']['days_comment_vote'])) {
+            if ($node['ratings']['days_comment_vote'] !== '') {
+                $max = strtotime($node['createdon']) + ((float)$node['ratings']['days_comment_vote'] * 86400);
+                if (time() > $max) {
+                    $node['cant_vote'] = 1;
+                }
+            }
+        }
+        if (!isset($node['cant_vote'])) {
+            if (!$this->authenticated || $this->modx->user->id == $node['createdby']) {
                 $node['cant_vote'] = 1;
-            } elseif ($node['vote'] < 0) {
-                $node['voted_minus'] = 1;
-                $node['cant_vote'] = 1;
+            } elseif (array_key_exists('vote', $node)) {
+                if (empty($node['vote'])) {
+                    $node['can_vote'] = 1;
+                } elseif ($node['vote'] > 0) {
+                    $node['voted_plus'] = 1;
+                    $node['cant_vote'] = 1;
+                } elseif ($node['vote'] < 0) {
+                    $node['voted_minus'] = 1;
+                    $node['cant_vote'] = 1;
+                }
             }
         }
         if ($node['rating'] > 0) {
@@ -805,14 +814,14 @@ class Tickets
             $node['bad'] = '';
         }
 
-        // Handling stars
+        // Handle stars
         if ($this->authenticated && array_key_exists('star', $node)) {
             $node['can_star'] = 1;
             $node['stared'] = !empty($node['star']);
             $node['unstared'] = empty($node['star']);
         }
 
-        // Checking comment novelty
+        // Check comment novelty
         if (isset($node['resource']) && $this->last_view === 0) {
             if ($this->authenticated && $view = $this->modx->getObject('TicketView',
                     array('parent' => $node['resource'], 'uid' => $this->modx->user->id))

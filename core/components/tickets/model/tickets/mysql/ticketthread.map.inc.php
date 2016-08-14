@@ -219,6 +219,21 @@ $xpdo_meta_map['TicketThread']= array (
       'cardinality' => 'many',
       'owner' => 'local',
     ),
+    'Total' => 
+    array (
+      'class' => 'TicketTotal',
+      'local' => 'id',
+      'foreign' => 'id',
+      'cardinality' => 'one',
+      'owner' => 'local',
+      'criteria' => 
+      array (
+        'foreign' => 
+        array (
+          'class' => 'TicketThread',
+        ),
+      ),
+    ),
   ),
   'aggregates' => 
   array (

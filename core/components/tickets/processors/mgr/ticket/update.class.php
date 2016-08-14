@@ -146,6 +146,20 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor
                 unset($properties['was_published']);
                 $this->object->set('properties', $properties);
                 $this->_sendEmails = true;
+
+                /** @var TicketsSection $section */
+                if ($section = $this->object->getOne('Section')) {
+                    $ratings = $section->getProperties('ratings');
+                    if (isset($ratings['min_ticket_create']) && $ratings['min_ticket_create'] !== '') {
+                        if ($profile = $this->modx->getObject('TicketAuthor', $this->object->get('createdby'))) {
+                            $min = (float)$ratings['min_ticket_create'];
+                            $rating = $profile->get('rating');
+                            if ($rating < $min) {
+                                return $this->modx->lexicon('ticket_err_rating_ticket', array('rating' => $min));
+                            }
+                        }
+                    }
+                }
             }
         }
         $this->object->set('editedby', $this->modx->user->get('id'));

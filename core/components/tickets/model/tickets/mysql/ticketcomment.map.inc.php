@@ -272,7 +272,22 @@ $xpdo_meta_map['TicketComment']= array (
       'owner' => 'local',
       'criteria' => 
       array (
-        'local' => 
+        'foreign' => 
+        array (
+          'class' => 'TicketComment',
+        ),
+      ),
+    ),
+    'Total' => 
+    array (
+      'class' => 'TicketTotal',
+      'local' => 'id',
+      'foreign' => 'id',
+      'cardinality' => 'one',
+      'owner' => 'local',
+      'criteria' => 
+      array (
+        'foreign' => 
         array (
           'class' => 'TicketComment',
         ),

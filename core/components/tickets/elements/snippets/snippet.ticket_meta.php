@@ -1,7 +1,8 @@
 <?php
 /** @var array $scriptProperties */
 /** @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
+$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null,
+        $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 $scriptProperties['nestedChunkPrefix'] = 'tickets_';
@@ -23,7 +24,19 @@ $class = $ticket instanceof Ticket
     : 'modResource';
 
 $data = $ticket->toArray();
-$vote = $pdoFetch->getObject('TicketVote', array('id' => $ticket->id, 'class' => 'Ticket', 'createdby' => $modx->user->id), array('select' => 'value', 'sortby' => 'id'));
+$data['date_ago'] = $Tickets->dateFormat($data['createdon']);
+
+$vote = $pdoFetch->getObject('TicketVote',
+    array(
+        'id' => $ticket->id,
+        'class' => 'Ticket',
+        'createdby' => $modx->user->id,
+    ),
+    array(
+        'select' => 'value',
+        'sortby' => 'id',
+    )
+);
 if (!empty($vote)) {
     $data['vote'] = $vote['value'];
 }
@@ -36,8 +49,7 @@ if ($class != 'Ticket') {
     // Rating
     if (!$modx->user->id || $modx->user->id == $ticket->createdby) {
         $data['voted'] = 0;
-    }
-    else {
+    } else {
         $q = $modx->newQuery('TicketVote');
         $q->where(array('id' => $ticket->id, 'createdby' => $modx->user->id, 'class' => 'Ticket'));
         $q->select('`value`');
@@ -48,15 +60,13 @@ if ($class != 'Ticket') {
             $voted = $q->stmt->fetchColumn();
             if ($voted > 0) {
                 $voted = 1;
-            }
-            elseif ($voted < 0) {
+            } elseif ($voted < 0) {
                 $voted = -1;
             }
             $data['voted'] = $voted;
         }
     }
     $data['can_vote'] = $data['voted'] === false && $Tickets->authenticated && $modx->user->id != $ticket->createdby;
-
     $data = array_merge($ticket->getProperties('tickets'), $data);
     if (!isset($data['rating'])) {
         $data['rating'] = $data['rating_total'] = $data['rating_plus'] = $data['rating_minus'] = 0;
@@ -71,7 +81,8 @@ if ($class != 'Ticket') {
         ? 'resource-' . $ticket->id
         : $thread;
     $q = $modx->newQuery('TicketThread', array('name' => $thread));
-    $q->leftJoin('TicketComment', 'TicketComment', "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1");
+    $q->leftJoin('TicketComment', 'TicketComment',
+        "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1");
     $q->select('COUNT(`TicketComment`.`id`) as `comments`');
     $tstart = microtime(true);
     if ($q->prepare() && $q->stmt->execute()) {
@@ -80,9 +91,6 @@ if ($class != 'Ticket') {
         $data['comments'] = (int)$q->stmt->fetchColumn();
     }
 
-    // Date ago
-    $data['date_ago'] = $Tickets->dateFormat($data['createdon']);
-
     // Stars
     $data['stars'] = $modx->getCount('TicketStar', array('id' => $ticket->id, 'class' => 'Ticket'));
 }
@@ -90,57 +98,62 @@ if ($class != 'Ticket') {
 if ($data['rating'] > 0) {
     $data['rating'] = '+' . $data['rating'];
     $data['rating_positive'] = 1;
-}
-elseif ($data['rating'] < 0) {
+} elseif ($data['rating'] < 0) {
     $data['rating_negative'] = 1;
 }
 
-if (!$Tickets->authenticated || $modx->user->id == $ticket->createdby) {
-    $data['cant_vote'] = 1;
+/** @var TicketsSection $section */
+if ($section = $modx->getObject('TicketsSection', $ticket->parent)) {
+    $data = array_merge($data, $section->toArray('section.'));
 }
-elseif (array_key_exists('vote', $data)) {
-    if ($data['vote'] == '') {
+if (isset($data['section.properties']['ratings']['days_ticket_vote'])) {
+    if ($data['section.properties']['ratings']['days_ticket_vote'] !== '') {
+        $max = strtotime($data['createdon']) + ((float)$data['section.properties']['ratings']['days_ticket_vote'] * 86400);
+        if (time() > $max) {
+            $data['cant_vote'] = 1;
+        }
+    }
+}
+if (!isset($data['cant_vote'])) {
+    if (!$Tickets->authenticated || $modx->user->id == $ticket->createdby) {
+        $data['cant_vote'] = 1;
+
+    } elseif (array_key_exists('vote', $data)) {
+        if ($data['vote'] == '') {
+            $data['can_vote'] = 1;
+        } elseif ($data['vote'] > 0) {
+            $data['voted_plus'] = 1;
+            $data['cant_vote'] = 1;
+        } elseif ($data['vote'] < 0) {
+            $data['voted_minus'] = 1;
+            $data['cant_vote'] = 1;
+        } else {
+            $data['voted_none'] = 1;
+            $data['cant_vote'] = 1;
+        }
+    } else {
         $data['can_vote'] = 1;
-    }
-    elseif ($data['vote'] > 0) {
-        $data['voted_plus'] = 1;
-        $data['cant_vote'] = 1;
-    }
-    elseif ($data['vote'] < 0) {
-        $data['voted_minus'] = 1;
-        $data['cant_vote'] = 1;
-    }
-    else {
-        $data['voted_none'] = 1;
-        $data['cant_vote'] = 1;
     }
 }
 
 $data['active'] = (int)!empty($data['can_vote']);
 $data['inactive'] = (int)!empty($data['cant_vote']);
-
 $data['can_star'] = $Tickets->authenticated;
 
-if (!empty($getSection)) {
-    $fields = $modx->getFieldMeta('modResource');
-    unset($fields['content']);
-    $section = $pdoFetch->getObject('modResource', $ticket->parent, array('select' => implode(',', array_keys($fields))));
-    foreach ($section as $k => $v) {
-        $data['section.' . $k] = $v;
-    }
-}
 if (!empty($getUser)) {
     $fields = $modx->getFieldMeta('modUserProfile');
     $user = $pdoFetch->getObject('modUserProfile', array('internalKey' => $ticket->createdby), array(
         'innerJoin' => array(
-            'modUser' => array('class' => 'modUser', 'on' => '`modUserProfile`.`internalKey` = `modUser`.`id`')
+            'modUser' => array('class' => 'modUser', 'on' => '`modUserProfile`.`internalKey` = `modUser`.`id`'),
         ),
         'select' => array(
             'modUserProfile' => implode(',', array_keys($fields)),
             'modUser' => 'username',
-        )
+        ),
     ));
-    $data = array_merge($data, $user);
+    if ($user) {
+        $data = array_merge($data, $user);
+    }
 }
 
 if (!empty($getFiles)) {

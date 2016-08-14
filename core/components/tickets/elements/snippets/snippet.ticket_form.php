@@ -1,7 +1,8 @@
 <?php
 /** @var array $scriptProperties */
 /** @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
+$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null,
+        $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 if (!$Tickets->authenticated) {
@@ -13,9 +14,11 @@ $tplFormCreate = $modx->getOption('tplFormCreate', $scriptProperties, 'tpl.Ticke
 $tplFormUpdate = $modx->getOption('tplFormUpdate', $scriptProperties, 'tpl.Tickets.form.update');
 $tplFiles = $modx->getOption('tplFiles', $scriptProperties, 'tpl.Tickets.form.files');
 $tplFile = $Tickets->config['tplFile'] = $modx->getOption('tplFile', $scriptProperties, 'tpl.Tickets.form.file', true);
-$tplImage = $Tickets->config['tplImage'] = $modx->getOption('tplImage', $scriptProperties, 'tpl.Tickets.form.image', true);
+$tplImage = $Tickets->config['tplImage'] = $modx->getOption('tplImage', $scriptProperties, 'tpl.Tickets.form.image',
+    true);
 if (empty($source)) {
-    $source = $Tickets->config['source'] = $modx->getOption('tickets.source_default', null, $modx->getOption('default_media_source'));
+    $source = $Tickets->config['source'] = $modx->getOption('tickets.source_default', null,
+        $modx->getOption('default_media_source'));
 }
 $tid = !empty($_REQUEST['tid'])
     ? (int)$_REQUEST['tid']
@@ -58,12 +61,10 @@ if (!empty($tid)) {
         if (empty($parent)) {
             $parent = $ticket->get('parent');
         }
-    }
-    else {
+    } else {
         return $modx->lexicon('ticket_err_id', array('id' => $tid));
     }
-}
-else {
+} else {
     $tplWrapper = $tplFormCreate;
 }
 
@@ -88,7 +89,7 @@ $response = $Tickets->runProcessor('web/section/getlist', array(
         : $modx->context->key,
     'limit' => 0,
 ));
-$response = json_decode($response->getResponse(, true));
+$response = json_decode($response->getResponse(), true);
 
 if (!empty($response['results'])) {
     $Tickets->config['sections'] = array();
@@ -115,8 +116,7 @@ if (!empty($allowFiles)) {
     foreach ($collection as $item) {
         if ($item->get('deleted') && !$item->get('parent')) {
             $item->remove();
-        }
-        else {
+        } else {
             $item = $item->toArray();
             $item['size'] = round($item['size'] / 1024, 2);
             $item['new'] = empty($item['parent']);
@@ -144,9 +144,10 @@ if (!empty($allowFiles)) {
                 : 1920,
             'extensions' => !empty($properties['allowedFileTypes'])
                 ? $properties['allowedFileTypes']
-                : 'jpg,jpeg,png,gif'
+                : 'jpg,jpeg,png,gif',
         );
-        $modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.source=' . json_encode($config) . ';</script>', true);
+        $modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.source=' . json_encode($config) . ';</script>',
+            true);
     }
     $modx->regClientScript($Tickets->config['jsUrl'] . 'web/lib/plupload/plupload.full.min.js');
     $modx->regClientScript($Tickets->config['jsUrl'] . 'web/files.js');
@@ -160,6 +161,7 @@ if (!empty($allowFiles)) {
 $output = $Tickets->getChunk($tplWrapper, $data);
 $key = md5(json_encode($Tickets->config));
 $_SESSION['TicketForm'][$key] = $Tickets->config;
-$output = str_ireplace('</form>', "\n<input type=\"hidden\" name=\"form_key\" value=\"{$key}\" class=\"disable-sisyphus\" />\n</form>", $output);
+$output = str_ireplace('</form>',
+    "\n<input type=\"hidden\" name=\"form_key\" value=\"{$key}\" class=\"disable-sisyphus\" />\n</form>", $output);
 
 return $output;

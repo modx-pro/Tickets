@@ -5,7 +5,6 @@ class TicketStarProcessor extends modObjectProcessor
     public $classKey = 'TicketStar';
     public $permission = 'ticket_star';
 
-
     /**
      * @return bool|null|string
      */
@@ -39,6 +38,14 @@ class TicketStarProcessor extends modObjectProcessor
 
         /** @var TicketStar $star */
         if ($star = $this->modx->getObject($this->classKey, $data)) {
+            $event = $this->modx->invokeEvent('OnBeforeTicketUnStar', array(
+                $this->objectType => &$star,
+                'object' => &$star,
+            ));
+            if (is_array($event) && !empty($event)) {
+                return $this->failure(implode("\n", $event));
+            }
+
             $star->remove();
 
             $this->modx->invokeEvent('OnTicketUnStar', array(
@@ -49,6 +56,14 @@ class TicketStarProcessor extends modObjectProcessor
             $star = $this->modx->newObject($this->classKey);
             $data['owner'] = $object->get('createdby');
             $data['createdon'] = date('Y-m-d H:i:s');
+
+            $event = $this->modx->invokeEvent('OnBeforeTicketStar', array(
+                $this->objectType => &$star,
+                'object' => &$star,
+            ));
+            if (is_array($event) && !empty($event)) {
+                return $this->failure(implode("\n", $event));
+            }
 
             $star->fromArray($data, '', true, true);
             $star->save();

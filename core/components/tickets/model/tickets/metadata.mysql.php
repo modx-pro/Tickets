@@ -20,6 +20,7 @@ $xpdo_meta_map = array (
     2 => 'TicketView',
     3 => 'TicketAuthor',
     4 => 'TicketAuthorAction',
+    5 => 'TicketTotal',
   ),
 );
 $this->map['modUser']['composites']['AuthorProfile'] = array(

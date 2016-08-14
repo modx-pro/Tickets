@@ -1,7 +1,8 @@
 <?php
 /** @var array $scriptProperties */
 /** @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
+$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null,
+        $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 /** @var pdoFetch $pdoFetch */
@@ -16,26 +17,24 @@ if (isset($parents) && $parents === '') {
 $class = 'Ticket';
 $where = array('class_key' => $class);
 
-//Filter by user
+// Filter by user
 if (!empty($user)) {
     $user = array_map('trim', explode(',', $user));
     $user_id = $user_username = array();
     foreach ($user as $v) {
         if (is_numeric($v)) {
             $user_id[] = $v;
-        }
-        else {
+        } else {
             $user_username[] = $v;
         }
     }
     if (!empty($user_id) && !empty($user_username)) {
-        $where[] = '(`User`.`id` IN (' . implode(',', $user_id) . ') OR `User`.`username` IN (\'' . implode('\',\'', $user_username) . '\'))';
-    }
-    else {
+        $where[] = '(`User`.`id` IN (' . implode(',', $user_id) . ') OR `User`.`username` IN (\'' . implode('\',\'',
+                $user_username) . '\'))';
+    } else {
         if (!empty($user_id)) {
             $where['User.id:IN'] = $user_id;
-        }
-        else {
+        } else {
             if (!empty($user_username)) {
                 $where['User.username:IN'] = $user_username;
             }
@@ -48,15 +47,20 @@ $leftJoin = array(
     'Section' => array('class' => 'TicketsSection', 'on' => '`Section`.`id` = `Ticket`.`parent`'),
     'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `Ticket`.`createdby`'),
     'Profile' => array('class' => 'modUserProfile', 'on' => '`Profile`.`internalKey` = `User`.`id`'),
+    'Total' => array('class' => 'TicketTotal'),
 );
 if ($Tickets->authenticated) {
     $leftJoin['Vote'] = array(
         'class' => 'TicketVote',
-        'on' => '`Vote`.`id` = `Ticket`.`id` AND `Vote`.`class` = "Ticket" AND `Vote`.`createdby` = ' . $modx->user->id
+        'on' => '`Vote`.`id` = `Ticket`.`id` AND `Vote`.`class` = "Ticket" AND `Vote`.`createdby` = ' . $modx->user->id,
     );
     $leftJoin['Star'] = array(
         'class' => 'TicketStar',
-        'on' => '`Star`.`id` = `Ticket`.`id` AND `Star`.`class` = "Ticket" AND `Star`.`createdby` = ' . $modx->user->id
+        'on' => '`Star`.`id` = `Ticket`.`id` AND `Star`.`class` = "Ticket" AND `Star`.`createdby` = ' . $modx->user->id,
+    );
+    $leftJoin['Thread'] = array(
+        'class' => 'TicketThread',
+        'on' => '`Thread`.`resource` = `Ticket`.`id` AND `Thread`.`deleted` = 0',
     );
 }
 
@@ -68,17 +72,22 @@ $select = array(
     'Ticket' => !empty($includeContent)
         ? $modx->getSelectColumns($class, $class)
         : $modx->getSelectColumns($class, $class, '', array('content'), true),
+    'Total' => 'comments, views, stars, rating, rating_plus, rating_minus',
 );
 if ($Tickets->authenticated) {
     $select['Vote'] = '`Vote`.`value` as `vote`';
     $select['Star'] = 'COUNT(`Star`.`id`) as `star`';
+    $select['Thread'] = '`Thread`.`id` as `thread`';
 }
 $pdoFetch->addTime('Conditions prepared');
 
 // Add custom parameters
 foreach (array('where', 'select', 'leftJoin') as $v) {
     if (!empty($scriptProperties[$v])) {
-        $tmp = json_decode($scriptProperties[$v], true);
+        $tmp = $scriptProperties[$v];
+        if (!is_array($tmp)) {
+            $tmp = json_decode($tmp, true);
+        }
         if (is_array($tmp)) {
             $$v = array_merge($$v, $tmp);
         }
@@ -108,7 +117,8 @@ $rows = $pdoFetch->run();
 if (!empty($returnIds)) {
     return $rows;
 }
-
+ini_set('error_reporting', -1);
+ini_set('display_errors', 1);
 // Processing rows
 $output = array();
 if (!empty($rows) && is_array($rows)) {
@@ -134,6 +144,7 @@ if (!empty($rows) && is_array($rows)) {
         }
 
         // Handle rating
+        /*
         $row['rating'] = $row['rating_total'] = array_key_exists('rating', $properties)
             ? $properties['rating']
             : 0;
@@ -143,64 +154,53 @@ if (!empty($rows) && is_array($rows)) {
         $row['rating_minus'] = array_key_exists('rating_minus', $properties)
             ? $properties['rating_minus']
             : 0;
+        */
         if ($row['rating'] > 0) {
             $row['rating'] = '+' . $row['rating'];
             $row['rating_positive'] = 1;
-        }
-        elseif ($row['rating'] < 0) {
+        } elseif ($row['rating'] < 0) {
             $row['rating_negative'] = 1;
         }
-
-        if (!$Tickets->authenticated || $modx->user->id == $row['createdby']) {
-            $row['cant_vote'] = 1;
-        }
-        elseif (array_key_exists('vote', $row)) {
-            if ($row['vote'] == '') {
-                $row['can_vote'] = 1;
-            }
-            elseif ($row['vote'] > 0) {
-                $row['voted_plus'] = 1;
-                $row['cant_vote'] = 1;
-            }
-            elseif ($row['vote'] < 0) {
-                $row['voted_minus'] = 1;
-                $row['cant_vote'] = 1;
-            }
-            else {
-                $row['voted_none'] = 1;
-                $row['cant_vote'] = 1;
+        // Handle rating
+        if (isset($row['section.properties']['ratings']['days_ticket_vote'])) {
+            if ($row['section.properties']['ratings']['days_ticket_vote'] !== '') {
+                $max = $row['createdon'] + ((float)$row['section.properties']['ratings']['days_ticket_vote'] * 86400);
+                if (time() > $max) {
+                    $row['cant_vote'] = 1;
+                }
             }
         }
+        if (!isset($row['cant_vote'])) {
+            if (!$Tickets->authenticated || $modx->user->id == $row['createdby']) {
+                $row['cant_vote'] = 1;
+            } elseif (array_key_exists('vote', $row)) {
+                if ($row['vote'] == '') {
+                    $row['can_vote'] = 1;
+                } elseif ($row['vote'] > 0) {
+                    $row['voted_plus'] = 1;
+                    $row['cant_vote'] = 1;
+                } elseif ($row['vote'] < 0) {
+                    $row['voted_minus'] = 1;
+                    $row['cant_vote'] = 1;
+                } else {
+                    $row['voted_none'] = 1;
+                    $row['cant_vote'] = 1;
+                }
+            }
+        }
+        // Special fields for quick placeholders
         $row['active'] = (int)!empty($row['can_vote']);
         $row['inactive'] = (int)!empty($row['cant_vote']);
-
         $row['can_star'] = $Tickets->authenticated;
         $row['stared'] = !empty($row['star']);
         $row['unstared'] = empty($row['star']);
-
-        // Adding fields to row
-        $additional_fields = $pdoFetch->getObject('Ticket', $row['id'], array(
-            'leftJoin' => array(
-                'View' => array('class' => 'TicketView', 'on' => '`Ticket`.`id` = `View`.`parent`'),
-                'Thread' => array('class' => 'TicketThread', 'on' => '`Thread`.`resource` = `Ticket`.`id`  AND `Thread`.`deleted` = 0'),
-            ),
-            'select' => array(
-                'View' => 'COUNT(`View`.`parent`) as `views`',
-                'Thread' => '`Thread`.`id` as `thread`',
-            ),
-            'groupby' => $class . '.id'
-        ));
-        $row = array_merge($row, $additional_fields);
-        $row['date_ago'] = $Tickets->dateFormat($row['createdon']);
-        $row['comments'] = $modx->getCount('TicketComment', array('published' => 1, 'thread' => $row['thread']));
-        $row['stars'] = $modx->getCount('TicketStar', array('id' => $row['id'], 'class' => 'Ticket'));
-        // Special fields for quick placeholders
         $row['isauthor'] = $modx->user->id == $row['createdby'];
         $row['unpublished'] = empty($row['published']);
 
+        $row['date_ago'] = $Tickets->dateFormat($row['createdon']);
         $row['idx'] = $pdoFetch->idx++;
         // Processing new comments
-        if ($Tickets->authenticated) {
+        if ($Tickets->authenticated && !empty($row['thread'])) {
             $last_view = $pdoFetch->getObject('TicketView', array(
                 'parent' => $row['id'],
                 'uid' => $modx->user->id,
@@ -216,12 +216,10 @@ if (!empty($rows) && is_array($rows)) {
                     'createdon:>' => $last_view['timestamp'],
                     'createdby:!=' => $modx->user->id,
                 ));
-            }
-            else {
+            } else {
                 $row['new_comments'] = $row['comments'];
             }
-        }
-        else {
+        } else {
             $row['new_comments'] = '';
         }
 
@@ -243,8 +241,7 @@ if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
 if (!empty($toSeparatePlaceholders)) {
     $output['log'] = $log;
     $modx->setPlaceholders($output, $toSeparatePlaceholders);
-}
-else {
+} else {
     if (empty($outputSeparator)) {
         $outputSeparator = "\n";
     }
@@ -263,8 +260,7 @@ else {
 
     if (!empty($toPlaceholder)) {
         $modx->setPlaceholder($toPlaceholder, $output);
-    }
-    else {
+    } else {
         return $output;
     }
 }

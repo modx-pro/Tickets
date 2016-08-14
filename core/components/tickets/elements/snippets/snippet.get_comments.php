@@ -1,7 +1,8 @@
 <?php
 /** @var array $scriptProperties */
 /** @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
+$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null,
+        $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 /** @var pdoFetch $pdoFetch */
@@ -20,7 +21,7 @@ if (!empty($parents) || !empty($resources) || !empty($threads)) {
             'Thread' => array(
                 'class' => 'TicketThread',
                 'on' => '`Ticket`.`id` = `Thread`.`resource`',
-            )
+            ),
         ),
         'groupby' => '`Ticket`.`id`',
         'select' => array('Thread' => '`Thread`.`id`'),
@@ -45,8 +46,7 @@ if (!empty($parents) || !empty($resources) || !empty($threads)) {
             }
             if ($v[0] == '-') {
                 $threads_out[] = abs($v);
-            }
-            else {
+            } else {
                 $threads_in[] = abs($v);
             }
         }
@@ -82,18 +82,16 @@ if (!empty($user)) {
     foreach ($user as $v) {
         if (is_numeric($v)) {
             $user_id[] = $v;
-        }
-        else {
+        } else {
             $user_username[] = $v;
         }
     }
     if (!empty($user_id) && !empty($user_username)) {
-        $where[] = '(`User`.`id` IN (' . implode(',', $user_id) . ') OR `User`.`username` IN (\'' . implode('\',\'', $user_username) . '\'))';
-    }
-    elseif (!empty($user_id)) {
+        $where[] = '(`User`.`id` IN (' . implode(',', $user_id) . ') OR `User`.`username` IN (\'' . implode('\',\'',
+                $user_username) . '\'))';
+    } elseif (!empty($user_id)) {
         $where['User.id:IN'] = $user_id;
-    }
-    elseif (!empty($user_username)) {
+    } elseif (!empty($user_username)) {
         $where['User.username:IN'] = $user_username;
     }
 }
@@ -111,8 +109,7 @@ if (!empty($comments)) {
         }
         if ($v[0] == '-') {
             $comments_out[] = abs($v);
-        }
-        else {
+        } else {
             $comments_in[] = abs($v);
         }
     }
@@ -128,8 +125,8 @@ if (!empty($comments)) {
 $innerJoin = array(
     'Thread' => array(
         'class' => 'TicketThread',
-        'on' => '`Thread`.`id` = `TicketComment`.`thread`'
-    )
+        'on' => '`Thread`.`id` = `TicketComment`.`thread`',
+    ),
 );
 $leftJoin = array(
     'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `TicketComment`.`createdby`'),
@@ -140,19 +137,21 @@ $leftJoin = array(
 if ($Tickets->authenticated) {
     $leftJoin['Vote'] = array(
         'class' => 'TicketVote',
-        'on' => '`Vote`.`id` = `TicketComment`.`id` AND `Vote`.`class` = "TicketComment" AND `Vote`.`createdby` = ' . $modx->user->id
+        'on' => '`Vote`.`id` = `TicketComment`.`id` AND `Vote`.`class` = "TicketComment" AND `Vote`.`createdby` = ' . $modx->user->id,
     );
     $leftJoin['Star'] = array(
         'class' => 'TicketStar',
-        'on' => '`Star`.`id` = `TicketComment`.`id` AND `Star`.`class` = "TicketComment" AND `Star`.`createdby` = ' . $modx->user->id
+        'on' => '`Star`.`id` = `TicketComment`.`id` AND `Star`.`class` = "TicketComment" AND `Star`.`createdby` = ' . $modx->user->id,
     );
 }
 // Fields to select
 $select = array(
-    'TicketComment' => $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true) . ', `rating` as `rating_total`',
+    'TicketComment' => $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'),
+            true) . ', `rating` as `rating_total`',
     'Thread' => '`Thread`.`resource`',
     'User' => '`User`.`username`',
-    'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id', 'email'), true) . ',`Profile`.`email` as `user_email`',
+    'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id', 'email'),
+            true) . ',`Profile`.`email` as `user_email`',
     'Ticket' => !empty($includeContent)
         ? $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.')
         : $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.', array('content'), true),
@@ -168,7 +167,10 @@ if ($Tickets->authenticated) {
 // Add custom parameters
 foreach (array('where', 'select', 'leftJoin', 'innerJoin') as $v) {
     if (!empty($scriptProperties[$v])) {
-        $tmp = json_decode($scriptProperties[$v], true);
+        $tmp = $scriptProperties[$v];
+        if (!is_array($tmp)) {
+            $tmp = json_decode($tmp, true);
+        }
         if (is_array($tmp)) {
             $$v = array_merge($$v, $tmp);
         }
@@ -200,6 +202,9 @@ $output = array();
 if (!empty($rows)) {
     foreach ($rows as $row) {
         $row['comments'] = $modx->getCount('TicketComment', array('published' => 1, 'thread' => $row['thread']));;
+        $row['ratings'] = !empty($row['section.properties']['ratings'])
+            ? $row['section.properties']['ratings']
+            : array();
         $output[] = $Tickets->templateNode($row, $tpl);
     }
 }
@@ -215,8 +220,7 @@ if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
 if (!empty($toSeparatePlaceholders)) {
     $output['log'] = $log;
     $modx->setPlaceholders($output, $toSeparatePlaceholders);
-}
-else {
+} else {
     $output .= $log;
 
     if (!empty($tplWrapper) && (!empty($wrapIfEmpty) || !empty($output))) {
@@ -225,8 +229,7 @@ else {
 
     if (!empty($toPlaceholder)) {
         $modx->setPlaceholder($toPlaceholder, $output);
-    }
-    else {
+    } else {
         return $output;
     }
 }

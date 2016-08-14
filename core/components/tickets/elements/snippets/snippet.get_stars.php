@@ -25,11 +25,17 @@ if (empty($ids)) {
 }
 
 $where = array($class . '.id:IN' => $ids);
-if (!empty($scriptProperties['where'])) {
-    $tmp = json_decode($scriptProperties['where'], true);
-    if (is_array($tmp)) {
-        $where = array_merge($where, $tmp);
+foreach (array('where') as $v) {
+    if (!empty($scriptProperties[$v])) {
+        $tmp = $scriptProperties[$v];
+        if (!is_array($tmp)) {
+            $tmp = json_decode($tmp, true);
+        }
+        if (is_array($tmp)) {
+            $$v = array_merge($$v, $tmp);
+        }
     }
+    unset($scriptProperties[$v]);
 }
 $scriptProperties['where'] = json_encode($where);
 if (empty($parents)) {

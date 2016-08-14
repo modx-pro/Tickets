@@ -1,7 +1,8 @@
 <?php
 /** @var array $scriptProperties */
 if (empty($thread)) {
-    $scriptProperties['thread'] = $modx->getOption('thread', $scriptProperties, 'resource-' . $modx->resource->id, true);
+    $scriptProperties['thread'] = $modx->getOption('thread', $scriptProperties, 'resource-' . $modx->resource->id,
+        true);
 }
 $scriptProperties['resource'] = $modx->resource->get('id');
 $scriptProperties['snippetPrepareComment'] = $modx->getOption('tickets.snippet_prepare_comment');
@@ -17,7 +18,8 @@ $tplLoginToComment = $modx->getOption('tplLoginToComment', $scriptProperties, 't
 $outputSeparator = $modx->getOption('outputSeparator', $scriptProperties, "\n");
 
 /** @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
+$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null,
+        $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 /** @var pdoFetch $pdoFetch */
@@ -36,8 +38,7 @@ if (!$thread = $modx->getObject('TicketThread', array('name' => $scriptPropertie
         'createdon' => date('Y-m-d H:i:s'),
         'subscribers' => array($modx->resource->get('createdby')),
     ));
-}
-elseif ($thread->get('deleted')) {
+} elseif ($thread->get('deleted')) {
     return $modx->lexicon('ticket_thread_err_deleted');
 }
 // Prepare session for guests
@@ -53,6 +54,15 @@ $thread->set('resource', $modx->resource->get('id'));
 $thread->set('properties', $scriptProperties);
 $thread->save();
 
+$ratings = array();
+/** @var Ticket $ticket */
+if ($ticket = $thread->getOne('Ticket')) {
+    /** @var TicketsSection $section */
+    if ($section = $ticket->getOne('Section')) {
+        $ratings = $section->getProperties('ratings');
+    }
+}
+
 // Prepare query to db
 $class = 'TicketComment';
 $where = array();
@@ -64,8 +74,8 @@ if (empty($showUnpublished)) {
 $innerJoin = array(
     'Thread' => array(
         'class' => 'TicketThread',
-        'on' => '`Thread`.`id` = `TicketComment`.`thread` AND `Thread`.`name` = "' . $thread->get('name') . '"'
-    )
+        'on' => '`Thread`.`id` = `TicketComment`.`thread` AND `Thread`.`name` = "' . $thread->get('name') . '"',
+    ),
 );
 $leftJoin = array(
     'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `TicketComment`.`createdby`'),
@@ -74,19 +84,21 @@ $leftJoin = array(
 if ($Tickets->authenticated) {
     $leftJoin['Vote'] = array(
         'class' => 'TicketVote',
-        'on' => '`Vote`.`id` = `TicketComment`.`id` AND `Vote`.`class` = "TicketComment" AND `Vote`.`createdby` = ' . $modx->user->id
+        'on' => '`Vote`.`id` = `TicketComment`.`id` AND `Vote`.`class` = "TicketComment" AND `Vote`.`createdby` = ' . $modx->user->id,
     );
     $leftJoin['Star'] = array(
         'class' => 'TicketStar',
-        'on' => '`Star`.`id` = `TicketComment`.`id` AND `Star`.`class` = "TicketComment" AND `Star`.`createdby` = ' . $modx->user->id
+        'on' => '`Star`.`id` = `TicketComment`.`id` AND `Star`.`class` = "TicketComment" AND `Star`.`createdby` = ' . $modx->user->id,
     );
 }
 // Fields to select
 $select = array(
-    'TicketComment' => $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true) . ', `parent` as `new_parent`, `rating` as `rating_total`',
+    'TicketComment' => $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'),
+            true) . ', `parent` as `new_parent`, `rating` as `rating_total`',
     'Thread' => '`Thread`.`resource`',
     'User' => '`User`.`username`',
-    'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id', 'email'), true) . ',`Profile`.`email` as `user_email`',
+    'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id', 'email'),
+            true) . ',`Profile`.`email` as `user_email`',
 );
 if ($Tickets->authenticated) {
     $select['Vote'] = '`Vote`.`value` as `vote`';
@@ -96,7 +108,10 @@ if ($Tickets->authenticated) {
 // Add custom parameters
 foreach (array('where', 'select', 'leftJoin', 'innerJoin') as $v) {
     if (!empty($scriptProperties[$v])) {
-        $tmp = json_decode($scriptProperties[$v], true);
+        $tmp = $scriptProperties[$v];
+        if (!is_array($tmp)) {
+            $tmp = json_decode($tmp, true);
+        }
         if (is_array($tmp)) {
             $$v = array_merge($$v, $tmp);
         }
@@ -131,6 +146,7 @@ if (!empty($rows) && is_array($rows)) {
     $tmp = array();
     $i = 1;
     foreach ($rows as $row) {
+        $row['ratings'] = $ratings;
         $row['idx'] = $i++;
         $tmp[$row['id']] = $row;
     }
@@ -161,8 +177,7 @@ $commentsThread = $pdoFetch->getChunk($tplComments, array(
 $pls = array('thread' => $scriptProperties['thread']);
 if (!$Tickets->authenticated && empty($allowGuest)) {
     $form = $pdoFetch->getChunk($tplLoginToComment);
-}
-elseif (!$Tickets->authenticated) {
+} elseif (!$Tickets->authenticated) {
     $pls['name'] = $_SESSION['TicketComments']['name'];
     $pls['email'] = $_SESSION['TicketComments']['email'];
     if (!empty($enableCaptcha)) {
@@ -170,8 +185,7 @@ elseif (!$Tickets->authenticated) {
         $pls['captcha'] = $modx->lexicon('ticket_comment_captcha', $tmp);
     }
     $form = $pdoFetch->getChunk($tplCommentFormGuest, $pls);
-}
-else {
+} else {
     $form = $pdoFetch->getChunk($tplCommentForm, $pls);
 }
 
@@ -186,12 +200,12 @@ if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
     $output .= '<pre class="CommentsLog">' . print_r($pdoFetch->getTime(), 1) . '</pre>';
 }
 
-$modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.formBefore = ' . (int)!empty($formBefore) . ';TicketsConfig.thread_depth = ' . (int)$depth . ';</script>', true);
+$modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.formBefore = ' . (int)!empty($formBefore) . ';TicketsConfig.thread_depth = ' . (int)$depth . ';</script>',
+    true);
 
 // Return output
 if (!empty($toPlaceholder)) {
     $modx->setPlaceholder($toPlaceholder, $output);
-}
-else {
+} else {
     return $output;
 }

@@ -7,6 +7,7 @@ class TicketVoteProcessor extends modObjectCreateProcessor
     public $objectType = 'TicketVote';
     public $classKey = 'TicketVote';
     public $languageTopics = array('tickets:default');
+    public $beforeSaveEvent = 'OnBeforeTicketVote';
     public $afterSaveEvent = 'OnTicketVote';
     public $permission = 'ticket_vote';
     /** @var Ticket|modResource $ticket */
@@ -42,6 +43,17 @@ class TicketVoteProcessor extends modObjectCreateProcessor
      */
     public function beforeSave()
     {
+        /** @var TicketsSection $section */
+        if ($section = $this->ticket->getOne('Section')) {
+            $ratings = $section->getProperties('ratings');
+            if (isset($ratings['days_ticket_vote']) && $ratings['days_ticket_vote'] !== '') {
+                $max = strtotime($this->ticket->get('createdon')) + ((float)$ratings['days_ticket_vote'] * 86400);
+                if (time() > $max) {
+                    return $this->modx->lexicon('ticket_err_vote_ticket_days');
+                }
+            }
+        }
+
         $this->modx->getRequest();
         $ip = $this->modx->request->getClientIp();
 
@@ -72,7 +84,7 @@ class TicketVoteProcessor extends modObjectCreateProcessor
     public function cleanup()
     {
         if ($this->ticket instanceof Ticket) {
-            $rating = $this->ticket->updateRating();
+            $rating = $this->ticket->getRating();
         } else {
             $rating = array('rating' => 0, 'rating_plus' => 0, 'rating_minus' => 0);
 

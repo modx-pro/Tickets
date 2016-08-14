@@ -110,6 +110,35 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor
 
 
     /**
+     * @return bool|null|string
+     */
+    public function beforeSave()
+    {
+        /** @var TicketThread $thread */
+        if ($thread = $this->object->getOne('Thread')) {
+            /** @var Ticket $ticket */
+            if ($ticket = $thread->getOne('Ticket')) {
+                /** @var TicketsSection $section */
+                if ($section = $ticket->getOne('Section')) {
+                    $ratings = $section->getProperties('ratings');
+                    if (isset($ratings['min_comment_create']) && $ratings['min_comment_create'] !== '') {
+                        if ($profile = $this->modx->getObject('TicketAuthor', $this->object->get('createdby'))) {
+                            $min = (float)$ratings['min_comment_create'];
+                            $rating = $profile->get('rating');
+                            if ($rating < $min) {
+                                return $this->modx->lexicon('ticket_err_rating_comment', array('rating' => $min));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+    /**
      * @return bool
      */
     public function afterSave()

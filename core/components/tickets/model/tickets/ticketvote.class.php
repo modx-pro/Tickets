@@ -36,7 +36,7 @@ class TicketVote extends xPDOObject
                 $multiplier = $this->get('value');
                 /** @var TicketAuthor $profile */
                 if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('owner'))) {
-                    $profile->addAction($type, $this->id, $ticket_id, $multiplier);
+                    $profile->addAction($type, $this->id, $ticket_id, $this->get('createdby'), $multiplier);
                 }
             }
         }

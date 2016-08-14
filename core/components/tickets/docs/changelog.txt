@@ -6,6 +6,11 @@ Changelog for Tickets.
 - PSR-2
 - System setting "section_content_default" is now empty by default.
 - [#139] Added return of id of the saved ticket.
+- Added new plugin events: OnBeforeTicketVote, OnBeforeCommentVote, OnBeforeTicketStar, OnBeforeTicketUnStar, OnBeforeCommentStar and OnBeforeCommentUnStar.
+- Ability to limit the number of days to vote for a tickets and comments in a sections.
+- Ability to require the minimum rating to create a tickets and comments in a section.
+- New object "TicketTotal" that stores total values of sections and tickets: rating, comments, views, etc.
+- Improved the speed of processing sections with a big number of tickets and comments.
 
 1.6.17 pl
 ==========

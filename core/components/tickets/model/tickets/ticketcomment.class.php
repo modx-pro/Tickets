@@ -131,25 +131,24 @@ class TicketComment extends xPDOSimpleObject
      */
     public function updateRating()
     {
-        $votes = array('rating' => 0, 'rating_plus' => 0, 'rating_minus' => 0);
+        $rating = array('rating' => 0, 'rating_plus' => 0, 'rating_minus' => 0);
 
         $q = $this->xpdo->newQuery('TicketVote', array('id' => $this->id, 'class' => 'TicketComment'));
-        $q->innerJoin('modUser', 'modUser', '`modUser`.`id` = `TicketVote`.`createdby`');
         $q->select('value');
         if ($q->prepare() && $q->stmt->execute()) {
             while ($value = $q->stmt->fetch(PDO::FETCH_COLUMN)) {
-                $votes['rating'] += $value;
+                $rating['rating'] += $value;
                 if ($value > 0) {
-                    $votes['rating_plus'] += $value;
+                    $rating['rating_plus'] += $value;
                 } else {
-                    $votes['rating_minus'] += $value;
+                    $rating['rating_minus'] += $value;
                 }
             }
-            $this->fromArray($votes);
+            $this->fromArray($rating);
             $this->save();
         }
 
-        return $votes;
+        return $rating;
     }
 
 
@@ -171,12 +170,12 @@ class TicketComment extends xPDOSimpleObject
         /** @var TicketAuthor $profile */
         if ($profile = $this->xpdo->getObject('TicketAuthor', $this->get('createdby'))) {
             if ($action && $enabled) {
-                $profile->addAction('comment', $this->id, $thread->get('resource'));
+                $profile->addAction('comment', $this->id, $thread->get('resource'), $this->get('createdby'));
             } elseif (!$enabled) {
                 $profile->removeAction('comment', $this->id, $this->get('createdby'));
             } elseif ($new_parent) {
                 $profile->removeAction('comment', $this->id, $this->get('createdby'));
-                $profile->addAction('comment', $this->id, $thread->get('resource'));
+                $profile->addAction('comment', $this->id, $thread->get('resource'), $this->get('createdby'));
             }
         }
 

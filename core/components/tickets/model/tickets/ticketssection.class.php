@@ -21,10 +21,6 @@ class TicketsSection extends modResource
         parent:: __construct($xpdo);
 
         $this->set('class_key', 'TicketsSection');
-        $this->set('comments', 0);
-        $this->set('views', 0);
-        $this->set('votes', 0);
-        $this->set('tickets', 0);
     }
 
 
@@ -119,6 +115,12 @@ class TicketsSection extends modResource
         } elseif (is_string($k) && $k == 'properties' && empty($this->_oldRatings)) {
             if ($properties = parent::get('properties')) {
                 if (!empty($properties['ratings'])) {
+                    unset(
+                        $properties['ratings']['min_ticket_create'],
+                        $properties['ratings']['min_comment_create'],
+                        $properties['ratings']['days_ticket_vote'],
+                        $properties['ratings']['days_comment_vote']
+                    );
                     $this->_oldRatings = implode(array_values($properties['ratings']));
                 }
             }
@@ -135,25 +137,36 @@ class TicketsSection extends modResource
      *
      * @return int|mixed
      */
-    public function get($k, $format = null, $formatTemplate = null) {
-        $fields = array('comments', 'views', 'votes', 'tickets');
+    public function get($k, $format = null, $formatTemplate = null)
+    {
         if (is_array($k)) {
-            $k = array_merge($k, $fields);
-            $value = parent::get($k, $format, $formatTemplate);
-        }
-        else {
+            $values = array();
+            foreach ($k as $v) {
+                $values[$v] = $this->get($v, $format, $formatTemplate);
+            }
+
+            return $values;
+        } else {
             switch ($k) {
                 case 'comments':
-                    $value = $this->getCommentsCount();
+                    $values = $this->_getVirtualFields();
+                    $value = $values['comments'];
                     break;
                 case 'views':
-                    $value = $this->getViewsCount();
+                    $values = $this->_getVirtualFields();
+                    $value = $values['views'];
                     break;
-                case 'votes':
-                    $value = $this->getVotesSum();
+                case 'stars':
+                    $values = $this->_getVirtualFields();
+                    $value = $values['stars'];
+                    break;
+                case 'rating':
+                    $values = $this->_getVirtualFields();
+                    $value = $values['rating'];
                     break;
                 case 'tickets':
-                    $value = $this->getTicketsCount();
+                    $values = $this->_getVirtualFields();
+                    $value = $values['tickets'];
                     break;
                 default:
                     $value = parent::get($k, $format, $formatTemplate);
@@ -163,6 +176,7 @@ class TicketsSection extends modResource
         return $value;
     }
 
+
     /**
      * @param string $keyPrefix
      * @param bool $rawValues
@@ -171,10 +185,19 @@ class TicketsSection extends modResource
      *
      * @return array
      */
-    public function toArray($keyPrefix = '', $rawValues = false, $excludeLazy = false, $includeRelated = false) {
+    public function toArray($keyPrefix = '', $rawValues = false, $excludeLazy = false, $includeRelated = false)
+    {
+        $fields = $this->_getVirtualFields();
+        if (!empty($keyPrefix)) {
+            foreach ($fields as $k => $v) {
+                $fields[$keyPrefix . $k] = $v;
+                unset($fields[$k]);
+            }
+        }
+
         $array = array_merge(
             parent::toArray($keyPrefix, $rawValues, $excludeLazy, $includeRelated),
-            $this->getVirtualFields()
+            $fields
         );
 
         return $array;
@@ -186,7 +209,8 @@ class TicketsSection extends modResource
      *
      * @return string
      */
-    public function getContent(array $options = array()) {
+    public function getContent(array $options = array())
+    {
         $content = parent::getContent($options);
 
         return $content;
@@ -194,55 +218,103 @@ class TicketsSection extends modResource
 
 
     /**
-     * Clearing cache of this resource
+     * Shorthand for get virtual Ticket fields
      *
-     * @param string $context Key of context for clearing
-     *
-     * @return void
+     * @return array
      */
-    public function clearCache($context = null)
+    protected function _getVirtualFields()
     {
-        if (empty($context)) {
-            $context = $this->context_key;
+        /** @var TicketTotal $total */
+        if (!$total = $this->getOne('Total')) {
+            $total = $this->xpdo->newObject('TicketTotal');
+            $total->fromArray(array(
+                'id' => $this->id,
+                'class' => 'TicketsSection',
+            ), '', true, true);
+            $total->fetchValues();
+            $total->save();
         }
-        $this->_contextKey = $context;
 
-        /** @var xPDOFileCache $cache */
-        $cache = $this->xpdo->cacheManager->getCacheProvider($this->xpdo->getOption('cache_resource_key', null,
-            'resource'));
-        $key = $this->getCacheKey();
-        $cache->delete($key, array('deleteTop' => true));
-        $cache->delete($key);
+        return $total->get(array(
+            'comments',
+            'views',
+            'tickets',
+            'stars',
+            'rating',
+            'rating_plus',
+            'rating_minus',
+        ));
     }
 
 
     /**
-     * Shorthand for getting virtual Ticket fields
+     * Get rating
      *
-     * @return array $array Array with virtual fields
+     * @return array
      */
-    function getVirtualFields()
+    public function getRating()
     {
-        $array = array(
-            'comments' => $this->getCommentsCount(),
-            'views' => $this->getViewsCount(),
-            'tickets' => $this->getTicketsCount(),
-        );
+        $rating = array('rating' => 0, 'rating_plus' => 0, 'rating_minus' => 0);
 
-        return $array;
+        $q = $this->xpdo->newQuery('TicketVote');
+        $q->innerJoin('Ticket', 'Ticket', 'Ticket.id = TicketVote.id');
+        $q->innerJoin('TicketsSection', 'Section', 'Section.id = Ticket.parent');
+        $q->where(array(
+            'class' => 'Ticket',
+            'Section.id' => $this->id,
+            'Ticket.deleted' => 0,
+            'Ticket.published' => 1,
+        ));
+        $q->select('value');
+        $tstart = microtime(true);
+        if ($q->prepare() && $q->stmt->execute()) {
+            $this->xpdo->startTime += microtime(true) - $tstart;
+            $this->xpdo->executedQueries++;
+            $rows = $q->stmt->fetchAll(PDO::FETCH_COLUMN);
+            foreach ($rows as $value) {
+                $rating['rating'] += $value;
+                if ($value > 0) {
+                    $rating['rating_plus'] += $value;
+                } elseif ($value < 0) {
+                    $rating['rating_minus'] += abs($value);
+                }
+            }
+        }
+
+        return $rating;
     }
 
 
     /**
-     * Returns count of views of Tickets by users in this Section
+     * Returns the number of views of Tickets in this Section
      *
      * @return integer $count Total count of views
      */
     public function getViewsCount()
     {
         $q = $this->xpdo->newQuery('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
-        $q->leftJoin('TicketView', 'TicketView', "`TicketView`.`parent` = `Ticket`.`id`");
-        $q->select('COUNT(`TicketView`.`parent`) as `views`');
+        $q->leftJoin('TicketView', 'Views');
+        $q->select('COUNT(Views.parent) as views');
+
+        $count = 0;
+        if ($q->prepare() && $q->stmt->execute()) {
+            $count = (int)$q->stmt->fetch(PDO::FETCH_COLUMN);
+        }
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of stars for Tickets in this Section
+     *
+     * @return integer
+     */
+    public function getStarsCount()
+    {
+        $q = $this->xpdo->newQuery('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
+        $q->leftJoin('TicketStar', 'Stars');
+        $q->select('COUNT(Stars.owner) as views');
 
         $count = 0;
         if ($q->prepare() && $q->stmt->execute()) {
@@ -271,27 +343,6 @@ class TicketsSection extends modResource
         }
 
         return $count;
-    }
-
-
-    /**
-     * Returns sum of votes to Tickets by users in this Section
-     *
-     * @return integer $count Total sum of votes
-     */
-    public function getVotesSum()
-    {
-        $q = $this->xpdo->newQuery('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
-        $q->leftJoin('TicketVote', 'TicketVote',
-            "`TicketVote`.`id` = `Ticket`.`id` AND `TicketVote`.`class` = 'Ticket'");
-        $q->select('SUM(`TicketVote`.`value`) as `votes`');
-
-        $sum = 0;
-        if ($q->prepare() && $q->stmt->execute()) {
-            $sum = (int)$q->stmt->fetch(PDO::FETCH_COLUMN);
-        }
-
-        return $sum;
     }
 
 
@@ -403,7 +454,8 @@ class TicketsSection extends modResource
                 'uri' => '%id-%alias%ext',
                 'show_in_tree' => $this->xpdo->context->getOption('tickets.ticket_show_in_tree_default', false),
                 'hidemenu' => $this->xpdo->context->getOption('tickets.ticket_hidemenu_force',
-                    $this->xpdo->context->getOption('hidemenu_default')),
+                    $this->xpdo->context->getOption('hidemenu_default')
+                ),
                 'disable_jevix' => $this->xpdo->context->getOption('tickets.disable_jevix_default', false),
                 'process_tags' => $this->xpdo->context->getOption('tickets.process_tags_default', false),
             );
@@ -438,6 +490,10 @@ class TicketsSection extends modResource
                 'vote_comment' => $this->xpdo->context->getOption('tickets.rating_vote_comment_default', 0.2),
                 'star_ticket' => $this->xpdo->context->getOption('tickets.rating_star_ticket_default', 3),
                 'star_comment' => $this->xpdo->context->getOption('tickets.rating_star_comment_default', 0.6),
+                'min_ticket_create' => '',
+                'min_comment_create' => '',
+                'days_ticket_vote' => '',
+                'days_comment_vote' => '',
             );
 
             foreach ($default_properties as $key => $value) {
@@ -462,6 +518,12 @@ class TicketsSection extends modResource
         $update_actions = false;
         if ($properties = parent::get('properties')) {
             if (!empty($properties['ratings'])) {
+                unset(
+                    $properties['ratings']['min_ticket_create'],
+                    $properties['ratings']['min_comment_create'],
+                    $properties['ratings']['days_ticket_vote'],
+                    $properties['ratings']['days_comment_vote']
+                );
                 $ratings = implode(array_values($properties['ratings']));
                 $update_actions = !empty($this->_oldRatings) && $this->_oldRatings != $ratings;
             }

@@ -7,6 +7,7 @@ class TicketCommentVoteProcessor extends modObjectCreateProcessor
     public $objectType = 'TicketVote';
     public $classKey = 'TicketVote';
     public $languageTopics = array('tickets:default');
+    public $beforeSaveEvent = 'OnBeforeCommentVote';
     public $afterSaveEvent = 'OnCommentVote';
     public $permission = 'comment_vote';
     /** @var TicketComment $comment */
@@ -41,6 +42,23 @@ class TicketCommentVoteProcessor extends modObjectCreateProcessor
      */
     public function beforeSave()
     {
+        /** @var TicketThread $thread */
+        if ($thread = $this->comment->getOne('Thread')) {
+            /** @var Ticket $ticket */
+            if ($ticket = $thread->getOne('Ticket')) {
+                /** @var TicketsSection $section */
+                if ($section = $ticket->getOne('Section')) {
+                    $ratings = $section->getProperties('ratings');
+                    if (isset($ratings['days_comment_vote']) && $ratings['days_comment_vote'] !== '') {
+                        $max = strtotime($this->comment->get('createdon')) + ((float)$ratings['days_comment_vote'] * 86400);
+                        if (time() > $max) {
+                            return $this->modx->lexicon('ticket_err_vote_comment_days');
+                        }
+                    }
+                }
+            }
+        }
+
         $this->modx->getRequest();
         $ip = $this->modx->request->getClientIp();
 

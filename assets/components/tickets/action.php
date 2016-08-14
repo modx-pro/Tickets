@@ -31,10 +31,10 @@ if (!empty($_REQUEST['thread']) && $thread = $modx->getObject('TicketThread', ar
 $context = 'web';
 if (!empty($thread) && $thread->get('resource') && $resource = $thread->getOne('Resource')) {
     $context = $resource->get('context_key');
-} elseif (!empty($_REQUEST['parent']) && $resource = $modx->getObject('modResource', $_REQUEST['parent'])) {
+} elseif (!empty($_REQUEST['parent']) && $resource = $modx->getObject('modResource', (int)$_REQUEST['parent'])) {
     $context = $resource->get('context_key');
-} elseif (!empty($_REQUEST['ctx']) && $modx->getCount('modContext', $_REQUEST['ctx'])) {
-    $context = $_REQUEST['ctx'];
+} elseif (!empty($_REQUEST['ctx']) && $modx->getCount('modContext', preg_replace('#[^\w]#', '', $_REQUEST['ctx']))) {
+    $context = preg_replace('#[^\w]#', '', $_REQUEST['ctx']);
 }
 if ($context != 'web') {
     $modx->switchContext($context);
@@ -43,7 +43,8 @@ if ($context != 'web') {
 /** @var Tickets $Tickets */
 define('MODX_ACTION_MODE', true);
 $Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null,
-        $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $properties);
+        $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $properties
+);
 if ($modx->error->hasError() || !($Tickets instanceof Tickets)) {
     die('Error');
 }

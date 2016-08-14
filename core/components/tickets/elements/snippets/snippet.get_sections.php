@@ -1,7 +1,8 @@
 <?php
 /** @var array $scriptProperties */
 /** @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null, $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
+$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null,
+        $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 /** @var pdoFetch $pdoFetch */
@@ -16,21 +17,24 @@ if (isset($parents) && $parents === '') {
 $class = 'TicketsSection';
 $where = array('class_key' => $class);
 
-// Adding custom where parameters
-if (!empty($scriptProperties['where'])) {
-    $tmp = json_decode($scriptProperties['where'], true);
-    if (is_array($tmp)) {
-        $where = array_merge($where, $tmp);
+// Add custom parameters
+foreach (array('where') as $v) {
+    if (!empty($scriptProperties[$v])) {
+        $tmp = $scriptProperties[$v];
+        if (!is_array($tmp)) {
+            $tmp = json_decode($tmp, true);
+        }
+        if (is_array($tmp)) {
+            $$v = array_merge($$v, $tmp);
+        }
     }
+    unset($scriptProperties[$v]);
 }
-unset($scriptProperties['where']);
-$pdoFetch->addTime('"Where" expression built.');
+$pdoFetch->addTime('Conditions prepared');
 
 // Joining tables
 $leftJoin = array(
-    'Ticket' => array('class' => 'Ticket', 'on' => 'Ticket.parent=TicketsSection.id AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key="Ticket"'),
-    'View' => array('class' => 'TicketView', 'on' => 'Ticket.id=View.parent'),
-    //'TicketVote' => array('class' => 'TicketVote', 'on' => 'icket.id=Vote.parent AND Vote.class="Ticket"'),
+    'Total' => array('class' => 'TicketTotal'),
 );
 
 // Fields to select
@@ -38,9 +42,7 @@ $select = array(
     'TicketsSection' => !empty($includeContent)
         ? $modx->getSelectColumns($class, $class)
         : $modx->getSelectColumns($class, $class, '', array('content'), true),
-    'Ticket' => 'COUNT(DISTINCT `Ticket`.`id`) as `tickets`',
-    'View' => 'COUNT(`View`.`parent`) as `views`',
-    //,'Vote' => 'SUM(DISTINCT `Vote`.`value`) as `votes`'
+    'Total' => 'tickets, comments, views, stars, rating, rating_plus, rating_minus',
 );
 
 $default = array(
@@ -70,23 +72,9 @@ if (!empty($returnIds)) {
 $output = array();
 if (!empty($rows) && is_array($rows)) {
     foreach ($rows as $k => $row) {
-        // Processing main fields
-        $add = $pdoFetch->getObject('TicketThread', array('deleted' => 0), array(
-            'innerJoin' => array(
-                'Ticket' => array('class' => 'Ticket', 'on' => 'Ticket.id = TicketThread.resource AND Ticket.published=1 AND Ticket.deleted=0 AND Ticket.class_key="Ticket" AND Ticket.parent=' . $row['id']),
-            ),
-            'select' => array(
-                'TicketThread' => 'SUM(TicketThread.comments) as `comments`'
-            )
-        ));
-
-        $row['comments'] = !empty($add['comments'])
-            ? $add['comments']
-            : 0;
         $row['date_ago'] = $Tickets->dateFormat($row['createdon']);
-
         $row['idx'] = $pdoFetch->idx++;
-        // Processing chunk
+
         $tpl = $pdoFetch->defineChunk($row);
         $output[] = empty($tpl)
             ? '<pre>' . $pdoFetch->getChunk('', $row) . '</pre>'
@@ -108,8 +96,7 @@ if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
 if (!empty($toSeparatePlaceholders)) {
     $output['log'] = $log;
     $modx->setPlaceholders($output, $toSeparatePlaceholders);
-}
-else {
+} else {
     $output .= $log;
 
     if (!empty($tplWrapper) && (!empty($wrapIfEmpty) || !empty($output))) {
@@ -118,8 +105,7 @@ else {
 
     if (!empty($toPlaceholder)) {
         $modx->setPlaceholder($toPlaceholder, $output);
-    }
-    else {
+    } else {
         return $output;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+/** @var modX $modx */
 switch ($modx->event->name) {
 
     case 'OnSiteRefresh':
@@ -7,20 +8,12 @@ switch ($modx->event->name) {
         }
         break;
 
-
     case 'OnDocFormSave':
         /** @var Ticket $resource */
         if ($mode == 'new' && $resource->class_key == "Ticket") {
             $modx->cacheManager->delete('tickets/latest.tickets');
         }
-        /** @var TicketsSection $resource */
-        if ($mode == 'upd' && $resource->class_key == 'TicketsSection') {
-            if (method_exists($resource, 'clearCache')) {
-                $resource->clearCache();
-            }
-        }
         break;
-
 
     case 'OnWebPagePrerender':
         $output = &$modx->resource->_output;
@@ -30,7 +23,6 @@ switch ($modx->event->name) {
             $output
         );
         break;
-
 
     case 'OnPageNotFound':
         // It is working only with friendly urls enabled
@@ -74,7 +66,6 @@ switch ($modx->event->name) {
         }
         break;
 
-
     case 'OnLoadWebDocument':
         $authenticated = $modx->user->isAuthenticated($modx->context->get('key'));
         $key = 'Tickets_User';
@@ -109,13 +100,11 @@ switch ($modx->event->name) {
         }
         break;
 
-
     case 'OnWebPageComplete':
         /** @var Tickets $Tickets */
         $Tickets = $modx->getService('tickets');
         $Tickets->logView($modx->resource->get('id'));
         break;
-
 
     case 'OnUserSave':
         /** @var modUser $user */

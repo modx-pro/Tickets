@@ -13,7 +13,7 @@
         &nbsp;&nbsp;
         <i class="glyphicon glyphicon-eye-open"></i> [[+views]]
     </span>
-    <span class="col-md-2 pull-right ticket-rating[[+active]][[+inactive]]">
+    <span class="pull-right ticket-rating[[+active]][[+inactive]]">
         <span class="vote plus[[+voted_plus]]" title="[[%ticket_like]]">
             <i class="glyphicon glyphicon-arrow-up"></i>
         </span>

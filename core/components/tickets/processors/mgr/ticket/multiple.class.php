@@ -12,7 +12,7 @@ class TicketMultipleProcessor extends modProcessor
         if (!$method = $this->getProperty('method', false)) {
             return $this->failure();
         }
-        $ids = json_decode($this->getProperty('ids', true));
+        $ids = json_decode($this->getProperty('ids'), true);
         if (empty($ids)) {
             return $this->success();
         }

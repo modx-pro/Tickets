@@ -297,7 +297,7 @@ $xpdo_meta_map['TicketAuthorAction']= array (
       'cardinality' => 'one',
       'owner' => 'foreign',
     ),
-    'TicketsSection' => 
+    'Section' => 
     array (
       'class' => 'TicketsSection',
       'local' => 'section',

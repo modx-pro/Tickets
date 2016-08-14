@@ -261,45 +261,90 @@ Ext.extend(Tickets.panel.SectionSettings, MODx.VerticalTabs, {
     },
 
     getTicketsRatings: function (config) {
-        var items = [{
+        return [{
             html: _('tickets_section_tab_ratings_intro'),
             border: false,
-            bodyCssClass: 'panel-desc',
+        }, {
+            layout: 'column',
+            items: [{
+                columnWidth: .33,
+                layout: 'form',
+                items: [this._getRatingField('ticket', config)]
+            }, {
+                columnWidth: .34,
+                layout: 'form',
+                items: [this._getRatingField('comment', config)]
+            }, {
+                columnWidth: .33,
+                layout: 'form',
+                items: [this._getRatingField('view', config)]
+            }]
+
+        }, {
+            html: '<hr>'
+        }, {
+            layout: 'column',
+            items: [{
+                columnWidth: .5,
+                layout: 'form',
+                items: [
+                    this._getRatingField('vote_ticket', config),
+                    this._getRatingField('star_ticket', config)
+
+                ]
+            }, {
+                columnWidth: .5,
+                layout: 'form',
+                items: [
+                    this._getRatingField('vote_comment', config),
+                    this._getRatingField('star_comment', config)
+                ]
+            }]
+
+        }, {
+            html: '<hr>'
+        }, {
+            layout: 'column',
+            items: [{
+                columnWidth: .5,
+                layout: 'form',
+                items: [
+                    this._getRatingField('min_ticket_create', config),
+                    this._getRatingField('days_ticket_vote', config)
+
+                ]
+            }, {
+                columnWidth: .5,
+                layout: 'form',
+                items: [
+                    this._getRatingField('min_comment_create', config),
+                    this._getRatingField('days_comment_vote', config)
+                ]
+            }]
         }];
+    },
 
-        var tmp = {
-            ticket: {},
-            comment: {},
-            view: {},
-            vote_ticket: {},
-            vote_comment: {},
-            star_ticket: {},
-            star_comment: {},
-        };
-
-        for (var i in tmp) {
-            if (tmp.hasOwnProperty(i)) {
-                items.push(Ext.apply({
-                        xtype: 'numberfield',
-                        name: 'properties[ratings][' + i + ']',
-                        hiddenName: 'properties[ratings][' + i + ']',
-                        fieldLabel: _('tickets_section_rating_' + i),
-                        id: 'tickets-settings-rating-' + i,
-                        value: config.record.properties['ratings'][i],
-                        listeners: config.listeners,
-                        anchor: '25%'
-                    },
-                    tmp[i]
-                ));
-                items.push({
-                    xtype: 'label',
-                    html: _('tickets_section_rating_' + i + '_desc'),
-                    cls: 'desc-under'
-                });
-            }
+    _getRatingField: function (name, config, properties) {
+        if (properties == undefined) {
+            properties = [];
         }
-
-        return items;
+        return [
+            Ext.apply({
+                xtype: 'numberfield',
+                name: 'properties[ratings][' + name + ']',
+                hiddenName: 'properties[ratings][' + name + ']',
+                fieldLabel: _('tickets_section_rating_' + name),
+                id: 'tickets-settings-rating-' + name,
+                value: config.record.properties['ratings'][name],
+                listeners: config.listeners,
+                anchor: '100%'
+            }, properties),
+            {
+                xtype: 'label',
+                html: _('tickets_section_rating_' + name + '_desc'),
+                cls: 'desc-under'
+            }
+        ];
     },
 
 });

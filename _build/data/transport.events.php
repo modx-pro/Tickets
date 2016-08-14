@@ -30,12 +30,18 @@ $tmp = array(
     'OnBeforeTicketThreadRemove' => array(),
     'OnTicketThreadRemove' => array(),
 
+    'OnBeforeTicketVote' => array(),
     'OnTicketVote' => array(),
+    'OnBeforeCommentVote' => array(),
     'OnCommentVote' => array(),
 
+    'OnBeforeTicketStar' => array(),
     'OnTicketStar' => array(),
+    'OnBeforeTicketUnStar' => array(),
     'OnTicketUnStar' => array(),
+    'OnBeforeCommentStar' => array(),
     'OnCommentStar' => array(),
+    'OnBeforeCommentUnStar' => array(),
     'OnCommentUnStar' => array(),
 );
 

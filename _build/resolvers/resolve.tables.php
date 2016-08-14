@@ -35,6 +35,7 @@ if ($transport->xpdo) {
                 'TicketVote',
                 'TicketAuthor',
                 'TicketAuthorAction',
+                'TicketTotal',
             );
 
             foreach ($tables as $table) {
