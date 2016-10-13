@@ -1,4 +1,4 @@
-? '<div class="comments-thread" id="'.$pls['thread'].'">' . $commentForm . $commentsThread . '</div>'<?php
+<?php
 /** @var array $scriptProperties */
 if (empty($thread)) {
     $scriptProperties['thread'] = $modx->getOption('thread', $scriptProperties, 'resource-' . $modx->resource->id,
