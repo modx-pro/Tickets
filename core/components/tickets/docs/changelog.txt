@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.7.1 pl
+==========
+- Updated jQuery.jGrowl to the latest version.
+
 1.7.0 pl
 ==========
 - Requires MODX 2.3+

@@ -1,4 +1,4 @@
-@import url("./lib/jquery.jgrowl.css");
+@import url("./lib/jquery.jgrowl.min.css");
 
 /* Lists */
 .ticket-comment,
