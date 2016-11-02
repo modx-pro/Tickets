@@ -706,4 +706,16 @@ class Ticket extends modResource
         }
     }
 
+
+    /**
+     * @param string $context
+     */
+    public function clearCache($context = '')
+    {
+        if (!$context) {
+            $context = $this->get('context_key');
+        }
+        parent::clearCache($context);
+    }
+
 }

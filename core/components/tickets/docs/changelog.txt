@@ -3,6 +3,7 @@ Changelog for Tickets.
 1.7.1 pl
 ==========
 - Updated jQuery.jGrowl to the latest version.
+- Fixed the clearing of cache of a resource on save from manager.
 
 1.7.0 pl
 ==========
