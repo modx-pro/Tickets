@@ -46,7 +46,7 @@ class TicketThread extends xPDOSimpleObject
     public function updateCommentsCount()
     {
         $comments = 0;
-        $q = $this->xpdo->newQuery('TicketComment', array('thread' => $this->id, 'published' => 1));
+        $q = $this->xpdo->newQuery('TicketComment', array('thread' => $this->id, 'published' => 1, 'deleted' => 0));
         $q->select('COUNT(`id`)');
         if ($q->prepare() && $q->stmt->execute()) {
             $comments = $q->stmt->fetch(PDO::FETCH_COLUMN);

@@ -148,7 +148,7 @@ if ($Tickets->authenticated) {
 $select = array(
     'TicketComment' => $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'),
             true) . ', `rating` as `rating_total`',
-    'Thread' => '`Thread`.`resource`',
+    'Thread' => '`Thread`.`resource`, `Thread`.`comments`',
     'User' => '`User`.`username`',
     'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id', 'email'),
             true) . ',`Profile`.`email` as `user_email`',
@@ -201,7 +201,6 @@ $rows = $pdoFetch->run();
 $output = array();
 if (!empty($rows)) {
     foreach ($rows as $row) {
-        $row['comments'] = $modx->getCount('TicketComment', array('published' => 1, 'thread' => $row['thread']));;
         $row['ratings'] = !empty($row['section.properties']['ratings'])
             ? $row['section.properties']['ratings']
             : array();

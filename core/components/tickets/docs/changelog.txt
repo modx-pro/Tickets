@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.7.2 pl
+==========
+- Fixed the counting of comments of a ticket.
+
 1.7.1 pl
 ==========
 - Updated jQuery.jGrowl to the latest version.

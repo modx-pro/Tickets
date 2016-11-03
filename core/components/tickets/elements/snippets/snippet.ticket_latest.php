@@ -132,6 +132,7 @@ if ($action == 'comments') {
         'Ticket' => !empty($includeContent)
             ? $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.')
             : $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.', array('content'), true),
+        'Thread' => '`Thread`.`comments`',
     );
     $groupby = empty($user)
         ? '`Ticket`.`id`'
@@ -155,7 +156,7 @@ if ($action == 'comments') {
         'Ticket' => !empty($includeContent)
             ? $modx->getSelectColumns('Ticket', 'Ticket')
             : $modx->getSelectColumns('Ticket', 'Ticket', '', array('content'), true),
-        'Thread' => '`Thread`.`id` as `thread`',
+        'Thread' => '`Thread`.`id` as `thread`, `Thread`.`comments`',
     );
     $groupby = '`Ticket`.`id`';
 } else {
@@ -205,9 +206,6 @@ $rows = $pdoFetch->run();
 $output = array();
 if (!empty($rows) && is_array($rows)) {
     foreach ($rows as $k => $row) {
-        // Processing main fields
-        $row['comments'] = $modx->getCount('TicketComment', array('thread' => $row['thread'], 'published' => 1));
-
         // Prepare row
         if ($class == 'Ticket') {
             $row['date_ago'] = $Tickets->dateFormat($row['createdon']);
@@ -224,7 +222,6 @@ if (!empty($rows) && is_array($rows)) {
                 }
             }
         } else {
-
             if (empty($row['createdby'])) {
                 $row['fullname'] = $row['name'];
                 $row['guest'] = 1;
