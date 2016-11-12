@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.7.3 pl
+==========
+- Some security fixes.
+
 1.7.2 pl
 ==========
 - Fixed the counting of comments of a ticket.

@@ -29,12 +29,12 @@ if (!empty($_REQUEST['thread']) && $thread = $modx->getObject('TicketThread', ar
 
 // Switch context
 $context = 'web';
-if (!empty($thread) && $thread->get('resource') && $resource = $thread->getOne('Resource')) {
-    $context = $resource->get('context_key');
-} elseif (!empty($_REQUEST['parent']) && $resource = $modx->getObject('modResource', (int)$_REQUEST['parent'])) {
-    $context = $resource->get('context_key');
-} elseif (!empty($_REQUEST['ctx']) && $modx->getCount('modContext', preg_replace('#[^\w]#', '', $_REQUEST['ctx']))) {
-    $context = preg_replace('#[^\w]#', '', $_REQUEST['ctx']);
+if (!empty($thread) && $thread->get('resource') && $object = $thread->getOne('Resource')) {
+    $context = $object->get('context_key');
+} elseif (!empty($_REQUEST['parent']) && $object = $modx->getObject('modResource', (int)$_REQUEST['parent'])) {
+    $context = $object->get('context_key');
+} elseif (!empty($_REQUEST['ctx']) && $object = $modx->getObject('modContext', array('key' => $_REQUEST['ctx']))) {
+    $context = $object->get('key');
 }
 if ($context != 'web') {
     $modx->switchContext($context);
@@ -57,7 +57,7 @@ switch ($action) {
         $response = $Tickets->saveComment($_POST);
         break;
     case 'comment/get':
-        $response = $Tickets->getComment($_POST['id']);
+        $response = $Tickets->getComment((int)$_POST['id']);
         break;
     case 'comment/getlist':
         $response = $Tickets->getNewComments($_POST['thread']);
@@ -66,10 +66,10 @@ switch ($action) {
         $response = $Tickets->subscribeThread($_POST['thread']);
         break;
     case 'comment/vote':
-        $response = $Tickets->voteComment($_POST['id'], $_POST['value']);
+        $response = $Tickets->voteComment((int)$_POST['id'], (int)$_POST['value']);
         break;
     case 'comment/star':
-        $response = $Tickets->starComment($_POST['id']);
+        $response = $Tickets->starComment((int)$_POST['id']);
         break;
 
     case 'ticket/draft':
@@ -82,21 +82,21 @@ switch ($action) {
         $response = $Tickets->previewTicket($_POST);
         break;
     case 'ticket/vote':
-        $response = $Tickets->voteTicket($_POST['id'], $_POST['value']);
+        $response = $Tickets->voteTicket((int)$_POST['id'], (int)$_POST['value']);
         break;
     case 'ticket/star':
-        $response = $Tickets->starTicket($_POST['id']);
+        $response = $Tickets->starTicket((int)$_POST['id']);
         break;
 
     case 'section/subscribe':
-        $response = $Tickets->subscribeSection($_POST['section']);
+        $response = $Tickets->subscribeSection((int)$_POST['section']);
         break;
 
     case 'ticket/file/upload':
         $response = $Tickets->fileUpload($_POST, 'Ticket');
         break;
     case 'ticket/file/delete':
-        $response = $Tickets->fileDelete($_POST['id']);
+        $response = $Tickets->fileDelete((int)$_POST['id']);
         break;
     default:
         $message = $_REQUEST['action'] != $action
