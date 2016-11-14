@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.7.4 pl
+==========
+- Fixed bug with dynamic override ticket section on save.
+
 1.7.3 pl
 ==========
 - Some security fixes.
