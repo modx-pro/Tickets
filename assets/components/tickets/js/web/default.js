@@ -1,7 +1,7 @@
 var Tickets = {
-    initialize: function () {
+    initialize: function() {
         if (typeof window['prettyPrint'] != 'function') {
-            $.getScript(TicketsConfig.jsUrl + 'lib/prettify/prettify.js', function () {
+            $.getScript(TicketsConfig.jsUrl + 'lib/prettify/prettify.js', function() {
                 prettyPrint();
             });
             $('<link/>', {
@@ -21,27 +21,34 @@ var Tickets = {
         }
 
         // Forms listeners
-        $(document).on('click', '#comment-preview-placeholder a', function () {
+        $(document).on('click', '#comment-preview-placeholder a', function() {
             return false;
         });
-        $(document).on('change', '#comments-subscribe', function () {
-            Tickets.comment.subscribe($('[name="thread"]', $('#comment-form')));
+        $(document).on('change', '#comments-subscribe', function() {
+            var thread_id = $(this).parents('.comments-thread').attr('id');
+            if (thread_id === undefined){
+                thread_id = '';
+            } else {
+                thread_id = '#'+thread_id;
+            }
+            Tickets.comment.subscribe($(thread_id + ' [name="thread"]'));
         });
-        $(document).on('change', '#tickets-subscribe', function () {
+        $(document).on('change', '#tickets-subscribe', function() {
             Tickets.ticket.subscribe($(this).data('id'));
         });
-        $(document).on('submit', '#ticketForm', function (e) {
+        $(document).on('submit', '#ticketForm', function(e) {
             Tickets.ticket.save(this, $(this).find('[type="submit"]')[0]);
             e.preventDefault();
             return false;
         });
-        $(document).on('submit', '#comment-form', function (e) {
-            Tickets.comment.save(this, $(this).find('[type="submit"]')[0]);
+        $(document).on('submit', '#comment-form', function(e) {
+            var thread_id = $(this).parents('.comments-thread').attr('id');
+            Tickets.comment.save(this, $(this).find('[type="submit"]')[0], thread_id);
             e.preventDefault();
             return false;
         });
         // Preview and submit
-        $(document).on('click touchend', '#ticketForm .preview, #ticketForm .save, #ticketForm .draft, #ticketForm .publish', function (e) {
+        $(document).on('click touchend', '#ticketForm .preview, #ticketForm .save, #ticketForm .draft, #ticketForm .publish', function(e) {
             if ($(this).hasClass('preview')) {
                 Tickets.ticket.preview(this.form, this);
             }
@@ -51,18 +58,19 @@ var Tickets = {
             e.preventDefault();
             return false;
         });
-        $(document).on('click touchend', '#comment-form .preview, #comment-form .submit', function (e) {
+        $(document).on('click touchend', '#comment-form .preview, #comment-form .submit', function(e) {
+            var thread_id = $(this).parents('.comments-thread').attr('id');
             if ($(this).hasClass('preview')) {
-                Tickets.comment.preview(this.form, this);
+                Tickets.comment.preview(this.form, this, thread_id);
             }
             else {
-                Tickets.comment.save(this.form, this);
+                Tickets.comment.save(this.form, this, thread_id);
             }
             e.preventDefault();
             return false;
         });
         // Hotkeys
-        $(document).on('keydown', '#ticketForm, #comment-form', function (e) {
+        $(document).on('keydown', '#ticketForm, #comment-form', function(e) {
             if (e.keyCode == 13) {
                 if (e.shiftKey && (e.ctrlKey || e.metaKey)) {
                     $(this).submit();
@@ -73,12 +81,12 @@ var Tickets = {
             }
         });
         // Show and hide forms
-        $(document).on('click touchend', '#comment-new-link a', function (e) {
+        $(document).on('click touchend', '#comment-new-link a', function(e) {
             Tickets.forms.comment();
             e.preventDefault();
             return false;
         });
-        $(document).on('click touchend', '.comment-reply a', function (e) {
+        $(document).on('click touchend', '.comment-reply a', function(e) {
             var id = $(this).parents('.ticket-comment').data('id');
             if ($(this).hasClass('reply')) {
                 Tickets.forms.reply(id);
@@ -90,7 +98,7 @@ var Tickets = {
             return false;
         });
         // Votes and rating
-        $(document).on('click touchend', '.ticket-comment-rating.active > .vote', function (e) {
+        $(document).on('click touchend', '.ticket-comment-rating.active > .vote', function(e) {
             var id = $(this).parents('.ticket-comment').data('id');
             if ($(this).hasClass('plus')) {
                 Tickets.Vote.comment.vote(this, id, 1);
@@ -101,7 +109,7 @@ var Tickets = {
             e.preventDefault();
             return false;
         });
-        $(document).on('click touchend', '.ticket-rating.active > .vote', function (e) {
+        $(document).on('click touchend', '.ticket-rating.active > .vote', function(e) {
             var id = $(this).parents('.ticket-meta').data('id');
             if ($(this).hasClass('plus')) {
                 Tickets.Vote.ticket.vote(this, id, 1);
@@ -117,20 +125,20 @@ var Tickets = {
         });
         // --
         // Stars
-        $(document).on('click touchend', '.ticket-comment-star.active > .star', function (e) {
+        $(document).on('click touchend', '.ticket-comment-star.active > .star', function(e) {
             var id = $(this).parents('.ticket-comment').data('id');
             Tickets.Star.comment.star(this, id, 0);
             e.preventDefault();
             return false;
         });
-        $(document).on('click touchend', '.ticket-star.active > .star', function (e) {
+        $(document).on('click touchend', '.ticket-star.active > .star', function(e) {
             var id = $(this).parents('.ticket-meta').data('id');
             Tickets.Star.ticket.star(this, id, 0);
             e.preventDefault();
             return false;
         });
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             if (TicketsConfig.enable_editor == true) {
                 $('#ticket-editor').markItUp(TicketsConfig.editor.ticket);
             }
@@ -138,9 +146,9 @@ var Tickets = {
                 $('#comment-editor').markItUp(TicketsConfig.editor.comment);
             }
 
-            $.jGrowl.defaults.closerTemplate = '<div>[ ' + TicketsConfig.close_all_message + ' ]</div>';
+            $.jGrowl.defaults.closerTemplate = '<div>[ '+TicketsConfig.close_all_message+' ]</div>';
 
-            var count = $('.ticket-comment').length;
+            var count = $('.ticket-comment').size();
             $('#comment-total, .ticket-comments-count').text(count);
 
             $("#ticketForm.create").sisyphus({
@@ -154,7 +162,7 @@ var Tickets = {
         });
 
         // Link to parent comment
-        $('#comments').on('click touchend', '.ticket-comment-up a', function () {
+        $('#comments').on('click touchend', '.ticket-comment-up a', function() {
             var id = $(this).data('id');
             var parent = $(this).data('parent');
             if (parent && id) {
@@ -165,7 +173,7 @@ var Tickets = {
         });
 
         // Link to child comment
-        $('#comments').on('click touchend', '.ticket-comment-down a', function () {
+        $('#comments').on('click touchend', '.ticket-comment-down a', function() {
             var child = $(this).data('child');
             if (child) {
                 Tickets.utils.goto('comment-' + child);
@@ -173,21 +181,21 @@ var Tickets = {
             $(this).attr('data-child', '').parent().hide();
             return false;
         });
-    },
+    }
 
-    ticket: {
-        preview: function (form, button) {
+    ,ticket: {
+        preview: function(form,button) {
             $(form).ajaxSubmit({
-                data: {action: 'ticket/preview'},
-                url: TicketsConfig.actionUrl,
-                form: form,
-                button: button,
-                dataType: 'json',
-                beforeSubmit: function () {
-                    $(button).attr('disabled', 'disabled');
+                data: {action: 'ticket/preview'}
+                ,url: TicketsConfig.actionUrl
+                ,form: form
+                ,button: button
+                ,dataType: 'json'
+                ,beforeSubmit: function() {
+                    $(button).attr('disabled','disabled');
                     return true;
-                },
-                success: function (response) {
+                }
+                ,success: function(response) {
                     var element = $('#ticket-preview-placeholder');
                     if (response.success) {
                         element.html(response.data.preview).show();
@@ -200,34 +208,28 @@ var Tickets = {
                     $(button).removeAttr('disabled');
                 }
             });
-        },
+        }
 
-        save: function (form, button) {
+        ,save: function(form,button) {
             var action = 'ticket/';
             switch ($(button).prop('name')) {
-                case 'draft':
-                    action += 'draft';
-                    break;
-                case 'save':
-                    action += 'save';
-                    break;
-                default:
-                    action += 'publish';
-                    break;
+                case 'draft': action += 'draft'; break;
+                case 'save': action += 'save'; break;
+                default: action += 'publish'; break;
             }
 
             $(form).ajaxSubmit({
-                data: {action: action},
-                url: TicketsConfig.actionUrl,
-                form: form,
-                button: button,
-                dataType: 'json',
-                beforeSubmit: function () {
-                    $(form).find('input[type="submit"], input[type="button"]').attr('disabled', 'disabled');
-                    $('.error', form).text('');
+                data: {action: action}
+                ,url: TicketsConfig.actionUrl
+                ,form: form
+                ,button: button
+                ,dataType: 'json'
+                ,beforeSubmit: function() {
+                    $(form).find('input[type="submit"], input[type="button"]').attr('disabled','disabled');
+                    $('.error',form).text('');
                     return true;
-                },
-                success: function (response) {
+                }
+                ,success: function(response) {
                     $('#ticketForm.create').sisyphus().manuallyReleaseData();
 
                     if (response.success) {
@@ -254,11 +256,11 @@ var Tickets = {
                     }
                 }
             });
-        },
+        }
 
-        subscribe: function (section) {
+        ,subscribe: function(section) {
             if (section) {
-                $.post(TicketsConfig.actionUrl, {action: "section/subscribe", section: section}, function (response) {
+                $.post(TicketsConfig.actionUrl, {action: "section/subscribe", section: section}, function(response) {
                     if (response.success) {
                         Tickets.Message.success(response.message);
                     }
@@ -268,24 +270,29 @@ var Tickets = {
                 }, 'json');
             }
         }
-    },
+    }
 
-    comment: {
-        preview: function (form, button) {
+    ,comment: {
+        preview: function(form,button, thread_id) {
+            if (thread_id === undefined){
+                thread_id = '';
+            } else {
+                thread_id = '#'+thread_id;
+            }
             $(form).ajaxSubmit({
-                data: {action: 'comment/preview'},
-                url: TicketsConfig.actionUrl,
-                form: form,
-                button: button,
-                dataType: 'json',
-                beforeSubmit: function () {
-                    $(button).attr('disabled', 'disabled');
+                data: {action: 'comment/preview'}
+                ,url: TicketsConfig.actionUrl
+                ,form: form
+                ,button: button
+                ,dataType: 'json'
+                ,beforeSubmit: function() {
+                    $(button).attr('disabled','disabled');
                     return true;
-                },
-                success: function (response) {
+                }
+                ,success: function(response) {
                     $(button).removeAttr('disabled');
                     if (response.success) {
-                        $('#comment-preview-placeholder').html(response.data.preview).show();
+                        $(thread_id+' #comment-preview-placeholder').html(response.data.preview).show();
                         prettyPrint();
                     }
                     else {
@@ -294,39 +301,44 @@ var Tickets = {
                 }
             });
             return false;
-        },
+        }
 
-        save: function (form, button) {
+        ,save: function(form, button, thread_id)  {
+            if (thread_id === undefined){
+                thread_id = '';
+            } else {
+                thread_id = '#'+thread_id;
+            }
             $(form).ajaxSubmit({
-                data: {action: 'comment/save'},
-                url: TicketsConfig.actionUrl,
-                form: form,
-                button: button,
-                dataType: 'json',
-                beforeSubmit: function () {
+                data: {action: 'comment/save'}
+                ,url: TicketsConfig.actionUrl
+                ,form: form
+                ,button: button
+                ,dataType: 'json'
+                ,beforeSubmit: function() {
                     clearInterval(window.timer);
-                    $('.error', form).text('');
-                    $(button).attr('disabled', 'disabled');
+                    $('.error',form).text('');
+                    $(button).attr('disabled','disabled');
                     return true;
-                },
-                success: function (response) {
+                }
+                ,success: function(response) {
                     $(button).removeAttr('disabled');
                     if (response.success) {
                         Tickets.forms.comment(false);
-                        $('#comment-preview-placeholder').html('').hide();
-                        $('#comment-editor', form).val('');
-                        $('.ticket-comment .comment-reply a').show();
+                        $(thread_id+' #comment-preview-placeholder').html('').hide();
+                        $(thread_id+' #comment-editor',form).val('');
+                        $(thread_id+' .ticket-comment .comment-reply a').show();
 
                         // autoPublish = 0
                         if (!response.data.length && response.message) {
                             Tickets.Message.info(response.message);
                         }
                         else {
-                            Tickets.comment.insert(response.data.comment);
+                            Tickets.comment.insert(thread_id, response.data.comment);
                             Tickets.utils.goto($(response.data.comment).attr('id'));
                         }
 
-                        Tickets.comment.getlist();
+                        Tickets.comment.getlist(thread_id);
                         prettyPrint();
                     }
                     else {
@@ -350,36 +362,34 @@ var Tickets = {
                         }
                     }
                     if (response.data.captcha) {
-                        $('input[name="captcha"]', form).val('').focus();
-                        $('#comment-captcha', form).text(response.data.captcha);
+                        $(thread_id+' input[name="captcha"]', form).val('').focus();
+                        $(thread_id+' #comment-captcha', form).text(response.data.captcha);
                     }
                 }
             });
             return false;
-        },
+        }
 
-        getlist: function () {
-            var form = $('#comment-form');
+        ,getlist: function(thread_id) {
+            var form = $(thread_id + ' #comment-form');
             var thread = $('[name="thread"]', form);
-            if (!thread) {
-                return false;
-            }
-            Tickets.tpanel.start();
-            $.post(TicketsConfig.actionUrl, {action: 'comment/getlist', thread: thread.val()}, function (response) {
+            if (!thread) {return false;}
+            Tickets.tpanel.start(thread_id);
+            $.post(TicketsConfig.actionUrl, {action: 'comment/getlist', thread: thread.val()}, function(response) {
                 for (var k in response.data.comments) {
                     if (response.data.comments.hasOwnProperty(k)) {
-                        Tickets.comment.insert(response.data.comments[k], true);
+                        Tickets.comment.insert(thread_id, response.data.comments[k], true);
                     }
                 }
-                var count = $('.ticket-comment').length;
-                $('#comment-total, .ticket-comments-count').text(count);
-
-                Tickets.tpanel.stop();
+                var count = $(thread_id + ' .ticket-comment').size();
+                $(thread_id + ' #comment-total, '+ thread_id + ' .ticket-comments-count').text(count);
+                
+                Tickets.tpanel.stop(thread_id);
             }, 'json');
             return true;
-        },
+        }
 
-        insert: function (data, remove) {
+        ,insert: function(thread_id, data, remove) {
             var comment = $(data);
             var parent = $(comment).attr('data-parent');
             var id = $(comment).attr('id');
@@ -401,13 +411,13 @@ var Tickets = {
             }
 
             if (parent == 0 && TicketsConfig.formBefore) {
-                $('#comments').prepend(data)
+                $(thread_id + ' #comments').prepend(data)
             }
             else if (parent == 0) {
-                $('#comments').append(data)
+                $(thread_id + ' #comments').append(data)
             }
             else {
-                var pcomm = $('#comment-' + parent);
+                var pcomm = $(thread_id + ' #comment-'+parent);
                 if (pcomm.data('parent') != pcomm.data('newparent')) {
                     parent = pcomm.data('newparent');
                     comment.attr('data-newparent', parent);
@@ -421,20 +431,17 @@ var Tickets = {
                         data = comment[0].outerHTML;
                     }
                 }
-                $('#comment-' + parent + ' > .comments-list').append(data);
+                $(thread_id + ' #comment-'+parent+' > .comments-list').append(data);
             }
 
             if (children.length > 0) {
                 $('#' + id).find('.comments-list').html(children);
             }
-        },
+        }
 
-        subscribe: function (thread) {
+        ,subscribe: function(thread) {
             if (thread.length) {
-                $.post(TicketsConfig.actionUrl, {
-                    action: "comment/subscribe",
-                    thread: thread.val()
-                }, function (response) {
+                $.post(TicketsConfig.actionUrl, {action: "comment/subscribe", thread: thread.val()}, function(response) {
                     if (response.success) {
                         Tickets.Message.success(response.message);
                     }
@@ -444,10 +451,10 @@ var Tickets = {
                 }, 'json');
             }
         }
-    },
+    }
 
-    forms: {
-        reply: function (comment_id) {
+    ,forms: {
+        reply: function(comment_id) {
             $('#comment-new-link').show();
 
             clearInterval(window.timer);
@@ -456,22 +463,20 @@ var Tickets = {
             $('.ticket-comment .comment-reply a').show();
 
             $('#comment-preview-placeholder').hide();
-            $('input[name="parent"]', form).val(comment_id);
-            $('input[name="id"]', form).val(0);
+            $('input[name="parent"]',form).val(comment_id);
+            $('input[name="id"]',form).val(0);
 
-            var reply = $('#comment-' + comment_id + ' > .comment-reply');
+            var reply = $('#comment-'+comment_id+' > .comment-reply');
             form.insertAfter(reply).show();
             $('a', reply).hide();
             reply.parents('.ticket-comment').removeClass('ticket-comment-new');
 
             $('#comment-editor', form).val('').focus();
             return false;
-        },
+        }
 
-        comment: function (focus) {
-            if (focus !== false) {
-                focus = true;
-            }
+        ,comment: function(focus) {
+            if (focus !== false) {focus = true;}
             clearInterval(window.timer);
 
             $('#comment-new-link').hide();
@@ -481,8 +486,8 @@ var Tickets = {
             $('.ticket-comment .comment-reply a:hidden').show();
 
             $('#comment-preview-placeholder').hide();
-            $('input[name="parent"]', form).val(0);
-            $('input[name="id"]', form).val(0);
+            $('input[name="parent"]',form).val(0);
+            $('input[name="id"]',form).val(0);
             $(form).insertAfter('#comment-form-placeholder').show();
 
             $('#comment-editor', form).val('');
@@ -490,17 +495,13 @@ var Tickets = {
                 $('#comment-editor', form).focus();
             }
             return false;
-        },
+        }
 
-        edit: function (comment_id) {
+        ,edit: function(comment_id) {
             $('#comment-new-link').show();
 
             var thread = $('#comment-form [name="thread"]').val();
-            $.post(TicketsConfig.actionUrl, {
-                action: "comment/get",
-                id: comment_id,
-                thread: thread
-            }, function (response) {
+            $.post(TicketsConfig.actionUrl, {action: "comment/get", id: comment_id, thread: thread}, function(response) {
                 if (!response.success) {
                     Tickets.Message.error(response.message);
                 }
@@ -509,10 +510,10 @@ var Tickets = {
                     $('.ticket-comment .comment-reply a:hidden').show();
                     var form = $('#comment-form');
                     $('#comment-preview-placeholder').hide();
-                    $('input[name="parent"]', form).val(0);
-                    $('input[name="id"]', form).val(comment_id);
+                    $('input[name="parent"]',form).val(0);
+                    $('input[name="id"]',form).val(comment_id);
 
-                    var reply = $('#comment-' + comment_id + ' > .comment-reply');
+                    var reply = $('#comment-'+comment_id+' > .comment-reply');
                     var time_left = $('.time', form);
 
                     time_left.text('');
@@ -528,7 +529,7 @@ var Tickets = {
                     }
 
                     var time = response.data.time;
-                    window.timer = setInterval(function () {
+                    window.timer = setInterval(function(){
                         if (time > 0) {
                             time -= 1;
                             time_left.text(Tickets.utils.timer(time));
@@ -544,34 +545,34 @@ var Tickets = {
 
             return false;
         }
-    },
+    }
 
-    utils: {
-        timer: function (diff) {
-            days = Math.floor(diff / (60 * 60 * 24));
-            hours = Math.floor(diff / (60 * 60));
-            mins = Math.floor(diff / (60));
-            secs = Math.floor(diff);
+    ,utils: {
+        timer: function(diff) {
+            days  = Math.floor( diff / (60*60*24) );
+            hours = Math.floor( diff / (60*60) );
+            mins  = Math.floor( diff / (60) );
+            secs  = Math.floor( diff );
 
             dd = days;
-            hh = hours - days * 24;
-            mm = mins - hours * 60;
-            ss = secs - mins * 60;
+            hh = hours - days  * 24;
+            mm = mins  - hours * 60;
+            ss = secs  - mins  * 60;
 
             var result = [];
 
-            if (hh > 0) result.push(hh ? this.addzero(hh) : '00');
+            if( hh > 0) result.push(hh ? this.addzero(hh) : '00');
             result.push(mm ? this.addzero(mm) : '00');
             result.push(ss ? this.addzero(ss) : '00');
 
             return result.join(':');
-        },
+        }
 
-        addzero: function (n) {
-            return (n < 10) ? '0' + n : n;
-        },
+        ,addzero: function(n) {
+            return (n < 10) ? '0'+n : n;
+        }
 
-        goto: function (id) {
+        ,goto: function(id) {
             $('html, body').animate({
                 scrollTop: $('#' + id).offset().top
             }, 1000);
@@ -581,22 +582,22 @@ var Tickets = {
 
 
 Tickets.Message = {
-    success: function (message) {
+    success: function(message) {
         if (message) {
             $.jGrowl(message, {theme: 'tickets-message-success'});
         }
-    },
-    error: function (message) {
+    }
+    ,error: function(message) {
         if (message) {
             $.jGrowl(message, {theme: 'tickets-message-error'/*, sticky: true*/});
         }
-    },
-    info: function (message) {
+    }
+    ,info: function(message) {
         if (message) {
             $.jGrowl(message, {theme: 'tickets-message-info'});
         }
-    },
-    close: function () {
+    }
+    ,close: function() {
         $.jGrowl('close');
     }
 };
@@ -606,15 +607,15 @@ Tickets.Vote = {
 
     comment: {
         options: {
-            active: 'active',
-            inactive: 'inactive',
-            voted: 'voted',
-            vote: 'vote',
-            rating: 'rating',
-            positive: 'positive',
-            negative: 'negative'
-        },
-        vote: function (link, id, value) {
+            active: 'active'
+            ,inactive: 'inactive'
+            ,voted: 'voted'
+            ,vote: 'vote'
+            ,rating: 'rating'
+            ,positive: 'positive'
+            ,negative: 'negative'
+        }
+        ,vote: function(link, id, value) {
             link = $(link);
             var parent = link.parent();
             var options = this.options;
@@ -623,7 +624,7 @@ Tickets.Vote = {
                 return false;
             }
 
-            $.post(TicketsConfig.actionUrl, {action: 'comment/vote', id: id, value: value}, function (response) {
+            $.post(TicketsConfig.actionUrl, {action: 'comment/vote', id: id, value: value}, function(response) {
                 if (response.success) {
                     link.addClass(options.voted);
                     parent.removeClass(options.active).addClass(options.inactive);
@@ -645,18 +646,18 @@ Tickets.Vote = {
 
             return true;
         }
-    },
-    ticket: {
+    }
+    ,ticket: {
         options: {
-            active: 'active',
-            inactive: 'inactive',
-            voted: 'voted',
-            vote: 'vote',
-            rating: 'rating',
-            positive: 'positive',
-            negative: 'negative'
-        },
-        vote: function (link, id, value) {
+            active: 'active'
+            ,inactive: 'inactive'
+            ,voted: 'voted'
+            ,vote: 'vote'
+            ,rating: 'rating'
+            ,positive: 'positive'
+            ,negative: 'negative'
+        }
+        ,vote: function(link, id, value) {
             link = $(link);
             var parent = link.parent();
             var options = this.options;
@@ -665,7 +666,7 @@ Tickets.Vote = {
                 return false;
             }
 
-            $.post(TicketsConfig.actionUrl, {action: 'ticket/vote', id: id, value: value}, function (response) {
+            $.post(TicketsConfig.actionUrl, {action: 'ticket/vote', id: id, value: value}, function(response) {
                 if (response.success) {
                     link.addClass(options.voted);
                     parent.removeClass(options.active).addClass(options.inactive);
@@ -694,16 +695,16 @@ Tickets.Vote = {
 Tickets.Star = {
     comment: {
         options: {
-            stared: 'stared',
-            unstared: 'unstared'
+            stared: 'stared'
+            ,unstared: 'unstared'
             //,count: 'ticket-comment-star-count'
-        },
-        star: function (link, id, value) {
+        }
+        ,star: function(link, id, value) {
             link = $(link);
             var options = this.options;
             var parent = link.parent();
 
-            $.post(TicketsConfig.actionUrl, {action: 'comment/star', id: id}, function (response) {
+            $.post(TicketsConfig.actionUrl, {action: 'comment/star', id: id}, function(response) {
                 if (response.success) {
                     link.toggleClass(options.stared).toggleClass(options.unstared);
                 }
@@ -714,19 +715,19 @@ Tickets.Star = {
 
             return true;
         }
-    },
-    ticket: {
+    }
+    ,ticket: {
         options: {
-            stared: 'stared',
-            unstared: 'unstared',
-            count: 'ticket-star-count'
-        },
-        star: function (link, id, value) {
+            stared: 'stared'
+            ,unstared: 'unstared'
+            ,count: 'ticket-star-count'
+        }
+        ,star: function(link, id, value) {
             link = $(link);
             var options = this.options;
             var count = link.parent().find('.' + this.options.count);
 
-            $.post(TicketsConfig.actionUrl, {action: 'ticket/star', id: id}, function (response) {
+            $.post(TicketsConfig.actionUrl, {action: 'ticket/star', id: id}, function(response) {
                 if (response.success) {
                     link.toggleClass(options.stared).toggleClass(options.unstared);
                     count.text(response.data.stars);
@@ -743,57 +744,68 @@ Tickets.Star = {
 
 
 Tickets.tpanel = {
-    wrapper: $('#comments-tpanel'),
-    refresh: $('#tpanel-refresh'),
-    new_comments: $('#tpanel-new'),
-    class_new: 'ticket-comment-new',
+    wrapper: '.comments-thread #comments-tpanel'
+    ,refresh: '.comments-thread #tpanel-refresh'
+    ,new_comments: '.comments-thread #tpanel-new'
+    ,class_new: 'ticket-comment-new'
 
-    initialize: function () {
+    ,initialize: function() {
         if (TicketsConfig.tpanel) {
-            this.wrapper.show();
+            $(this.wrapper).show();
             this.stop();
         }
-
-        this.refresh.on('click', function () {
+        $(this.refresh).on('click', function() {
+            var thread_id = $(this).parents('.comments-thread ').attr('id');
+            if (thread_id === undefined){
+                thread_id = '';
+            } else {
+                thread_id = '#'+thread_id;
+            }
             $('.' + Tickets.tpanel.class_new).removeClass(Tickets.tpanel.class_new);
-            Tickets.comment.getlist();
+            Tickets.comment.getlist(thread_id);
         });
 
-        this.new_comments.on('click', function () {
+        $(this.new_comments).on('click', function() {
             var elem = $('.' + Tickets.tpanel.class_new + ':first');
             $('html, body').animate({
                 scrollTop: elem.offset().top
-            }, 1000, 'linear', function () {
+            }, 1000, 'linear', function() {
                 elem.removeClass(Tickets.tpanel.class_new);
             });
 
-            var count = parseInt(Tickets.tpanel.new_comments.text());
+            var count = parseInt($(this).text());
             if (count > 1) {
-                Tickets.tpanel.new_comments.text(count - 1);
+                $(this).text(count - 1);
             }
             else {
-                Tickets.tpanel.new_comments.text('').hide();
+                $(this).text('').hide();
             }
         });
-    },
+    }
 
-    start: function () {
-        this.refresh.addClass('loading');
-    },
+    ,start: function(thread_id) {
+        if (thread_id === undefined){
+            thread_id = '';
+        }
+        $(thread_id + '' + this.refresh).addClass('loading');
+    }
 
-    stop: function () {
-        var count = $('.' + this.class_new).length;
+    ,stop: function(thread_id) {
+        if (thread_id === undefined){
+            thread_id = '';
+        }
+        var count = $('.' + this.class_new).size();
         if (count > 0) {
-            this.new_comments.text(count).show();
+            $(thread_id + '' + this.new_comments).text(count).show();
         }
         else {
-            this.new_comments.hide();
+            $(thread_id + '' + this.new_comments).hide();
         }
-        this.refresh.removeClass('loading');
+        $(thread_id + '' + this.refresh).removeClass('loading');
     }
 
 };
-if (typeof TicketsConfig != 'undefined') {
+if (typeof TicketsConfig != 'undefined'){
     Tickets.initialize();
     Tickets.tpanel.initialize();
 }
