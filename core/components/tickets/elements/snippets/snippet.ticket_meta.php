@@ -23,6 +23,11 @@ $class = $ticket instanceof Ticket
     ? 'Ticket'
     : 'modResource';
 
+/** @var TicketTotal $total */
+if ($total = $ticket->getOne('Total')) {
+    $total->fetchValues();
+    $total->save();
+}
 $data = $ticket->toArray();
 $data['date_ago'] = $Tickets->dateFormat($data['createdon']);
 
@@ -101,6 +106,7 @@ if ($data['rating'] > 0) {
 } elseif ($data['rating'] < 0) {
     $data['rating_negative'] = 1;
 }
+$data['rating_total'] = abs($data['rating_plus']) + abs($data['rating_minus']);
 
 /** @var TicketsSection $section */
 if ($section = $modx->getObject('TicketsSection', $ticket->parent)) {

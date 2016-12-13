@@ -144,23 +144,13 @@ if (!empty($rows) && is_array($rows)) {
         }
 
         // Handle rating
-        /*
-        $row['rating'] = $row['rating_total'] = array_key_exists('rating', $properties)
-            ? $properties['rating']
-            : 0;
-        $row['rating_plus'] = array_key_exists('rating_plus', $properties)
-            ? $properties['rating_plus']
-            : 0;
-        $row['rating_minus'] = array_key_exists('rating_minus', $properties)
-            ? $properties['rating_minus']
-            : 0;
-        */
         if ($row['rating'] > 0) {
             $row['rating'] = '+' . $row['rating'];
             $row['rating_positive'] = 1;
         } elseif ($row['rating'] < 0) {
             $row['rating_negative'] = 1;
         }
+        $row['rating_total'] = abs($row['rating_plus']) + abs($row['rating_minus']);
         // Handle rating
         if (isset($row['section.properties']['ratings']['days_ticket_vote'])) {
             if ($row['section.properties']['ratings']['days_ticket_vote'] !== '') {

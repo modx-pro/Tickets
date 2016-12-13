@@ -93,8 +93,8 @@ if ($Tickets->authenticated) {
 }
 // Fields to select
 $select = array(
-    'TicketComment' => $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'),
-            true) . ', `parent` as `new_parent`, `rating` as `rating_total`',
+    'TicketComment' => $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true) .
+        ', `parent` as `new_parent`',
     'Thread' => '`Thread`.`resource`',
     'User' => '`User`.`username`',
     'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id', 'email'),

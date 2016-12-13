@@ -1,5 +1,10 @@
 Changelog for Tickets.
 
+1.7.5 pl
+==========
+- Fixed "total_rating" placeholders in a chunks.
+- The TicketMeta snippet now updates document variables on load.
+
 1.7.4 pl
 ==========
 - Fixed bug with dynamic override ticket section on save.

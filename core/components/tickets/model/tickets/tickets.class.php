@@ -318,8 +318,9 @@ class Tickets
                 return $this->error($response->getMessage());
             } else {
                 $data = $response->getObject();
+                $rating = abs($data['rating_plus']) + abs($data['rating_minus']);
                 $data['title'] = $this->modx->lexicon('ticket_rating_total')
-                    . " {$data['rating']}: ↑{$data['rating_plus']} "
+                    . " {$rating}: ↑{$data['rating_plus']} "
                     . $this->modx->lexicon('ticket_rating_and')
                     . " ↓{$data['rating_minus']}";
                 if ($data['rating'] > 0) {
@@ -527,8 +528,9 @@ class Tickets
                 return $this->error($response->getMessage());
             } else {
                 $data = $response->getObject();
+                $rating = abs($data['rating_plus']) + abs($data['rating_minus']);
                 $data['title'] = $this->modx->lexicon('ticket_rating_total')
-                    . " {$data['rating']}: ↑{$data['rating_plus']} "
+                    . " {$rating}: ↑{$data['rating_plus']} "
                     . $this->modx->lexicon('ticket_rating_and')
                     . " ↓{$data['rating_minus']}";
                 if ($data['rating'] > 0) {
@@ -813,6 +815,7 @@ class Tickets
         } else {
             $node['bad'] = '';
         }
+        $node['rating_total'] = abs($node['rating_plus']) + abs($node['rating_minus']);
 
         // Handle stars
         if ($this->authenticated && array_key_exists('star', $node)) {
