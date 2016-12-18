@@ -59,7 +59,6 @@ $_lang['tickets_prop_allowedFields'] = 'Поля тікета, які можна
 $_lang['tickets_prop_requiredFields'] = 'Обов`язкові поля, які користувач повинен заповнити для відправки форми.';
 $_lang['tickets_prop_redirectUnpublished'] = 'Ви можете вказати, на який документ відправляти користувача при створенні неопублікованого тікета.';
 $_lang['tickets_prop_sections_parents'] = 'За замовчуванням виводяться всі доступні розділи тікетів, але ви можете обмежити їх, вказавши конкретних батьків через кому.';
-$_lang['tickets_prop_sections_permissions'] = 'Перевірка прав на публікацію в розділ. За умолачанию перевіряється дозвіл "section_add_children".';
 $_lang['tickets_prop_sections_sortby'] = 'Поле для сортування списку розділів.';
 $_lang['tickets_prop_sections_sortdir'] = 'Напрям сортування списку розділів.';
 $_lang['tickets_prop_sections_context'] = 'Список контекстів для пошуку секцій, через кому.';

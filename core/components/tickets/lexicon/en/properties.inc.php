@@ -66,7 +66,6 @@ $_lang['tickets_prop_bypassFields'] = 'Field of the ticket that you do not want 
 $_lang['tickets_prop_redirectUnpublished'] = 'You can specify what document to send the user when creating unpublished ticket.';
 $_lang['tickets_prop_sections_parents'] = 'There is all sections are displayed by default, but you can limit them, specifying comma-separated list of particular parents of sections.';
 $_lang['tickets_prop_sections_resources'] = 'There is all sections are displayed by default, but you can limit them, specifying comma-separated list of particular sections.';
-$_lang['tickets_prop_sections_permissions'] = 'Checking publishing rights section. By default is checked permission "section_add_children".';
 $_lang['tickets_prop_sections_sortby'] = 'Field to sort the list of sections.';
 $_lang['tickets_prop_sections_sortdir'] = 'Sort direction for the list of sections.';
 $_lang['tickets_prop_sections_context'] = 'Comma separated list of contexts to search sections.';

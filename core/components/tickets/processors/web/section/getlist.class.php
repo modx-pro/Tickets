@@ -66,14 +66,11 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor
         $list = array();
         $list = $this->beforeIteration($list);
 
-        $permissions = $this->getProperty('permissions');
         $this->currentIndex = 0;
         /** @var xPDOObject|modAccessibleObject $object */
         foreach ($data['results'] as $object) {
-            if (!empty($permissions)) {
-                if ($object instanceof modAccessibleObject && !$object->checkPolicy('section_add_children') && $object->get('id') != $this->current_category) {
-                    continue;
-                }
+            if ($object instanceof modAccessibleObject && !$object->checkPolicy('section_add_children') && $object->get('id') != $this->current_category) {
+                continue;
             }
 
             $objectArray = $this->prepareRow($object);

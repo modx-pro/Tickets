@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.7.6 pl
+==========
+- Removed broken option "&permissions" from snippet TicketForm.
+
 1.7.5 pl
 ==========
 - Fixed "total_rating" placeholders in a chunks.

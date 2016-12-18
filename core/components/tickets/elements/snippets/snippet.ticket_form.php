@@ -74,7 +74,6 @@ $data['sections'] = '';
 $response = $Tickets->runProcessor('web/section/getlist', array(
     'parents' => $scriptProperties['parents'],
     'resources' => $scriptProperties['resources'],
-    'permissions' => $scriptProperties['permissions'],
     'sortby' => !empty($scriptProperties['sortby'])
         ? $scriptProperties['sortby']
         : 'pagetitle',

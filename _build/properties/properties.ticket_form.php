@@ -54,11 +54,6 @@ $tmp = array(
         'value' => '',
         'desc' => 'tickets_prop_sections_resources',
     ),
-    'permissions' => array(
-        'type' => 'textfield',
-        'value' => 'section_add_children',
-        'desc' => 'tickets_prop_sections_permissions',
-    ),
     'sortby' => array(
         'type' => 'textfield',
         'value' => 'pagetitle',
