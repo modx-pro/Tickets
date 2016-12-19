@@ -47,7 +47,7 @@ switch ($modx->event->name) {
                     if (!empty($properties['uri']) && strpos($properties['uri'], '%id') !== false) {
                         $pcre = str_replace('%id', '([0-9]+)', $properties['uri']);
                         $pcre = preg_replace('#(\%[a-z]+)#', '(?:.*?)', $pcre);
-                        if (preg_match(preg_quote($pcre), $ticket_uri, $matches)) {
+                        if (@preg_match('#' . trim($pcre, '/') . '#', $ticket_uri, $matches)) {
                             $ticket_id = $matches[1];
                         }
                     }

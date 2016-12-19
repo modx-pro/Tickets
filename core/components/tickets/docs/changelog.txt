@@ -3,6 +3,7 @@ Changelog for Tickets.
 1.7.6 pl
 ==========
 - Removed broken option "&permissions" from snippet TicketForm.
+- Fixed possible E_WARNING in plugin at line 50.
 
 1.7.5 pl
 ==========
