@@ -24,7 +24,7 @@ $class = $ticket instanceof Ticket
     : 'modResource';
 
 /** @var TicketTotal $total */
-if ($total = $ticket->getOne('Total')) {
+if ($class == 'Ticket' && $total = $ticket->getOne('Total')) {
     $total->fetchValues();
     $total->save();
 }
@@ -87,7 +87,8 @@ if ($class != 'Ticket') {
         : $thread;
     $q = $modx->newQuery('TicketThread', array('name' => $thread));
     $q->leftJoin('TicketComment', 'TicketComment',
-        "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1");
+        "TicketThread.id = TicketComment.thread AND TicketComment.published = 1"
+    );
     $q->select('COUNT(`TicketComment`.`id`) as `comments`');
     $tstart = microtime(true);
     if ($q->prepare() && $q->stmt->execute()) {
@@ -150,7 +151,7 @@ if (!empty($getUser)) {
     $fields = $modx->getFieldMeta('modUserProfile');
     $user = $pdoFetch->getObject('modUserProfile', array('internalKey' => $ticket->createdby), array(
         'innerJoin' => array(
-            'modUser' => array('class' => 'modUser', 'on' => '`modUserProfile`.`internalKey` = `modUser`.`id`'),
+            'modUser' => array('class' => 'modUser', 'on' => 'modUserProfile.internalKey = modUser.id'),
         ),
         'select' => array(
             'modUserProfile' => implode(',', array_keys($fields)),

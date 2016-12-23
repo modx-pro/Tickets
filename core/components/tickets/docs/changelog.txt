@@ -2,6 +2,7 @@ Changelog for Tickets.
 
 1.7.6 pl
 ==========
+- Fixed the work of TicketMeta with usual resources.
 - Removed broken option "&permissions" from snippet TicketForm.
 - Fixed possible E_WARNING in plugin at line 50.
 
