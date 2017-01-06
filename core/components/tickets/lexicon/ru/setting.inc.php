@@ -80,7 +80,7 @@ $_lang['setting_mgr_tree_icon_ticketssection_desc'] = 'Иконка оформл
 $_lang['setting_tickets.source_default'] = 'Источник медиа для тикетов';
 $_lang['setting_tickets.source_default_desc'] = 'Выберите источник медиа, который будет использован по умолчанию для загрузки файлов тикетов.';
 
-$_lang['tickets.source_thumbnail_desc'] = 'Закодированный в JSON массив с параметрами генерации уменьшенной копии изображения.';
+$_lang['tickets.source_thumbnails_desc'] = 'Закодированный в JSON массив с параметрами генерации уменьшенной копии изображения.';
 $_lang['tickets.source_maxUploadWidth_desc'] = 'Максимальная ширина изображения для загрузки. Всё, что больше, будет ужато до этого значения.';
 $_lang['tickets.source_maxUploadHeight_desc'] = 'Максимальная высота изображения для загрузки. Всё, что больше, будет ужато до этого значения.';
 $_lang['tickets.source_maxUploadSize_desc'] = 'Максимальный размер загружаемых изображений (в байтах).';

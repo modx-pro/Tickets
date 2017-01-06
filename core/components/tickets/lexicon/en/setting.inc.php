@@ -80,7 +80,7 @@ $_lang['setting_mgr_tree_icon_ticketssection_desc'] = 'Icon of tickets section i
 $_lang['setting_tickets.source_default'] = 'Media source for tickets';
 $_lang['setting_tickets.source_default_desc'] = 'Specify media source that will be used for uploading tickets files.';
 
-$_lang['tickets.source_thumbnail_desc'] = 'JSON encoded array of options for generating thumbnail.';
+$_lang['tickets.source_thumbnails_desc'] = 'JSON encoded array of options for generating thumbnail.';
 $_lang['tickets.source_maxUploadWidth_desc'] = 'Maximum width of image for upload. All images, that exceeds this parameter, will be resized to fit..';
 $_lang['tickets.source_maxUploadHeight_desc'] = 'Maximum height of image for upload. All images, that exceeds this parameter, will be resized to fit.';
 $_lang['tickets.source_maxUploadSize_desc'] = 'Maximum size of file for upload (in bytes).';

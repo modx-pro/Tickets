@@ -61,18 +61,18 @@ class TicketFileUploadProcessor extends modObjectProcessor
             $allowed_extensions = array_map('trim', explode(',', strtolower($properties['allowedFileTypes'])));
         }
         if (!empty($allowed_extensions) && !in_array($extension, $allowed_extensions)) {
+            @unlink($data['tmp_name']);
             return $this->failure($this->modx->lexicon('ticket_err_file_ext'));
         } elseif (in_array($extension, $image_extensions)) {
             $type = 'image';
         } else {
             $type = $extension;
         }
-        $hash = sha1($data['stream']);
 
         $path = '0/';
         $filename = !empty($properties['imageNameType']) && $properties['imageNameType'] == 'friendly'
             ? $this->ticket->cleanAlias($data['name'])
-            : $hash . '.' . $extension;
+            : $data['hash'] . '.' . $extension;
         if (strpos($filename, '.' . $extension) === false) {
             $filename .= '.' . $extension;
         }
@@ -83,44 +83,50 @@ class TicketFileUploadProcessor extends modObjectProcessor
         } else {
             $where->andCondition(array('parent' => 0));
         }
-        $where->andCondition(array('file' => $filename, 'OR:hash:=' => $hash), null, 1);
+        $where->andCondition(array('file' => $filename, 'OR:hash:=' => $data['hash']), null, 1);
         if ($this->modx->getCount($this->classKey, $where)) {
+            @unlink($data['tmp_name']);
+
             return $this->failure($this->modx->lexicon('ticket_err_file_exists', array('file' => $data['name'])));
         }
 
-        /** @var TicketFile $ticket_file */
-        $ticket_file = $this->modx->newObject('TicketFile', array(
+        /** @var TicketFile $uploaded_file */
+        $uploaded_file = $this->modx->newObject('TicketFile', array(
             'parent' => 0,
             'name' => $data['name'],
             'file' => $filename,
             'path' => $path,
-            'source' => $this->mediaSource->id,
+            'source' => $this->mediaSource->get('id'),
             'type' => $type,
             'createdon' => date('Y-m-d H:i:s'),
             'createdby' => $this->modx->user->id,
             'deleted' => 0,
-            'hash' => $hash,
+            'hash' => $data['hash'],
             'size' => $data['size'],
             'class' => $this->class,
             'properties' => $data['properties'],
         ));
 
-        $this->mediaSource->createContainer($ticket_file->path, '/');
-        unset($this->mediaSource->errors['file']);
-        $file = $this->mediaSource->createObject(
-            $ticket_file->get('path')
-            , $ticket_file->get('file')
-            , $data['stream']
-        );
+        $this->mediaSource->createContainer($uploaded_file->get('path'), '/');
+        $this->mediaSource->errors = array();
+        if ($this->mediaSource instanceof modFileMediaSource) {
+            $upload = $this->mediaSource->createObject($uploaded_file->get('path'), $uploaded_file->get('file'), '');
+            if ($upload) {
+                copy($data['tmp_name'], urldecode($upload));
+            }
+        } else {
+            $data['name'] = $filename;
+            $upload = $this->mediaSource->uploadObjectsToContainer($uploaded_file->get('path'), array($data));
+        }
+        @unlink($data['tmp_name']);
 
-        if ($file) {
-            $url = $this->mediaSource->getObjectUrl($ticket_file->get('path') . $ticket_file->get('file'));
-            $ticket_file->set('url', $url);
-            $ticket_file->save();
+        if ($upload) {
+            $url = $this->mediaSource->getObjectUrl($uploaded_file->get('path') . $uploaded_file->get('file'));
+            $uploaded_file->set('url', $url);
+            $uploaded_file->save();
+            $uploaded_file->generateThumbnails($this->mediaSource);
 
-            $ticket_file->generateThumbnail($this->mediaSource);
-
-            return $this->success('', $ticket_file->toArray());
+            return $this->success('', $uploaded_file);
         } else {
             $this->modx->log(modX::LOG_LEVEL_ERROR,
                 '[Tickets] Could not save file: ' . print_r($this->mediaSource->getErrors(), 1));
@@ -135,49 +141,59 @@ class TicketFileUploadProcessor extends modObjectProcessor
      */
     public function handleFile()
     {
-        $stream = $name = null;
+        $tf = tempnam(MODX_BASE_PATH, 'tkt_');
 
-        $contentType = isset($_SERVER["HTTP_CONTENT_TYPE"])
-            ? $_SERVER["HTTP_CONTENT_TYPE"]
-            : $_SERVER["CONTENT_TYPE"];
-
-        $file = $this->getProperty('file');
-        if (!empty($file) && file_exists($file)) {
-            $tmp = explode('/', $file);
-            $name = end($tmp);
-            $stream = file_get_contents($file);
-        } elseif (strpos($contentType, "multipart") !== false) {
-            if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
-                $name = $_FILES['file']['name'];
-                $stream = file_get_contents($_FILES['file']['tmp_name']);
-            }
+        if (!empty($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
+            $name = $_FILES['file']['name'];
+            move_uploaded_file($_FILES['file']['tmp_name'], $tf);
         } else {
-            $name = $this->getProperty('name', @$_REQUEST['name']);
-            $stream = file_get_contents('php://input');
+            $file = $this->getProperty('file');
+            if (!empty($file) && (strpos($file, '://') !== false || file_exists($file))) {
+                $tmp = explode('/', $file);
+                $name = end($tmp);
+                if ($stream = fopen($file, 'r')) {
+                    if ($res = fopen($tf, 'w')) {
+                        while (!feof($stream)) {
+                            fwrite($res, fread($stream, 8192));
+                        }
+                        fclose($res);
+                    }
+                    fclose($stream);
+                }
+            }
         }
 
-        if (!empty($stream)) {
+        clearstatcache(true, $tf);
+        if (file_exists($tf) && !empty($name) && $size = filesize($tf)) {
+            $res = fopen($tf, 'r');
+            $hash = sha1(fread($res, 8192));
+            fclose($res);
             $data = array(
                 'name' => $name,
-                'stream' => $stream,
-                'size' => strlen($stream),
+                'tmp_name' => $tf,
+                'hash' => $hash,
+                'size' => $size,
+                'properties' => array(
+                    'size' => $size,
+                ),
             );
-
-            $tf = tempnam(MODX_BASE_PATH, 'tkt_');
-            file_put_contents($tf, $stream);
-            $tmp = getimagesize($tf);
-            if (is_array($tmp)) {
-                $data['properties'] = array(
-                    'width' => $tmp[0],
-                    'height' => $tmp[1],
-                    'bits' => $tmp['bits'],
-                    'mime' => $tmp['mime'],
+            $info = @getimagesize($tf);
+            if (is_array($info)) {
+                $data['properties'] = array_merge(
+                    $data['properties'],
+                    array(
+                        'width' => $info[0],
+                        'height' => $info[1],
+                        'bits' => $info['bits'],
+                        'mime' => $info['mime'],
+                    )
                 );
             }
-            unlink($tf);
 
             return $data;
         } else {
+            unlink($tf);
+
             return false;
         }
     }

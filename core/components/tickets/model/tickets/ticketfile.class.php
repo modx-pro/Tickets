@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @property int $id
+ */
 class TicketFile extends xPDOSimpleObject
 {
     /** @var modPhpThumb $phpThumb */
@@ -34,47 +37,11 @@ class TicketFile extends xPDOSimpleObject
 
 
     /**
-     * @return array|mixed
-     */
-    public function getSourceProperties()
-    {
-        $properties = $this->mediaSource->getPropertyList();
-        $thumbnails = array();
-        if (array_key_exists('thumbnail', $properties) && !empty($properties['thumbnail'])) {
-            $thumbnails = $this->xpdo->fromJSON($properties['thumbnail']);
-        }
-        if (empty($thumbnails)) {
-            $thumbnails = array(
-                'thumb' => array(
-                    'w' => 120,
-                    'h' => 90,
-                    'q' => 90,
-                    'zc' => 'T',
-                    'bg' => '000000',
-                ),
-            );
-        }
-        if (!is_array(current($thumbnails))) {
-            $thumbnails = array('thumb' => $thumbnails);
-        }
-        foreach ($thumbnails as &$set) {
-            if (empty($thumbnails['f'])) {
-                $set['f'] = !empty($properties['thumbnailType'])
-                    ? $properties['thumbnailType']
-                    : 'jpg';
-            }
-        }
-
-        return $thumbnails;
-    }
-
-
-    /**
      * @param modMediaSource $mediaSource
      *
      * @return bool|string
      */
-    public function generateThumbnail(modMediaSource $mediaSource = null)
+    public function generateThumbnails(modMediaSource $mediaSource = null)
     {
         if ($this->get('type') != 'image') {
             return true;
@@ -94,14 +61,57 @@ class TicketFile extends xPDOSimpleObject
             return "[Tickets] Could not retrieve file {$filename} from media source: " . $this->mediaSource->errors['file'];
         }
 
-        $properties = $this->getSourceProperties();
-        foreach ($properties as $name => $set) {
-            if ($image = $this->makeThumbnail($set, $info)) {
-                $this->saveThumbnail($image, $set['f'], $name);
+        $properties = $this->mediaSource->getProperties();
+        $thumbnails = array();
+        if (array_key_exists('thumbnails', $properties) && !empty($properties['thumbnails']['value'])) {
+            $thumbnails = json_decode($properties['thumbnails']['value'], true);
+        } elseif (array_key_exists('thumbnail', $properties) && !empty($properties['thumbnail']['value'])) {
+            $thumbnails = json_decode($properties['thumbnail']['value'], true);
+        }
+
+        if (empty($thumbnails)) {
+            $thumbnails = array(
+                'thumb' => array(
+                    'w' => 120,
+                    'h' => 90,
+                    'q' => 90,
+                    'zc' => 1,
+                    'bg' => '000000',
+                    'f' => !empty($properties['thumbnailType']['value'])
+                        ? $properties['thumbnailType']['value']
+                        : 'jpg',
+                ),
+            );
+        }
+
+        foreach ($thumbnails as $k => $options) {
+            if (empty($options['f'])) {
+                $options['f'] = !empty($properties['thumbnailType']['value'])
+                    ? $properties['thumbnailType']['value']
+                    : 'jpg';
+            }
+            $options['name'] = !is_numeric($k)
+                ? $k
+                : 'thumb';
+            if ($image = $this->makeThumbnail($options, $info)) {
+                $this->saveThumbnail($image, $options);
             }
         }
 
         return true;
+    }
+
+
+    /**
+     * @deprecated
+     *
+     * @param modMediaSource|null $mediaSource
+     *
+     * @return bool|string
+     */
+    public function generateThumbnail(modMediaSource $mediaSource = null)
+    {
+        return $this->generateThumbnails($mediaSource);
     }
 
 
@@ -117,27 +127,23 @@ class TicketFile extends xPDOSimpleObject
             /** @noinspection PhpIncludeInspection */
             require MODX_CORE_PATH . 'model/phpthumb/modphpthumb.class.php';
         }
-        /** @var modX $modx */
-        $modx =& $this->xpdo;
-        $phpThumb = new modPhpThumb($modx);
+        /** @noinspection PhpParamsInspection */
+        $phpThumb = new modPhpThumb($this->xpdo);
         $phpThumb->initialize();
 
         $tf = tempnam(MODX_BASE_PATH, 'tkt_');
         file_put_contents($tf, $info['content']);
         $phpThumb->setSourceFilename($tf);
-
         foreach ($options as $k => $v) {
             $phpThumb->setParameter($k, $v);
         }
 
         if ($phpThumb->GenerateThumbnail()) {
-            imageinterlace($phpThumb->gdimg_output, true);
             if ($phpThumb->RenderOutput()) {
                 @unlink($phpThumb->sourceFilename);
                 @unlink($tf);
-                $this->xpdo->log(modX::LOG_LEVEL_INFO,
-                    '[Tickets] phpThumb messages for "' . $this->get('url') . '". ' . print_r($phpThumb->debugmessages,
-                        1));
+                $this->xpdo->log(modX::LOG_LEVEL_INFO, '[Tickets] phpThumb messages for "' . $this->get('url') . '". ' .
+                    print_r($phpThumb->debugmessages, 1));
 
                 return $phpThumb->outputImageData;
             }
@@ -145,9 +151,8 @@ class TicketFile extends xPDOSimpleObject
         @unlink($phpThumb->sourceFilename);
         @unlink($tf);
 
-        $this->xpdo->log(modX::LOG_LEVEL_ERROR,
-            '[Tickets] Could not generate thumbnail for "' . $this->get('url') . '". ' . print_r($phpThumb->debugmessages,
-                1));
+        $this->xpdo->log(modX::LOG_LEVEL_ERROR, '[Tickets] Could not generate thumbnail for "' .
+            $this->get('url') . '". ' . print_r($phpThumb->debugmessages, 1));
 
         return false;
     }
@@ -155,15 +160,20 @@ class TicketFile extends xPDOSimpleObject
 
     /**
      * @param $raw_image
-     * @param string $ext
-     * @param string $name
+     * @param array $options
      *
      * @return bool
      */
-    public function saveThumbnail($raw_image, $ext = 'jpg', $name = 'thumb')
+    public function saveThumbnail($raw_image, $options = array())
     {
-        $path = $this->get('path');
-        $filename = preg_replace('/\.[a-z]+$/i', '', $this->get('file')) . '_' . $name . '.' . $ext;
+        $filename = preg_replace('#\.[a-z]+$#i', '', $this->get('file')) . '.' . $options['f'];
+        $name = !empty($options['name'])
+            ? $options['name']
+            : 'thumb';
+        $thumb_dir = preg_replace('#[^\w]#', '', $name);
+        $path = $this->get('path') . $thumb_dir . '/';
+
+        $this->mediaSource->createContainer($path, '/');
         if ($file = $this->mediaSource->createObject($path, $filename, $raw_image)) {
             $url = $this->mediaSource->getObjectUrl($path . $filename);
             // Add thumbs
@@ -210,12 +220,20 @@ class TicketFile extends xPDOSimpleObject
                     if (empty($thumb)) {
                         continue;
                     }
+                    if (strpos($thumb, '/' . $key . '/') !== false) {
+                        $old_path_thumb = $old_path . $key . '/';
+                        $new_path_thumb = $new_path . $key . '/';
+                        $this->mediaSource->createContainer($new_path_thumb, '/');
+                    } else {
+                        $old_path_thumb = $old_path;
+                        $new_path_thumb = $new_path;
+                    }
                     $tmp = explode('/', $thumb);
                     $thumb = end($tmp);
-                    if ($this->mediaSource->moveObject($old_path . $thumb, $new_path)) {
-                        $thumbs[$key] = $this->mediaSource->getObjectUrl($new_path . $thumb);
+                    if ($this->mediaSource->moveObject($old_path_thumb . $thumb, $new_path_thumb)) {
+                        $thumbs[$key] = $this->mediaSource->getObjectUrl($new_path_thumb . $thumb);
                         if ($key == 'thumb') {
-                            $this->set('thumb', $this->mediaSource->getObjectUrl($new_path . $thumb));
+                            $this->set('thumb', $this->mediaSource->getObjectUrl($new_path_thumb . $thumb));
                         }
                     }
                 }
@@ -239,13 +257,16 @@ class TicketFile extends xPDOSimpleObject
                 if (!$thumbs = $this->get('thumbs')) {
                     $thumbs = array('thumb' => $this->get('thumb'));
                 }
-                foreach ($thumbs as $thumb) {
+                foreach ($thumbs as $key => $thumb) {
                     if (empty($thumb)) {
                         continue;
                     }
+                    $path = strpos($thumb, '/' . $key . '/') !== false
+                        ? $this->get('path') . $key . '/'
+                        : $this->get('path');
                     $tmp = explode('/', $thumb);
                     $filename = end($tmp);
-                    $this->mediaSource->removeObject($this->get('path') . $filename);
+                    $this->mediaSource->removeObject($path . $filename);
                 }
             }
             /*

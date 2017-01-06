@@ -1,6 +1,8 @@
 <?php
 
+/** @noinspection PhpIncludeInspection */
 require_once MODX_CORE_PATH . 'model/modx/modprocessor.class.php';
+/** @noinspection PhpIncludeInspection */
 require_once MODX_CORE_PATH . 'model/modx/processors/resource/create.class.php';
 
 class TicketCreateProcessor extends modResourceCreateProcessor
@@ -166,7 +168,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor
             if ($this->parentResource) {
                 if ($this->parentResource->get('class_key') != 'TicketsSection') {
                     return $this->modx->lexicon('ticket_err_wrong_parent');
-                } elseif (!$this->parentResource->checkPolicy('section_add_children')) {
+                } elseif (!$this->parentResource->checkPolicy(array('section_add_children'))) {
                     return $this->modx->lexicon('ticket_err_wrong_parent');
                 }
             } else {
@@ -281,7 +283,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor
 
             /** @var modTemplateVarResource $tv */
             foreach ($tvs as $tv) {
-                $values['tv' . $tv->id] = $this->getProperty($tv->name, $tv->get('value'));
+                $values['tv' . $tv->get('id')] = $this->getProperty($tv->get('name'), $tv->get('value'));
             }
 
             if (!empty($values)) {
@@ -322,18 +324,18 @@ class TicketCreateProcessor extends modResourceCreateProcessor
         $count = 0;
         /** @var TicketFile $item */
         foreach ($collection as $item) {
-            $hash = $item->get('hash');
             if ($item->get('deleted')) {
                 $replace[$item->get('url')] = '';
                 $item->remove();
-            } elseif (!isset($hashes[$hash])) {
+            } else {
                 $old_url = $item->get('url');
                 $item->set('parent', $this->object->get('id'));
                 $item->save();
-                $new_url = $item->get('url');
-                if ($old_url != $new_url) {
-                    $replace[preg_replace('/\.[a-z]+$/i', '', $old_url)] = preg_replace('/\.[a-z]+$/i', '', $new_url);
-                }
+                $replace[$old_url] = array(
+                    'url' => $item->get('url'),
+                    'thumb' => $item->get('thumb'),
+                    'thumbs' => $item->get('thumbs'),
+                );
                 $count++;
             }
         }
@@ -352,12 +354,19 @@ class TicketCreateProcessor extends modResourceCreateProcessor
                 foreach ($matches[0] as $tag) {
                     foreach ($replace as $from => $to) {
                         if (strpos($tag, $from) !== false) {
-                            if ($to == '') {
+                            if (is_array($to)) {
+                                $src[] = $from;
+                                $dst[] = $to['url'];
+                                if (empty($to['thumbs'])) {
+                                    $to['thumbs'] = array($to['thumb']);
+                                }
+                                foreach ($to['thumbs'] as $key => $thumb) {
+                                    $src[] = str_replace('/' . $this->object->id . '/', '/0/', $thumb);
+                                    $dst[] = str_replace('/0/', '/' . $this->object->id . '/', $thumb);
+                                }
+                            } else {
                                 $src[] = $tag;
                                 $dst[] = '';
-                            } else {
-                                $src[] = $from;
-                                $dst[] = $to;
                             }
                             break;
                         }

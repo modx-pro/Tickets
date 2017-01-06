@@ -35,8 +35,8 @@ Tickets.Uploader = new plupload.Uploader({
     },
 
     resize: {
-        width: TicketsConfig.source.width,
-        height: TicketsConfig.source.height
+        width: TicketsConfig.source.width || 1920,
+        height: TicketsConfig.source.height || 1080
     },
 
     flash_swf_url: TicketsConfig.jsUrl + 'web/lib/plupload/js/Moxie.swf',

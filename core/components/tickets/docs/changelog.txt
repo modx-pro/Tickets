@@ -1,5 +1,11 @@
 Changelog for Tickets.
 
+1.8.0 pl
+==========
+- Added support of ms2Gallery 2.0.
+- TicketFile thumbnails now stored in a separate folder.
+- Improved update of ticket form by data from server.
+
 1.7.6 pl
 ==========
 - Fixed the work of TicketMeta with usual resources.

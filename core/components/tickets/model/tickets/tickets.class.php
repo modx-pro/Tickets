@@ -267,6 +267,9 @@ class Tickets
         $message = '';
         $results = array(
             'id' => $id,
+            'content' => !empty($ticket['content'])
+                ? html_entity_decode($ticket['content'])
+                : '',
         );
         switch ($data['action']) {
             case 'ticket/save':
@@ -294,6 +297,15 @@ class Tickets
                     $url = $this->modx->getOption('site_url');
                 }
                 $results['redirect'] = $url;
+        }
+
+        if ($this->modx->getOption('ms2gallery_sync_tickets')) {
+            /** @var ms2Gallery $ms2Gallery */
+            $ms2Gallery = $this->modx->getService('ms2gallery', 'ms2Gallery',
+                MODX_CORE_PATH . 'components/ms2gallery/model/ms2gallery/');
+            if ($ms2Gallery && method_exists($ms2Gallery, 'syncFiles')) {
+                $ms2Gallery->syncFiles('tickets', $id, true);
+            }
         }
 
         return $this->success($message, $results);

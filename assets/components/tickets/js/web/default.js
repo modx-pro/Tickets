@@ -236,6 +236,12 @@ var Tickets = {
                         }
                         if (action == 'ticket/save') {
                             $(form).find('input[type="submit"], input[type="button"]').removeAttr('disabled');
+                            if (response.data['content']) {
+                                $('#ticket-editor').val(response.data['content']);
+                            }
+                            $('#ticket-files-list').find('.deleted').each(function() {
+                                $(this).remove();
+                            })
                         }
                         else if (response.data.redirect) {
                             document.location.href = response.data.redirect;

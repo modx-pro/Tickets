@@ -1,6 +1,8 @@
 <?php
 
+/** @noinspection PhpIncludeInspection */
 require_once MODX_CORE_PATH . 'model/modx/modprocessor.class.php';
+/** @noinspection PhpIncludeInspection */
 require_once MODX_CORE_PATH . 'model/modx/processors/resource/update.class.php';
 
 class TicketUpdateProcessor extends modResourceUpdateProcessor
@@ -236,7 +238,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor
             if ($this->parentResource) {
                 if ($this->parentResource->get('class_key') != 'TicketsSection') {
                     $this->addFieldError('parent', $this->modx->lexicon('ticket_err_wrong_parent'));
-                } elseif (!$this->parentResource->checkPolicy('section_add_children')) {
+                } elseif (!$this->parentResource->checkPolicy(array('section_add_children'))) {
                     $this->addFieldError('parent', $this->modx->lexicon('ticket_err_wrong_parent'));
                 }
             } else {
@@ -285,7 +287,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor
 
             /** @var modTemplateVarResource $tv */
             foreach ($tvs as $tv) {
-                $values['tv' . $tv->id] = $this->getProperty($tv->name, $tv->get('value'));
+                $values['tv' . $tv->get('id')] = $this->getProperty($tv->get('name'), $tv->get('value'));
             }
 
             if (!empty($values)) {
@@ -318,29 +320,27 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor
     {
         $q = $this->modx->newQuery('TicketFile');
         $q->where(array('class' => 'Ticket'));
-        $q->andCondition(array('parent' => 0, 'createdby' => $this->modx->user->get('id')), null, 1);
-        $q->orCondition(array('parent' => $this->object->get('id')), null, 1);
+        $q->andCondition(array('parent' => 0, 'createdby' => $this->modx->user->id), null, 1);
+        $q->orCondition(array('parent' => $this->object->id), null, 1);
         $q->sortby('createdon', 'ASC');
         $collection = $this->modx->getIterator('TicketFile', $q);
 
-        $hashes = $replace = array();
+        $replace = array();
         $count = 0;
         /** @var TicketFile $item */
         foreach ($collection as $item) {
-            $hash = $item->get('hash');
             if ($item->get('deleted')) {
                 $replace[$item->get('url')] = '';
                 $item->remove();
-            } elseif ($item->get('parent')) {
-                $hashes[$hash] = true;
-            } elseif (!isset($hashes[$hash])) {
+            } elseif (!$item->get('parent')) {
                 $old_url = $item->get('url');
-                $item->set('parent', $this->object->get('id'));
+                $item->set('parent', $this->object->id);
                 $item->save();
-                $new_url = $item->get('url');
-                if ($old_url != $new_url) {
-                    $replace[preg_replace('/\.[a-z]+$/i', '', $old_url)] = preg_replace('/\.[a-z]+$/i', '', $new_url);
-                }
+                $replace[$old_url] = array(
+                    'url' => $item->get('url'),
+                    'thumb' => $item->get('thumb'),
+                    'thumbs' => $item->get('thumbs'),
+                );
                 $count++;
             }
         }
@@ -359,14 +359,26 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor
                 foreach ($matches[0] as $tag) {
                     foreach ($replace as $from => $to) {
                         if (strpos($tag, $from) !== false) {
-                            if ($to == '') {
+                            if (is_array($to)) {
+                                $src[] = $from;
+                                $dst[] = $to['url'];
+                                if (empty($to['thumbs'])) {
+                                    $to['thumbs'] = array($to['thumb']);
+                                }
+                                foreach ($to['thumbs'] as $key => $thumb) {
+                                    if (strpos($thumb, '/' . $key . '/') === false) {
+                                        // Old thumbnails
+                                        $src[] = preg_replace('#\.[a-z]+$#i', '_thumb$0', $from);
+                                        $dst[] = preg_replace('#\.[a-z]+$#i', '_thumb$0', $thumb);
+                                    } else {
+                                        // New thumbnails
+                                        $src[] = str_replace('/' . $this->object->id . '/', '/0/', $thumb);
+                                        $dst[] = str_replace('/0/', '/' . $this->object->id . '/', $thumb);
+                                    }
+                                }
+                            } else {
                                 $src[] = $tag;
                                 $dst[] = '';
-                            } else {
-                                $src[] = $from;
-                                $dst[] = $to;
-                                $src[] = preg_replace('/\.[a-z]+$/i', '_thumb$0', $from);
-                                $dst[] = preg_replace('/\.[a-z]+$/i', '_thumb$0', $to);
                             }
                             break;
                         }

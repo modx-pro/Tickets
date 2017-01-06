@@ -55,9 +55,9 @@ if ($transport->xpdo) {
                         ),
                         'value' => 'jpg',
                     ),
-                    'thumbnail' => array(
-                        'name' => 'thumbnail',
-                        'desc' => 'tickets.source_thumbnail_desc',
+                    'thumbnails' => array(
+                        'name' => 'thumbnails',
+                        'desc' => 'tickets.source_thumbnails_desc',
                         'type' => 'textarea',
                         'lexicon' => 'tickets:setting',
                         'value' => '{"thumb":{"w":120,"h":90,"q":90,"zc":"1","bg":"000000"}}',
