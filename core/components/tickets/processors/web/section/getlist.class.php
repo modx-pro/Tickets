@@ -69,7 +69,10 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor
         $this->currentIndex = 0;
         /** @var xPDOObject|modAccessibleObject $object */
         foreach ($data['results'] as $object) {
-            if ($object instanceof modAccessibleObject && !$object->checkPolicy('section_add_children') && $object->get('id') != $this->current_category) {
+            $check = $object instanceof modAccessibleObject &&
+                !$object->checkPolicy(array('section_add_children' => true)) &&
+                $object->get('id') != $this->current_category;
+            if ($check) {
                 continue;
             }
 
