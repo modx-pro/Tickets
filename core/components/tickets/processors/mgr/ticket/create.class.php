@@ -168,7 +168,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor
             if ($this->parentResource) {
                 if ($this->parentResource->get('class_key') != 'TicketsSection') {
                     return $this->modx->lexicon('ticket_err_wrong_parent');
-                } elseif (!$this->parentResource->checkPolicy(array('section_add_children'))) {
+                } elseif (!$this->parentResource->checkPolicy('section_add_children')) {
                     return $this->modx->lexicon('ticket_err_wrong_parent');
                 }
             } else {
