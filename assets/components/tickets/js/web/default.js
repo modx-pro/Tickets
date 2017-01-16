@@ -317,6 +317,7 @@ var Tickets = {
                 },
                 success: function (response) {
                     $(button).removeAttr('disabled');
+                    $(document).trigger('tickets_complete', response);
                     if (response.success) {
                         Tickets.forms.comment(false);
                         $('#comment-preview-placeholder').html('').hide();
