@@ -79,6 +79,9 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController
         });
         // ]]>
         </script>');
+        
+        // load RTE
+        $this->loadRichTextEditor();
     }
 
 }
