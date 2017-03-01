@@ -188,6 +188,7 @@ var Tickets = {
                     return true;
                 },
                 success: function (response) {
+                    $(document).trigger('tickets_ticket_preview', response);
                     var element = $('#ticket-preview-placeholder');
                     if (response.success) {
                         element.html(response.data.preview).show();
@@ -228,6 +229,7 @@ var Tickets = {
                     return true;
                 },
                 success: function (response) {
+                    $(document).trigger('tickets_ticket_save', response);
                     $('#ticketForm.create').sisyphus().manuallyReleaseData();
 
                     if (response.success) {
@@ -296,6 +298,7 @@ var Tickets = {
                     return true;
                 },
                 success: function (response) {
+                    $(document).trigger('tickets_comment_preview', response);
                     $(button).removeAttr('disabled');
                     if (response.success) {
                         $('#comment-preview-placeholder').html(response.data.preview).show();
@@ -324,6 +327,7 @@ var Tickets = {
                 },
                 success: function (response) {
                     $(button).removeAttr('disabled');
+                    $(document).trigger('tickets_comment_save', response);
                     if (response.success) {
                         Tickets.forms.comment(false);
                         $('#comment-preview-placeholder').html('').hide();

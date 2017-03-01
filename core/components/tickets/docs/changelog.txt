@@ -5,7 +5,8 @@ Changelog for Tickets.
 - Added "kbd" to allowed preformatted tags.
 - [#149] Fixed loading rich text editors in controllers (especially TinyMCE).
 - [#148] [TicketComments] Fixed the loading of all comments when &thread is not specified.
-- [#135] [TicketComments] Add ability to custom "error" element nesting in javascript.
+- [#147] Added an javascript events on save and preview comments and tickets.
+- [#135] [TicketComments] Added ability to custom "error" element nesting in javascript.
 
 1.8.0 pl
 ==========
