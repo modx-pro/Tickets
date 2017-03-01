@@ -4,7 +4,7 @@ Changelog for Tickets.
 ==========
 - Added "kbd" to allowed preformatted tags.
 - [#149] Fixed loading rich text editors in controllers (especially TinyMCE).
-
+- [#148] [TicketComments] Fixed the loading of all comments when &thread is not specified.
 
 1.8.0 pl
 ==========

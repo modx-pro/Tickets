@@ -63,6 +63,9 @@ if (!empty($parents) || !empty($resources) || !empty($threads)) {
     foreach ($rows as $item) {
         $threads[] = $item['id'];
     }
+    if (!count($threads)) {
+        return;
+    };
 }
 
 // Prepare query to db
