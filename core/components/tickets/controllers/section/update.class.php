@@ -73,6 +73,9 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
         });
         // ]]>
         </script>');
+
+        // load RTE
+        $this->loadRichTextEditor();
     }
 
 }

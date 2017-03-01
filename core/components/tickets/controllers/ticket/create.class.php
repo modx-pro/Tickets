@@ -81,6 +81,9 @@ class TicketCreateManagerController extends ResourceCreateManagerController
         });
         // ]]>
         </script>');
+        
+        // load RTE
+        $this->loadRichTextEditor();
     }
 
 }
