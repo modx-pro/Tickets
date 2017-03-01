@@ -178,7 +178,7 @@ if ($transport->xpdo) {
                                 'options' => array(),
                                 'lexicon' => 'jevix:properties',
                                 'area' => '',
-                                'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,pre,acronym,h1,h2,h3,h4,h5,h6,cut,br,code,s,blockquote,table,tr,th,td,video',
+                                'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,acronym,h1,h2,h3,h4,h5,h6,cut,br,pre,code,kbd,s,blockquote,table,tr,th,td,video',
                             ),
                             'cfgSetTagChilds' => array(
                                 'name' => 'cfgSetTagChilds',
@@ -206,6 +206,15 @@ if ($transport->xpdo) {
                                 'lexicon' => 'jevix:properties',
                                 'area' => '',
                                 'value' => 'br,img,cut',
+                            ),
+                            'cfgSetTagPreformatted' => array(
+                                'name' => 'cfgSetTagPreformatted',
+                                'desc' => 'cfgSetTagPreformatted',
+                                'type' => 'textfield',
+                                'options' => array(),
+                                'lexicon' => 'jevix:properties',
+                                'area' => '',
+                                'value' => 'pre,code,kbd',
                             ),
                         ),
                     ));
@@ -239,7 +248,7 @@ if ($transport->xpdo) {
                                 'options' => array(),
                                 'lexicon' => 'jevix:properties',
                                 'area' => '',
-                                'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,pre,acronym,br,code,s,blockquote',
+                                'value' => 'a,img,i,b,u,em,strong,li,ol,ul,sup,abbr,acronym,br,pre,code,kbd,s,blockquote',
                             ),
                             'cfgSetTagChilds' => array(
                                 'name' => 'cfgSetTagChilds',
@@ -267,6 +276,15 @@ if ($transport->xpdo) {
                                 'lexicon' => 'jevix:properties',
                                 'area' => '',
                                 'value' => 'br,img',
+                            ),
+                            'cfgSetTagPreformatted' => array(
+                                'name' => 'cfgSetTagPreformatted',
+                                'desc' => 'cfgSetTagPreformatted',
+                                'type' => 'textfield',
+                                'options' => array(),
+                                'lexicon' => 'jevix:properties',
+                                'area' => '',
+                                'value' => 'pre,code,kbd',
                             ),
                         ),
                     ));
