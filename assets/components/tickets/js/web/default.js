@@ -255,6 +255,13 @@ var Tickets = {
                             for (i in response.data) {
                                 field = response.data[i];
                                 $(form).find('[name="' + field.field + '"]').parent().find('.error').text(field.message)
+                                var elem = $(form).find('[name="' + field.field + '"]').parent().find('.error');
+                                if (!elem.length) {
+                                    elem = $(form).find('#' + field.field + '-error');
+                                }
+                                if (elem.length) {
+                                    elem.text(field.message)
+                                }
                             }
                         }
                     }
@@ -343,14 +350,17 @@ var Tickets = {
                             for (i in response.data) {
                                 field = response.data[i];
                                 var elem = $(form).find('[name="' + field.field + '"]').parent().find('.error');
-                                if (elem.length > 0) {
+                                if (!elem.length) {
+                                    elem = $(form).find('#' + field.field + '-error');
+                                }
+                                if (elem.length) {
                                     elem.text(field.message)
                                 }
                                 else if (field.field && field.message) {
                                     errors.push(field.field + ': ' + field.message);
                                 }
                             }
-                            if (errors.length > 0) {
+                            if (errors.length) {
                                 Tickets.Message.error(errors.join('<br/>'));
                             }
                         }
