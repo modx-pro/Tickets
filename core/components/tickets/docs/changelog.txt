@@ -3,6 +3,7 @@ Changelog for Tickets.
 1.8.1 pl
 ==========
 - Added "kbd" to allowed preformatted tags.
+- [#149] Fixed loading rich text editors in controllers (especially TinyMCE).
 
 
 1.8.0 pl

@@ -64,6 +64,9 @@ class TicketsSectionCreateManagerController extends ResourceCreateManagerControl
         });
         // ]]>
         </script>');
+
+        // load RTE
+        $this->loadRichTextEditor();
     }
 
 }
