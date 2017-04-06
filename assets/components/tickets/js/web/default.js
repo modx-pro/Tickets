@@ -441,7 +441,7 @@ var Tickets = {
                         data = comment[0].outerHTML;
                     }
                 }
-                $('#comment-' + parent + ' > .comments-list').append(data);
+                $('#comment-' + parent + ' > .comments-list, #comment-' + parent + ' > div > .comments-list').append(data);
             }
 
             if (children.length > 0) {
@@ -479,7 +479,7 @@ var Tickets = {
             $('input[name="parent"]', form).val(comment_id);
             $('input[name="id"]', form).val(0);
 
-            var reply = $('#comment-' + comment_id + ' > .comment-reply');
+            var reply = $('#comment-' + comment_id + ' > .comment-reply, #comment-' + comment_id + ' > div > .comment-reply');
             form.insertAfter(reply).show();
             $('a', reply).hide();
             reply.parents('.ticket-comment').removeClass('ticket-comment-new');
