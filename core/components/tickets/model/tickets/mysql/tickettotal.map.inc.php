@@ -4,6 +4,10 @@ $xpdo_meta_map['TicketTotal']= array (
   'version' => '1.1',
   'table' => 'tickets_totals',
   'extends' => 'xPDOObject',
+  'tableMeta' => 
+  array (
+    'engine' => 'InnoDB',
+  ),
   'fields' => 
   array (
     'id' => NULL,

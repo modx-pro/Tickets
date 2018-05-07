@@ -3,6 +3,10 @@ $xpdo_meta_map['Ticket']= array (
   'package' => 'tickets',
   'version' => '1.1',
   'extends' => 'modResource',
+  'tableMeta' => 
+  array (
+    'engine' => 'InnoDB',
+  ),
   'fields' => 
   array (
   ),

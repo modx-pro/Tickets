@@ -4,6 +4,10 @@ $xpdo_meta_map['TicketFile']= array (
   'version' => '1.1',
   'table' => 'tickets_files',
   'extends' => 'xPDOSimpleObject',
+  'tableMeta' => 
+  array (
+    'engine' => 'InnoDB',
+  ),
   'fields' => 
   array (
     'parent' => 0,

@@ -1,5 +1,12 @@
 Changelog for Tickets.
 
+1.8.2 pl
+==========
+- Unpublished tickets send code HTTP 403.
+- Fixed bug with ability to overwrite properties of TicketsSection when you save it in manager.
+- Fixed auto change of "createdon" field in "TicketAuthor" class.
+- Fixed comments model.
+
 1.8.1 pl
 ==========
 - Added "kbd" to allowed preformatted tags.

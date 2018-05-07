@@ -31,6 +31,8 @@ if (!empty($_REQUEST['thread']) && $thread = $modx->getObject('TicketThread', ar
 $context = 'web';
 if (!empty($thread) && $thread->get('resource') && $object = $thread->getOne('Resource')) {
     $context = $object->get('context_key');
+} elseif (!empty($_REQUEST['section']) && $object = $modx->getObject('modResource', (int)$_REQUEST['section'])) {
+    $context = $object->get('context_key');
 } elseif (!empty($_REQUEST['parent']) && $object = $modx->getObject('modResource', (int)$_REQUEST['parent'])) {
     $context = $object->get('context_key');
 } elseif (!empty($_REQUEST['ctx']) && $object = $modx->getObject('modContext', array('key' => $_REQUEST['ctx']))) {

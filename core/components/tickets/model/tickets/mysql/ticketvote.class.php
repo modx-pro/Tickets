@@ -1,3 +1,3 @@
 <?php
-require_once (dirname(dirname(__FILE__)) . '/ticketvote.class.php');
+require_once (dirname(__DIR__) . '/ticketvote.class.php');
 class TicketVote_mysql extends TicketVote {}

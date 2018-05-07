@@ -4,6 +4,10 @@ $xpdo_meta_map['TicketThread']= array (
   'version' => '1.1',
   'table' => 'tickets_threads',
   'extends' => 'xPDOSimpleObject',
+  'tableMeta' => 
+  array (
+    'engine' => 'InnoDB',
+  ),
   'fields' => 
   array (
     'resource' => 0,

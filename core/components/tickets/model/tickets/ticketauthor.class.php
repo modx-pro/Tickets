@@ -1,6 +1,9 @@
 <?php
 
-/** @property int $id */
+/**
+ * @property int $id
+ * @property string createdon
+ */
 class TicketAuthor extends xPDOObject
 {
     protected $_ratings = array();
@@ -584,7 +587,8 @@ class TicketAuthor extends xPDOObject
      */
     public function save($cacheFlag = null)
     {
-        if ($this->isNew()) {
+        $createdon = parent::get('createdon');
+        if ((!$createdon || $createdon == '0000-00-00 00:00:00') && $this->isNew()) {
             $this->set('createdon', time());
         }
 

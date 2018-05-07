@@ -58,7 +58,7 @@ switch ($modx->event->name) {
                             $modx->sendRedirect($modx->makeUrl($ticket_id),
                                 array('responseCode' => 'HTTP/1.1 301 Moved Permanently'));
                         } elseif ($unp_id = $modx->getOption('tickets.unpublished_ticket_page')) {
-                            $modx->sendForward($unp_id);
+                            $modx->sendForward($unp_id, 'HTTP/1.1 403 Forbidden');
                         }
                     }
                 }

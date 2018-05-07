@@ -4,6 +4,10 @@ $xpdo_meta_map['TicketAuthorAction']= array (
   'version' => '1.1',
   'table' => 'tickets_author_actions',
   'extends' => 'xPDOObject',
+  'tableMeta' => 
+  array (
+    'engine' => 'InnoDB',
+  ),
   'fields' => 
   array (
     'id' => NULL,

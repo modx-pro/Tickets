@@ -4,6 +4,10 @@ $xpdo_meta_map['TicketComment']= array (
   'version' => '1.1',
   'table' => 'tickets_comments',
   'extends' => 'xPDOSimpleObject',
+  'tableMeta' => 
+  array (
+    'engine' => 'InnoDB',
+  ),
   'fields' => 
   array (
     'thread' => 0,
@@ -49,14 +53,14 @@ $xpdo_meta_map['TicketComment']= array (
     'text' => 
     array (
       'dbtype' => 'text',
-      'phptype' => 'text',
+      'phptype' => 'string',
       'null' => false,
       'default' => '',
     ),
     'raw' => 
     array (
       'dbtype' => 'text',
-      'phptype' => 'text',
+      'phptype' => 'string',
       'null' => false,
       'default' => '',
     ),
