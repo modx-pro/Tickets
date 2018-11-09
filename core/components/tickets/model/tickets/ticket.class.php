@@ -661,10 +661,10 @@ class Ticket extends modResource
         }
 
         /** @var TicketTotal $total */
-        if ($total = $this->xpdo->newObject('TicketTotal', array('id' => $this->id, 'class' => 'Ticket'))) {
+        if ($total = $this->xpdo->getObject('TicketTotal', array('id' => $this->id, 'class' => 'Ticket'))) {
             $total->remove();
         }
-        if ($total = $this->xpdo->newObject('TicketTotal', array('id' => $this->parent, 'class' => 'TicketsSection'))) {
+        if ($total = $this->xpdo->getObject('TicketTotal', array('id' => $this->parent, 'class' => 'TicketsSection'))) {
             $total->set('children', $total->get('children') - 1);
             $total->save();
         }
