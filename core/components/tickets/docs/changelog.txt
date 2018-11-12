@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.8.4 pl
+==========
+- The calendar in the manager now respects the "manager_week_start" system setting.
+
 1.8.3 pl
 ==========
 - Fixed removing TicketTotal on removing Ticket.
