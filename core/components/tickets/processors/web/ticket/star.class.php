@@ -23,7 +23,7 @@ class TicketStarProcessor extends modObjectProcessor
      */
     public function process()
     {
-        $id = $this->getProperty('id');
+        $id = (int)$this->getProperty('id');
 
         /** @var Ticket $object */
         if (!$object = $this->modx->getObject('modResource', $id)) {

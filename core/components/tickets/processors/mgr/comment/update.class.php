@@ -32,7 +32,7 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor
         $parent = $this->getProperty('parent');
         // New parent is in other thread
         if ($parent != 0 && $parent != $this->object->get('parent')) {
-            if ($parent = $this->modx->getObject('TicketComment', $this->getProperty('parent'))) {
+            if ($parent = $this->modx->getObject('TicketComment', array('id' => (int)$parent))) {
                 $this->setProperty('thread', $parent->get('thread'));
             }
         }

@@ -129,7 +129,7 @@ if (!empty($allowFiles)) {
         'files' => $files,
     ));
     /** @var modMediaSource $source */
-    if ($source = $modx->getObject('sources.modMediaSource', $source)) {
+    if ($source = $modx->getObject('sources.modMediaSource', array('id' => $source))) {
         $properties = $source->getPropertyList();
         $config = array(
             'size' => !empty($properties['maxUploadSize'])

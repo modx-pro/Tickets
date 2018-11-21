@@ -18,7 +18,7 @@ class TicketFileUploadProcessor extends modObjectProcessor
             return $this->modx->lexicon('access_denied');
         }
 
-        $tid = $this->getProperty('tid');
+        $tid = (int)$this->getProperty('tid');
         if (!$this->ticket = $this->modx->getObject('Ticket', $tid)) {
             $this->ticket = $this->modx->newObject('Ticket');
             $this->ticket->set('id', 0);
@@ -26,7 +26,7 @@ class TicketFileUploadProcessor extends modObjectProcessor
 
         if ($source = $this->getProperty('source')) {
             /** @var modMediaSource $mediaSource */
-            $mediaSource = $this->modx->getObject('sources.modMediaSource', $source);
+            $mediaSource = $this->modx->getObject('sources.modMediaSource', (int)$source);
             $mediaSource->set('ctx', $this->modx->context->key);
             if ($mediaSource->initialize()) {
                 $this->mediaSource = $mediaSource;

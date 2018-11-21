@@ -15,7 +15,7 @@ if (empty($id)) {
     $id = $modx->resource->id;
 }
 /** @var Ticket|modResource $ticket */
-if (!$ticket = $modx->getObject('modResource', $id)) {
+if (!$ticket = $modx->getObject('modResource', array('id' => $id))) {
     return 'Could not load resource with id = ' . $id;
 }
 
@@ -110,7 +110,7 @@ if ($data['rating'] > 0) {
 $data['rating_total'] = abs($data['rating_plus']) + abs($data['rating_minus']);
 
 /** @var TicketsSection $section */
-if ($section = $modx->getObject('TicketsSection', $ticket->parent)) {
+if ($section = $modx->getObject('TicketsSection', array('id' => $ticket->parent))) {
     $data = array_merge($data, $section->toArray('section.'));
 }
 if (isset($data['section.properties']['ratings']['days_ticket_vote'])) {
