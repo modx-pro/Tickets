@@ -24,11 +24,11 @@ class CommentStarProcessor extends modObjectProcessor
      */
     public function process()
     {
-        $id = $this->getProperty('id');
+        $id = (int)$this->getProperty('id');
 
         /** @var TicketComment $object */
         if (!$object = $this->modx->getObject('TicketComment', $id)) {
-            return $this->failure($this->modx->lexicon('ticket_comment_err_id', array('id' => $id)));
+            return $this->failure($this->modx->lexicon('ticket_comment_err_id', compact('id')));
         }
 
         $data = array(

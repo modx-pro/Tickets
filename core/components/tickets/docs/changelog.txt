@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.8.5 pl
+==========
+- Fixed possible SQL injections by Agel_Nash.
+
 1.8.4 pl
 ==========
 - The calendar in the manager now respects the "manager_week_start" system setting.

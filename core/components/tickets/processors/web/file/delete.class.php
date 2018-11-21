@@ -24,7 +24,7 @@ class TicketFileDeleteProcessor extends modObjectProcessor
      */
     public function process()
     {
-        $id = $this->getProperty('id');
+        $id = (int)$this->getProperty('id');
         /** @var TicketFile $file */
         if (!$file = $this->modx->getObject($this->classKey, $id)) {
             return $this->failure($this->modx->lexicon('ticket_err_file_ns'));

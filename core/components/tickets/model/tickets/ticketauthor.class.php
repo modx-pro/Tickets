@@ -21,7 +21,7 @@ class TicketAuthor extends xPDOObject
     public function addAction($type, $id, $ticket_id, $createdby, $multiplier = 1)
     {
         /** @var Ticket $ticket */
-        $ticket = $this->xpdo->getObject('modResource', $ticket_id);
+        $ticket = $this->xpdo->getObject('modResource', array('id' => $ticket_id));
         if (!$ticket || !($ticket instanceof Ticket) || empty($type)) {
             return false;
         }
@@ -569,7 +569,7 @@ class TicketAuthor extends xPDOObject
     {
         if (!isset($this->_ratings[$section_id])) {
             /** @var TicketsSection $section */
-            if (!$section = $this->xpdo->getObject('TicketsSection', $section_id)) {
+            if (!$section = $this->xpdo->getObject('TicketsSection', array('id' => $section_id))) {
                 $section = $this->xpdo->newObject('TicketsSection');
             }
 
