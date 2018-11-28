@@ -9,7 +9,7 @@ Tickets.window.Thread = function (config) {
         width: 700,
         layout: 'anchor',
         autoHeight: true,
-        cls: 'tickets-window modx23',
+        cls: 'tickets-window tickets',
     });
     Tickets.window.Thread.superclass.constructor.call(this, config);
 };

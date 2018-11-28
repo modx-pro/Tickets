@@ -15,11 +15,8 @@ a.link, a.tickets-link {color: #005580;}
 .x-grid3-col-pagetitle {font-weight: bold;}
 
 /* Row actions */
-.modx23 .x-grid3-col-actions {
+.tickets .x-grid3-col-actions {
 	padding: 3px 0 3px 5px;
-}
-.modx22 .x-grid3-col-actions {
-	padding: 8px 0 3px 5px;
 }
 
 ul.tickets-row-actions {
@@ -92,32 +89,11 @@ a.x-menu-item .x-menu-item-text .icon {
 .x-field-search-go {right: 31px !important; border-radius: 0 !important;}
 .x-field-search-go:before {content: '\f002' !important;}
 
-.modx22 .x-form-trigger.x-field-search-clear {
-	position: absolute;
-	background-image: none !important;
-	right: 0;
-	font: normal normal normal 14px/1 FontAwesome !important;
-	text-align: center;
-	padding-top: 7px;
-	height: 23px;
-	border-left: 1px solid #e4e4e4 !important;
-}
-.modx22 .x-form-trigger.x-field-search-go {
-	background-image: none !important;
-	font: normal normal normal 14px/1 FontAwesome !important;
-	text-align: center;
-	padding-top: 7px;
-	height: 23px;
-	border-left: 1px solid #e4e4e4 !important;
-}
-
 /* Windows */
-.tickets-window.modx23 .x-form-label-top .x-form-item:first-of-type label.x-form-item-label,
-.tickets-section-settings.modx23 .x-form-label-top .x-form-item:first-of-type label.x-form-item-label,
-#modx-resource-settings.modx23 .x-form-label-top .x-form-item:first-of-type label.x-form-item-label {
+.tickets-window.tickets .x-form-label-top .x-form-item:first-of-type label.x-form-item-label,
+.tickets-section-settings.tickets .x-form-label-top .x-form-item:first-of-type label.x-form-item-label,
+#modx-resource-settings.tickets .x-form-label-top .x-form-item:first-of-type label.x-form-item-label {
 	padding: 15px 0 4px !important;
 }
-.tickets-section-settings.modx22 .panel-desc {margin-bottom: 10px;}
 .tickets-window .x-form-display-field {padding: 7px 0;}
-.tickets-window.modx23 .right-column {margin-right: 4px;}
-.tickets-window.modx22 .right-column {margin-right: 3px;}
+.tickets-window.tickets .right-column {margin-right: 4px;}

@@ -14,7 +14,7 @@ Tickets.panel.Tickets = function (config) {
             standalone: config.standalone,
             parent: config.parent || 0,
         }],
-        cls: 'modx23',
+        cls: 'tickets',
     });
     Tickets.panel.Tickets.superclass.constructor.call(this, config);
 };

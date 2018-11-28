@@ -32,7 +32,7 @@ Ext.extend(Tickets.panel.Ticket, MODx.panel.Resource, {
                     if (tab.id == 'modx-resource-settings') {
                         tab.items = this.getMainFields(config);
                         tab.labelAlign = 'top';
-                        tab.cls += ' modx23';
+                        tab.cls += ' tickets';
                     }
 
                     if (tab.id == 'modx-page-settings') {

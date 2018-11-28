@@ -14,7 +14,7 @@ Tickets.panel.SectionSettings = function (config) {
             return {activeTab: this.items.indexOf(this.getActiveTab())};
         },
         items: this.getTabs(config),
-        bodyCssClass: 'tickets-section-settings modx23'
+        bodyCssClass: 'tickets-section-settings tickets'
     });
     Tickets.panel.SectionSettings.superclass.constructor.call(this, config);
 };

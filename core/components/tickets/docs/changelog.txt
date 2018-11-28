@@ -1,5 +1,11 @@
 Changelog for Tickets.
 
+1.9.0 pl
+==========
+- Improved support of MODX 2.7.
+- Removed unnecessary files.
+- Minimum version is MODX 2.3.
+
 1.8.5 pl
 ==========
 - Fixed possible SQL injections by Agel_Nash.

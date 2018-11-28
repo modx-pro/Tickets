@@ -31,7 +31,7 @@ Tickets.grid.Section = function (config) {
                 return cls.join(' ');
             }
         },
-        cls: 'modx23',
+        cls: 'tickets',
         standalone: false,
         stateful: true,
         stateId: 'tickets-grid-state',
