@@ -37,7 +37,7 @@ switch ($modx->event->name) {
 
         if ($section_id = $modx->findResource($section_uri)) {
             /** @var TicketsSection $section */
-            if ($section = $modx->getObject('TicketsSection', $section_id)) {
+            if ($section = $modx->getObject('TicketsSection', array('id' => $section_id))) {
                 if (is_numeric($ticket_uri)) {
                     $ticket_id = $ticket_uri;
                 } elseif (preg_match('#^\d+#', $ticket_uri, $tmp)) {

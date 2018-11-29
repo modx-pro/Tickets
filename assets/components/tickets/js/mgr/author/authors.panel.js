@@ -9,7 +9,7 @@ Tickets.panel.Authors = function (config) {
             xtype: 'tickets-grid-authors',
             cls: 'main-wrapper',
         }],
-        cls: 'modx23',
+        cls: 'tickets',
     });
     Tickets.panel.Authors.superclass.constructor.call(this, config);
 };

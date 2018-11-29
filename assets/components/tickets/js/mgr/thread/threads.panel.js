@@ -9,7 +9,7 @@ Tickets.panel.Threads = function (config) {
             xtype: 'tickets-grid-threads',
             cls: 'main-wrapper',
         }],
-        cls: 'modx23'
+        cls: 'tickets'
     });
     Tickets.panel.Threads.superclass.constructor.call(this, config);
 };

@@ -11,7 +11,7 @@ Tickets.window.UpdateComment = function (config) {
         height: 550,
         layout: 'anchor',
         autoHeight: false,
-        cls: 'tickets-window modx23',
+        cls: 'tickets-window tickets',
     });
     Tickets.window.UpdateComment.superclass.constructor.call(this, config);
 };

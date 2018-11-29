@@ -23,7 +23,7 @@ class TicketsSectionUpdateProcessor extends modResourceUpdateProcessor
         if (!$this->modx->getCount($this->classKey, array(
                 'id' => $primaryKey,
                 'class_key' => $this->classKey,
-            )) && $res = $this->modx->getObject('modResource', $primaryKey)
+            )) && $res = $this->modx->getObject('modResource', array('id' => $primaryKey))
         ) {
             $res->set('class_key', $this->classKey);
             $res->save();

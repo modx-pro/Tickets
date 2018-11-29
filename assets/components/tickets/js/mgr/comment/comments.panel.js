@@ -12,7 +12,7 @@ Tickets.panel.Comments = function (config) {
             parents: config.parents || 0,
             threads: config.threads || 0,
         }],
-        cls: 'modx23',
+        cls: 'tickets',
     });
     Tickets.panel.Comments.superclass.constructor.call(this, config);
 };
