@@ -101,8 +101,18 @@ Ext.extend(Tickets.grid.Comments, MODx.grid.Grid, {
         }];
     },
 
-    getTopBar: function () {
-        return ['->', {
+    getTopBar: function (config) {
+        return [ 
+        {
+            xtype: (config.parents || config.threads) ?'button':'hidden',
+            text: _('ticket_comment_create')
+            ,scope: this
+            ,cls:'primary-button'
+            ,handler:
+                function () {
+                    this._newComment(0);
+                }
+        },'->',{
             xtype: 'tickets-field-search',
             width: 250,
             listeners: {
@@ -201,6 +211,27 @@ Ext.extend(Tickets.grid.Comments, MODx.grid.Grid, {
             }
         });
     },
+    
+    replyComment: function (btn, e, row) {
+        var record = typeof(row) != 'undefined'
+            ? row.data
+            : this.menu.record;
+
+        MODx.Ajax.request({
+            url: Tickets.config.connector_url,
+            params: {
+                action: 'mgr/comment/get',
+                id: record.id,
+            },
+            listeners: {
+                success: {
+                    fn: function (r) {
+                        this._newComment(r.object.id);
+                    }, scope: this
+                }
+            }
+        });
+    },
 
     viewComment: function () {
         window.open(this.menu.record['preview_url'] + '#comment-' + this.menu.record['id']);
@@ -276,6 +307,66 @@ Ext.extend(Tickets.grid.Comments, MODx.grid.Grid, {
         }
 
         return ids;
+    },
+    
+    _newComment: function (parent) {
+        var record = {parent: parent, thread: 0};
+        if (this.config.threads) {
+            // on page App Tickets
+            record.thread = this.config.threads;
+            this._formNewComment(record);
+        }
+        else if (this.config.parents) {
+            // on page manage resource
+            MODx.Ajax.request({
+                url: Tickets.config.connector_url,
+                params: {
+                    action: 'mgr/thread/get',
+                    id: this.config.parents,
+                },
+                listeners: {
+                    success: {
+                        fn: function (r) {
+                            record.thread = r.object.id;
+                            this._formNewComment(record);
+                        }, scope: this
+                    }
+                }
+            })
+        }
+    },
+    
+    _formNewComment: function(record) {
+        MODx.Ajax.request({ //get current user profile data
+            url: MODx.config.connector_url
+            ,params: {
+                action: 'security/user/get'
+                ,id: MODx.config.user
+                ,getGroups: false
+            }
+            ,listeners: {
+                'success': {fn:function(ri) {
+                    record.name = ri.object.fullname;
+                    record.email = ri.object.email;
+
+                    var w = MODx.load({
+                        xtype: 'tickets-window-comment-create',
+                        record: record,
+                        listeners: {
+                            success: {
+                                fn: this.refresh,
+                                scope: this
+                            },
+                        },
+                    });
+                    w.fp.getForm().reset();
+                    w.fp.getForm().setValues(record);
+                    w.show();
+                }, scope: this},
+                'failure': {fn: function (response) {MODx.msg.alert(_('error'), response.message);}
+                }
+            }
+        });
     },
 
     // Grid onremove fix

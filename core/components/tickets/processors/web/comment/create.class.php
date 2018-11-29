@@ -37,10 +37,18 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor
     public function beforeSet()
     {
         $tid = $this->getProperty('thread');
-        if (!$this->thread = $this->modx->getObject('TicketThread',
-            array('name' => $tid, 'deleted' => 0, 'closed' => 0))
+
+        switch ($this->modx->context->key) {
+            case 'mgr':
+                $findOpt = array('id' => $tid, 'deleted' => 0, 'closed' => 0);
+                break;
+            default:
+                $findOpt = array('name' => $tid, 'deleted' => 0, 'closed' => 0);
+        }
+        
+        if (!$this->thread = $this->modx->getObject('TicketThread', $findOpt)
         ) {
-            return $this->modx->lexicon('ticket_err_wrong_thread');
+                return $this->modx->lexicon('ticket_err_wrong_thread');
         } elseif ($pid = $this->getProperty('parent')) {
             if (!$parent = $this->modx->getObject('TicketComment',
                 array('id' => $pid, 'published' => 1, 'deleted' => 0))
