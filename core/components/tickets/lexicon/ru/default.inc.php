@@ -121,6 +121,7 @@ $_lang['ticket_comment_view'] = 'Открыть комментарий на са
 $_lang['ticket_comment_reply'] = 'ответить';
 $_lang['ticket_comment_edit'] = 'изменить';
 $_lang['ticket_comment_create'] = 'Написать комментарий';
+$_lang['ticket_comment_update'] = 'Изменить комментарий';
 $_lang['ticket_comment_preview'] = 'Предпросмотр';
 $_lang['ticket_comment_save'] = 'Написать';
 $_lang['ticket_comment_was_edited'] = 'Комментарий был изменён';
@@ -128,6 +129,7 @@ $_lang['ticket_comment_guest'] = 'Гость';
 $_lang['ticket_comment_deleted'] = 'Удалён';
 $_lang['ticket_comment_captcha'] = 'Введите сумму [[+a]] + [[+b]]';
 $_lang['ticket_comment_notify'] = 'Уведомлять о новых комментариях';
+$_lang['ticket_comment_reply_to'] = 'Ответ на';
 $_lang['ticket_comment_err_id'] = 'Комментарий с указанным id = [[+id]] не найден.';
 $_lang['ticket_comment_err_no_auth'] = 'Вы должны авторизоваться, чтобы оставлять комментарии.';
 $_lang['ticket_comment_err_wrong_user'] = 'Вы пытаетесь обновить комментарий, который вам не принадлежит.';
@@ -247,6 +249,7 @@ $_lang['ticket_uploaded_files'] = 'Загруженные файлы';
 
 $_lang['tickets_action_view'] = 'Просмотреть';
 $_lang['tickets_action_edit'] = 'Изменить';
+$_lang['tickets_action_reply'] = 'Ответить';
 $_lang['tickets_action_publish'] = 'Опубликовать';
 $_lang['tickets_action_unpublish'] = 'Снять с публикации';
 $_lang['tickets_action_delete'] = 'Удалить';

@@ -24,8 +24,8 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor
         if (!$this->getProperty('email')) {
             $this->unsetProperty('email');
         }
-        if (!$this->getProperty('text')) {
-            return $this->modx->lexicon('ticket_err_empty_comment');
+        if (!trim($this->getProperty('text'))) {
+            return $this->modx->lexicon('ticket_err_empty');
         }
 
         $this->old_thread = $this->object->get('thread');

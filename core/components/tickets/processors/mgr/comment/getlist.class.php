@@ -109,6 +109,18 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor
 
         $array['actions'] = array();
 
+        // Reply
+        if ($this->getProperty('threads') || $this->getProperty('parents')) {
+            $array['actions'][] = array(
+                'cls' => '',
+                'icon' => 'icon icon-reply',
+                'title' => $this->modx->lexicon('tickets_action_reply'),
+                'action' => 'replyComment',
+                'button' => true,
+                'menu' => true,
+            );
+        }
+
         // Edit
         $array['actions'][] = array(
             'cls' => '',

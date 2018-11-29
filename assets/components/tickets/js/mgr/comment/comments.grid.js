@@ -45,7 +45,7 @@ Ext.extend(Tickets.grid.Comments, MODx.grid.Grid, {
 
     getFields: function () {
         return [
-            'id', 'text', 'name', 'parent', 'email', 'ip', 'thread_name',
+            'id', 'text', 'raw', 'name', 'parent', 'email', 'ip', 'thread_name',
             'createdby', 'createdon', 'editedon', 'editedby', 'deletedon', 'deletedby',
             'published', 'deleted', 'resource', 'pagetitle', 'preview_url', 'actions'
         ];
@@ -101,8 +101,18 @@ Ext.extend(Tickets.grid.Comments, MODx.grid.Grid, {
         }];
     },
 
-    getTopBar: function () {
-        return ['->', {
+    getTopBar: function (config) {
+        return [{
+            xtype: (config.parents || config.threads)
+                ? 'button'
+                : 'hidden',
+            text: _('ticket_comment_create'),
+            scope: this,
+            cls: 'primary-button',
+            handler: function () {
+                this.createComment();
+            }
+        }, '->', {
             xtype: 'tickets-field-search',
             width: 250,
             listeners: {
@@ -198,6 +208,81 @@ Ext.extend(Tickets.grid.Comments, MODx.grid.Grid, {
                         w.show(e.target);
                     }, scope: this
                 }
+            }
+        });
+    },
+
+    createComment: function () {
+        var params = {
+            action: 'mgr/thread/get',
+        };
+        if (this.config.threads) {
+            // on page App Tickets
+            params.id = this.config.threads;
+        } else if (this.config.parents) {
+            // on page manage resource
+            params.resource = this.config.parents;
+        }
+
+        MODx.Ajax.request({
+            url: Tickets.config.connector_url,
+            params: params,
+            listeners: {
+                success: {
+                    fn: function (r) {
+                        MODx.load({
+                            xtype: 'tickets-window-comment-create',
+                            record: {
+                                parent: 0,
+                                thread: r.object.id,
+                            },
+                            listeners: {
+                                success: {fn: this.refresh, scope: this},
+                            },
+                        }).show();
+                    }, scope: this
+                },
+                failure: {
+                    fn: function (response) {
+                        MODx.msg.alert(_('error'), response.message);
+                    }, scope: this
+                },
+            }
+        })
+    },
+
+    replyComment: function (btn, e, row) {
+        var record = typeof(row) != 'undefined'
+            ? row.data
+            : this.menu.record;
+
+        MODx.Ajax.request({
+            url: Tickets.config.connector_url,
+            params: {
+                action: 'mgr/thread/get',
+                resource: record.resource,
+            },
+            listeners: {
+                success: {
+                    fn: function (r) {
+                        MODx.load({
+                            xtype: 'tickets-window-comment-create',
+                            record: {
+                                thread: r.object.id,
+                                parent: record.id,
+                                reply_to: record.raw,
+                            },
+                            listeners: {
+                                success: {fn: this.refresh, scope: this},
+                            },
+                        }).show(e.target);
+                    }, scope: this
+                },
+                failure: {
+                    fn: function (response) {
+                        MODx.msg.alert(_('error'), response.message);
+                    }, scope: this
+                },
             }
         });
     },

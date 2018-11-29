@@ -97,3 +97,4 @@ a.x-menu-item .x-menu-item-text .icon {
 }
 .tickets-window .x-form-display-field {padding: 7px 0;}
 .tickets-window.tickets .right-column {margin-right: 4px;}
+.tickets-window.tickets .reply_to {opacity: .9}

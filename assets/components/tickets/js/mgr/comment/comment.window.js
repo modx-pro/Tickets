@@ -1,10 +1,10 @@
-Tickets.window.UpdateComment = function (config) {
+Tickets.window.CreateComment = function (config) {
     config = config || {};
 
     Ext.applyIf(config, {
-        title: _('tickets_comment_update'),
+        title: _('ticket_comment_create'),
         url: Tickets.config.connector_url,
-        action: 'mgr/comment/update',
+        action: 'mgr/comment/create',
         fields: this.getFields(config),
         keys: this.getKeys(config),
         width: 700,
@@ -13,9 +13,9 @@ Tickets.window.UpdateComment = function (config) {
         autoHeight: false,
         cls: 'tickets-window tickets',
     });
-    Tickets.window.UpdateComment.superclass.constructor.call(this, config);
+    Tickets.window.CreateComment.superclass.constructor.call(this, config);
 };
-Ext.extend(Tickets.window.UpdateComment, MODx.Window, {
+Ext.extend(Tickets.window.CreateComment, MODx.Window, {
 
     getKeys: function () {
         return [{
@@ -25,6 +25,48 @@ Ext.extend(Tickets.window.UpdateComment, MODx.Window, {
             scope: this
         }];
     },
+
+    getFields: function (config) {
+        var is_reply = config.record.reply_to != undefined;
+        return [{
+            xtype: 'hidden',
+            name: 'thread',
+        }, {
+            xtype: 'hidden',
+            name: 'parent',
+        }, {
+            xtype: 'textarea',
+            fieldLabel: _('comment'),
+            name: 'text',
+            anchor: is_reply
+                ? '99% -140'
+                : '99% -0',
+        }, {
+            xtype: is_reply
+                ? 'textarea'
+                : 'hidden',
+            fieldLabel: _('ticket_comment_reply_to'),
+            name: 'reply_to',
+            height: 100,
+            disabled: true,
+            cls: 'reply_to',
+            anchor: '99%'
+        }];
+    },
+});
+Ext.reg('tickets-window-comment-create', Tickets.window.CreateComment);
+
+
+Tickets.window.UpdateComment = function (config) {
+    config = config || {};
+
+    Ext.applyIf(config, {
+        title: _('ticket_comment_update'),
+        action: 'mgr/comment/update',
+    });
+    Tickets.window.UpdateComment.superclass.constructor.call(this, config);
+};
+Ext.extend(Tickets.window.UpdateComment, Tickets.window.CreateComment, {
 
     getFields: function (config) {
         return [{

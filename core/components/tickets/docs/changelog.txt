@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.9.1 pl
+==========
+- Ability to create new comments from manager.
+
 1.9.0 pl
 ==========
 - Improved support of MODX 2.7.
