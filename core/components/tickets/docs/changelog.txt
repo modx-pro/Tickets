@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.9.2 pl
+==========
+- Fixed creating access policies on install or update.
+
 1.9.1 pl
 ==========
 - Ability to create new comments from manager.
