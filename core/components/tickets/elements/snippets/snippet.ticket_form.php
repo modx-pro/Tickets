@@ -16,13 +16,14 @@ $tplFiles = $modx->getOption('tplFiles', $scriptProperties, 'tpl.Tickets.form.fi
 $tplFile = $Tickets->config['tplFile'] = $modx->getOption('tplFile', $scriptProperties, 'tpl.Tickets.form.file', true);
 $tplImage = $Tickets->config['tplImage'] = $modx->getOption('tplImage', $scriptProperties, 'tpl.Tickets.form.image',
     true);
+$allowDelete = $modx->getOption('allowDelete', $scriptProperties);
 if (empty($source)) {
     $source = $Tickets->config['source'] = $modx->getOption('tickets.source_default', null,
         $modx->getOption('default_media_source'));
 }
 $tid = !empty($_REQUEST['tid'])
     ? (int)$_REQUEST['tid']
-    : 0;
+    : (!empty($tid) ? (int)$tid : 0);
 $parent = !empty($_REQUEST['parent'])
     ? $_REQUEST['parent']
     : '';
@@ -58,6 +59,8 @@ if (!empty($tid)) {
         }
         $data['id'] = $ticket->id;
         $data['published'] = $ticket->published;
+        $data['deleted'] = $ticket->deleted;
+        $data['allowDelete'] = $allowDelete ? 1 : 0;
         if (empty($parent)) {
             $parent = $ticket->get('parent');
         }

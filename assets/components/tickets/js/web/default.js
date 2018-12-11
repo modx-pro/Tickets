@@ -51,6 +51,16 @@ var Tickets = {
             e.preventDefault();
             return false;
         });
+        // Delete
+        $(document).on('click touchend', '#ticketForm .delete, #ticketForm .undelete', function (e) {
+            var confirm_text = $(this).attr('data-confirm');
+            var param = $(this).hasClass('delete')?'delete':'undelete';
+            if (confirm(confirm_text)) {
+                Tickets.ticket.delete(this.form, this, param);
+            }
+            e.preventDefault();
+            return false;
+        });
         $(document).on('click touchend', '#comment-form .preview, #comment-form .submit', function (e) {
             if ($(this).hasClass('preview')) {
                 Tickets.comment.preview(this.form, this);
@@ -196,6 +206,35 @@ var Tickets = {
                     }
                     else {
                         element.html('').hide();
+                        Tickets.Message.error(response.message);
+                    }
+                    $(button).removeAttr('disabled');
+                }
+            });
+        },
+
+        delete: function (form, button, action) {
+            $(form).ajaxSubmit({
+                data: {action: 'ticket/'+action},
+                url: TicketsConfig.actionUrl,
+                form: form,
+                button: button,
+                dataType: 'json',
+                beforeSubmit: function () {
+                    $(button).attr('disabled', 'disabled');
+                    return true;
+                },
+                success: function (response) {
+                    $(document).trigger('tickets_ticket_'+action, response);
+                    if (response.success) {
+                        if (response.message) {
+                            Tickets.Message.success(response.message);
+                        }
+                        if (response.data.redirect) {
+                            document.location.href = response.data.redirect;
+                        }
+                    }
+                    else {
                         Tickets.Message.error(response.message);
                     }
                     $(button).removeAttr('disabled');
