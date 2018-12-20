@@ -106,6 +106,9 @@ switch ($action) {
     case 'ticket/file/delete':
         $response = $Tickets->fileDelete((int)$_POST['id']);
         break;
+    case 'ticket/file/sort':
+        $response = $Tickets->fileSort($_POST['rank']);
+        break;
     default:
         $message = $_REQUEST['action'] != $action
             ? 'tickets_err_register_globals'

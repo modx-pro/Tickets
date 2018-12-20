@@ -111,6 +111,7 @@ if (!empty($allowFiles)) {
     if (!empty($tid)) {
         $q->orCondition(array('parent' => $tid), null, 1);
     }
+    $q->sortby('rank', 'ASC');
     $q->sortby('createdon', 'ASC');
     $collection = $modx->getIterator('TicketFile', $q);
     $files = '';

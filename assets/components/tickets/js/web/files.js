@@ -59,6 +59,31 @@ Tickets.Uploader = new plupload.Uploader({
         },
 
         PostInit: function (up) {
+            var element = $('#'+this.settings.filelist);
+            var actionUrl = this.settings.url;
+            element.sortable({
+              sort: true,
+              draggable: ".ticket-file",
+              ghostClass: "ticket-ghost-state-highlight",
+              animation: 150,
+              onUpdate: function( event ) {
+                  var rank = {};
+                  element.find('.ticket-file').each(function(i){
+                      rank[i] = $(this).data('id');
+                  });
+
+                  var data = {
+                      action: 'ticket/file/sort'
+                      , rank: rank
+                  };
+
+                  $.post(actionUrl, data, function(response) {
+                      if (!response.success) {
+                          Tickets.Message.error(response.message);
+                      }
+                  }, 'json');
+              }
+            });
         },
 
         FilesAdded: function (up) {

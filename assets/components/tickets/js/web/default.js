@@ -10,6 +10,10 @@ var Tickets = {
                 href: TicketsConfig.jsUrl + 'lib/prettify/prettify.css'
             }).appendTo('head');
         }
+        if (typeof window['Sortable'] != 'function') {
+            document.write('<script src="' + TicketsConfig.jsUrl + 'lib/sortable/Sortable.min.js"><\/script>');
+            document.write('<script src="' + TicketsConfig.jsUrl + 'lib/sortable/jquery.binding.js"><\/script>');
+        }
         if (!jQuery().ajaxForm) {
             document.write('<script src="' + TicketsConfig.jsUrl + 'lib/jquery.form.min.js"><\/script>');
         }

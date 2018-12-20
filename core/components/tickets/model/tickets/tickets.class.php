@@ -1550,6 +1550,25 @@ class Tickets
 
 
     /**
+     * Sort uploaded files
+     *
+     * @param $rank
+     *
+     * @return array|string
+    */
+    public function fileSort($rank) {
+        if (!$this->authenticated) {
+            return $this->error('ticket_err_access_denied');
+        }
+        $response = $this->runProcessor('web/file/sort', array('rank' => $rank));
+        if ($response->isError()) {
+            return $this->error($response->getMessage());
+        }
+        return $this->success();
+    }
+
+
+    /**
      * This method returns an error of the cart
      *
      * @param string $message A lexicon key for error message
