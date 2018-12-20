@@ -89,6 +89,12 @@ switch ($action) {
     case 'ticket/star':
         $response = $Tickets->starTicket((int)$_POST['id']);
         break;
+    case 'ticket/delete':
+        $response = $Tickets->deleteTicket(['id'=>(int)$_POST['tid']]);
+        break;
+    case 'ticket/undelete':
+        $response = $Tickets->deleteTicket(['id'=>(int)$_POST['tid']], true);
+        break;
 
     case 'section/subscribe':
         $response = $Tickets->subscribeSection((int)$_POST['section']);
@@ -99,6 +105,9 @@ switch ($action) {
         break;
     case 'ticket/file/delete':
         $response = $Tickets->fileDelete((int)$_POST['id']);
+        break;
+    case 'ticket/file/sort':
+        $response = $Tickets->fileSort($_POST['rank']);
         break;
     default:
         $message = $_REQUEST['action'] != $action

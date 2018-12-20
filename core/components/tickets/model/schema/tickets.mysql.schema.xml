@@ -243,6 +243,7 @@
         <field key="createdon" dbtype="datetime" phptype="datetime" null="true"/>
         <field key="createdby" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false"
                default="0"/>
+        <field key="rank" dbtype="tinyint" precision="1" attributes="unsigned" phptype="integer" null="true" default="0" />
 
         <field key="url" dbtype="varchar" precision="255" phptype="string" null="false"/>
         <field key="thumb" dbtype="varchar" precision="255" phptype="string" null="false"/>

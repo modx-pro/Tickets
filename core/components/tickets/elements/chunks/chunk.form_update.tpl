@@ -26,11 +26,11 @@
     </div>
 
     <div class="form-actions row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <input type="button" class="btn btn-default preview" value="[[%ticket_preview]]" title="Ctrl + Enter"/>
         </div>
-        <div class="col-md-6 move-right">
-            [[!+published:is=`1`:then=`
+        <div class="col-md-8 move-right">
+            [[+published:is=`1`:then=`
             <a href="[[~[[+id]]?scheme=`full`]]" class="btn btn-default btn-xs" target="_blank">[[%ticket_open]]</a>
             <input type="button" class="btn btn-danger draft" name="draft" value="[[%ticket_draft]]" title=""/>
             `:else=`
@@ -38,6 +38,13 @@
             `]]
             <input type="submit" class="btn btn-default save" name="save" value="[[%ticket_save]]"
                    title="Ctrl + Shift + Enter"/>
+            [[+allowDelete:is=`1`:then=`
+                [[+deleted:is=`1`:then=`
+                <input type="button" class="btn btn-default undelete" data-confirm="[[%ticket_undelete_text]]" name="undelete" value="[[%ticket_undelete]]"/>
+                `:else=`
+                <input type="button" class="btn btn-default delete" data-confirm="[[%ticket_delete_text]]" name="delete" value="[[%ticket_delete]]"/>
+                `]]
+            `]]
         </div>
     </div>
 </form>

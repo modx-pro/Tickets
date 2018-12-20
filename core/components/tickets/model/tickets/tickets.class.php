@@ -197,6 +197,55 @@ class Tickets
 
 
     /**
+     * Delete/unDelete ticket through processor and redirect to link
+     *
+     * @param array $data id, redirect
+     * @param array $restore bool
+     *
+     * @return array
+     */
+    public function deleteTicket($data, $restore = false)
+    {
+        $restore = (bool)$restore;
+        $id = (int)$data['id'];
+        if (empty($data['id'])) {
+            return $this->error($this->modx->lexicon('ticket_err_id', array('id' => $id)));
+        }
+        $fields = array();
+        $fields['class_key'] = 'Ticket';
+        $fields['id'] = $id;
+        $processorname = $restore ? 'web/ticket/undelete' : 'web/ticket/delete';
+        $response = $this->runProcessor($processorname, $fields);
+
+        /** @var modProcessorResponse $response */
+        if ($response->isError()) {
+            $this->modx->log(modX::LOG_LEVEL_INFO,
+                '[Tickets] Unable to delete Ticket: ' . $response->getMessage());
+
+            return $this->error($response->getMessage(), $response->getFieldErrors());
+        } else {
+            $message = $this->modx->lexicon($restore ? 'ticket_undeleted_text':'ticket_deleted_text');
+            $is_redir = $restore ? 'redirectUnDeleted':'redirectDeleted';
+            if (!empty($this->config[$is_redir])) {
+                $url = $this->modx->makeUrl((int)$this->config[$is_redir], '', '', 'full');
+            } else {
+                $url = $_SERVER['HTTP_REFERER'];
+                if (!preg_match('/\b' . $id . '\b/', $url)) {
+                    $url .= strpos($url, '?') !== false
+                        ? '&tid=' . $id
+                        : '?tid=' . $id;
+                }
+            }
+            if (empty($url)) {
+                $url = $this->modx->getOption('site_url');
+            }
+            $results['redirect'] = $url;
+        }
+
+        return $this->success($message, $results);
+    }
+
+    /**
      * Save ticket through processor and redirect to it
      *
      * @param array $data section, pagetitle, text, etc
@@ -1496,6 +1545,25 @@ class Tickets
             return $this->error($response->getMessage());
         }
 
+        return $this->success();
+    }
+
+
+    /**
+     * Sort uploaded files
+     *
+     * @param $rank
+     *
+     * @return array|string
+    */
+    public function fileSort($rank) {
+        if (!$this->authenticated) {
+            return $this->error('ticket_err_access_denied');
+        }
+        $response = $this->runProcessor('web/file/sort', array('rank' => $rank));
+        if ($response->isError()) {
+            return $this->error($response->getMessage());
+        }
         return $this->success();
     }
 

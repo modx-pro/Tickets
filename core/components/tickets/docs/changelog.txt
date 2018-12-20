@@ -1,5 +1,11 @@
 Changelog for Tickets.
 
+1.9.3 pl
+==========
+- Ability to delete ticket on front by owner. And undelete ticket on front if it was deleted by owner.
+- Added new TicketForm parameters: &allowDelete, &redirectDeleted, &redirectUnDeleted (for delete on front), &tid (forced update Form without $_REQUEST["tid"]).
+- Add sorting with Drag & Drop TicketFile on TicketForm (on save - link with ms2Gallery rank).
+
 1.9.2 pl
 ==========
 - Fixed creating access policies on install or update.

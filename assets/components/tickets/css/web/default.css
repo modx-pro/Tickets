@@ -165,3 +165,4 @@
 #ticket-files-list .ticket-file.deleted .ticket-file-delete {display: none;}
 #ticket-files-list .ticket-file.deleted .ticket-file-restore {display: inline;}
 
+#ticket-files-list .ticket-ghost-state-highlight {background: lightblue;}

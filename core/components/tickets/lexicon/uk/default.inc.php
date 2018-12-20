@@ -92,6 +92,7 @@ $_lang['ticket_pagetitle'] = 'Заголовок';
 $_lang['ticket_author'] = 'Автор';
 $_lang['ticket_delete'] = 'Видалити тікет';
 $_lang['ticket_delete_text'] = 'Ви певні, що хочете видалити цей тікет?';
+$_lang['ticket_deleted_text'] = 'Цей тікет видалено.';
 $_lang['ticket_create'] = 'Створити тікет';
 $_lang['ticket_disable_jevix'] = 'Відключити Jevix';
 $_lang['ticket_disable_jevix_help'] = 'Виводити контент сторінки без фільтрації сніпетом Jevix. <b>Дуже небезпечно</b>, так як будь-який користувач, що створює сторінку, зможе атакувати ваш сайт (XSS, LFI тощо)';

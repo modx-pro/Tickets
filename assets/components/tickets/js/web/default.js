@@ -10,6 +10,10 @@ var Tickets = {
                 href: TicketsConfig.jsUrl + 'lib/prettify/prettify.css'
             }).appendTo('head');
         }
+        if (typeof window['Sortable'] != 'function') {
+            document.write('<script src="' + TicketsConfig.jsUrl + 'lib/sortable/Sortable.min.js"><\/script>');
+            document.write('<script src="' + TicketsConfig.jsUrl + 'lib/sortable/jquery.binding.js"><\/script>');
+        }
         if (!jQuery().ajaxForm) {
             document.write('<script src="' + TicketsConfig.jsUrl + 'lib/jquery.form.min.js"><\/script>');
         }
@@ -47,6 +51,16 @@ var Tickets = {
             }
             else {
                 Tickets.ticket.save(this.form, this);
+            }
+            e.preventDefault();
+            return false;
+        });
+        // Delete
+        $(document).on('click touchend', '#ticketForm .delete, #ticketForm .undelete', function (e) {
+            var confirm_text = $(this).attr('data-confirm');
+            var param = $(this).hasClass('delete')?'delete':'undelete';
+            if (confirm(confirm_text)) {
+                Tickets.ticket.delete(this.form, this, param);
             }
             e.preventDefault();
             return false;
@@ -196,6 +210,35 @@ var Tickets = {
                     }
                     else {
                         element.html('').hide();
+                        Tickets.Message.error(response.message);
+                    }
+                    $(button).removeAttr('disabled');
+                }
+            });
+        },
+
+        delete: function (form, button, action) {
+            $(form).ajaxSubmit({
+                data: {action: 'ticket/'+action},
+                url: TicketsConfig.actionUrl,
+                form: form,
+                button: button,
+                dataType: 'json',
+                beforeSubmit: function () {
+                    $(button).attr('disabled', 'disabled');
+                    return true;
+                },
+                success: function (response) {
+                    $(document).trigger('tickets_ticket_'+action, response);
+                    if (response.success) {
+                        if (response.message) {
+                            Tickets.Message.success(response.message);
+                        }
+                        if (response.data.redirect) {
+                            document.location.href = response.data.redirect;
+                        }
+                    }
+                    else {
                         Tickets.Message.error(response.message);
                     }
                     $(button).removeAttr('disabled');
