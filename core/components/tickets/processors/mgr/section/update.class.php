@@ -80,6 +80,7 @@ class TicketsSectionUpdateProcessor extends modResourceUpdateProcessor
                 }
             }
         }
+        $properties['syncsite'] = $this->getProperty('syncsite');
         $properties = array_merge($this->object->getProperties(), $properties);
         $this->setProperty('properties', $properties);
     }

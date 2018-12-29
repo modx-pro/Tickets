@@ -33,7 +33,7 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
         }
         $this->resourceArray['properties']['tickets'] = $this->resource->getProperties('tickets');
         $this->resourceArray['properties']['ratings'] = $this->resource->getProperties('ratings');
-        $this->resourceArray['syncsite'] = 0;
+        $this->resourceArray['syncsite'] = (bool)$this->resource->getProperties('syncsite');
 
         /** @var Tickets $Tickets */
         $Tickets = $this->modx->getService('Tickets');
