@@ -320,8 +320,8 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor
     {
         $q = $this->modx->newQuery('TicketFile');
         $q->where(array('class' => 'Ticket'));
-        $q->andCondition(array('parent' => 0, 'createdby' => $this->modx->user->id), null, 1);
-        $q->orCondition(array('parent' => $this->object->id), null, 1);
+        $q->andCondition(array('parent' => $this->object->id, 'createdby' => $this->modx->user->id), null, 1);
+        //$q->orCondition(array('parent' => $this->object->id), null, 1);
         $q->sortby('createdon', 'ASC');
         $collection = $this->modx->getIterator('TicketFile', $q);
 
@@ -332,7 +332,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor
             if ($item->get('deleted')) {
                 $replace[$item->get('url')] = '';
                 $item->remove();
-            } elseif (!$item->get('parent')) {
+            } else {
                 $old_url = $item->get('url');
                 $item->set('parent', $this->object->id);
                 $item->save();

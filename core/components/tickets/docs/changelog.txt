@@ -1,5 +1,11 @@
 Changelog for Tickets.
 
+1.9.4 pl
+==========
+- Fixed sometimes bug with save section properties.
+- On update ticket upload files UX improvement.
+- Save state "clear cache" on update section ticket.
+
 1.9.3 pl
 ==========
 - Ability to delete ticket on front by owner. And undelete ticket on front if it was deleted by owner.
