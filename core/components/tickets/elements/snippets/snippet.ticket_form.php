@@ -107,9 +107,10 @@ if (!empty($response['results'])) {
 if (!empty($allowFiles)) {
     $q = $modx->newQuery('TicketFile');
     $q->where(array('class' => 'Ticket'));
-    $q->andCondition(array('parent' => 0, 'createdby' => $modx->user->id), null, 1);
     if (!empty($tid)) {
-        $q->orCondition(array('parent' => $tid), null, 1);
+        $q->andCondition(array('parent' => $tid, 'createdby' => $modx->user->id), null, 1);
+    } else {
+        $q->andCondition(array('parent' => 0, 'createdby' => $modx->user->id), null, 1);
     }
     $q->sortby('rank', 'ASC');
     $q->sortby('createdon', 'ASC');

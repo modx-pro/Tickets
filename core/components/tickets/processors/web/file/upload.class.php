@@ -92,7 +92,7 @@ class TicketFileUploadProcessor extends modObjectProcessor
 
         /** @var TicketFile $uploaded_file */
         $uploaded_file = $this->modx->newObject('TicketFile', array(
-            'parent' => 0,
+            'parent' => empty($this->ticket->id) ? 0 : $this->ticket->id,
             'name' => $data['name'],
             'file' => $filename,
             'path' => $path,
