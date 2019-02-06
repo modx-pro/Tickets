@@ -105,6 +105,7 @@ Ext.extend(Tickets.panel.UpdateTicketsSection, MODx.panel.Resource, {
     getComments: function (config) {
         return {
             title: _('comments'),
+			id: 'modx-tickets-comments',
             items: [{
                 xtype: 'tickets-panel-comments',
                 record: config.record,

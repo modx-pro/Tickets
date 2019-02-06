@@ -1,5 +1,12 @@
 Changelog for Tickets.
 
+1.9.5 pl
+==========
+- Fix typo in mgr/comment/create.
+- Fix id comments-tab in mgr.
+- Fix broken TicketsConfig on Form after login/logout.
+- Allow processing loaded image in the OnFileManagerFileCreate event.
+
 1.9.4 pl
 ==========
 - Fixed sometimes bug with save section properties.
