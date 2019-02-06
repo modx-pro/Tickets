@@ -110,10 +110,7 @@ class TicketFileUploadProcessor extends modObjectProcessor
         $this->mediaSource->createContainer($uploaded_file->get('path'), '/');
         $this->mediaSource->errors = array();
         if ($this->mediaSource instanceof modFileMediaSource) {
-            $upload = $this->mediaSource->createObject($uploaded_file->get('path'), $uploaded_file->get('file'), '');
-            if ($upload) {
-                copy($data['tmp_name'], urldecode($upload));
-            }
+            $upload = $this->mediaSource->createObject($uploaded_file->get('path'), $uploaded_file->get('file'), file_get_contents($data['tmp_name']));
         } else {
             $data['name'] = $filename;
             $upload = $this->mediaSource->uploadObjectsToContainer($uploaded_file->get('path'), array($data));
