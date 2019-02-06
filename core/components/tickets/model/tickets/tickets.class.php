@@ -112,7 +112,7 @@ class Tickets
                 'tpanel' => (int)$this->authenticated,
                 'enable_editor' => (int)$this->modx->getOption('tickets.enable_editor'),
             );
-            $this->modx->regClientStartupScript('<script type="text/javascript">TicketsConfig=' . json_encode($config_js) . ';</script>',
+            $this->modx->regClientStartupScript('<script type="text/javascript">if (typeof TicketsConfig == "undefined")  {TicketsConfig=' . json_encode($config_js) . ';} else {MergeConfig=' . json_encode($config_js) . '; for (var attrname in MergeConfig) { TicketsConfig[attrname] = MergeConfig[attrname]; }}</script>',
                 true);
             if ($config_js['enable_editor']) {
                 $this->modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.editor={ticket: ' . $this->modx->getOption('tickets.editor_config.ticket') . ',comment: ' . $this->modx->getOption('tickets.editor_config.comment') . '};</script>',
