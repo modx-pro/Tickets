@@ -321,8 +321,10 @@ class Ticket extends modResource
                 'id' => $this->id,
                 'class' => 'Ticket',
             ), '', true, true);
-            $total->fetchValues();
-            $total->save();
+            if ($total->save()) {
+                $total->fetchValues();
+                $total->save();
+            }
         }
 
         return $total->get(array(
