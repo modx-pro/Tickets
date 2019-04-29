@@ -11,6 +11,7 @@ Tickets.combo.User = function (config) {
         pageSize: 20,
         url: MODx.config.connector_url,
         typeAhead: false,
+        minChars: 1,
         editable: true,
         allowBlank: false,
         baseParams: {
