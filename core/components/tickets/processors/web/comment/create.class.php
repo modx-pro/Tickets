@@ -87,12 +87,17 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor
         unset($properties['requiredFields']);
 
         // Comment values
+        if($this->getProperty("date")){
+            $date = $this->getProperty("date");
+        } else {
+            $date = date('Y-m-d H:i:s');
+        }
         $ip = $this->modx->request->getClientIp();
         $this->setProperties(array(
             'text' => $text,
             'thread' => $this->thread->id,
             'ip' => $ip['ip'],
-            'createdon' => date('Y-m-d H:i:s'),
+            'createdon' => $date,
             'createdby' => $this->modx->user->isAuthenticated($this->modx->context->key)
                 ? $this->modx->user->id
                 : 0,
