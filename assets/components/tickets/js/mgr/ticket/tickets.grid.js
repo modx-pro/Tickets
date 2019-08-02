@@ -38,7 +38,7 @@ Tickets.grid.Section = function (config) {
     });
     Tickets.grid.Section.superclass.constructor.call(this, config);
     this.getStore().sortInfo = {
-        field: 'createdon',
+        field: 'id',
         direction: 'DESC'
     };
 };

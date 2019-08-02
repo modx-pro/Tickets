@@ -58,6 +58,7 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor
             } else {
                 $c->where(array(
                     'TicketComment.text:LIKE' => '%' . $query . '%',
+                    'OR:TicketComment.raw:LIKE' => '%' . $query . '%',
                     'OR:TicketComment.name:LIKE' => '%' . $query . '%',
                     'OR:TicketComment.email:LIKE' => '%' . $query . '%',
                 ));

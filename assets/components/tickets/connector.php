@@ -13,6 +13,6 @@ $modx->lexicon->load('tickets:default');
 /** @var modConnectorRequest $request */
 $request = $modx->request;
 $request->handleRequest(array(
-    'processors_path' => $modx->getOption('processorsPath', $Tickets->config, $corePath . 'processors/'),
+    'processors_path' => $modx->getOption('processorsPath', $Tickets->config, MODX_CORE_PATH . '/components/tickets/processors/'),
     'location' => '',
 ));

@@ -1,5 +1,13 @@
 Changelog for Tickets.
 
+1.9.6 pl
+==========
+- Allow find by raw comment text in mgr.
+- Fix box search, allow find by id less 3 char.
+- Add new tab for management subscribe TicketsSection
+- Add new policy section_unsubscribe
+- Add few fields in customize form set
+
 1.9.5 pl
 ==========
 - Fix typo in mgr/comment/create.
