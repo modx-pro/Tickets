@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.10.1 pl
+==========
+- Fix lost subscribers after saving in mgr
+
 1.10.0 pl
 ==========
 - Allow find by raw comment text in mgr.

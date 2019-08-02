@@ -80,6 +80,11 @@ class TicketsSectionUpdateProcessor extends modResourceUpdateProcessor
                 }
             }
         }
+        //pass array subscribers from previous state
+        $old_properties = $this->object->get('properties');
+        if (!empty($old_properties['subscribers'])) {
+            $properties['subscribers'] = $old_properties['subscribers'];
+        }
         $properties['syncsite'] = $this->getProperty('syncsite');
         $properties = array_merge($this->object->getProperties(), $properties);
         $this->setProperty('properties', $properties);
