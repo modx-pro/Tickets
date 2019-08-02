@@ -6,6 +6,7 @@ Changelog for Tickets.
 - Fix box search, allow find by id less 3 char.
 - Add new tab for management subscribe TicketsSection
 - Add new policy section_unsubscribe
+- Add few fields in customize form set
 
 1.9.5 pl
 ==========

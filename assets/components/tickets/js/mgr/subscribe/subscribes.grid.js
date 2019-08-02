@@ -20,7 +20,7 @@ Tickets.grid.Subscribes = function (config) {
           showPreview: true,
       },
       stateful: true,
-      stateId: 'tickets-comments-state',
+      stateId: 'tickets-subscribe-state',
   });
   Tickets.grid.Subscribes.superclass.constructor.call(this, config);
 };
@@ -67,17 +67,7 @@ Ext.extend(Tickets.grid.Subscribes, MODx.grid.Grid, {
   },
 
   getTopBar: function (config) {
-      return [/*{
-          xtype: (config.parents || config.threads)
-              ? 'button'
-              : 'hidden',
-          text: _('ticket_comment_create'),
-          scope: this,
-          cls: 'primary-button',
-          handler: function () {
-              this.createComment();
-          }
-      }, */'->', {
+      return ['->', {
           xtype: 'tickets-field-search',
           width: 250,
           listeners: {
