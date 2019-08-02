@@ -13,7 +13,7 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
      */
     public function getLanguageTopics()
     {
-        return array('resource', 'tickets:default');
+        return array('resource', 'user', 'tickets:default');
     }
 
 
@@ -42,6 +42,7 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
             'utils' => true,
             'css' => true,
             'section' => true,
+            'subscribe' => true,
             'comments' => true,
         ));
         $this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/section/update.js');

@@ -54,6 +54,9 @@ Ext.extend(Tickets.panel.UpdateTicketsSection, MODx.panel.Resource, {
                     tabs.push(tab);
                     if (tab.id == 'modx-page-settings') {
                         tabs.push(this.getComments(config));
+                        if (config.mode == 'update') {
+                            tabs.push(this.getSubscribes(config));
+                        }
                     }
                 }
                 item.items = tabs;
@@ -110,6 +113,18 @@ Ext.extend(Tickets.panel.UpdateTicketsSection, MODx.panel.Resource, {
                 xtype: 'tickets-panel-comments',
                 record: config.record,
                 section: config.record.id,
+            }]
+        };
+    },
+
+    getSubscribes: function (config) {
+        return {
+            title: _('subscribes'),
+			id: 'modx-tickets-subscribes',
+            items: [{
+                xtype: 'tickets-panel-subscribes',
+                record: config.record,
+                parents: config.record.id,
             }]
         };
     },

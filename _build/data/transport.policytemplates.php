@@ -13,6 +13,7 @@ $tmp = array(
             'ticket_view_private' => array(),
             'ticket_vote' => array(),
             'ticket_star' => array(),
+            'section_unsubscribe' => array(),
             'comment_save' => array(),
             'comment_delete' => array(),
             'comment_remove' => array(),

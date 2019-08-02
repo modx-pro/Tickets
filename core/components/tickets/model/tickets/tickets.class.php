@@ -1663,6 +1663,10 @@ class Tickets
             $controller->addLastJavascript($ticketsJsUrl . 'ticket/tickets.panel.js');
             $controller->addLastJavascript($ticketsJsUrl . 'ticket/tickets.grid.js');
         }
+        if (!empty($properties['subscribe'])) {
+            $controller->addLastJavascript($ticketsJsUrl . 'subscribe/subscribes.panel.js');
+            $controller->addLastJavascript($ticketsJsUrl . 'subscribe/subscribes.grid.js');
+        }
         if (!empty($properties['ticket'])) {
             $controller->addLastJavascript($ticketsJsUrl . 'ticket/ticket.common.js');
         }
