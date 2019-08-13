@@ -34,6 +34,9 @@ $tmp = array(
     'tpl.Tickets.sections.wrapper' => 'ticket_sections_wrapper',
     'tpl.Tickets.meta' => 'ticket_meta',
     'tpl.Tickets.meta.file' => 'ticket_meta_file',
+
+    'tpl.Tickets.author.subscribe' => 'ticket_author_subscribe',
+    'tpl.Tickets.author.email.subscription' => 'author_email_subscription',
 );
 
 /** @var modx $modx */

@@ -73,6 +73,10 @@ $_lang['tickets_section_notify'] = 'Notify about new tickets';
 $_lang['tickets_section_subscribed'] = 'You have subscribe to notifications about new tickets in this section.';
 $_lang['tickets_section_unsubscribed'] = 'You will no longer receive notifications about new tickets in this section.';
 $_lang['tickets_section_email_subscription'] = 'New ticket in the section "[[+section.pagetitle]]"';
+$_lang['tickets_author_notify'] = 'Notify about author\'s tickets';
+$_lang['tickets_author_subscribed'] = 'You have subscribe to notifications about new tickets this author.';
+$_lang['tickets_author_unsubscribed'] = 'You will no longer receive notifications about new tickets this author.';
+$_lang['tickets_author_email_subscription'] = 'New ticket author [[+user.fullname]]"';
 
 $_lang['ticket_create_here'] = 'Create ticket';
 
@@ -87,6 +91,7 @@ $_lang['ticket_err_wrong_parent'] = 'Invalid section for this ticket was specifi
 $_lang['ticket_err_wrong_resource'] = 'Wrong ticket specified.';
 $_lang['ticket_err_wrong_thread'] = 'Wrong comments thread specified.';
 $_lang['ticket_err_wrong_section'] = 'Wrong tickets section specified.';
+$_lang['ticket_err_wrong_author'] = 'Wrong tickets author specified.';
 $_lang['ticket_err_access_denied'] = 'Access denied';
 $_lang['ticket_err_form'] = 'Form contains errors. Please, fix it.';
 $_lang['ticket_err_deleted_comment'] = 'You trying to edit the deleted comment.';
@@ -280,6 +285,7 @@ $_lang['ticket_comment_email_bcc_intro'] = 'The user <b>[[+name]]</b> left a com
 $_lang['ticket_email_bcc'] = 'New ticket to your site - "[[+pagetitle]]"';
 $_lang['ticket_email_bcc_intro'] = 'The user <b>[[+fullname]]</b> ([[+email]]) was created the new topic to your site: <a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>';
 $_lang['ticket_email_subscribed_intro'] = 'The user <b>[[+fullname]]</b> published the new topic: "<a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>" to the section "<a href="[[~[[+section]]?scheme=`full`]]">[[+section_title]]</a>", on which you have been subscribed.';
+$_lang['ticket_email_subscribed_author'] = 'The user <b>[[+fullname]]</b> on which you have been subscribed published the new topic: "<a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>" to the section "<a href="[[~[[+section]]?scheme=`full`]]">[[+section_title]]</a>".';
 $_lang['ticket_email_all_comments'] = 'All comments';
 $_lang['ticket_email_view'] = 'View';
 $_lang['ticket_email_reply'] = 'Reply';

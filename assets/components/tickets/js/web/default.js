@@ -34,6 +34,9 @@ var Tickets = {
         $(document).on('change', '#tickets-subscribe', function () {
             Tickets.ticket.subscribe($(this).data('id'));
         });
+        $(document).on('change', '#tickets-author-subscribe', function () {
+            Tickets.author.subscribe($(this).data('id'));
+        });
         $(document).on('submit', '#ticketForm', function (e) {
             Tickets.ticket.save(this, $(this).find('[type="submit"]')[0]);
             e.preventDefault();
@@ -498,6 +501,21 @@ var Tickets = {
                     action: "comment/subscribe",
                     thread: thread.val()
                 }, function (response) {
+                    if (response.success) {
+                        Tickets.Message.success(response.message);
+                    }
+                    else {
+                        Tickets.Message.error(response.message);
+                    }
+                }, 'json');
+            }
+        }
+    },
+
+    author: {
+        subscribe: function (author) {
+            if (author) {
+                $.post(TicketsConfig.actionUrl, {action: "author/subscribe", author: author}, function (response) {
                     if (response.success) {
                         Tickets.Message.success(response.message);
                     }
