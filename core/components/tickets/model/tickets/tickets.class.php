@@ -987,16 +987,19 @@ class Tickets
      * Email notifications about new comment
      *
      * @param array $ticket
+     * @param bool $force
      *
      * @return void
      */
-    public function sendTicketMails($ticket = array())
+    public function sendTicketMails($ticket = array(), $force = false)
     {
         // We need only the first publication of ticket
-        if (empty($ticket['published']) || $ticket['createdon'] != $ticket['publishedon']) {
-            return;
-        } elseif (($ticket['editedon'] != 0 && $ticket['editedon'] != $ticket['createdon'])) {
-            return;
+        if (!$force) {
+            if (empty($ticket['published']) || $ticket['createdon'] != $ticket['publishedon']) {
+                return;
+            } elseif (($ticket['editedon'] != 0 && $ticket['editedon'] != $ticket['createdon'])) {
+                return;
+            }
         }
 
         /** @var TicketsSection $section */
@@ -1028,6 +1031,25 @@ class Tickets
                             $uid,
                             $this->modx->lexicon('ticket_email_bcc', $ticket),
                             $this->getChunk($this->config['tplTicketEmailBcc'], $ticket, false)
+                        );
+                        $sent[] = $uid;
+                    }
+                }
+            }
+        }
+
+        // Send email to subscribers current author
+        if ($author = $this->modx->getObject('TicketAuthor', array('id' => $ticket['createdby']))) {
+            $properties = $author->get('properties');
+            if (!empty($properties['subscribers'])) {
+                foreach ($properties['subscribers'] as $uid) {
+                    if (in_array($uid, $sent) || $ticket['createdby'] == $uid) {
+                        continue;
+                    } else {
+                        $this->addQueue(
+                            $uid,
+                            $this->modx->lexicon('tickets_author_email_subscription', $ticket),
+                            $this->getChunk($this->config['tplAuthorEmailSubscription']?$this->config['tplAuthorEmailSubscription']:'tpl.Tickets.author.email.subscription', $ticket, false)
                         );
                         $sent[] = $uid;
                     }
@@ -1255,6 +1277,30 @@ class Tickets
         }
     }
 
+
+    /**
+     * This method subscribe or unsubscribe users for notifications about new tickets specified author.
+     *
+     * @param $id
+     *
+     * @return array
+     */
+    public function subscribeAuthor($id)
+    {
+        if (!$this->authenticated) {
+            return $this->error('ticket_err_access_denied');
+        }
+        /** @var TicketsSection $section */
+        if ($profile = $this->modx->getObject('TicketAuthor', array('id' => $id))) {
+            $message = $profile->Subscribe()
+                ? 'tickets_author_subscribed'
+                : 'tickets_author_unsubscribed';
+
+            return $this->success($this->modx->lexicon($message));
+        } else {
+            return $this->error($this->modx->lexicon('ticket_err_wrong_author'));
+        }
+    }
 
     /**
      * Loads an instance of pdoTools

@@ -25,6 +25,7 @@ $xpdo_meta_map['TicketAuthor']= array (
     'votes_tickets_down' => 0,
     'votes_comments_up' => 0,
     'votes_comments_down' => 0,
+    'properties' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -153,6 +154,12 @@ $xpdo_meta_map['TicketAuthor']= array (
       'attributes' => 'unsigned',
       'null' => true,
       'default' => 0,
+    ),
+    'properties' => 
+    array (
+      'dbtype' => 'text',
+      'phptype' => 'json',
+      'null' => true,
     ),
   ),
   'indexes' => 

@@ -1,5 +1,11 @@
 Changelog for Tickets.
 
+1.11.0 pl
+==========
+- Ability to subscribe to the author
+- Added new snippet "subscribeAuthor".
+- Added chunks "tpl.Tickets.author.email.subscription" and "tpl.Tickets.author.subscribe".
+
 1.10.1 pl
 ==========
 - Fix lost subscribers after saving in mgr

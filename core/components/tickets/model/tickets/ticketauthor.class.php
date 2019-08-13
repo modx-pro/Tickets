@@ -691,4 +691,35 @@ class TicketAuthor extends xPDOObject
         $ticket_total->save();
     }
 
+    /**
+     * @param int $uid
+     *
+     * @return bool
+     */
+    public function Subscribe($uid = 0)
+    {
+        if (!$uid) {
+            $uid = $this->xpdo->user->id;
+        }
+
+        $properties = $this->get('properties');
+        if (empty($properties['subscribers']) || !is_array($properties['subscribers'])) {
+            $subscribers = array();
+        } else {
+            $subscribers = $properties['subscribers'];
+        }
+
+        $found = array_search($uid, $subscribers);
+        if ($found === false) {
+            $subscribers[] = $uid;
+        } else {
+            unset($subscribers[$found]);
+        }
+        $properties['subscribers'] = $subscribers;
+        $this->set('properties',$properties);
+        $this->save();
+
+        return ($found === false);
+    }
+
 }

@@ -99,6 +99,9 @@ switch ($action) {
     case 'section/subscribe':
         $response = $Tickets->subscribeSection((int)$_POST['section']);
         break;
+    case 'author/subscribe':
+        $response = $Tickets->subscribeAuthor((int)$_POST['author']);
+        break;
 
     case 'ticket/file/upload':
         $response = $Tickets->fileUpload($_POST, 'Ticket');

@@ -11,6 +11,7 @@ $tmp = array(
     'getTicketsSections' => 'get_sections',
     'getComments' => 'get_comments',
     'getStars' => 'get_stars',
+    'subscribeAuthor' => 'subscribe_author',
 );
 
 /** @var modx $modx */
