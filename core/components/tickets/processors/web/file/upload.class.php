@@ -90,6 +90,22 @@ class TicketFileUploadProcessor extends modObjectProcessor
             return $this->failure($this->modx->lexicon('ticket_err_file_exists', array('file' => $data['name'])));
         }
 
+        // Check for files limit
+        if ($filesLimit = $this->modx->getOption('tickets.max_files_upload')) {
+            $where = $this->modx->newQuery($this->classKey, array('class' => $this->class));
+            if (!empty($this->ticket->id)) {
+                $where->andCondition(array('parent:IN' => array(0, $this->ticket->id)));
+            } else {
+                $where->andCondition(array('parent' => 0));
+            }
+            $where->andCondition(array('createdby' => $this->modx->user->id));
+            if ($this->modx->getCount($this->classKey, $where) >= $filesLimit) {
+                @unlink($data['tmp_name']);
+
+                return $this->failure($this->modx->lexicon('ticket_err_files_limit', array('limit' => $filesLimit)));
+            }
+        }
+
         /** @var TicketFile $uploaded_file */
         $uploaded_file = $this->modx->newObject('TicketFile', array(
             'parent' => empty($this->ticket->id) ? 0 : $this->ticket->id,

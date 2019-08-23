@@ -255,6 +255,7 @@ $_lang['ticket_err_file_ext'] = 'Wrong file extension';
 $_lang['ticket_err_file_save'] = 'Could not upload file';
 $_lang['ticket_err_file_owner'] = 'This file not belongs to you';
 $_lang['ticket_err_file_exists'] = 'File with the same name or content is already exists: "[[+file]]"';
+$_lang['ticket_err_files_limit'] = 'Not able to upload more than [[+limit]] files';
 $_lang['ticket_uploaded_files'] = 'Uploaded files';
 
 $_lang['tickets_action_view'] = 'View';
