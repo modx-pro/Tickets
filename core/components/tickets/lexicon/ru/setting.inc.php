@@ -67,6 +67,9 @@ $_lang['setting_tickets.mail_bcc_level_desc'] = 'Возможны 3 уровня
 $_lang['setting_tickets.count_guests'] = 'Считать просмотры страниц гостями';
 $_lang['setting_tickets.count_guests_desc'] = 'При включении этого параметра учитываются просмотры страниц всеми посетителями сайта, а не только авторизованными. Имейте в виду, что при таком подходе счетчик просмотров довольно легко накрутить.';
 
+$_lang['setting_tickets.max_files_upload'] = 'Ограничение по количеству загружаемых файлов';
+$_lang['setting_tickets.max_files_upload_desc'] = 'Указать максимальное количество файлов, которые пользователь может прикрепить к тикету. 0 - без ограничений.';
+
 //$_lang['setting_tickets.section_id_as_alias'] = 'Id раздела как псевдоним';
 //$_lang['setting_tickets.section_id_as_alias_desc'] = 'Если включено, псевдонимы для дружественных имён разделов не будут генерироваться. Вместо этого будут подставляться их id.';
 //$_lang['setting_tickets.ticket_id_as_alias'] = 'Id тикета как псевдоним';

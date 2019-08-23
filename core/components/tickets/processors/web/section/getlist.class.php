@@ -37,20 +37,58 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor
         if ($parents = $this->getProperty('parents')) {
             $depth = $this->getProperty('depth', 0);
             $parents = array_map('trim', explode(',', $parents));
-            foreach ($parents as $pid) {
-                $parents = array_merge($parents, $this->modx->getChildIds($pid, $depth));
+            $parents_in = $parents_out = array();
+            foreach ($parents as $v) {
+                if (!is_numeric($v)) {
+                    continue;
+                }
+                if ($v < 0) {
+                    $parents_out[] = abs($v);
+                } else {
+                    $parents_in[] = abs($v);
+                }
             }
+            if (!empty($parents_in)) {
+                foreach ($parents_in as $pid) {
+                    $parents_in = array_merge($parents_in, $this->modx->getChildIds($pid, $depth));
+                }
+            }
+
+            $parents = array_diff($parents_in,$parents_out);
 
             if (!empty($parents) && !empty($this->current_category)) {
                 $c->where(array('parent:IN' => $parents, 'OR:id:=' => $this->current_category));
-            } else {
+            } else if (!empty($parents)) {
                 $c->where(array('parent:IN' => $parents));
+            }
+
+            if (!empty($parents_out)) {
+                $c->where(array('parent:NOT IN' => $parents_out));
             }
         }
         if ($resources = $this->getProperty('resources')) {
             $resources = array_map('trim', explode(',', $resources));
-            $c->where(array('id:IN' => $resources));
+            $resources_in = $resources_out = array();
+            foreach ($resources as $r) {
+                if (!is_numeric($r)) {
+                    continue;
+                }
+                if ($r < 0) {
+                    $resources_out[] = abs($r);
+                } else {
+                    $resources_in[] = abs($r);
+                }
+            }
+
+            $resources = array_diff($resources_in, $resources_out);
+
+            if (!empty($resources))
+                $c->where(array('id:IN' => $resources));
+
+            if (!empty($resources_out))
+                $c->where(array('id:NOT IN' => $resources_out));
         }
+        $c->prepare();
 
         return $c;
     }

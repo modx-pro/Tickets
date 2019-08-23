@@ -206,6 +206,10 @@ $modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.form
 // Return output
 if (!empty($toPlaceholder)) {
     $modx->setPlaceholder($toPlaceholder, $output);
+    if (!empty($separatePlaceholder)) {
+        $modx->setPlaceholder($toPlaceholder.'_form', $commentForm);
+        $modx->setPlaceholder($toPlaceholder.'_thread', $commentsThread);
+    }
 } else {
     return $output;
 }

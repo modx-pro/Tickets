@@ -67,6 +67,9 @@ $_lang['setting_tickets.mail_bcc_level_desc'] = 'There are 3 possible levels of 
 $_lang['setting_tickets.count_guests'] = 'Count views of pages by guests';
 $_lang['setting_tickets.count_guests_desc'] = 'When enabled, component will count views of pages by all users, not just authorized. Keep in mind that with this approach the number of viewings is quite easy to cheat.';
 
+$_lang['setting_tickets.max_files_upload'] = 'Limit max file uploads';
+$_lang['setting_tickets.max_files_upload_desc'] = 'Max files count which allow to upload for current user. 0 - unlimited.';
+
 //$_lang['setting_tickets.section_id_as_alias'] = 'Use id of section as alias';
 //$_lang['setting_tickets.section_id_as_alias_desc'] = 'If true, aliases for friendly urls of sections will don`t be generated. Id will be set as alias.';
 //$_lang['setting_tickets.ticket_id_as_alias'] = 'Use id of ticket as alias';

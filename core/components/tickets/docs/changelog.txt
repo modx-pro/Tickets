@@ -1,5 +1,11 @@
 Changelog for Tickets.
 
+1.11.1 pl
+==========
+- In snippet TicketComments add option "separatePlaceholder"
+- In snippet TicketForm add ability exclude -section for options parents, resources
+- Add setting "tickets.max_files_upload"
+
 1.11.0 pl
 ==========
 - Ability to subscribe to the author

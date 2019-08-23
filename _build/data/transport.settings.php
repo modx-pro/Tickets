@@ -150,6 +150,12 @@ $tmp = array(
         'value' => false,
         'area' => 'tickets.ticket',
     ),
+
+    'max_files_upload' => array(
+        'xtype' => 'numberfield',
+        'value' => 0,
+        'area' => 'tickets.ticket',
+    ),
 );
 
 /** @var modx $modx */
