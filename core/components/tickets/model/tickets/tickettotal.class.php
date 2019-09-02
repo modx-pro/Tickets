@@ -3,21 +3,6 @@
 class TicketTotal extends xPDOObject
 {
     /**
-     * @param null $cacheFlag
-     *
-     * @return bool
-     */
-    public function save($cacheFlag = null)
-    {
-        if ($this->isNew()) {
-            $this->fromArray($this->fetchValues(), '', false, true);
-        }
-
-        return parent::save($cacheFlag);
-    }
-
-
-    /**
      * Get values from database
      */
     public function fetchValues()
