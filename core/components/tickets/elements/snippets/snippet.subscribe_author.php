@@ -25,7 +25,7 @@ $data = [
     'author_id' => $scriptProperties['createdby'],
     'subscribed' => $subscribed
 ];
-$output = $modx->getChunk($tpl, $data);
+$output = $Tickets->getChunk($tpl, $data);
 
 // Return output
 if (!empty($toPlaceholder)) {
