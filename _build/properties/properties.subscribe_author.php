@@ -7,7 +7,14 @@ $tmp = array(
         'type' => 'textfield',
         'value' => 'tpl.Tickets.author.subscribe',
     ),
-
+    'TicketsInit' => array(
+        'type' => 'textfield',
+        'value' => '0',
+    ),
+    'createdby' => array(
+        'type' => 'textfield',
+        'value' => '0',
+    ),
 );
 
 foreach ($tmp as $k => $v) {
