@@ -706,6 +706,35 @@ class Ticket extends modResource
         }
     }
 
+    /**
+     * Returns array with all neighborhood tickets
+     *
+     * @return array $arr Array with neighborhood from left and right
+     */
+    public function getNeighborhood()
+    {
+        $arr = array();
+        $q = $this->xpdo->newQuery('Ticket', array('parent' => $this->parent, 'class_key' => 'Ticket'));
+        $q->sortby('id', 'ASC');
+        $q->select('id');
+        if ($q->prepare() && $q->stmt->execute()) {
+            $ids = $q->stmt->fetchAll(PDO::FETCH_COLUMN);
+            $current = array_search($this->get('id'), $ids);
+            $right = $left = array();
+            foreach ($ids as $k => $v) {
+                if ($k > $current) {
+                    $right[] = $v;
+                } elseif ($k < $current) {
+                    $left[] = $v;
+                }
+            }
+            $arr = array(
+                'left' => array_reverse($left),
+                'right' => $right,
+            );
+        }
+        return $arr;
+    }
 
     /**
      * @param string $context
