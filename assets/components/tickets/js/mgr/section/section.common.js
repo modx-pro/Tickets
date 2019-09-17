@@ -179,6 +179,12 @@ Ext.extend(Tickets.panel.SectionSettings, MODx.VerticalTabs, {
             deleted: {boxLabel: _('deleted')},
             syncsite: {},
             richtext: {},
+            alias_visible: {
+                name: 'alias_visible',
+                boxLabel: _('resource_alias_visible'),
+                description: _('resource_alias_visible_help'),
+                id: 'modx-'+id+'-alias-visible'
+            },
             uri_override: {id: 'modx-resource-uri-override'}
         };
 
