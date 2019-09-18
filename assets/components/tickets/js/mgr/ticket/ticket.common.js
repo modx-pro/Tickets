@@ -311,6 +311,12 @@ Ext.extend(Tickets.panel.Ticket, MODx.panel.Resource, {
             },
             published: {},
             private: {name: 'privateweb', boxLabel: _('ticket_private'), description: _('ticket_private_help')},
+            alias_visible: {
+                name: 'alias_visible',
+                boxLabel: _('resource_alias_visible'),
+                description: _('resource_alias_visible_help'),
+                id: 'modx-'+id+'-alias-visible'
+            },
             richtext: {},
             hidemenu: {
                 boxLabel: _('resource_hide_from_menus'),

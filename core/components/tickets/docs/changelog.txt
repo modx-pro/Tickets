@@ -1,5 +1,13 @@
 Changelog for Tickets.
 
+1.11.2 pl
+==========
+- fix max key length with utf8mb4
+- add params description for snippet subscribeAuthor
+- allow @INLINE, @FILE binding for tpl in subscribeAuthor
+- uri alias_visible
+- add navigation button on resource update page
+
 1.11.1 pl
 ==========
 - In snippet TicketComments add option "separatePlaceholder"

@@ -52,6 +52,10 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController
         ));
         $this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/ticket/update.js');
 
+        $neighborhood = array();
+        if ($this->resource instanceof Ticket) {
+            $neighborhood = $this->resource->getNeighborhood();
+        }
         $ready = array(
             'xtype' => 'tickets-page-ticket-update',
             'resource' => $this->resource->get('id'),
@@ -66,6 +70,13 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController
             'canDuplicate' => (int)$this->canDuplicate,
             'canDelete' => (int)$this->canDelete,
             'show_tvs' => (int)!empty($this->tvCounts),
+            'next_page' => !empty($neighborhood['right'][0])
+                ? $neighborhood['right'][0]
+                : 0,
+            'prev_page' => !empty($neighborhood['left'][0])
+                ? $neighborhood['left'][0]
+                : 0,
+            'up_page' => $this->resource->parent,
             'mode' => 'update',
         );
         $this->addHtml('
