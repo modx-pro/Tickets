@@ -1,7 +1,3 @@
-Ext.Loader.load([
-    MODx.config.assets_url + 'components/tickets/js/mgr/misc/strftime-min-1.3.js'
-]);
-
 Tickets.utils.formatDate = function (string) {
     if (string && string != '0000-00-00 00:00:00' && string != '-1-11-30 00:00:00' && string != 0) {
         var date = /^[0-9]+$/.test(string)
