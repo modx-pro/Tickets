@@ -46,6 +46,7 @@ class TicketsSectionUpdateManagerController extends ResourceUpdateManagerControl
             'comments' => true,
         ));
         $this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/section/update.js');
+        $this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/misc/strftime-min-1.3.js');
 
         $ready = array(
             'xtype' => 'tickets-page-section-update',
