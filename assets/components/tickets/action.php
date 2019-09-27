@@ -21,6 +21,9 @@ $properties = array();
 /** @var TicketThread $thread */
 if (!empty($_REQUEST['thread']) && $thread = $modx->getObject('TicketThread', array('name' => $_REQUEST['thread']))) {
     $properties = $thread->get('properties');
+    if (!empty($_REQUEST['form_key']) && isset($_SESSION['TicketForm'][$_REQUEST['form_key']])) {
+        $properties = array_merge($_SESSION['TicketForm'][$_REQUEST['form_key']], $properties);
+    }
 } elseif (!empty($_REQUEST['form_key']) && isset($_SESSION['TicketForm'][$_REQUEST['form_key']])) {
     $properties = $_SESSION['TicketForm'][$_REQUEST['form_key']];
 } elseif (!empty($_SESSION['TicketForm'])) {
@@ -72,6 +75,9 @@ switch ($action) {
         break;
     case 'comment/star':
         $response = $Tickets->starComment((int)$_POST['id']);
+        break;
+    case 'comment/file/upload':
+        $response = $Tickets->fileUploadComment($_POST, 'TicketComment');
         break;
 
     case 'ticket/draft':

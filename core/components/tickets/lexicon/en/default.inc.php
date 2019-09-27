@@ -136,6 +136,7 @@ $_lang['ticket_comment_deleted'] = 'Deleted';
 $_lang['ticket_comment_captcha'] = 'Enter the amount [[+a]] + [[+b]]';
 $_lang['ticket_comment_notify'] = 'Notify about new comments';
 $_lang['ticket_comment_reply_to'] = 'Reply to';
+$_lang['ticket_comment_upload_auth'] = 'You need to login to uploading files.';
 $_lang['ticket_comment_err_id'] = 'The comment with specified id = [[+id]] not found.';
 $_lang['ticket_comment_err_no_auth'] = 'You need to login to create comments.';
 $_lang['ticket_comment_err_wrong_user'] = 'You trying to update a comment that is not yours.';

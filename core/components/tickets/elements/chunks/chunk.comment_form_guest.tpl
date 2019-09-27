@@ -8,6 +8,7 @@
         <input type="hidden" name="thread" value="[[+thread]]"/>
         <input type="hidden" name="parent" value="0"/>
         <input type="hidden" name="id" value="0"/>
+        <input type="hidden" name="form_key" value="[[+formkey]]">
 
         <div class="form-group">
             <label for="comment-name">[[%ticket_comment_name]]</label>
@@ -25,6 +26,10 @@
             <label for="comment-editor"></label>
             <textarea name="text" id="comment-editor" cols="30" rows="10" class="form-control"></textarea>
         </div>
+
+        [[+allowFiles:is=`1`:then=`
+            [[%ticket_comment_upload_auth]]
+        `]]
 
         [[+captcha]]
 

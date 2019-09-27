@@ -162,8 +162,90 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor
 
         $this->thread->updateCommentsCount();
         $this->object->clearTicketCache();
+        $this->processFiles();
 
         return parent::afterSave();
+    }
+
+    /**
+     * Add uploaded files to comment
+     *
+     * @return bool|int
+     */
+    public function processFiles()
+    {
+        $q = $this->modx->newQuery('TicketFile');
+        $q->where(array('class' => 'TicketComment'));
+        $q->andCondition(array('parent' => 0, 'createdby' => $this->modx->user->id), null, 1);
+        $q->sortby('createdon', 'ASC');
+        $collection = $this->modx->getIterator('TicketFile', $q);
+
+        $replace = array();
+        $count = 0;
+        /** @var TicketFile $item */
+        foreach ($collection as $item) {
+            if ($item->get('deleted')) {
+                $replace[$item->get('url')] = '';
+                $item->remove();
+            } else {
+                $old_url = $item->get('url');
+                $item->set('parent', $this->object->get('id'));
+                $item->save();
+                $replace[$old_url] = array(
+                    'url' => $item->get('url'),
+                    'thumb' => $item->get('thumb'),
+                    'thumbs' => $item->get('thumbs'),
+                );
+                $count++;
+            }
+        }
+
+        // Update ticket links
+        if (!empty($replace)) {
+            $array = array(
+                'raw' => $this->object->get('raw'),
+                'text' => $this->object->get('text'),
+            );
+            $update = false;
+            foreach ($array as $field => $text) {
+                $pcre = '#<a.*?>.*?</a>|<img.*?>#s';
+                preg_match_all($pcre, $text, $matches);
+                $src = $dst = array();
+                foreach ($matches[0] as $tag) {
+                    foreach ($replace as $from => $to) {
+                        if (strpos($tag, $from) !== false) {
+                            if (is_array($to)) {
+                                $src[] = $from;
+                                $dst[] = $to['url'];
+                                if (empty($to['thumbs'])) {
+                                    $to['thumbs'] = array($to['thumb']);
+                                }
+                                foreach ($to['thumbs'] as $key => $thumb) {
+                                    $src[] = str_replace('/' . $this->object->id . '/', '/0/', $thumb);
+                                    $dst[] = str_replace('/0/', '/' . $this->object->id . '/', $thumb);
+                                }
+                            } else {
+                                $src[] = $tag;
+                                $dst[] = '';
+                            }
+                            break;
+                        }
+                    }
+                }
+                if (!empty($src)) {
+                    $text = str_replace($src, $dst, $text);
+                    if ($text != $this->object->$field) {
+                        $this->object->set($field, $text);
+                        $update = true;
+                    }
+                }
+            }
+            if ($update) {
+                $this->object->save();
+            }
+        }
+
+        return $count;
     }
 
 }

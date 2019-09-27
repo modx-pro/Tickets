@@ -16,6 +16,7 @@ $_lang['comment_save'] = 'Permission for save\update comments.';
 $_lang['comment_delete'] = 'Permission delete\undelete comments.';
 $_lang['comment_remove'] = 'Permission for remove comments with children without possibility to restore.';
 $_lang['comment_publish'] = 'Permission publish\unpublish comments.';
+$_lang['comment_file_upload'] = 'Permission for upload files in comment.';
 $_lang['comment_vote'] = 'Permission for change rating of comment.';
 $_lang['comment_star'] = 'Permission for adding comments to favorites.';
 $_lang['section_add_children'] = 'Permission for create new tickets in section.';
