@@ -161,18 +161,49 @@ $(document).on('click', '.ticket-file-delete, .ticket-file-restore', function ()
     return false;
 });
 
+$.fn.insertAtCaret = function (text) {
+    return this.each(function () {
+        if (document.selection && this.tagName == 'TEXTAREA') {
+            //IE textarea support
+            this.focus();
+            sel = document.selection.createRange();
+            sel.text = text;
+            this.focus();
+        } else if (this.selectionStart || this.selectionStart == '0') {
+            //MOZILLA/NETSCAPE support
+            startPos = this.selectionStart;
+            endPos = this.selectionEnd;
+            scrollTop = this.scrollTop;
+            this.value = this.value.substring(0, startPos) + text + this.value.substring(endPos, this.value.length);
+            this.focus();
+            this.selectionStart = startPos + text.length;
+            this.selectionEnd = startPos + text.length;
+            this.scrollTop = scrollTop;
+        } else {
+            // IE input[type=text] and other browsers
+            this.value += text;
+            this.focus();
+            this.value = this.value; // forces cursor to end
+        }
+    });
+};
+
 $(document).on('click', '.ticket-file-insert', function () {
     var $this = $(this);
     var $parent = $this.parents('.ticket-file');
     var $text = $('[name="content"]');
     var template = $parent.find('.ticket-file-template').html();
-    template = template.replace(/^\n/g, '').replace(/\t{2}/g, '').replace(/\t$/g, '');
+    template = $.trim(template.replace(/^\n/g, '').replace(/\t{2}/g, '').replace(/\t$/g, ''));
 
     $text.focus();
     if (TicketsConfig.enable_editor > 0) {
         $.markItUp({replaceWith: template});
     } else {
-        //TO DO raw textarea
+        var form = $('#comment-form');
+        if (form.length) {
+            var $text = $('[name="text"]');
+        }
+        $text.insertAtCaret(template);
     }
     return false;
 });
