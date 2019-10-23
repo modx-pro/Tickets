@@ -461,7 +461,7 @@ class Tickets
 
         /** @var modUser $user */
         if ($this->authenticated && $user = $this->modx->getObject('modUser', $this->modx->user->id)) {
-            $comment['name'] = $this->modx->user->Profile->fullname;
+            $comment['name'] = ($this->modx->user->Profile->fullname == '') ? $this->modx->user->username : $this->modx->user->Profile->fullname;
             $comment['email'] = $this->modx->user->Profile->email;
             /** @var modUserProfile $profile */
             $profile = $this->modx->user->Profile;
@@ -501,7 +501,7 @@ class Tickets
             : true;
         if ($this->authenticated) {
             if (empty($data['name'])) {
-                $data['name'] = $this->modx->user->Profile->get('fullname');
+                $data['name'] = ($this->modx->user->Profile->get('fullname') == '') ? $this->modx->user->get('username') : $this->modx->user->Profile->get('fullname');
             }
             $data['email'] = $this->modx->user->Profile->get('email');
         } else {

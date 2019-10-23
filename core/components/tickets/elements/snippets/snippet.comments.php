@@ -193,8 +193,8 @@ $commentForm = $thread->get('closed')
     ? $modx->lexicon('ticket_thread_err_closed')
     : $form;
 $output = !empty($formBefore)
-    ? $commentForm . $commentsThread
-    : $commentsThread . $commentForm;
+    ? '<div class="comments-thread" id="'.$pls['thread'].'">' . $commentForm . $commentsThread . '</div>'
+    : '<div class="comments-thread" id="'.$pls['thread'].'">' . $commentsThread . $commentForm . '</div>';
 
 if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
     $output .= '<pre class="CommentsLog">' . print_r($pdoFetch->getTime(), 1) . '</pre>';
