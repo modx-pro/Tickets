@@ -540,7 +540,7 @@ var Tickets = {
             $('input[name="parent"]', form).val(comment_id);
             $('input[name="id"]', form).val(0);
 
-            var reply = $('#comment-' + comment_id + ' > .comment-reply');
+            var reply = $('#comment-' + comment_id + ' > .comment-reply, #comment-' + comment_id + ' > * > .comment-reply');
             form.insertAfter(reply).show();
             $('a', reply).hide();
             reply.parents('.ticket-comment').removeClass('ticket-comment-new');
