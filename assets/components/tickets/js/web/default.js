@@ -333,6 +333,7 @@ var Tickets = {
 
     comment: {
         preview: function (form, button) {
+            $(document).trigger('tickets_before_comment_preview', form, button);
             $(form).ajaxSubmit({
                 data: {action: 'comment/preview'},
                 url: TicketsConfig.actionUrl,
@@ -359,6 +360,7 @@ var Tickets = {
         },
 
         save: function (form, button) {
+            $(document).trigger('tickets_before_comment_save', form, button);
             $(form).ajaxSubmit({
                 data: {action: 'comment/save'},
                 url: TicketsConfig.actionUrl,
