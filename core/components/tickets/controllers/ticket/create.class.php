@@ -59,6 +59,7 @@ class TicketCreateManagerController extends ResourceCreateManagerController
             'ticket' => true,
         ));
         $this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/ticket/create.js');
+        $this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/misc/strftime-min-1.3.js');
 
         $ready = array(
             'xtype' => 'tickets-page-ticket-create',

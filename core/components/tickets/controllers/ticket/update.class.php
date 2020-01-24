@@ -51,6 +51,7 @@ class TicketUpdateManagerController extends ResourceUpdateManagerController
             'comments' => true,
         ));
         $this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/ticket/update.js');
+        $this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/misc/strftime-min-1.3.js');
 
         $neighborhood = array();
         if ($this->resource instanceof Ticket) {
