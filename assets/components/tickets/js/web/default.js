@@ -539,6 +539,11 @@ var Tickets = {
             $('#comment-preview-placeholder').hide();
             $('input[name="parent"]', form).val(comment_id);
             $('input[name="id"]', form).val(0);
+            if (typeof Tickets.StartPlupload != 'undefined') {
+                $('#ticket-files-list .ticket-file').remove();
+                Tickets.Uploader.destroy();
+                Tickets.StartPlupload();
+            }
 
             var reply = $('#comment-' + comment_id + ' > .comment-reply');
             form.insertAfter(reply).show();
@@ -564,6 +569,11 @@ var Tickets = {
             $('#comment-preview-placeholder').hide();
             $('input[name="parent"]', form).val(0);
             $('input[name="id"]', form).val(0);
+            if (typeof Tickets.StartPlupload != 'undefined') {
+                $('#ticket-files-list .ticket-file').remove();
+                Tickets.Uploader.destroy();
+                Tickets.StartPlupload();
+            }
             $(form).insertAfter('#comment-form-placeholder').show();
 
             $('#comment-editor', form).val('');
@@ -577,10 +587,12 @@ var Tickets = {
             $('#comment-new-link').show();
 
             var thread = $('#comment-form [name="thread"]').val();
+            var form_key = $('#comment-form [name="form_key"]').val();
             $.post(TicketsConfig.actionUrl, {
                 action: "comment/get",
                 id: comment_id,
-                thread: thread
+                thread: thread,
+                form_key: form_key
             }, function (response) {
                 if (!response.success) {
                     Tickets.Message.error(response.message);
@@ -592,6 +604,13 @@ var Tickets = {
                     $('#comment-preview-placeholder').hide();
                     $('input[name="parent"]', form).val(0);
                     $('input[name="id"]', form).val(comment_id);
+                    if (typeof Tickets.StartPlupload != 'undefined') {
+                        if ($('.comment-form-files').length && response.data.files) {
+                            $('.comment-form-files').html(response.data.files);
+                        }
+                        Tickets.Uploader.destroy();
+                        Tickets.StartPlupload(comment_id);
+                    }
 
                     var reply = $('#comment-' + comment_id + ' > .comment-reply');
                     var time_left = $('.time', form);

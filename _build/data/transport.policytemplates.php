@@ -18,6 +18,7 @@ $tmp = array(
             'comment_delete' => array(),
             'comment_remove' => array(),
             'comment_publish' => array(),
+            'comment_file_upload' => array(),
             'comment_vote' => array(),
             'comment_star' => array(),
             'ticket_file_upload' => array(),

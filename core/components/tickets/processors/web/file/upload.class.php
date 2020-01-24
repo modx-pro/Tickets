@@ -8,8 +8,8 @@ class TicketFileUploadProcessor extends modObjectProcessor
     /** @var modMediaSource $mediaSource */
     public $mediaSource;
     /** @var Ticket $ticket */
-    private $ticket = 0;
-    private $class = 'Ticket';
+    protected $ticket = 0;
+    protected $class = 'Ticket';
 
 
     public function initialize()
@@ -70,7 +70,7 @@ class TicketFileUploadProcessor extends modObjectProcessor
         }
 
         $path = '0/';
-        $filename = !empty($properties['imageNameType']) && $properties['imageNameType'] == 'friendly'
+        $filename = !empty($properties['imageNameType']) && $properties['imageNameType'] == 'friendly' && $this->class == 'Ticket'
             ? $this->ticket->cleanAlias($data['name'])
             : $data['hash'] . '.' . $extension;
         if (strpos($filename, '.' . $extension) === false) {

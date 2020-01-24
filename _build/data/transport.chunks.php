@@ -9,6 +9,7 @@ $tmp = array(
     'tpl.Tickets.form.files' => 'form_files',
     'tpl.Tickets.form.file' => 'form_file',
     'tpl.Tickets.form.image' => 'form_image',
+    'tpl.Tickets.comment.form.files' => 'comment_form_files',
 
     'tpl.Tickets.ticket.latest' => 'ticket_latest',
     'tpl.Tickets.ticket.email.bcc' => 'ticket_email_bcc',

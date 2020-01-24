@@ -1,5 +1,10 @@
 Changelog for Tickets.
 
+1.12.0 pl
+==========
+- fix error "date strftime is not a function"
+- Ability to upload files in comments
+
 1.11.2 pl
 ==========
 - fix max key length with utf8mb4

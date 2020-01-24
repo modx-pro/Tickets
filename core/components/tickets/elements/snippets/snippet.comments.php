@@ -22,6 +22,11 @@ $Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.cor
         $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
+$tplFiles = $Tickets->config['tplFiles'] = $modx->getOption('tplFiles', $scriptProperties, 'tpl.Tickets.comment.form.files');
+$tplFile = $Tickets->config['tplFile'] = $modx->getOption('tplFile', $scriptProperties, 'tpl.Tickets.form.file', true);
+$tplImage = $Tickets->config['tplImage'] = $modx->getOption('tplImage', $scriptProperties, 'tpl.Tickets.form.image',
+    true);
+
 /** @var pdoFetch $pdoFetch */
 $pdoFetch = $modx->getService('pdoFetch');
 $pdoFetch->setConfig($scriptProperties);
@@ -175,6 +180,53 @@ $commentsThread = $pdoFetch->getChunk($tplComments, array(
 ));
 
 $pls = array('thread' => $scriptProperties['thread']);
+
+if (!empty($allowFiles)) {
+    if ($Tickets->authenticated) {
+        if (empty($source)) {
+            $source = $Tickets->config['source'] = $modx->getOption('tickets.source_default', null,
+                $modx->getOption('default_media_source'));
+        }
+
+        $pls['files'] = $Tickets->getFileComment();
+
+        /** @var modMediaSource $source */
+        if ($source = $modx->getObject('sources.modMediaSource', array('id' => $source))) {
+            $properties = $source->getPropertyList();
+            $config = array(
+                'size' => !empty($properties['maxUploadSize'])
+                    ? $properties['maxUploadSize']
+                    : 3145728,
+                'height' => !empty($properties['maxUploadHeight'])
+                    ? $properties['maxUploadHeight']
+                    : 1080,
+                'width' => !empty($properties['maxUploadWidth'])
+                    ? $properties['maxUploadWidth']
+                    : 1920,
+                'extensions' => !empty($properties['allowedFileTypes'])
+                    ? $properties['allowedFileTypes']
+                    : 'jpg,jpeg,png,gif',
+            );
+            $modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.source=' . json_encode($config) . ';</script>',
+                true);
+        }
+        $modx->regClientScript($Tickets->config['jsUrl'] . 'web/lib/plupload/plupload.full.min.js');
+        $modx->regClientScript($Tickets->config['jsUrl'] . 'web/files.js');
+
+        $lang = $modx->getOption('cultureKey');
+        if ($lang != 'en' && file_exists($Tickets->config['jsPath'] . 'web/lib/plupload/i18n/' . $lang . '.js')) {
+            $modx->regClientScript($Tickets->config['jsUrl'] . 'web/lib/plupload/i18n/' . $lang . '.js');
+        }
+    }
+    else {
+        $pls['allowFiles'] = 1;
+    }
+}
+
+$key = md5(json_encode($Tickets->config));
+$_SESSION['TicketForm'][$key] = $Tickets->config;
+$pls['formkey'] = $key;
+
 if (!$Tickets->authenticated && empty($allowGuest)) {
     $form = $pdoFetch->getChunk($tplLoginToComment);
 } elseif (!$Tickets->authenticated) {

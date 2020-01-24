@@ -672,6 +672,7 @@ class Tickets
         $data = array(
             'raw' => $comment['raw'],
             'time' => $time_limit - $time,
+            'files' => $this->getFileComment($id),
         );
         if (empty($comment['createdby'])) {
             $data['name'] = $comment['name'];
@@ -681,6 +682,51 @@ class Tickets
         return $this->success('', $data);
     }
 
+    /**
+     * Returns TicketFile for TicketComment current author
+     *
+     * @param array $data
+     * @param int $tid
+     *
+     * @return string
+     */
+    public function getFileComment($tid = 0)
+    {
+        if (empty($this->config['allowFiles'])) {
+            return '';
+        }
+        $q = $this->modx->newQuery('TicketFile');
+        $q->where(array('class' => 'TicketComment'));
+        if (!empty($tid)) {
+            $q->andCondition(array('parent' => $tid, 'createdby' => $this->modx->user->id), null, 1);
+        } else {
+            $q->andCondition(array('parent' => 0, 'createdby' => $this->modx->user->id), null, 1);
+        }
+        $q->sortby('rank', 'ASC');
+        $q->sortby('createdon', 'ASC');
+        $collection = $this->modx->getIterator('TicketFile', $q);
+        $files = '';
+        /** @var TicketFile $item */
+        foreach ($collection as $item) {
+            if ($item->get('deleted') && !$item->get('parent')) {
+                $item->remove();
+            } else {
+                $item = $item->toArray();
+                $item['size'] = round($item['size'] / 1024, 2);
+                $item['new'] = empty($item['parent']);
+                $tpl = $item['type'] == 'image'
+                    ? $this->config['tplImage']
+                    : $this->config['tplFile'];
+                $files .= $this->getChunk($tpl, $item);
+            }
+        }
+
+        $chunk = $this->getChunk($this->config['tplFiles'], array(
+            'files' => $files,
+        ));
+
+        return $chunk;
+    }
 
     /**
      * Return unseen comments of thread for user
@@ -1572,6 +1618,35 @@ class Tickets
         return $this->success('', $html);
     }
 
+    /**
+     * Upload file for ticket comment
+     *
+     * @param $data
+     * @param string $class
+     *
+     * @return array|string
+     */
+    public function fileUploadComment($data, $class = 'TicketComment')
+    {
+        $data['source'] = $this->config['source'];
+        $data['class'] = $class;
+
+        /** @var modProcessorResponse $response */
+        $response = $this->runProcessor('web/file/upload.comment', $data);
+        if ($response->isError()) {
+            return $this->error($response->getMessage());
+        }
+        $file = $response->getObject();
+        $file['size'] = round($file['size'] / 1024, 2);
+        $file['new'] = empty($file['new']);
+
+        $tpl = $file['type'] == 'image'
+            ? $this->config['tplImage']
+            : $this->config['tplFile'];
+        $html = $this->getChunk($tpl, $file);
+
+        return $this->success('', $html);
+    }
 
     /**
      * Delete or restore uploaded file

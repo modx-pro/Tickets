@@ -136,6 +136,7 @@ $_lang['ticket_comment_deleted'] = 'Удалён';
 $_lang['ticket_comment_captcha'] = 'Введите сумму [[+a]] + [[+b]]';
 $_lang['ticket_comment_notify'] = 'Уведомлять о новых комментариях';
 $_lang['ticket_comment_reply_to'] = 'Ответ на';
+$_lang['ticket_comment_upload_auth'] = 'Авторизуйтесь для возможности загрузки файлов.';
 $_lang['ticket_comment_err_id'] = 'Комментарий с указанным id = [[+id]] не найден.';
 $_lang['ticket_comment_err_no_auth'] = 'Вы должны авторизоваться, чтобы оставлять комментарии.';
 $_lang['ticket_comment_err_wrong_user'] = 'Вы пытаетесь обновить комментарий, который вам не принадлежит.';
