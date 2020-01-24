@@ -39,6 +39,7 @@ class TicketsHomeManagerController extends modExtraManagerController
             'authors' => true,
         ));
         $this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/home.js');
+        $this->addLastJavascript($Tickets->config['jsUrl'] . 'mgr/misc/strftime-min-1.3.js');
         $this->addHtml('
         <script type="text/javascript">
         Ext.onReady(function() {
