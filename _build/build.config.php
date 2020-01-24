@@ -3,8 +3,8 @@
 // Define package
 define('PKG_NAME', 'Tickets');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
-define('PKG_VERSION', '1.11.6');
-define('PKG_RELEASE', 'beta');
+define('PKG_VERSION', '1.12.0');
+define('PKG_RELEASE', 'pl');
 define('PKG_AUTO_INSTALL', true);
 
 
