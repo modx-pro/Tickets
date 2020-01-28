@@ -131,7 +131,9 @@ Tickets.StartPlupload = function(comment_id = 0) {
             }
         }
     });
-    Tickets.Uploader.settings.multipart_params.tid = comment_id;
+    if (comment_id > 0) {
+        Tickets.Uploader.settings.multipart_params.tid = comment_id;
+    }
     Tickets.Uploader.init();
 }
 
