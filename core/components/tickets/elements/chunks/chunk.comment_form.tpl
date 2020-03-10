@@ -13,6 +13,7 @@
         <div class="form-group">
             <label for="comment-editor"></label>
             <textarea name="text" id="comment-editor" cols="30" rows="10" class="form-control"></textarea>
+            <span class="error" id="text-error"></span>
         </div>
 
         <div class="comment-form-files">

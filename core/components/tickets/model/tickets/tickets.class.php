@@ -260,6 +260,34 @@ class Tickets
         $allowedFields = array_unique(array_merge($allowedFields, $requiredFields));
         $bypassFields = array_map('trim', explode(',', $this->config['bypassFields']));
 
+        $validate = $this->config['validate'];
+        $modelPath = $this->modx->getOption('formit.core_path', null, $this->modx->getOption('core_path').'components/formit/') .'model/formit/';
+        if (!empty($validate) && file_exists($modelPath . 'formit.class.php')) {
+            $fi = $this->modx->getService(
+                'formit',
+                'FormIt',
+                $modelPath,
+                $this->config
+            );
+
+            if ($fi instanceof FormIt) {
+                $fi->initialize($this->modx->context->get('key'));
+                $fi->loadRequest();
+                
+                $fields = $fi->request->prepare();
+                $fi->request->handle($fields);
+
+                $errors = $fi->request->validator->getRawErrors();
+                if (!empty($errors)) {
+                    $data = array();
+                    foreach ($errors as $field => $message) {
+                        $data[$field] = ['field' => $field, 'message' => $message];
+                    }
+                    return $this->error('', $data);
+                }
+            }
+        }
+
         $fields = array();
         foreach ($allowedFields as $field) {
             if (in_array($field, $allowedFields) && array_key_exists($field, $data)) {
@@ -490,6 +518,33 @@ class Tickets
      */
     public function saveComment($data = array())
     {
+        $validate = $this->config['validate'];
+        $modelPath = $this->modx->getOption('formit.core_path', null, $this->modx->getOption('core_path').'components/formit/') .'model/formit/';
+        if (!empty($validate) && file_exists($modelPath . 'formit.class.php')) {
+            $fi = $this->modx->getService(
+                'formit',
+                'FormIt',
+                $modelPath,
+                $this->config
+            );
+
+            if ($fi instanceof FormIt) {
+                $fi->initialize($this->modx->context->get('key'));
+                $fi->loadRequest();
+                
+                $fields = $fi->request->prepare();
+                $fi->request->handle($fields);
+
+                $errors = $fi->request->validator->getRawErrors();
+                if (!empty($errors)) {
+                    $data = array();
+                    foreach ($errors as $field => $message) {
+                        $data[$field] = ['field' => $field, 'message' => $message];
+                    }
+                    return $this->error('', $data);
+                }
+            }
+        }
         unset($data['action']);
         $data['raw'] = trim($data['text']);
         $data['text'] = $this->Jevix($data['text'], 'Comment');

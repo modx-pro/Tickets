@@ -19,7 +19,7 @@
     <div class="form-group">
         <textarea class="form-control" placeholder="[[%ticket_content]]" name="content" id="ticket-editor"
                   rows="10"></textarea>
-        <span class="error"></span>
+        <span class="error" id="content-error"></span>
     </div>
 
     <div class="ticket-form-files">
