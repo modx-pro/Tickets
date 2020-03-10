@@ -1,5 +1,9 @@
 Changelog for Tickets.
 
+1.13.0 pl
+==========
+- add integration with FormIt validator for TicketForm and comments
+
 1.12.1 pl
 ==========
 - fix upload files on front-end updating Tickets
