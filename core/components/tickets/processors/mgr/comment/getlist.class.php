@@ -53,6 +53,10 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor
                 $c->where(array(
                     'TicketComment.id:=' => $query,
                     'OR:TicketComment.parent:=' => $query,
+                    'OR:TicketComment.text:LIKE' => '%' . $query . '%',
+                    'OR:TicketComment.raw:LIKE' => '%' . $query . '%',
+                    'OR:TicketComment.name:LIKE' => '%' . $query . '%',
+                    'OR:TicketComment.email:LIKE' => '%' . $query . '%',
                 ));
 
             } else {
