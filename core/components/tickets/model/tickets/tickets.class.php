@@ -786,11 +786,12 @@ class Tickets
     /**
      * Return unseen comments of thread for user
      *
-     * @param $name
+     * @param string $name
+     * @param bool $log
      *
      * @return array
      */
-    public function getNewComments($name)
+    public function getNewComments($name, $log = true)
     {
         if (!$this->authenticated) {
             return $this->error($this->modx->lexicon('access_denied'));
@@ -827,7 +828,9 @@ class Tickets
                         $comments[$row['id']] = $tmp;
                     }
 
-                    $this->logView($thread->resource);
+                    if ($log === true) {
+                        $this->logView($thread->resource);
+                    }
 
                     return $this->success('', array(
                         'comments' => $comments,
