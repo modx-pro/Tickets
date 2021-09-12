@@ -255,13 +255,23 @@ Ext.extend(Tickets.grid.Comments, MODx.grid.Grid, {
         var record = typeof(row) != 'undefined'
             ? row.data
             : this.menu.record;
+        
+        var params = {
+            action: 'mgr/thread/get',
+        };
+        if (this.config.threads) {
+            // on page App Tickets
+            params.id = this.config.threads;
+        } else if (this.config.parents) {
+            // on page manage resource
+            params.resource = this.config.parents;
+        } else if (record.resource) {
+            params.resource = record.resource;
+        }
 
         MODx.Ajax.request({
             url: Tickets.config.connector_url,
-            params: {
-                action: 'mgr/thread/get',
-                resource: record.resource,
-            },
+            params: params,
             listeners: {
                 success: {
                     fn: function (r) {
