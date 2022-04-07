@@ -13,7 +13,7 @@ if ($transport->xpdo) {
             $modx->addPackage('tickets', $modelPath);
 
             // Update comments count
-            $threads = $modx->getCollection('TicketThread', array('comments' => 0));
+            $threads = $modx->getIterator('TicketThread', array('comments' => 0));
             /** @var TicketThread $thread */
             foreach ($threads as $thread) {
                 $thread->updateCommentsCount();
