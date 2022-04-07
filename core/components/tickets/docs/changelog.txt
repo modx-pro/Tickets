@@ -1,5 +1,11 @@
 Changelog for Tickets.
 
+1.13.1 pl
+==========
+- Added `log` parameter to `Tickets::getNewComments` method to log view new comments
+- Added possibility to use TicketComments not only for resource objects
+- Fixed error `PHP Fatal error: Allowed memory size of N bytes exhausted` when updating a component
+
 1.13.0 pl
 ==========
 - add integration with FormIt validator for TicketForm and comments
