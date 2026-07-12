@@ -1729,6 +1729,32 @@ class Tickets
 
 
     /**
+     * Edit description of uploaded file
+     *
+     * @param int $id
+     * @param string $description
+     *
+     * @return array|string
+     */
+    public function fileDesc($id, $description)
+    {
+        if (!$this->authenticated || empty($this->config['allowFiles'])) {
+            return $this->error('ticket_err_access_denied');
+        }
+        /** @var modProcessorResponse $response */
+        $response = $this->runProcessor('web/file/desc', array(
+            'id' => (int)$id,
+            'description' => $description,
+        ));
+        if ($response->isError()) {
+            return $this->error($response->getMessage());
+        }
+
+        return $this->success('', $response->getObject());
+    }
+
+
+    /**
      * Sort uploaded files
      *
      * @param $rank

@@ -139,6 +139,35 @@ Tickets.StartPlupload = function(comment_id = 0) {
 
 Tickets.StartPlupload();
 
+$(document).on('change', '.ticket-file-description', function () {
+    var $this = $(this);
+    var $form = $this.parents('form');
+    var $parent = $this.parents('.ticket-file');
+    var id = $parent.data('id');
+    var form_key = $form.find('[name="form_key"]').val();
+    var desc = $.trim($this.val());
+
+    $.post(TicketsConfig.actionUrl, {
+        action: 'ticket/file/desc',
+        id: id,
+        desc: desc,
+        form_key: form_key
+    }, function (response) {
+        if (response.success) {
+            if (response.data && response.data.description !== undefined) {
+                $this.val(response.data.description);
+            }
+            var title = $this.val() || $parent.find('.ticket-file-link').attr('title') || '';
+            $parent.find('.ticket-file-template a').attr('title', title);
+            $parent.find('.ticket-file-template img, .ticket-file-image').attr('alt', title);
+        }
+        else {
+            Tickets.Message.error(response.message);
+        }
+    }, 'json');
+    return false;
+});
+
 $(document).on('click', '.ticket-file-delete, .ticket-file-restore', function () {
     var deleted = 'deleted';
     var $this = $(this);

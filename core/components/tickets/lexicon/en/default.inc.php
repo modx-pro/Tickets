@@ -250,6 +250,7 @@ $_lang['ticket_file_select'] = 'Select files';
 $_lang['ticket_file_delete'] = 'Delete';
 $_lang['ticket_file_restore'] = 'Restore';
 $_lang['ticket_file_insert'] = 'Insert link';
+$_lang['ticket_file_description'] = 'Description';
 $_lang['ticket_err_source_initialize'] = 'Could not initialize media source';
 $_lang['ticket_err_file_ns'] = 'Could not process specified file';
 $_lang['ticket_err_file_ext'] = 'Wrong file extension';

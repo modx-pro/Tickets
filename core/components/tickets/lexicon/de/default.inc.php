@@ -237,6 +237,7 @@ $_lang['ticket_file_select'] = 'Dateien auswählen';
 $_lang['ticket_file_delete'] = 'Löschen';
 $_lang['ticket_file_restore'] = 'Wiederherstellen';
 $_lang['ticket_file_insert'] = 'Link einfügen';
+$_lang['ticket_file_description'] = 'Beschreibung';
 $_lang['ticket_err_source_initialize'] = 'Die Medienquelle kann nicht initialisiert werden';
 $_lang['ticket_err_file_ns'] = 'Die angegebene Datei konnte nicht verarbeitet werden';
 $_lang['ticket_err_file_ext'] = 'Falsche Dateiendung';
