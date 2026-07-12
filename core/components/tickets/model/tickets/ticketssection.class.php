@@ -231,8 +231,10 @@ class TicketsSection extends modResource
                 'id' => $this->id,
                 'class' => 'TicketsSection',
             ), '', true, true);
-            $total->fetchValues();
-            $total->save();
+            if ($total->save()) {
+                $total->fetchValues();
+                $total->save();
+            }
         }
 
         return $total->get(array(
