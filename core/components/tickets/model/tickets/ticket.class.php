@@ -358,9 +358,10 @@ class Ticket extends modResource
      */
     public function getCommentsCount()
     {
-        $q = $this->xpdo->newQuery('TicketThread', array('name' => 'resource-' . $this->id));
+        // Count comments on all threads of this resource (not only resource-{id})
+        $q = $this->xpdo->newQuery('TicketThread', array('resource' => $this->id));
         $q->leftJoin('TicketComment', 'TicketComment',
-            "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1");
+            "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1 AND `TicketComment`.`deleted` = 0");
         $q->select('COUNT(`TicketComment`.`id`) as `comments`');
 
         $count = 0;

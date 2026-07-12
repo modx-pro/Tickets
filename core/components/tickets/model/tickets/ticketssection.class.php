@@ -338,7 +338,8 @@ class TicketsSection extends modResource
     {
         $q = $this->xpdo->newQuery('Ticket', array('parent' => $this->id, 'published' => 1, 'deleted' => 0));
         $q->leftJoin('TicketThread', 'TicketThread', "`TicketThread`.`resource` = `Ticket`.`id`");
-        $q->leftJoin('TicketComment', 'TicketComment', "`TicketThread`.`id` = `TicketComment`.`thread`");
+        $q->leftJoin('TicketComment', 'TicketComment',
+            "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1 AND `TicketComment`.`deleted` = 0");
         $q->select('COUNT(`TicketComment`.`id`) as `comments`');
 
         $count = 0;
