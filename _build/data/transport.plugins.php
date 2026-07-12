@@ -14,6 +14,7 @@ $tmp = array(
             'OnWebPageComplete',
             'OnEmptyTrash',
             'OnUserSave',
+            'OnResourceDuplicate',
         ),
     ),
 );
