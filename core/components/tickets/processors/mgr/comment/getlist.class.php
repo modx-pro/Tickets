@@ -49,12 +49,21 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor
 
         if ($query = $this->getProperty('query', null)) {
             $query = trim($query);
+            $digits = preg_replace('/\D+/', '', $query);
             if (is_numeric($query)) {
+                // id/parent exact + body search for phone-like numeric queries
                 $c->where(array(
                     'TicketComment.id:=' => $query,
                     'OR:TicketComment.parent:=' => $query,
+                    'OR:TicketComment.text:LIKE' => '%' . $query . '%',
+                    'OR:TicketComment.raw:LIKE' => '%' . $query . '%',
                 ));
-
+            } elseif ($digits !== '' && strlen($digits) >= 7 && preg_match('/^[\d\s\+\-\(\)]+$/', $query)) {
+                // formatted phone: +7 (999) ... → digits only in text/raw
+                $c->where(array(
+                    'TicketComment.text:LIKE' => '%' . $digits . '%',
+                    'OR:TicketComment.raw:LIKE' => '%' . $digits . '%',
+                ));
             } else {
                 $c->where(array(
                     'TicketComment.text:LIKE' => '%' . $query . '%',
