@@ -1,314 +1,628 @@
-Changelog for Tickets.
+# Changelog - Tickets
 
-1.13.1 pl
-==========
+Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
+
+## [1.14.0] - 2026-07-12
+
+Релиз 1.14.x: несколько веток комментариев, немецкий лексикон, описание файлов, импорт дат.
+
+### Added
+
+- Немецкий лексикон (`lexicon/de`).
+- Несколько веток комментариев на одной странице (обёртка `.comments-thread`).
+- Редактирование описания загруженных изображений тикета (`ticket/file/desc`).
+- JS-события `tickets_before_comment_preview` и `tickets_before_comment_save`.
+- Вложенность Zurb Foundation Media Object для reply и дочерних комментариев.
+- Кастомный `createdon` при создании комментария для Administrator (импорт).
+
+### Changed
+
+- Поиск в mgr: числовой запрос ищет и в `text`/`raw`; телефоны с `+()` нормализуются до цифр.
+- `TicketQueue`: email из очереди приоритетнее профиля; проверка active/blocked с null-safe Profile.
+- Обновление тикета: `syncsite_default`; кэш секции сбрасывается при каждом update.
+- Пустой `fullname` → fallback на `username` при save/preview комментария.
+
+### Fixed
+
+- Рекурсия `TicketTotal::save` (`Maximum function nesting level`).
+
+## [1.13.1] - 2022-04-07
+
+Patch 1.13.x: log for getNewComments, TicketComments outside resources, memory fix on update.
+
+### Added
+
 - Added `log` parameter to `Tickets::getNewComments` method to log view new comments
 - Added possibility to use TicketComments not only for resource objects
+
+### Fixed
+
 - Fixed error `PHP Fatal error: Allowed memory size of N bytes exhausted` when updating a component
 
-1.13.0 pl
-==========
-- add integration with FormIt validator for TicketForm and comments
+## [1.13.0] - 2020-03-10
 
-1.12.1 pl
-==========
+FormIt validator for TicketForm and comments.
+
+### Added
+
+- Integration with FormIt validator for TicketForm and comments.
+
+## [1.12.1]
+
+fix upload files on front-end updating Tickets
+
+### Fixed
+
 - fix upload files on front-end updating Tickets
 
-1.12.0 pl
-==========
-- fix error "date strftime is not a function"
+## [1.12.0]
+
+fix error "date strftime is not a function"
+
+### Added
+
 - Ability to upload files in comments
 
-1.11.2 pl
-==========
-- fix max key length with utf8mb4
+### Fixed
+
+- fix error "date strftime is not a function"
+
+## [1.11.2]
+
+fix max key length with utf8mb4
+
+### Added
+
 - add params description for snippet subscribeAuthor
 - allow @INLINE, @FILE binding for tpl in subscribeAuthor
-- uri alias_visible
 - add navigation button on resource update page
 
-1.11.1 pl
-==========
+### Changed
+
+- uri alias_visible
+
+### Fixed
+
+- fix max key length with utf8mb4
+
+## [1.11.1]
+
+In snippet TicketComments add option "separatePlaceholder"
+
+### Added
+
 - In snippet TicketComments add option "separatePlaceholder"
 - In snippet TicketForm add ability exclude -section for options parents, resources
 - Add setting "tickets.max_files_upload"
 
-1.11.0 pl
-==========
+## [1.11.0]
+
+Ability to subscribe to the author
+
+### Added
+
 - Ability to subscribe to the author
 - Added new snippet "subscribeAuthor".
 - Added chunks "tpl.Tickets.author.email.subscription" and "tpl.Tickets.author.subscribe".
 
-1.10.1 pl
-==========
+## [1.10.1]
+
+Fix lost subscribers after saving in mgr
+
+### Fixed
+
 - Fix lost subscribers after saving in mgr
 
-1.10.0 pl
-==========
+## [1.10.0]
+
+Allow find by raw comment text in mgr.
+
+### Added
+
 - Allow find by raw comment text in mgr.
-- Fix box search, allow find by id less 3 char.
 - Add new tab for management subscribe TicketsSection
 - Add new policy section_unsubscribe
 - Add few fields in customize form set
 
-1.9.5 pl
-==========
+### Fixed
+
+- Fix box search, allow find by id less 3 char.
+
+## [1.9.5]
+
+Fix typo in mgr/comment/create.
+
+### Added
+
+- Allow processing loaded image in the OnFileManagerFileCreate event.
+
+### Fixed
+
 - Fix typo in mgr/comment/create.
 - Fix id comments-tab in mgr.
 - Fix broken TicketsConfig on Form after login/logout.
-- Allow processing loaded image in the OnFileManagerFileCreate event.
 
-1.9.4 pl
-==========
-- Fixed sometimes bug with save section properties.
+## [1.9.4]
+
+Fixed sometimes bug with save section properties.
+
+### Changed
+
 - On update ticket upload files UX improvement.
 - Save state "clear cache" on update section ticket.
 
-1.9.3 pl
-==========
+### Fixed
+
+- Fixed sometimes bug with save section properties.
+
+## [1.9.3]
+
+Ability to delete ticket on front by owner. And undelete ticket on front if it was deleted by owner.
+
+### Added
+
 - Ability to delete ticket on front by owner. And undelete ticket on front if it was deleted by owner.
 - Added new TicketForm parameters: &allowDelete, &redirectDeleted, &redirectUnDeleted (for delete on front), &tid (forced update Form without $_REQUEST["tid"]).
 - Add sorting with Drag & Drop TicketFile on TicketForm (on save - link with ms2Gallery rank).
 
-1.9.2 pl
-==========
+## [1.9.2]
+
+Fixed creating access policies on install or update.
+
+### Fixed
+
 - Fixed creating access policies on install or update.
 
-1.9.1 pl
-==========
+## [1.9.1]
+
+Ability to create new comments from manager.
+
+### Added
+
 - Ability to create new comments from manager.
 
-1.9.0 pl
-==========
+## [1.9.0]
+
+Improved support of MODX 2.7.
+
+### Changed
+
 - Improved support of MODX 2.7.
-- Removed unnecessary files.
 - Minimum version is MODX 2.3.
 
-1.8.5 pl
-==========
+### Removed
+
+- Removed unnecessary files.
+
+## [1.8.5]
+
+Fixed possible SQL injections by Agel_Nash.
+
+### Fixed
+
 - Fixed possible SQL injections by Agel_Nash.
 
-1.8.4 pl
-==========
+## [1.8.4]
+
+The calendar in the manager now respects the "manager_week_start" system setting.
+
+### Changed
+
 - The calendar in the manager now respects the "manager_week_start" system setting.
 
-1.8.3 pl
-==========
+## [1.8.3]
+
+Fixed removing TicketTotal on removing Ticket.
+
+### Fixed
+
 - Fixed removing TicketTotal on removing Ticket.
 
-1.8.2 pl
-==========
+## [1.8.2]
+
+Unpublished tickets send code HTTP 403.
+
+### Changed
+
 - Unpublished tickets send code HTTP 403.
+
+### Fixed
+
 - Fixed bug with ability to overwrite properties of TicketsSection when you save it in manager.
 - Fixed auto change of "createdon" field in "TicketAuthor" class.
 - Fixed comments model.
 
-1.8.1 pl
-==========
+## [1.8.1]
+
+Added "kbd" to allowed preformatted tags.
+
+### Added
+
 - Added "kbd" to allowed preformatted tags.
-- [#149] Fixed loading rich text editors in controllers (especially TinyMCE).
-- [#148] [TicketComments] Fixed the loading of all comments when &thread is not specified.
 - [#147] Added an javascript events on save and preview comments and tickets.
 - [#135] [TicketComments] Added ability to custom "error" element nesting in javascript.
 
-1.8.0 pl
-==========
+### Fixed
+
+- [#149] Fixed loading rich text editors in controllers (especially TinyMCE).
+- [#148] [TicketComments] Fixed the loading of all comments when &thread is not specified.
+
+## [1.8.0]
+
+Added support of ms2Gallery 2.0.
+
+### Added
+
 - Added support of ms2Gallery 2.0.
+
+### Changed
+
 - TicketFile thumbnails now stored in a separate folder.
 - Improved update of ticket form by data from server.
 
-1.7.6 pl
-==========
+## [1.7.6]
+
+Fixed the work of TicketMeta with usual resources.
+
+### Fixed
+
 - Fixed the work of TicketMeta with usual resources.
-- Removed broken option "&permissions" from snippet TicketForm.
 - Fixed possible E_WARNING in plugin at line 50.
 
-1.7.5 pl
-==========
-- Fixed "total_rating" placeholders in a chunks.
+### Removed
+
+- Removed broken option "&permissions" from snippet TicketForm.
+
+## [1.7.5]
+
+Fixed "total_rating" placeholders in a chunks.
+
+### Changed
+
 - The TicketMeta snippet now updates document variables on load.
 
-1.7.4 pl
-==========
+### Fixed
+
+- Fixed "total_rating" placeholders in a chunks.
+
+## [1.7.4]
+
+Fixed bug with dynamic override ticket section on save.
+
+### Fixed
+
 - Fixed bug with dynamic override ticket section on save.
 
-1.7.3 pl
-==========
+## [1.7.3]
+
+Some security fixes.
+
+### Fixed
+
 - Some security fixes.
 
-1.7.2 pl
-==========
+## [1.7.2]
+
+Fixed the counting of comments of a ticket.
+
+### Fixed
+
 - Fixed the counting of comments of a ticket.
 
-1.7.1 pl
-==========
+## [1.7.1]
+
+Updated jQuery.jGrowl to the latest version.
+
+### Changed
+
 - Updated jQuery.jGrowl to the latest version.
+
+### Fixed
+
 - Fixed the clearing of cache of a resource on save from manager.
 
-1.7.0 pl
-==========
-- Requires MODX 2.3+
-- PSR-2
-- System setting "section_content_default" is now empty by default.
+## [1.7.0]
+
+Requires MODX 2.3+
+
+### Added
+
 - [#139] Added return of id of the saved ticket.
 - Added new plugin events: OnBeforeTicketVote, OnBeforeCommentVote, OnBeforeTicketStar, OnBeforeTicketUnStar, OnBeforeCommentStar and OnBeforeCommentUnStar.
 - Ability to limit the number of days to vote for a tickets and comments in a sections.
 - Ability to require the minimum rating to create a tickets and comments in a section.
 - New object "TicketTotal" that stores total values of sections and tickets: rating, comments, views, etc.
+
+### Changed
+
+- Requires MODX 2.3+
+- PSR-2
+- System setting "section_content_default" is now empty by default.
 - Improved the speed of processing sections with a big number of tickets and comments.
 
-1.6.17 pl
-==========
+## [1.6.17]
+
+Updated model for MySQL 5.7.
+
+### Changed
+
 - Updated model for MySQL 5.7.
 
-1.6.16 pl
-==========
+## [1.6.16]
+
+[#134] [TicketMeta] Added ability to specify &thread.
+
+### Added
+
 - [#134] [TicketMeta] Added ability to specify &thread.
 
-1.6.15 pl
-==========
+## [1.6.15]
+
+Improved load of pdoTools.
+
+### Changed
+
 - Improved load of pdoTools.
 
-1.6.14 pl
-==========
+## [1.6.14]
+
+[#133] Added trailing semicolon for inline scripts.
+
+### Added
+
 - [#133] Added trailing semicolon for inline scripts.
+
+### Changed
+
 - [#132] Unset service "action" property before object save.
 
-1.6.13 pl
-==========
+## [1.6.13]
+
+Fixed save of TicketAuthorAction with empty rating.
+
+### Fixed
+
 - Fixed save of TicketAuthorAction with empty rating.
 
-1.6.12 pl
-==========
+## [1.6.12]
+
+[#130] Respect section settings on ticket create in manager.
+
+### Changed
+
 - [#130] Respect section settings on ticket create in manager.
 
-1.6.11 pl
-==========
+## [1.6.11]
+
+Chunks of emails now use the lexicons.
+
+### Changed
+
 - Chunks of emails now use the lexicons.
 
-1.6.10 pl
-==========
+## [1.6.10]
+
+Added escaping of Fenom tags
+
+### Added
+
 - Added escaping of Fenom tags
 
-1.6.9 pl
-==========
+## [1.6.9]
+
+[mgr] Added search by author of ticket in tickets list.
+
+### Added
+
 - [mgr] Added search by author of ticket in tickets list.
 - Added new events: OnCommentVote and OnTicketVote.
 - Added new events: OnCommentStar, OnCommentUnStar, OnTicketStar, OnTicketUnStar.
 
-1.6.8 pl
-==========
+## [1.6.8]
+
+[getTickets] Fixed counting wrong number of views.
+
+### Fixed
+
 - [getTickets] Fixed counting wrong number of views.
 
-1.6.7 pl
-==========
-- Fixed typo in redirect rule of plugin.
-- Returned missing Jevix property sets.
-- Improved tables resolver for update really old versions.
+## [1.6.7]
+
+Fixed typo in redirect rule of plugin.
+
+### Added
+
 - Added autoload of Prettify in default.js
 
-1.6.6 pl
-==========
+### Changed
+
+- Returned missing Jevix property sets.
+- Improved tables resolver for update really old versions.
+
+### Fixed
+
+- Fixed typo in redirect rule of plugin.
+
+## [1.6.6]
+
+Improved installation script for MODX 2.4.
+
+### Changed
+
 - Improved installation script for MODX 2.4.
 
-1.6.5 pl
-==========
+## [1.6.5]
+
+[#126] Fixed possible issue with thread latest comment
+
+### Fixed
+
 - [#126] Fixed possible issue with thread latest comment
 
-1.6.4 pl
-==========
+## [1.6.4]
+
+[#125] fixed deletion of dependent objects.
+
+### Fixed
+
 - [#125] fixed deletion of dependent objects.
 
-1.6.3 pl
-==========
+## [1.6.3]
+
+Improved performance of installer.
+
+### Changed
+
 - Improved performance of installer.
+
+### Fixed
+
 - Fixed possibility to create a new comment with specified rating.
 - [getTickets] Fixed parameter &toSeparatePlaceholders.
 
-1.6.2 pl
-==========
-- [mgr] Fixed special checkboxes handling in Ticket panel.
+## [1.6.2]
+
+[mgr] Fixed special checkboxes handling in Ticket panel.
+
+### Changed
+
 - Improved performance of Tickets saving.
 
-1.6.1 pl
-==========
+### Fixed
+
+- [mgr] Fixed special checkboxes handling in Ticket panel.
+
+## [1.6.1]
+
+Improved counting of totals in AuthorProfile.
+
+### Changed
+
 - Improved counting of totals in AuthorProfile.
 - More ratings in AuthorProfile.
 - [mgr] Improved authors page.
 
-1.6.0 pl3
-==========
+## [1.6.0-pl3]
+
+[#113] Added ratings for the authors.
+
+### Added
+
 - [#113] Added ratings for the authors.
 - [#122] [TicketComments] Added parameter &requiredFields for snippet.
-- [#122] [TicketComments] Improved frontend errors handling.
 - [#111] Ability to load any js and css files on Tickets initialization.
 - [#87] Added new tab with the all tickets of the site.
-- [#83] Improved extension of TicketsSection page.
 - [#84] Added profiles of authors.
-- [#83] Improved extension of Ticket page.
 - [#61] Ability to specify url of comments thread for opening from manager.
+- [mgr] New method Tickets::loadManagerFiles for 3rd party components.
+- Added system settings with tree icons for MODX 2.3.
+- [#81] [TicketForm] Added parameter &bypassFields.
+
+### Changed
+
+- [#122] [TicketComments] Improved frontend errors handling.
+- [#83] Improved extension of TicketsSection page.
+- [#83] Improved extension of Ticket page.
 - [mgr] Improved Tickets grid on TicketsSection page.
 - [mgr] Improved Threads grid.
 - [mgr] Improved Comments grid.
 - [mgr] More Comments events.
 - [mgr] More Threads events.
-- [mgr] New method Tickets::loadManagerFiles for 3rd party components.
 - Updated MarkItUp to version 1.1.14.
 - Updated Plupload to version 2.1.2.
-- Added system settings with tree icons for MODX 2.3.
 - Code reformat.
+- [#118] Tickets::sanitizeString can process simple arrays.
+- [#108] Improved method TicketThread::buildTree.
+
+### Fixed
+
 - [#120] Fixed permissions in comments processors.
 - [#119] Fixed pagination in comments grid.
-- [#118] Tickets::sanitizeString can process simple arrays.
 - [#117] Fixed work with "tvs_below_content".
 - [#114] [getComments] Fixed showDeleted parameter.
-- [#108] Improved method TicketThread::buildTree.
 - [#107] Fixed missing tag "bad".
 - [getComments] Fixed displaying deleted comments.
 - [#93] [TicketComments] Fixed notices about unpublished comments to admins.
-- [#81] [TicketForm] Added parameter &bypassFields.
 
-1.5.1 pl
-==========
+## [1.5.1]
+
+Improved editing html entities in page titles.
+
+### Changed
+
 - Improved editing html entities in page titles.
 
-1.5.0 pl
-==========
+## [1.5.0]
+
+Ability to specify multiple previews for uploaded images in media source.
+
+### Added
+
 - Ability to specify multiple previews for uploaded images in media source.
-- [#115] Fixed tickets uri generation.
-- [#110] Fixed aggregate connection to modUser in TicketComment.
 - [#95] Ability to remove user files for members of group "Administrator".
 - Ability to count guests views of pages. New system setting "tickets.count_guests".
 
-1.4.2 pl1
-==========
+### Fixed
+
+- [#115] Fixed tickets uri generation.
+- [#110] Fixed aggregate connection to modUser in TicketComment.
+
+## [1.4.2-pl1]
+
+Improved sanitization of MODX tags in snippet TicketForm.
+
+### Changed
+
 - Improved sanitization of MODX tags in snippet TicketForm.
 
-1.4.2 rc2
-==========
+## [1.4.2-rc2]
+
+Changed Gravatar url to https protocol.
+
+### Changed
+
 - Changed Gravatar url to https protocol.
+
+### Fixed
+
 - Fixed work with MODX 2.3.
 - Fixed sort of tickets grid.
 - [#100] Fixed tables resolver.
 - Fixed rare bug with users combo on advanced site configuration.
 
-1.4.1 pl
-==========
+## [1.4.1]
+
+Improved redirect of NotFound tickets in plugin.
+
+### Changed
+
 - Improved redirect of NotFound tickets in plugin.
 
-1.4.0 pl1
-==========
-- Fixed bug with listing of all comments in empty section.
-- Fixed processing of "tickets.ticket_max_cut" in tickets processor.
-- Comments are now using users photo if exists.
+## [1.4.0-pl1]
+
+Fixed bug with listing of all comments in empty section.
+
+### Added
+
 - Added parameter "resources" for TicketForm.
 
-1.4.0 pl
-==========
+### Changed
+
+- Comments are now using users photo if exists.
+
+### Fixed
+
+- Fixed bug with listing of all comments in empty section.
+- Fixed processing of "tickets.ticket_max_cut" in tickets processor.
+
+## [1.4.0]
+
+Added section settings.
+
+### Added
+
 - Added section settings.
-- Removed system settings "ticket_id_as_alias" and "section_id_as_alias".
-- System settings "ticket_show_in_tree_default", "ticket_isfolder_force" and "ticket_hidemenu_force" moved to section settings.
-- System settings "default_template", "disable_jevix_default", "process_tags_default" moved to section settings.
 - Added ability to specify custom uris for children tickets.
 - Added subscriptions for sections of tickets.
 - Added chunks "tpl.Tickets.ticket.email.subscription" and "tpl.Tickets.sections.wrapper".
@@ -321,153 +635,279 @@ Changelog for Tickets.
 - Added new system setting "unpublished_ticket_page".
 - Added ability to upload files for tickets.
 - Added permissions for work with files.
+- [TicketForm] Added ability to disable sisyphus for any fields by setting class "disable-sisyphus".
+- [TicketComments] Added parameter "autoPublishGuest" for more flexible management of comments.
+- [#75] Ability to vote for any resource.
+- [mgr] Disabled ability to delete comment via update form.
+
+### Changed
+
+- System settings "ticket_show_in_tree_default", "ticket_isfolder_force" and "ticket_hidemenu_force" moved to section settings.
+- System settings "default_template", "disable_jevix_default", "process_tags_default" moved to section settings.
 - Improved contexts support.
 - Improved parameter "returnIds" in snippets.
 - Improved handling of "ticketForm" properties and sections verification.
 - Improved notifications about unpublished comments and tickets.
 - Improved vote for any resource with TicketMeta.
 - Improved list chunks.
-- [TicketForm] Added ability to disable sisyphus for any fields by setting class "disable-sisyphus".
-- [TicketComments] Added parameter "autoPublishGuest" for more flexible management of comments.
+
+### Fixed
+
 - [#80] Fixed innerJoin in getTickets.
 - [#76] Fixed auto publication of tickets.
-- [#75] Ability to vote for any resource.
 - [#74] Fixed ticket panel for new versions of MODX.
 - [#72] Fixed handling TVs.
 - [#64] Fixed forced processing of introtext by Jevix.
-- [mgr] Disabled ability to delete comment via update form.
 - Fixed default template on ticket creation.
 - Fixed saving ticket properties.
 
-1.3.0 rc3
-==========
+### Removed
+
+- Removed system settings "ticket_id_as_alias" and "section_id_as_alias".
+
+## [1.3.0-rc3]
+
+[#59] Added changing of opacity of bad comments.
+
+### Added
+
 - [#59] Added changing of opacity of bad comments.
-- [#58] Fixed switching the document class from modDocument to Ticket.
 - [#57] Added more user placeholders to preview and create comment.
 - [#56] Added field "description".
-- [#55] Fixed changing of alias when user edit ticket from frontend.
 - Added placeholder [[+idx]] to comments.
 - Added rating of comments.
 - Added rating of tickets.
 - Added new snippet TicketMeta.
 - Added moving to the parent comment and back.
-- Improved snippet TicketLatest.
-- Improved clearing of cache right after ticket creation.
 - Added checkbox "show_in_tree" in the panel of Ticket.
 - Added system setting "ticket_show_in_tree_default".
-- Changed some default system setting.
 - Added column "owner" to "TicketVote" for select rating of users.
 - Added hotkeys for preview and submit tickets and comments.
 - Added anonymous comments.
 - Added simple math captcha for anonymous users.
-- Removed inline onclick events.
-- Fixed checking of "requiredFields" in TicketForm.
-- Fixed restoring of old data in new ticket form by Sisyphus.
+
+### Changed
+
+- Improved snippet TicketLatest.
+- Improved clearing of cache right after ticket creation.
+- Changed some default system setting.
 - Improved javascript for Internet Explorer.
 - Improved snippets because closed thread can contain comments.
 
-1.2.4 rc5
-==========
-- Improved update chunks on package upgrade.
-- Fixed word "Array" when no tickets in section.
+### Fixed
+
+- [#58] Fixed switching the document class from modDocument to Ticket.
+- [#55] Fixed changing of alias when user edit ticket from frontend.
+- Fixed checking of "requiredFields" in TicketForm.
+- Fixed restoring of old data in new ticket form by Sisyphus.
+
+### Removed
+
+- Removed inline onclick events.
+
+## [1.2.4-rc5]
+
+Improved update chunks on package upgrade.
+
+### Added
+
 - Added requirement of pdoTools 1.9.x.
-- Thread and comments are removed along with the page.
 - Added aggregate relationship "Resource" for TicketThread.
 - Added parameter "context" in snippet "TicketForm".
+
+### Changed
+
+- Improved update chunks on package upgrade.
+- Thread and comments are removed along with the page.
 - Action.php works with respect to contexts.
-- Fixed web/sections/getlist processor.
 - Changed permission in mgr/comment/update from "update_document" to "comment_save".
 
-1.2.4 rc1
-==========
+### Fixed
+
+- Fixed word "Array" when no tickets in section.
+- Fixed web/sections/getlist processor.
+
+## [1.2.4-rc1]
+
+Added two system settings: "section_id_as_alias" and "ticket_id_as_alias".
+
+### Added
+
 - Added two system settings: "section_id_as_alias" and "ticket_id_as_alias".
 - Added "uri_override" checkbox.
+- Ability to update chunks on package upgrade.
+- Ability to move comment from one thread to another.
+- [#47] Auto hide "new comment" button.
+
+### Changed
+
 - Improved snippets getTickets and getTicketsSection.
 - Improved snippet "TicketForm" - see new properties.
 - Improved chunks for working on iOS.
 - Updated chunks for Bootstrap 3.
-- Ability to update chunks on package upgrade.
-- Removed chunk "tpl.Tickets.form.section.row".
-- Fixed placeholder [[+children]] when fastMode = 0 in TicketComments.
-- Ability to move comment from one thread to another.
 - Improved check of users authentication.
 - [#54] Field idx in TicketsSection.
-- [#47] Auto hide "new comment" button.
 - [#43] Parameter &redirectUnpublished in TicketForm.
 
-1.2.3 pl3
-==========
-- Fixed requirement of TicketThread in snippet TicketLatest for showing last tickets.
+### Fixed
+
+- Fixed placeholder [[+children]] when fastMode = 0 in TicketComments.
+
+### Removed
+
+- Removed chunk "tpl.Tickets.form.section.row".
+
+## [1.2.3-pl3]
+
+Fixed requirement of TicketThread in snippet TicketLatest for showing last tickets.
+
+### Changed
+
 - Improved snippet TicketLatest.
+
+### Fixed
+
+- Fixed requirement of TicketThread in snippet TicketLatest for showing last tickets.
 - [#52] Fixed checkboxes, again.
 - Fixed duplicate replies in TicketComments when fastMode = 0.
+
+### Removed
+
 - Removed user and email inputs in comment window in manager.
 
-1.2.2 pl
-==========
+## [1.2.2]
+
+Fixed load of CMP scripts
+
+### Fixed
+
 - Fixed load of CMP scripts
 
-1.2.1 pl1
-==========
+## [1.2.1-pl1]
+
+Fixed page with TicketsSection in manager for work in php 5.5.
+
+### Fixed
+
 - Fixed page with TicketsSection in manager for work in php 5.5.
 
-1.2.0 pl
-==========
+## [1.2.0]
+
+Replaced virtual field "comment" in TicketThread to real.
+
+### Changed
+
 - Replaced virtual field "comment" in TicketThread to real.
 - Optimized snippet "getTicketsSections" for work on big sites.
 
-1.1.3 pl
-==========
+## [1.1.3]
+
+[#50] Added button for ticket duplicate in section grid.
+
+### Added
+
 - [#50] Added button for ticket duplicate in section grid.
+
+### Changed
+
 - Improved two comboboxes in manager: "createdon" and "parent".
 
-1.1.2 pl
-==========
+## [1.1.2]
+
+[#51] Fixed work of checkboxes in manager.
+
+### Fixed
+
 - [#51] Fixed work of checkboxes in manager.
 
-1.1.1 pl
-==========
+## [1.1.1]
+
+Improved load of pdoTools.
+
+### Added
+
+- Added jQuery.Sisyphus for persisting your forms data in a browsers local storage.
+- [#49] Added action fields to Ticket actions for more Form Customization.
+
+### Changed
+
 - Improved load of pdoTools.
 - Improved registration of javascript on frontend.
 - Updated jQuery to version 1.10.2.
 - Updated jQuery.Form to version 20131017.
-- Added jQuery.Sisyphus for persisting your forms data in a browsers local storage.
-- [#49] Added action fields to Ticket actions for more Form Customization.
+
+### Fixed
+
 - [#44] Fixed time format in tickets list.
 
-1.1.0 pl
-==========
+## [1.1.0]
+
+Added parameter "cacheTime" for TicketLatest.
+
+### Added
+
 - Added parameter "cacheTime" for TicketLatest.
-- Fixed method Ticket::toArray().
 - Added placeholder [[+date_ago]] to class "Ticket". You can use $ticket->get('date_ago');
 - Added new system parameter "section_content_default".
-- Fixed blank template when create new ticket if no "tickets.default_template" set.
 - Added more checkboxes for Ticket in manager.
 - Added new system parameters "ticket_hidemenu_force" and "ticket_isfolder_force". You can disable them.
+
+### Changed
+
 - If user edits ticket which was moved in the category into which the user has no rights, this category will be saved.
 
-1.1.0 rc2
-==========
+### Fixed
+
+- Fixed method Ticket::toArray().
+- Fixed blank template when create new ticket if no "tickets.default_template" set.
+
+## [1.1.0-rc2]
+
+Fixed snippets for work with pdoTools 1.8.0.
+
+### Fixed
+
 - Fixed snippets for work with pdoTools 1.8.0.
 
-1.1.0 rc1
-==========
+## [1.1.0-rc1]
+
+Improved send of emails.
+
+### Changed
+
 - Improved send of emails.
-- Fixed unsubscription message.
 - Email notifications are not sent to the authors of events.
 
-1.1.0 beta2
-==========
-- Unread comments class removes only when it refreshed manually.
+### Fixed
+
+- Fixed unsubscription message.
+
+## [1.1.0-beta2]
+
+Unread comments class removes only when it refreshed manually.
+
+### Added
+
 - Added JSON field "properties" to "TicketComment". Now you can store additional data in comments.
+- Added parameters "allowedFields" and "requiredFields" to snippet "TicketForm". You can use TVs names.
+
+### Changed
+
+- Unread comments class removes only when it refreshed manually.
 - Functions json_encode() and json_decode() replaced to modX::toJSON() and modX::fromJSON().
 - Snippet "TicketForm" was completely rewrited.
-- Added parameters "allowedFields" and "requiredFields" to snippet "TicketForm". You can use TVs names.
 - Tickets created and updated through ajax without reload of form.
+
+### Fixed
+
 - Error messages is not sticky anymore.
 
-1.1.0 beta
-==========
+## [1.1.0-beta]
+
+Added system setting "tickets.mail_from"
+
+### Added
+
 - Added system setting "tickets.mail_from"
 - Added system setting "tickets.mail_from_name"
 - Added system setting "tickets.mail_bcc" for sending notifications for site admins.
@@ -475,132 +915,249 @@ Changelog for Tickets.
 - Added chunk "tpl.Tickets.ticket.email.bcc" for admin notification about new ticket.
 - Added chunk "tpl.Tickets.comment.email.bcc" for admin notification about new comment.
 - Added chunk "tpl.Tickets.comment.email.subscription" for notification of thread subscribers.
-- Improved responses from server through ajax.
 - New class "TicketQueue" for mail queue.
 - New methods: Tickets::addQueue(), TicketThread:isSubscribed() and Tickets::Subscribe() that using TicketThread::Subscribe().
 - Added system setting "tickets.mail_queue" for specifying whether to use delayed send of mail.
-- [#37] Fixed issue with loading incorrect TVs when create new Ticket.
-- [#35] Fixed javascript bug in comments, when "autoPublish=0".
+
+### Changed
+
+- Improved responses from server through ajax.
 - [#34] Unprocessed placeholders are now removed from preview.
 - [#30] TicketsSection now has its own context menu in manager.
+
+### Fixed
+
+- [#37] Fixed issue with loading incorrect TVs when create new Ticket.
+- [#35] Fixed javascript bug in comments, when "autoPublish=0".
 - [#29] Fixed errors when snippet "TicketLatest" called before "TicketComments".
 - Fixed issue with change template when create new Ticket.
 - Fixed issue with hidden new comment, when you reply to another one, and it was changed while you typing.
 
-1.0.0 pl1 (requires pdoTools 1.4.1 or later)
-==========
+## [1.0.0-pl1]
+
+Requires pdoTools 1.4.1 or later.
+
+### Added
+
 - Add ukrainian lang for frontend.
+
+### Changed
+
 - Improved all snippets.
+
+### Fixed
+
 - Fixed parameter "parents" in "TicketLatest".
 
-1.0.0 rc4
-==========
-- Fixed comments bugs when work in limited depth mode.
+## [1.0.0-rc4]
+
+Fixed comments bugs when work in limited depth mode.
+
+### Changed
+
 - Smooth scroll to just created comment.
 - Improved ajax update of comments.
 
-1.0.0 rc3
-==========
+### Fixed
+
+- Fixed comments bugs when work in limited depth mode.
+
+## [1.0.0-rc3]
+
+Comments fixes and improvements
+
+### Changed
+
 - Comments fixes and improvements
 
-1.0.0 rc2
-==========
+## [1.0.0-rc2]
+
+Added comments level dots in default css.
+
+### Added
+
 - Added comments level dots in default css.
 - Added indication of unseen comments.
 - Added ajax navigation through new comments.
 - Added ajax fetching of new comments.
-- Fixed primary keys in model of component.
 - Added "mode" indication in comment save: "preview" or "create".
+
+### Changed
+
 - Improved gravatar hash generation.
 
-1.0.0 rc1
-==========
+### Fixed
+
+- Fixed primary keys in model of component.
+
+## [1.0.0-rc1]
+
+Improved snippet TicketLatest for displaying latest comments of user
+
+### Changed
+
 - Improved snippet TicketLatest for displaying latest comments of user
 
-1.0.0 rc (requires pdoTools 1.2.0 or later)
-==========
-- Fixed default parameters of snippets. "showLog" and "fastMode" are now really disabled by default.
+## [1.0.0-rc]
+
+Requires pdoTools 1.2.0 or later.
+
+### Added
+
+- Added system parameters "tickets.frontend_js" and "tickets.frontend_css" for loading scripts and styles.
+- Added "jGrowl" script for frontend notifications.
+- [#6] Added parameter "depth" to snippet "TicketComments" for limitation thread depth.
+- [#7] Added parameter "formBefore" to snippet "TicketComments" for specify where to show form, before or after.
+- [#11], [#12] Added checking of parent comment status when you reply on it.
+- [#15] Added comments moderation. Check new parameter "autoPublish" of snippet "TicketComments".
+- [mgr] Added ability to "close" thread. When thread is closed, comments are shown but adding new is disabled.
+- [mgr] Added ability to "publish" and "unpublish" comments.
+
+### Changed
+
 - Rewrited snippet "getTickets". See snippet properties for details.
 - Rewrited snippet "getTicketsSections". See snippet properties for details.
 - Rewrited snippet "TicketLatest". See snippet properties for details.
 - Rewrited snippet "TicketComments". See snippet properties for details.
 - Updated awesome html editor "MarkItUp" to version 1.1.14.
-- Added system parameters "tickets.frontend_js" and "tickets.frontend_css" for loading scripts and styles.
 - Merged and rewrited default frontend styles and scripts.
 - Replaced Tickets::getChunk() by pdoTools::getChunk().
-- Added "jGrowl" script for frontend notifications.
-- [#5] Fixed bug with no field "resource" when preview comment.
-- [#6] Added parameter "depth" to snippet "TicketComments" for limitation thread depth.
-- [#7] Added parameter "formBefore" to snippet "TicketComments" for specify where to show form, before or after.
 - [#8] Sorting of thread comments depends from parameter "formBefore".
-- [#11], [#12] Added checking of parent comment status when you reply on it.
-- [#15] Added comments moderation. Check new parameter "autoPublish" of snippet "TicketComments".
 - [#18] Parameters of thread now saving in "TicketThread" object and updates on page refresh.
-- [mgr] Added ability to "close" thread. When thread is closed, comments are shown but adding new is disabled.
-- [mgr] Added ability to "publish" and "unpublish" comments.
 
-0.9.4
-==========
+### Fixed
+
+- Fixed default parameters of snippets. "showLog" and "fastMode" are now really disabled by default.
+- [#5] Fixed bug with no field "resource" when preview comment.
+
+## [0.9.4]
+
+Fixed bug with ignoring default template of ticket on frontend.
+
+### Fixed
+
 - Fixed bug with ignoring default template of ticket on frontend.
 
-0.9.3
-==========
-- [mgr] Template fix on ticket create
-- [mgr] Fixed permissions for manage comments
-- [mgr] Fixed non-install of some system parameters
+## [0.9.3]
+
+[mgr] Template fix on ticket create
+
+### Changed
+
 - Improved snippets for calling them multiple times on one page
 - Improved verification of ticket fields when create
-- Fixed endless redirect on unpublished or deleted tickets
 - Parameter "showLog" is now disabled by default in snippets
 - Improved lexicons
 
-0.9.2
-==========
+### Fixed
+
+- [mgr] Template fix on ticket create
+- [mgr] Fixed permissions for manage comments
+- [mgr] Fixed non-install of some system parameters
+- Fixed endless redirect on unpublished or deleted tickets
+
+## [0.9.2]
+
+[mgr] Fixed bug with no refresh on ticket create.
+
+### Fixed
+
 - [mgr] Fixed bug with no refresh on ticket create.
 - Fixed alias of ticket, created from front.
 
-0.9.1
-==========
-- [mgr] Fixed bug with no changing author of the ticket when creating it in manager.
+## [0.9.1]
+
+[mgr] Fixed bug with no changing author of the ticket when creating it in manager.
+
+### Added
+
 - [mgr] Ability to change parent of the comment.
 - [mgr] Ability to specify alias of the ticket.
-- [mgr] Fixed empty dates in comment window.
+
+### Changed
+
 - Placeholder [[+date_ago]] in snippet TicketLatest now created from "createdon" property.
 
-0.9.0
-==========
-- Fixes for PHP 5.4
-- Fix error when update ticket with disabled "automatic_alias".
-- Deleted /component/tickets/pdotools/.
-- Automatic installation of pdoTools from MODX repository.
+### Fixed
+
+- [mgr] Fixed bug with no changing author of the ticket when creating it in manager.
+- [mgr] Fixed empty dates in comment window.
+
+## [0.9.0]
+
+Fixes for PHP 5.4
+
+### Added
+
 - 2 new snippets: getTickets and getSections.
-- getTickets is set by default for empty Section content.
-- Changed chunk tpl.Tickets.list.row for displaying unread comments count.
 - New chunk tpl.Tickets.sections.row.
 
-0.8.3
-==========
-- MarkitUp javascript is now loadings at the bottom of web page.
-- Private tickets. If ticket has this param, users will must be have permission "ticket_view_private" for reading it. Otherwise they will be redirected to "tickets.private_ticket_page".
-- Fix processing MODX tags when edit comment.
-- Little chunks fixes because of ajax issue in some browsers.
+### Changed
+
+- Deleted /component/tickets/pdotools/.
+- Automatic installation of pdoTools from MODX repository.
+- getTickets is set by default for empty Section content.
+- Changed chunk tpl.Tickets.list.row for displaying unread comments count.
+
+### Fixed
+
+- Fixes for PHP 5.4
+- Fix error when update ticket with disabled "automatic_alias".
+
+## [0.8.3]
+
+MarkitUp javascript is now loadings at the bottom of web page.
+
+### Added
+
 - Added parameter "toPlaceholder" to snippet TicketLatest.
 
-0.8.2
-==========
-- Fixed bug with empty string after Jevix sanitization, if there was some html entities, such as &_nbsp; or &_raquo;.
+### Changed
+
+- MarkitUp javascript is now loadings at the bottom of web page.
+- Private tickets. If ticket has this param, users will must be have permission "ticket_view_private" for reading it. Otherwise they will be redirected to "tickets.private_ticket_page".
+
+### Fixed
+
+- Fix processing MODX tags when edit comment.
+- Little chunks fixes because of ajax issue in some browsers.
+
+## [0.8.2]
+
+Fixed bug with empty string after Jevix sanitization, if there was some html entities, such as &_nbsp; or &_raquo;.
+
+### Added
+
 - Added virtual field "comments" to class TicketThread. Now you can get it as they were natural with TicketThread::get() or TicketThread::toArray().
+
+### Changed
+
 - Update last comment id and last comment time in thread on comment remove.
 
-0.8.1
-==========
+### Fixed
+
+- Fixed bug with empty string after Jevix sanitization, if there was some html entities, such as &_nbsp; or &_raquo;.
+
+## [0.8.1]
+
+Added clearing cache of ticket on comments create\update\delete\remove. Now you can call [[TicketComments]] cached an...
+
+### Added
+
 - Added clearing cache of ticket on comments create\update\delete\remove. Now you can call [[TicketComments]] cached and do not forget to activate next parameter.
 - New system parameter "tickets.clear_cache_on_comment_save". If false, tickets cache will not be cleared on comment. Use it with uncached snippet call.
+
+### Changed
+
 - No email notices on comments update.
 - Improved redirect to tickets in plugin. Now it understands any nesting level.
 
-0.8.0
-==========
+## [0.8.0]
+
+[mgr] Added changing section of the ticket.
+
+### Added
+
 - [mgr] Added changing section of the ticket.
 - [mgr] Added tab with all comments.
 - Added editing of comments by author.
@@ -609,78 +1166,155 @@ Changelog for Tickets.
 - Added placeholder [[+date_ago]] to comments chunks.
 - Added placeholder [[+date_ago]] to last tickets and last comments chunks.
 - Added virtual fields "comments" and "views" to class TicketsSection. Now you can get it as they were natural with TicketsSection::get() or TicketsSection::toArray().
+
+### Changed
+
 - Improved chunks processing.
 - Normal MODX tags when update ticket on frontend. [[*id]] instead of &#091;&#091;*id&#093;&#093;
 - When you request ticket, that was moved into another section, with old url - user will be redirected to right page.
 
-0.7.0
-==========
-- [mgr] Fixed default settings when create new ticket.
+## [0.7.0]
+
+[mgr] Fixed default settings when create new ticket.
+
+### Added
+
 - Added placeholders of user profile in comments chunks.
 - Added plugins events
 - New system setting "snippet_prepare_comment" for custom prepare data of the comment.
 
-0.6.0
-==========
+### Fixed
+
+- [mgr] Fixed default settings when create new ticket.
+
+## [0.6.0]
+
+[mgr] Added Custom Manager Page for manage comments. Now you can use TicketComments without Tickets.
+
+### Added
+
 - [mgr] Added Custom Manager Page for manage comments. Now you can use TicketComments without Tickets.
-- [mgr] Fixed selecting default template on ticket create.
-- Improved handling of MODX tags in Ticket::getContent.
-- Improved frontend javascript files for tickets and comments.
-- Removed parameters &useJs=`` and &useCss=`` from snippet TicketComments.
 - Added counting of ticket views by users.
-- Latest comments now respects status of resource. It must be published and not deleted.
 - Added disabling comments to ticket by setting flag "deleted" to comments thread.
 - Added virtual fields "comments" and "views" to class Ticket. Now you can get it as they were natural with Ticket::get() or Ticket::toArray().
-- Removed snippet getCommentsCount. Just use placeholder [[+comments]] or [[+views]] in chunks.
 - Added placeholders [[+comments]] and [[+views]] to ticket page.
+
+### Changed
+
+- Improved handling of MODX tags in Ticket::getContent.
+- Improved frontend javascript files for tickets and comments.
+- Latest comments now respects status of resource. It must be published and not deleted.
 - Localized chunks.
 - Chunks and snippets now are static by default.
 
-0.5.0
-==========
+### Fixed
+
+- [mgr] Fixed selecting default template on ticket create.
+
+### Removed
+
+- Removed parameters &useJs=`` and &useCss=`` from snippet TicketComments.
+- Removed snippet getCommentsCount. Just use placeholder [[+comments]] or [[+views]] in chunks.
+
+## [0.5.0]
+
+[mgr] #2 Added support of TinyMCE
+
+### Added
+
 - [mgr] #2 Added support of TinyMCE
-- [mgr] Fixed maximize comment window.
 - [mgr] New ticket option "disable Jevix". If true - all content of the page will be displayed without filtration.
 - [mgr] New ticket option "process MODX tags". If true - all tags on ticket page will be processed by MODX parser.
 - [mgr] New system parameter "disable_jevix_default". Sets default value for new ticket.
 - [mgr] New system parameter "process_tags_default". Sets default value for new ticket.
+
+### Changed
+
 - Auto generation of introtext field by cutting text before tag <cut/> in ticket.
 - When displaying tickets, tag <cut/> transformed into anchor <a name="cut"></a>
 - Improved getLatestComments - now much more faster.
 
-0.4.1
-==========
+### Fixed
+
+- [mgr] Fixed maximize comment window.
+
+## [0.4.1]
+
+Added default content for TicketsSection in manager
+
+### Added
+
 - Added default content for TicketsSection in manager
 
-0.4.0
-==========
-- Fixed installer
+## [0.4.0]
+
+Fixed installer
+
+### Changed
+
 - Automatic installation of Jevix and creation of property sets for filter comments and tickets
 
-0.3.3
-==========
+### Fixed
+
+- Fixed installer
+
+## [0.3.3]
+
+Improved Ticket class, for better work with its cache
+
+### Changed
+
 - Improved Ticket class, for better work with its cache
+
+### Fixed
+
 - Fixed work with dates on Ticket update
 
-0.3.2
-==========
+## [0.3.2]
+
+Custom manager page for Ticket
+
+### Changed
+
 - Custom manager page for Ticket
 
-0.3.1
-==========
-- Security fixes
+## [0.3.1]
+
+Security fixes
+
+### Changed
+
 - comment_save permission is enabled in TicketsUserPolicy by default
 - Snippet tagCut
 
-0.3.0
-==========
+### Fixed
+
+- Security fixes
+
+## [0.3.0]
+
+Custom manager page for TicketsSection
+
+### Changed
+
 - Custom manager page for TicketsSection
 
-0.2.0
-==========
-- Removed dependency on Quip. Now comments are very fast and handy.
+## [0.2.0]
+
+Removed dependency on Quip. Now comments are very fast and handy.
+
+### Changed
+
 - Various improvements and bug fixes
 
-0.1.0
-==========
+### Removed
+
+- Removed dependency on Quip. Now comments are very fast and handy.
+
+## [0.1.0]
+
+First beta
+
+### Changed
+
 - First beta
