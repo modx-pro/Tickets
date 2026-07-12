@@ -912,9 +912,9 @@ Tickets.threadId = function (el) {
 };
 
 Tickets.tpanel = {
-    wrapper: '#comments-tpanel',
-    refresh: '#tpanel-refresh',
-    new_comments: '#tpanel-new',
+    wrapper: '.comments-tpanel',
+    refresh: '.tpanel-refresh',
+    new_comments: '.tpanel-new',
     class_new: 'ticket-comment-new',
 
     root: function (thread_id) {
@@ -923,7 +923,7 @@ Tickets.tpanel = {
 
     initialize: function () {
         if (TicketsConfig.tpanel) {
-            $(this.wrapper).show();
+            this.root('').find(this.wrapper).show();
             this.stop('');
         }
 

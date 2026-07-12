@@ -77,8 +77,9 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor
         $customDate = trim((string)$this->getProperty('date', ''));
         $this->unsetProperty('date');
         if ($customDate !== '') {
-            // Import-only: prevent public spoofing of createdon
-            $canSetDate = $this->modx->user->isMember('Administrator');
+            // Import/mgr only: group name is spoofable on frontend
+            $canSetDate = (bool)$this->modx->user->get('sudo')
+                || $this->modx->user->hasSessionContext('mgr');
             if (!$canSetDate) {
                 return $this->modx->lexicon('ticket_err_access_denied');
             }
