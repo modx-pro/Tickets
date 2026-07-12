@@ -26,6 +26,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 ### Fixed
 
 - Рекурсия `TicketTotal::save` (`Maximum function nesting level`).
+- `#183` PHP 8: безопасный доступ к `resourceArray['properties']` и `aliasMap` при сохранении тикета.
 
 ## [1.13.1] - 2022-04-07
 

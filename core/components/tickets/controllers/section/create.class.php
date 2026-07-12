@@ -28,7 +28,7 @@ class TicketsSectionCreateManagerController extends ResourceCreateManagerControl
         parent::loadCustomCssJs();
         $this->head['html'] = $html;
 
-        if (is_null($this->resourceArray['properties'])) {
+        if (!isset($this->resourceArray['properties']) || !is_array($this->resourceArray['properties'])) {
             $this->resourceArray['properties'] = array();
         }
         $this->resourceArray['properties']['tickets'] = $this->resource->getProperties('tickets');

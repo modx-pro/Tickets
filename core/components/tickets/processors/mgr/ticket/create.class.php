@@ -222,8 +222,14 @@ class TicketCreateProcessor extends modResourceCreateProcessor
         // Updating resourceMap before OnDocSaveForm event
         $results = $this->modx->cacheManager->generateContext($this->object->context_key,
             array('cache_context_settings' => false));
-        $this->modx->context->resourceMap = $results['resourceMap'];
-        $this->modx->context->aliasMap = $results['aliasMap'];
+        if (is_array($results)) {
+            if (isset($results['resourceMap'])) {
+                $this->modx->context->resourceMap = $results['resourceMap'];
+            }
+            if (isset($results['aliasMap'])) {
+                $this->modx->context->aliasMap = $results['aliasMap'];
+            }
+        }
 
         if ($this->_sendEmails && $this->modx->context->key == 'mgr') {
             $this->sendTicketMails();
