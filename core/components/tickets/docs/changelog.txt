@@ -5,28 +5,42 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [1.14.0] - 2026-07-12
 
-Релиз 1.14.x: несколько веток комментариев, немецкий лексикон, описание файлов, импорт дат.
+Релиз 1.14.x: несколько веток и плоский список комментариев, уведомления, лексиконы, PHP 8, uninstall.
 
 ### Added
 
-- Немецкий лексикон (`lexicon/de`).
+- Немецкий лексикон (`lexicon/de`), синхронизация с EN.
 - Несколько веток комментариев на одной странице (обёртка `.comments-thread`).
+- Плоский список комментариев: `&tree=`0`` (пагинация `limit`/`offset`).
 - Редактирование описания загруженных изображений тикета (`ticket/file/desc`).
-- JS-события `tickets_before_comment_preview` и `tickets_before_comment_save`.
+- JS-события `tickets_before_ticket_*` и `tickets_before_comment_*` (preview/save).
 - Вложенность Zurb Foundation Media Object для reply и дочерних комментариев.
-- Кастомный `createdon` при создании комментария для Administrator (импорт).
+- Кастомный `createdon` при создании комментария (импорт: `sudo` или сессия `mgr`).
+- Параметры TicketComments в окне свойств сниппета (`sortby`, `limit`, `tree` и др.).
+- Системная настройка `tickets.auto_introtext` (отключение автозаполнения introtext).
+- BCC-уведомления администраторам по умолчанию; badge неопубликованных комментариев в mgr.
+- Ссылка счётчика комментариев на `#first_unread` / `#comments`.
+- Лексикон `tplTicketEmailSubscription` (#142).
 
 ### Changed
 
-- Поиск в mgr: числовой запрос ищет и в `text`/`raw`; телефоны с `+()` нормализуются до цифр.
+- Поиск в mgr: числовой запрос и форматированные телефоны ищут в `text`/`raw` (query + digits).
 - `TicketQueue`: email из очереди приоритетнее профиля; проверка active/blocked с null-safe Profile.
-- Обновление тикета: `syncsite_default`; кэш секции сбрасывается при каждом update.
+- Обновление тикета: `syncsite_default`; `clearCache` секции только при включённом `syncsite`.
+- `[[+total]]` в `tplComments`: счётчик из `TicketThread.comments` / DB, не pdoFetch `totalVar`.
+- tpanel: классы вместо id (`.comments-tpanel`), чтобы не дублировать id на нескольких ветках.
+- Украинский лексикон дополнен до паритета с RU; правки EN (в т.ч. `tickets_prop_threads`).
 - Пустой `fullname` → fallback на `username` при save/preview комментария.
 
 ### Fixed
 
-- Рекурсия `TicketTotal::save` (`Maximum function nesting level`).
+- Рекурсия / первый доступ `TicketTotal` (`Maximum function nesting level`, stub save).
 - `#187` Подсчёт комментариев тикета по `TicketThread.resource`, не только `resource-{id}`.
+- PHP 8: безопасные пути mgr save (properties / aliasMap / template).
+- Дублирование тикета: пересборка alias и uri (#174).
+- Uninstall: очистка CRC→modDocument, таблиц, меню/категории (#172).
+- XSS: `:htmlent` для `description` в чанке изображения.
+- Описание файлов и события ticket/comment разведены после ревью merged PR.
 
 ## [1.13.1] - 2022-04-07
 
