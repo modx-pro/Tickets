@@ -190,6 +190,7 @@ if (!empty($rows) && is_array($rows)) {
         $row['date_ago'] = $Tickets->dateFormat($row['createdon']);
         $row['idx'] = $pdoFetch->idx++;
         // Processing new comments
+        $row['comments_anchor'] = '#comments';
         if ($Tickets->authenticated && !empty($row['thread'])) {
             $last_view = $pdoFetch->getObject('TicketView', array(
                 'parent' => $row['id'],
@@ -206,6 +207,9 @@ if (!empty($rows) && is_array($rows)) {
                     'createdon:>' => $last_view['timestamp'],
                     'createdby:!=' => $modx->user->id,
                 ));
+                if (!empty($row['new_comments'])) {
+                    $row['comments_anchor'] = '#first_unread';
+                }
             } else {
                 $row['new_comments'] = $row['comments'];
             }

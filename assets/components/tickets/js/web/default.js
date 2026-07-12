@@ -166,6 +166,19 @@ var Tickets = {
                 $(this).find('#comment-total, .ticket-comments-count').text(count);
             });
 
+            if (window.location.hash === '#comments' || window.location.hash === '#first_unread') {
+                var target = $('#first_unread');
+                if (!target.length) {
+                    target = $('.ticket-comment-new:first');
+                }
+                if (!target.length) {
+                    target = $('#comments');
+                }
+                if (target.length) {
+                    Tickets.utils.goto(target.attr('id') || 'comments');
+                }
+            }
+
             $("#ticketForm.create").sisyphus({
                 excludeFields: $('#ticketForm .disable-sisyphus')
             });

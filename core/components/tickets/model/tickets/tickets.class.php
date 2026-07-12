@@ -10,6 +10,7 @@ class Tickets
     public $authenticated = false;
     private $prepareCommentCustom = null;
     private $last_view = 0;
+    private $first_unread_marked = array();
 
 
     /**
@@ -1038,6 +1039,12 @@ class Tickets
         }
         $node['comment_was_edited'] = (bool)$node['editedon'];
         $node['comment_new'] = $this->authenticated && $node['createdby'] != $this->modx->user->id && $this->last_view > 0 && strtotime($node['createdon']) > $this->last_view;
+        $node['comment_first_unread'] = false;
+        $unreadKey = !empty($node['resource']) ? (int)$node['resource'] : 0;
+        if (!empty($node['comment_new']) && empty($this->first_unread_marked[$unreadKey])) {
+            $node['comment_first_unread'] = true;
+            $this->first_unread_marked[$unreadKey] = true;
+        }
 
         return $this->getChunk($tpl, $node, $this->config['fastMode']);
     }
