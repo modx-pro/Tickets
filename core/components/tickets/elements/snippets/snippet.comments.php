@@ -9,6 +9,7 @@ $scriptProperties['snippetPrepareComment'] = $modx->getOption('tickets.snippet_p
 $scriptProperties['commentEditTime'] = $modx->getOption('tickets.comment_edit_time', null, 180);
 
 $depth = $modx->getOption('depth', $scriptProperties, 0);
+$threadTree = filter_var($modx->getOption('tree', $scriptProperties, true), FILTER_VALIDATE_BOOLEAN);
 $tplComments = $modx->getOption('tplComments', $scriptProperties, 'tpl.Tickets.comment.wrapper');
 $tplCommentForm = $modx->getOption('tplCommentForm', $scriptProperties, 'tpl.Tickets.comment.form');
 $tplCommentFormGuest = $modx->getOption('tplCommentFormGuest', $scriptProperties, 'tpl.Tickets.comment.form.guest');
@@ -147,7 +148,15 @@ $rows = $pdoFetch->run();
 
 // Processing rows
 $output = $commentsThread = null;
-$commentTotal = 0;
+// pdoFetch totalVar breaks with GROUP BY + Vote/Star joins
+$commentTotal = (int)$thread->get('comments');
+if ($commentTotal <= 0) {
+    $countWhere = array('thread' => $thread->get('id'), 'deleted' => 0);
+    if (empty($showUnpublished)) {
+        $countWhere['published'] = 1;
+    }
+    $commentTotal = $modx->getCount('TicketComment', $countWhere);
+}
 if (!empty($rows) && is_array($rows)) {
     $tmp = array();
     $i = 1;
@@ -156,16 +165,11 @@ if (!empty($rows) && is_array($rows)) {
         $row['idx'] = $i++;
         $tmp[$row['id']] = $row;
     }
-    // pdoFetch totalVar breaks with GROUP BY + Vote/Star joins
-    $commentTotal = (int)$thread->get('comments');
-    if ($commentTotal <= 0) {
-        $countWhere = array('thread' => $thread->get('id'), 'deleted' => 0);
-        if (empty($showUnpublished)) {
-            $countWhere['published'] = 1;
-        }
-        $commentTotal = $modx->getCount('TicketComment', $countWhere);
+    if ($threadTree) {
+        $rows = $thread->buildTree($tmp, $depth);
+    } else {
+        $rows = array_values($tmp);
     }
-    $rows = $thread->buildTree($tmp, $depth);
     unset($tmp, $i);
 
     if (!empty($formBefore)) {
@@ -263,7 +267,7 @@ if ($modx->user->hasSessionContext('mgr') && !empty($showLog)) {
     $output .= '<pre class="CommentsLog">' . print_r($pdoFetch->getTime(), 1) . '</pre>';
 }
 
-$modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.formBefore = ' . (int)!empty($formBefore) . ';TicketsConfig.thread_depth = ' . (int)$depth . ';</script>',
+$modx->regClientStartupScript('<script type="text/javascript">TicketsConfig.formBefore = ' . (int)!empty($formBefore) . ';TicketsConfig.thread_depth = ' . (int)$depth . ';TicketsConfig.thread_tree = ' . (int)$threadTree . ';</script>',
     true);
 
 // Return output

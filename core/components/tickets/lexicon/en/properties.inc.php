@@ -93,3 +93,4 @@ $_lang['tickets_prop_unusedFiles'] = 'Display only those files, links on which a
 $_lang['tickets_prop_meta_tplFile'] = 'The chunk for file in the list.';
 
 $_lang['tickets_prop_class'] = 'Specify class for selecting results.';
+$_lang['tickets_prop_tree'] = 'Display comments as a tree. Set to No for a flat list (supports limit/offset pagination).';

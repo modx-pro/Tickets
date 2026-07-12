@@ -93,6 +93,10 @@ $tmp = array(
         'desc' => 'tickets_prop_commentsDepth',
         'value' => 0,
     ),
+    'tree' => array(
+        'type' => 'combo-boolean',
+        'value' => true,
+    ),
     'allowGuest' => array(
         'type' => 'combo-boolean',
         'value' => false,
