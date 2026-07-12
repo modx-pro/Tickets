@@ -13,9 +13,9 @@
         <ol class="comment-list" id="comments">[[+comments]]</ol>
     </div>
 
-    <div id="comments-tpanel">
-        <div id="tpanel-refresh"></div>
-        <div id="tpanel-new"></div>
+    <div class="comments-tpanel">
+        <div class="tpanel-refresh"></div>
+        <div class="tpanel-new"></div>
     </div>
 </div>
 

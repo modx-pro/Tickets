@@ -194,19 +194,20 @@ var Tickets = {
             });
         });
 
-        // Link to parent comment
-        $('#comments').on('click touchend', '.ticket-comment-up a', function () {
+        // Link to parent comment (scoped to current thread)
+        $(document).on('click touchend', '.comments-thread .ticket-comment-up a', function () {
+            var thread_id = Tickets.threadId(this);
             var id = $(this).data('id');
             var parent = $(this).data('parent');
             if (parent && id) {
                 Tickets.utils.goto('comment-' + parent);
-                $('#comment-' + parent + ' .ticket-comment-down:lt(1)').show().find('a').attr('data-child', id);
+                $(thread_id + ' #comment-' + parent + ' .ticket-comment-down:lt(1)').show().find('a').attr('data-child', id);
             }
             return false;
         });
 
-        // Link to child comment
-        $('#comments').on('click touchend', '.ticket-comment-down a', function () {
+        // Link to child comment (scoped to current thread)
+        $(document).on('click touchend', '.comments-thread .ticket-comment-down a', function () {
             var child = $(this).data('child');
             if (child) {
                 Tickets.utils.goto('comment-' + child);
@@ -218,7 +219,7 @@ var Tickets = {
 
     ticket: {
         preview: function (form, button) {
-            $(document).trigger('tickets_before_comment_preview', form, button);
+            $(document).trigger('tickets_before_ticket_preview', form, button);
             $(form).ajaxSubmit({
                 data: {action: 'ticket/preview'},
                 url: TicketsConfig.actionUrl,
@@ -275,7 +276,7 @@ var Tickets = {
         },
 
         save: function (form, button) {
-            $(document).trigger('tickets_before_comment_save', form, button);
+            $(document).trigger('tickets_before_ticket_save', form, button);
             var action = 'ticket/';
             switch ($(button).prop('name')) {
                 case 'draft':
@@ -360,6 +361,7 @@ var Tickets = {
     comment: {
         preview: function (form, button, thread_id) {
             thread_id = thread_id || Tickets.threadId(form) || '';
+            $(document).trigger('tickets_before_comment_preview', form, button);
             $(form).ajaxSubmit({
                 data: {action: 'comment/preview'},
                 url: TicketsConfig.actionUrl,
@@ -387,6 +389,7 @@ var Tickets = {
 
         save: function (form, button, thread_id) {
             thread_id = thread_id || Tickets.threadId(form) || '';
+            $(document).trigger('tickets_before_comment_save', form, button);
             $(form).ajaxSubmit({
                 data: {action: 'comment/save'},
                 url: TicketsConfig.actionUrl,
@@ -596,7 +599,7 @@ var Tickets = {
                 Tickets.StartPlupload();
             }
 
-            var reply = $(thread_id + ' #comment-' + comment_id + ' > .comment-reply, ' + thread_id + ' #comment-' + comment_id + ' > div > .comment-reply');
+            var reply = $(thread_id + ' #comment-' + comment_id).find('.comment-reply').first();
             form.insertAfter(reply).show();
             $('a', reply).hide();
             reply.parents('.ticket-comment').removeClass('ticket-comment-new');
@@ -669,7 +672,7 @@ var Tickets = {
                         Tickets.StartPlupload(comment_id);
                     }
 
-                    var reply = $(thread_id + ' #comment-' + comment_id + ' > .comment-reply, ' + thread_id + ' #comment-' + comment_id + ' > div > .comment-reply');
+                    var reply = $(thread_id + ' #comment-' + comment_id).find('.comment-reply').first();
                     var time_left = $('.time', form);
 
                     time_left.text('');
@@ -909,33 +912,40 @@ Tickets.threadId = function (el) {
 };
 
 Tickets.tpanel = {
-    wrapper: '.comments-thread #comments-tpanel',
-    refresh: '.comments-thread #tpanel-refresh',
-    new_comments: '.comments-thread #tpanel-new',
+    wrapper: '.comments-tpanel',
+    refresh: '.tpanel-refresh',
+    new_comments: '.tpanel-new',
     class_new: 'ticket-comment-new',
+
+    root: function (thread_id) {
+        return thread_id ? $(thread_id) : $('.comments-thread');
+    },
 
     initialize: function () {
         if (TicketsConfig.tpanel) {
-            $(this.wrapper).show();
+            this.root('').find(this.wrapper).show();
             this.stop('');
         }
 
-        $(document).on('click', this.refresh, function () {
+        $(document).on('click', '.comments-thread ' + this.refresh, function () {
             var thread_id = Tickets.threadId(this);
-            $('.' + Tickets.tpanel.class_new).removeClass(Tickets.tpanel.class_new);
+            Tickets.tpanel.root(thread_id).find('.' + Tickets.tpanel.class_new).removeClass(Tickets.tpanel.class_new);
             Tickets.comment.getlist(thread_id);
         });
 
-        $(document).on('click', this.new_comments, function () {
+        $(document).on('click', '.comments-thread ' + this.new_comments, function () {
             var thread_id = Tickets.threadId(this);
-            var elem = $(thread_id + ' .' + Tickets.tpanel.class_new + ':first');
+            var elem = Tickets.tpanel.root(thread_id).find('.' + Tickets.tpanel.class_new + ':first');
+            if (!elem.length) {
+                return;
+            }
             $('html, body').animate({
                 scrollTop: elem.offset().top
             }, 1000, 'linear', function () {
                 elem.removeClass(Tickets.tpanel.class_new);
             });
 
-            var count = parseInt($(this).text());
+            var count = parseInt($(this).text(), 10);
             if (count > 1) {
                 $(this).text(count - 1);
             }
@@ -947,19 +957,20 @@ Tickets.tpanel = {
 
     start: function (thread_id) {
         thread_id = thread_id || '';
-        $(thread_id + ' ' + this.refresh).addClass('loading');
+        this.root(thread_id).find(this.refresh).addClass('loading');
     },
 
     stop: function (thread_id) {
         thread_id = thread_id || '';
-        var count = $(thread_id + ' .' + this.class_new).length;
+        var root = this.root(thread_id);
+        var count = root.find('.' + this.class_new).length;
         if (count > 0) {
-            $(thread_id + ' ' + this.new_comments).text(count).show();
+            root.find(this.new_comments).text(count).show();
         }
         else {
-            $(thread_id + ' ' + this.new_comments).hide();
+            root.find(this.new_comments).hide();
         }
-        $(thread_id + ' ' + this.refresh).removeClass('loading');
+        root.find(this.refresh).removeClass('loading');
     }
 
 };

@@ -1,7 +1,7 @@
 <div class="ticket-file[[+deleted]][[+new]]" data-id="[[+id]]">
     <a href="[[+url]]" class="ticket-file-link" title="[[+file]]" target="_blank">
         <div class="ticket-file-image-wrapper">
-            <img src="[[+thumb]]" class="ticket-file-image" alt="[[+description]]"/>
+            <img src="[[+thumb]]" class="ticket-file-image" alt="[[+description:htmlent]]"/>
         </div>
     </a>
     <div class="ticket-file-meta">
@@ -10,13 +10,13 @@
         <br/>
         <a href="#" class="ticket-file-insert">[[%ticket_file_insert]]</a>
         <br/>
-        <input type="text" class="ticket-file-description" value="[[+description]]" placeholder="[[%ticket_file_description]]" maxlength="500" />
+        <input type="text" class="ticket-file-description" value="[[+description:htmlent]]" placeholder="[[%ticket_file_description]]" maxlength="500" />
         <br/>
         <span class="ticket-file-size">[[+size]] Kb</span>
     </div>
     <div class="ticket-file-template">
         <a href="[[+url]]" title="[[+name]]">
-            <img src="[[+thumb]]" alt="[[+description]]"/>
+            <img src="[[+thumb]]" alt="[[+description:htmlent]]"/>
         </a>
     </div>
 </div>
