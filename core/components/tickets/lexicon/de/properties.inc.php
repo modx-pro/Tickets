@@ -37,6 +37,7 @@ $_lang['tickets_prop_tplFormUpdate'] = 'Chunk für die Aktualisierung eines best
 $_lang['tickets_prop_tplSectionRow'] = 'Chunk für eine Reihe des Ticket-Bereichs';
 $_lang['tickets_prop_tplPreview'] = 'Chunk für die Darstellung der Ticket-Vorschau vor der Veröffentlichung';
 $_lang['tickets_prop_tplCommentForm'] = 'Chunk für das Formular zum Hinzufügen eines neuen Kommentars';
+$_lang['tickets_prop_tplCommentFormGuest'] = 'Chunk für das Kommentarformular anonymer Benutzer.';
 $_lang['tickets_prop_tplCommentAuth'] = 'Chunk für die Darstellung eines Kommentars für autorisierte Benutzer';
 $_lang['tickets_prop_tplCommentGuest'] = 'Chunk für die Darstellung eines Kommentars für Gast-Benutzer';
 $_lang['tickets_prop_tplCommentDeleted'] = 'Chunk für die Darstellung von gelöschten Kommentaren';
@@ -94,3 +95,4 @@ $_lang['tickets_prop_meta_tplFile'] = 'Chunk für Datei in der Liste';
 
 $_lang['tickets_prop_class'] = 'Klasse für die Auswahl der Ergebnisse angeben';
 $_lang['tickets_prop_tree'] = 'Kommentare als Baum anzeigen. Nein = flache Liste (Pagination über limit/offset).';
+$_lang['tickets_prop_separatePlaceholder'] = 'Falls true, wird jeder Kommentar in einen eigenen Platzhalter geschrieben.';
