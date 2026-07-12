@@ -469,6 +469,28 @@ class Ticket extends modResource
 
 
     /**
+     * Regenerate unique alias and uri after the resource was duplicated.
+     *
+     * @return bool
+     */
+    public function regenerateAliasUri()
+    {
+        $alias = $this->cleanAlias($this->get('pagetitle'));
+        if ($alias === '') {
+            $alias = 'ticket';
+        }
+        $alias .= '-' . $this->get('id');
+        $this->set('alias', $alias);
+        $this->set('uri', '');
+        if ($this->setUri($alias) === false) {
+            $this->set('uri_override', false);
+            $this->set('uri', $alias);
+        }
+
+        return $this->save();
+    }
+
+    /**
      * Build custom uri with respect to section settings
      *
      * @param string $alias

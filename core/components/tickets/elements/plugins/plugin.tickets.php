@@ -115,4 +115,21 @@ switch ($modx->event->name) {
         }
         break;
 
+    case 'OnResourceDuplicate':
+        /** @var modResource $newResource */
+        if (empty($newResource) || !is_object($newResource)) {
+            break;
+        }
+        if ($newResource->get('class_key') !== 'Ticket') {
+            break;
+        }
+        /** @var Ticket $ticket */
+        $ticket = ($newResource instanceof Ticket)
+            ? $newResource
+            : $modx->getObject('Ticket', $newResource->get('id'));
+        if ($ticket instanceof Ticket) {
+            $ticket->regenerateAliasUri();
+        }
+        break;
+
 }
