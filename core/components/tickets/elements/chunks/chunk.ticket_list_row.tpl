@@ -17,7 +17,7 @@
             &nbsp;&nbsp;
             <i class="glyphicon glyphicon-eye-open"></i> [[+views]]
             &nbsp;&nbsp;
-            <i class="glyphicon glyphicon-comment"></i> [[+comments]]  [[+new_comments]]
+            <a href="[[~[[+id]]]][[+comments_anchor:default=`#comments`]]"><i class="glyphicon glyphicon-comment"></i> [[+comments]]</a>  [[+new_comments]]
         </span>
         <span class="col-md-2 pull-right ticket-rating[[+active]][[+inactive]]">
             <span class="vote plus[[+voted_plus]]" title="[[%ticket_like]]"><i class="glyphicon glyphicon-arrow-up"></i></span>

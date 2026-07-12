@@ -1,5 +1,5 @@
 <li class="ticket-comment[[+comment_new]]" id="comment-[[+id]]" data-parent="[[+parent]]"
-    data-newparent="[[+new_parent]]" data-id="[[+id]]">
+    data-newparent="[[+new_parent]]" data-id="[[+id]]">[[+comment_first_unread]]
     <div class="ticket-comment-body[[+guest]][[+bad]]">
         <div class="ticket-comment-header">
             <div class="ticket-comment-dot-wrapper">
@@ -34,6 +34,7 @@
 <!--tickets_comment_edit_link <a href="#" class="edit">[[%ticket_comment_edit]]</a>-->
 <!--tickets_comment_was_edited <span class="ticket-comment-edited">([[%ticket_comment_was_edited]])</span>-->
 <!--tickets_comment_new  ticket-comment-new-->
+<!--tickets_comment_first_unread <span id="first_unread"></span>-->
 <!--tickets_can_vote  active-->
 <!--tickets_cant_vote  inactive-->
 <!--tickets_rating_positive  positive-->

@@ -212,6 +212,7 @@ if (!empty($rows) && is_array($rows)) {
         } else {
             $row['new_comments'] = '';
         }
+        $row['comments_anchor'] = !empty($row['new_comments']) ? '#first_unread' : '#comments';
 
         // Processing chunk
         $tpl = $pdoFetch->defineChunk($row);

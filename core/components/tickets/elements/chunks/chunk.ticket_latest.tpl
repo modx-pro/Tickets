@@ -9,5 +9,5 @@
     <span class="ticket">
         <a href="[[~[[+id]]]]">[[+pagetitle]]</a>
     </span>
-    <nobr><i class="glyphicon glyphicon-comment"></i> <span class="comments">[[+comments]]</span></nobr>
+    <nobr><a href="[[~[[+id]]]][[+comments_anchor:default=`#comments`]]"><i class="glyphicon glyphicon-comment"></i> <span class="comments">[[+comments]]</span></a></nobr>
 </div>
