@@ -96,3 +96,5 @@ $_lang['tickets_prop_meta_tplFile'] = 'The chunk for file in the list.';
 $_lang['tickets_prop_class'] = 'Specify class for selecting results.';
 $_lang['tickets_prop_tree'] = 'Show comments as a tree. Set to No for a flat list (limit/offset pagination).';
 $_lang['tickets_prop_separatePlaceholder'] = 'If true, each comment is placed into a separate placeholder instead of a single output.';
+$_lang['tickets_prop_TicketsInit'] = 'Set to 1 to include the subscription form and initialize Tickets frontend scripts on arbitrary pages.';
+$_lang['tickets_prop_createdby'] = 'Author user id for the subscription form target.';
