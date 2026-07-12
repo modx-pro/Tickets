@@ -370,6 +370,29 @@ Ext.extend(Tickets.panel.Ticket, MODx.panel.Resource, {
         return {
             title: _('comments'),
 			id: 'modx-tickets-comments',
+            listeners: {
+                afterrender: {
+                    fn: function (tab) {
+                        MODx.Ajax.request({
+                            url: Tickets.config.connector_url,
+                            params: {
+                                action: 'mgr/comment/getunpublishedcount',
+                                parents: config.record.id
+                            },
+                            listeners: {
+                                success: {
+                                    fn: function (r) {
+                                        var count = r.object && r.object.count ? parseInt(r.object.count, 10) : 0;
+                                        if (count) {
+                                            tab.setTitle(_('comments') + ' (' + count + ')');
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            },
             items: [{
                 xtype: 'tickets-panel-comments',
                 record: config.record,

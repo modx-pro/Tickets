@@ -17,6 +17,9 @@ Tickets.panel.Home = function (config) {
     config = config || {};
     Ext.apply(config, {
         border: false,
+        listeners: {
+            afterrender: {fn: function () { this.loadUnpublishedCount(); }, scope: this}
+        },
         items: [{
             html: '<h2>' + _('tickets') + '</h2>',
             border: false,
@@ -84,5 +87,34 @@ Tickets.panel.Home = function (config) {
     });
     Tickets.panel.Home.superclass.constructor.call(this, config);
 };
-Ext.extend(Tickets.panel.Home, MODx.Panel);
+Ext.extend(Tickets.panel.Home, MODx.Panel, {
+    loadUnpublishedCount: function () {
+        MODx.Ajax.request({
+            url: Tickets.config.connector_url,
+            params: {action: 'mgr/comment/getunpublishedcount'},
+            listeners: {
+                success: {
+                    fn: function (r) {
+                        var count = r.object && r.object.count ? parseInt(r.object.count, 10) : 0;
+                        if (!count) {
+                            return;
+                        }
+                        var tabs = Ext.getCmp('tickets-home-tabs');
+                        if (!tabs || !tabs.items) {
+                            return;
+                        }
+                        var tab = tabs.items.itemAt(0);
+                        if (tab) {
+                            tab.setTitle(_('comments') + ' (' + count + ')');
+                        }
+                        var header = this.getEl().child('.modx-page-header h2');
+                        if (header) {
+                            header.update(_('tickets') + ' (' + count + ')');
+                        }
+                    }, scope: this
+                }
+            }
+        });
+    }
+});
 Ext.reg('tickets-panel-home', Tickets.panel.Home);
