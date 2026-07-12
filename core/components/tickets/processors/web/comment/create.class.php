@@ -87,10 +87,24 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor
         unset($properties['requiredFields']);
 
         // Comment values
-        if ($this->getProperty('date')) {
-            $date = $this->getProperty('date');
-        } else {
-            $date = date('Y-m-d H:i:s');
+        $date = date('Y-m-d H:i:s');
+        $customDate = trim((string)$this->getProperty('date', ''));
+        $this->unsetProperty('date');
+        if ($customDate !== '') {
+            // Import-only: prevent public spoofing of createdon
+            $canSetDate = $this->modx->user->isMember('Administrator');
+            if ($canSetDate) {
+                $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $customDate);
+                $errors = \DateTime::getLastErrors();
+                $valid = $dt instanceof \DateTime
+                    && $dt->format('Y-m-d H:i:s') === $customDate
+                    && empty($errors['warning_count'])
+                    && empty($errors['error_count']);
+                if (!$valid) {
+                    return $this->modx->lexicon('ticket_err_form');
+                }
+                $date = $customDate;
+            }
         }
         $ip = $this->modx->request->getClientIp();
         $this->setProperties(array(
