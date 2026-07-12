@@ -134,7 +134,7 @@ class Ticket extends modResource
 
             if (isset($this->_fieldMeta[$k]) && $this->_fieldMeta[$k]['phptype'] == 'string') {
                 $properties = $this->getProperties();
-                if (!$properties['process_tags'] && !in_array($k, $fields)) {
+                if (empty($properties['process_tags']) && !in_array($k, $fields)) {
                     $value = str_replace(
                         array('[', ']', '`', '{', '}'),
                         array('&#91;', '&#93;', '&#96;', '&#123;', '&#125;'),
@@ -201,10 +201,10 @@ class Ticket extends modResource
         $content = parent::get('content');
         $properties = $this->getProperties();
 
-        if (!$properties['disable_jevix']) {
+        if (empty($properties['disable_jevix'])) {
             $content = $this->Jevix($content, false);
         }
-        if (!$properties['process_tags']) {
+        if (empty($properties['process_tags'])) {
             $content = str_replace(
                 array('[', ']', '`', '{', '}'),
                 array('&#91;', '&#93;', '&#96;', '&#123;', '&#125;'),
@@ -321,11 +321,20 @@ class Ticket extends modResource
                 'id' => $this->id,
                 'class' => 'Ticket',
             ), '', true, true);
-            if ($total->save()) {
-                $total->fetchValues();
-                if ($total->isDirty()) {
-                    $total->save();
-                }
+            // Save stub first to break recursion, then fill aggregates
+            if (!$total->save()) {
+                return array(
+                    'comments' => 0,
+                    'views' => 0,
+                    'stars' => 0,
+                    'rating' => 0,
+                    'rating_plus' => 0,
+                    'rating_minus' => 0,
+                );
+            }
+            $total->fetchValues();
+            if ($total->isDirty()) {
+                $total->save();
             }
         }
 
@@ -358,9 +367,10 @@ class Ticket extends modResource
      */
     public function getCommentsCount()
     {
-        $q = $this->xpdo->newQuery('TicketThread', array('name' => 'resource-' . $this->id));
+        // Count comments on all threads of this resource (not only resource-{id})
+        $q = $this->xpdo->newQuery('TicketThread', array('resource' => $this->id));
         $q->leftJoin('TicketComment', 'TicketComment',
-            "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1");
+            "`TicketThread`.`id` = `TicketComment`.`thread` AND `TicketComment`.`published` = 1 AND `TicketComment`.`deleted` = 0");
         $q->select('COUNT(`TicketComment`.`id`) as `comments`');
 
         $count = 0;

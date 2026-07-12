@@ -27,8 +27,11 @@ class TicketCreateManagerController extends ResourceCreateManagerController
     public function getDefaultTemplate()
     {
         $properties = $this->parent->getProperties();
+        if (!empty($properties['template'])) {
+            return (int)$properties['template'];
+        }
 
-        return $properties['template'];
+        return parent::getDefaultTemplate();
     }
 
 
@@ -43,7 +46,7 @@ class TicketCreateManagerController extends ResourceCreateManagerController
         parent::loadCustomCssJs();
         $this->head['html'] = $html;
 
-        if (is_null($this->resourceArray['properties'])) {
+        if (!isset($this->resourceArray['properties']) || !is_array($this->resourceArray['properties'])) {
             $this->resourceArray['properties'] = array();
         }
         $properties = $this->parent->getProperties('tickets');
