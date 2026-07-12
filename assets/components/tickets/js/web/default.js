@@ -507,7 +507,7 @@ var Tickets = {
                         data = comment[0].outerHTML;
                     }
                 }
-                $(thread_id + ' #comment-' + parent + ' > .comments-list').append(data);
+                $(thread_id + ' #comment-' + parent + ' > .comments-list, ' + thread_id + ' #comment-' + parent + ' > div > .comments-list').append(data);
             }
 
             if (children.length > 0) {
@@ -566,7 +566,7 @@ var Tickets = {
                 Tickets.StartPlupload();
             }
 
-            var reply = $(thread_id + ' #comment-' + comment_id + ' > .comment-reply');
+            var reply = $(thread_id + ' #comment-' + comment_id + ' > .comment-reply, ' + thread_id + ' #comment-' + comment_id + ' > div > .comment-reply');
             form.insertAfter(reply).show();
             $('a', reply).hide();
             reply.parents('.ticket-comment').removeClass('ticket-comment-new');
@@ -639,7 +639,7 @@ var Tickets = {
                         Tickets.StartPlupload(comment_id);
                     }
 
-                    var reply = $(thread_id + ' #comment-' + comment_id + ' > .comment-reply');
+                    var reply = $(thread_id + ' #comment-' + comment_id + ' > .comment-reply, ' + thread_id + ' #comment-' + comment_id + ' > div > .comment-reply');
                     var time_left = $('.time', form);
 
                     time_left.text('');
