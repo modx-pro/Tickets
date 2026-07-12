@@ -156,8 +156,15 @@ if (!empty($rows) && is_array($rows)) {
         $row['idx'] = $i++;
         $tmp[$row['id']] = $row;
     }
-    // pdoFetch totalVar breaks with GROUP BY + Vote/Star joins; count loaded comments
-    $commentTotal = count($tmp);
+    // pdoFetch totalVar breaks with GROUP BY + Vote/Star joins
+    $commentTotal = (int)$thread->get('comments');
+    if ($commentTotal <= 0) {
+        $countWhere = array('thread' => $thread->get('id'), 'deleted' => 0);
+        if (empty($showUnpublished)) {
+            $countWhere['published'] = 1;
+        }
+        $commentTotal = $modx->getCount('TicketComment', $countWhere);
+    }
     $rows = $thread->buildTree($tmp, $depth);
     unset($tmp, $i);
 
