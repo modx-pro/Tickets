@@ -26,7 +26,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 ### Fixed
 
 - Рекурсия `TicketTotal::save` (`Maximum function nesting level`).
-- `#180` Устойчивое создание строки в `tickets_totals` при первом обращении к виртуальным полям.
+- `#187` Подсчёт комментариев тикета по `TicketThread.resource`, не только `resource-{id}`.
 
 ## [1.13.1] - 2022-04-07
 
