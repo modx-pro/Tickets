@@ -15,7 +15,7 @@
         <span class="ticket-file-size">[[+size]] Kb</span>
     </div>
     <div class="ticket-file-template">
-        <a href="[[+url]]" title="[[+description:default=`[[+name]]`]]">
+        <a href="[[+url]]" title="[[+name]]">
             <img src="[[+thumb]]" alt="[[+description]]"/>
         </a>
     </div>

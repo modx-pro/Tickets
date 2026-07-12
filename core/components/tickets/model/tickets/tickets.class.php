@@ -1750,7 +1750,7 @@ class Tickets
             return $this->error($response->getMessage());
         }
 
-        return $this->success();
+        return $this->success('', $response->getObject());
     }
 
 
