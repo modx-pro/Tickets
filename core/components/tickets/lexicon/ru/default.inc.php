@@ -250,6 +250,7 @@ $_lang['ticket_file_select'] = 'Выберите файлы';
 $_lang['ticket_file_delete'] = 'Удалить';
 $_lang['ticket_file_restore'] = 'Восстановить';
 $_lang['ticket_file_insert'] = 'Вставить ссылку';
+$_lang['ticket_file_description'] = 'Описание';
 $_lang['ticket_err_source_initialize'] = 'Не могу инициализировать хранилище файлов';
 $_lang['ticket_err_file_ns'] = 'Не могу обработать указанный файл';
 $_lang['ticket_err_file_ext'] = 'Неправильно расширение файла';

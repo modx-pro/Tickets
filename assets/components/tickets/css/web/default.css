@@ -166,3 +166,4 @@
 #ticket-files-list .ticket-file.deleted .ticket-file-restore {display: inline;}
 
 #ticket-files-list .ticket-ghost-state-highlight {background: lightblue;}
+#ticket-files-list .ticket-file .ticket-file-description {display:block; width:110px; margin:4px 0; font-size:.75em; box-sizing:border-box;}
