@@ -41,6 +41,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Uninstall: очистка CRC→modDocument, таблиц, меню/категории (#172).
 - XSS: `:htmlent` для `description` в чанке изображения.
 - Описание файлов и события ticket/comment разведены после ревью merged PR.
+- PHP 8.2+: `strftime` в mgr comment get → `date`/`strtr`; `TicketFile` — явный `?modMediaSource` и порядок аргументов `makeThumbnail`.
 
 ## [1.13.1] - 2022-04-07
 
