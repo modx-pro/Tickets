@@ -315,37 +315,11 @@ class Ticket extends modResource
     protected function _getVirtualFields()
     {
         /** @var TicketTotal $total */
-        if (!$total = $this->getOne('Total')) {
-            $total = $this->xpdo->newObject('TicketTotal');
-            $total->fromArray(array(
-                'id' => $this->id,
-                'class' => 'Ticket',
-            ), '', true, true);
-            // Save stub first to break recursion, then fill aggregates
-            if (!$total->save()) {
-                return array(
-                    'comments' => 0,
-                    'views' => 0,
-                    'stars' => 0,
-                    'rating' => 0,
-                    'rating_plus' => 0,
-                    'rating_minus' => 0,
-                );
-            }
-            $total->fetchValues();
-            if ($total->isDirty()) {
-                $total->save();
-            }
+        if ($total = $this->getOne('Total')) {
+            return $total->get(TicketTotal::fieldsFor('Ticket'));
         }
 
-        return $total->get(array(
-            'comments',
-            'views',
-            'stars',
-            'rating',
-            'rating_plus',
-            'rating_minus',
-        ));
+        return TicketTotal::createAndFetch($this->xpdo, $this->id, 'Ticket');
     }
 
 

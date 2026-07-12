@@ -3,6 +3,99 @@
 class TicketTotal extends xPDOObject
 {
     /**
+     * Virtual fields stored for each class.
+     *
+     * @param string $class
+     *
+     * @return array
+     */
+    public static function fieldsFor($class)
+    {
+        switch ($class) {
+            case 'TicketsSection':
+                return array(
+                    'comments',
+                    'views',
+                    'tickets',
+                    'stars',
+                    'rating',
+                    'rating_plus',
+                    'rating_minus',
+                );
+            case 'TicketComment':
+                return array(
+                    'stars',
+                    'rating',
+                );
+            case 'Ticket':
+            default:
+                return array(
+                    'comments',
+                    'views',
+                    'stars',
+                    'rating',
+                    'rating_plus',
+                    'rating_minus',
+                );
+        }
+    }
+
+
+    /**
+     * Zero defaults when a totals row cannot be created.
+     *
+     * @param string $class
+     *
+     * @return array
+     */
+    public static function emptyValues($class)
+    {
+        $values = array();
+        foreach (self::fieldsFor($class) as $field) {
+            $values[$field] = 0;
+        }
+
+        return $values;
+    }
+
+
+    /**
+     * Create stub totals row, fill aggregates, persist dirty values.
+     * Fail-closed on stub insert; log (but still return in-memory values) if the second save fails.
+     *
+     * @param xPDO $xpdo
+     * @param int $id
+     * @param string $class
+     *
+     * @return array
+     */
+    public static function createAndFetch(xPDO $xpdo, $id, $class)
+    {
+        /** @var TicketTotal $total */
+        $total = $xpdo->newObject('TicketTotal');
+        $total->fromArray(array(
+            'id' => (int)$id,
+            'class' => $class,
+        ), '', true, true);
+
+        if (!$total->save()) {
+            $xpdo->log(xPDO::LOG_LEVEL_ERROR,
+                '[Tickets] Could not create TicketTotal stub for ' . $class . '#' . $id);
+
+            return self::emptyValues($class);
+        }
+
+        $total->fetchValues();
+        if ($total->isDirty() && !$total->save()) {
+            $xpdo->log(xPDO::LOG_LEVEL_ERROR,
+                '[Tickets] Could not save TicketTotal aggregates for ' . $class . '#' . $id);
+        }
+
+        return $total->get(self::fieldsFor($class));
+    }
+
+
+    /**
      * Get values from database
      */
     public function fetchValues()
