@@ -94,3 +94,4 @@ $_lang['tickets_prop_meta_tplFile'] = 'The chunk for file in the list.';
 
 $_lang['tickets_prop_class'] = 'Specify class for selecting results.';
 $_lang['tickets_prop_tree'] = 'Display comments as a tree. Set to No for a flat list (supports limit/offset pagination).';
+$_lang['tickets_prop_separatePlaceholder'] = 'If true, each comment is placed into a separate placeholder instead of a single output.';

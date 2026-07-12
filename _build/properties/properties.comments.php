@@ -129,6 +129,70 @@ $tmp = array(
         'type' => 'textfield',
         'value' => '',
     ),
+    'sortby' => array(
+        'type' => 'textfield',
+        'value' => 'TicketComment.id',
+    ),
+    'sortdir' => array(
+        'type' => 'list',
+        'options' => array(
+            array('text' => 'ASC', 'value' => 'ASC'),
+            array('text' => 'DESC', 'value' => 'DESC'),
+        ),
+        'value' => 'ASC',
+    ),
+    'limit' => array(
+        'type' => 'numberfield',
+        'value' => 0,
+    ),
+    'offset' => array(
+        'type' => 'numberfield',
+        'value' => 0,
+    ),
+    'outputSeparator' => array(
+        'type' => 'textfield',
+        'value' => "\n",
+    ),
+    'toPlaceholder' => array(
+        'type' => 'textfield',
+        'value' => '',
+    ),
+    'separatePlaceholder' => array(
+        'type' => 'combo-boolean',
+        'value' => false,
+    ),
+    'showLog' => array(
+        'type' => 'combo-boolean',
+        'value' => false,
+    ),
+    'showUnpublished' => array(
+        'type' => 'combo-boolean',
+        'value' => false,
+    ),
+    'where' => array(
+        'type' => 'textfield',
+        'value' => '',
+    ),
+    'allowFiles' => array(
+        'type' => 'combo-boolean',
+        'value' => false,
+    ),
+    'source' => array(
+        'type' => 'numberfield',
+        'value' => 0,
+    ),
+    'tplFiles' => array(
+        'type' => 'textfield',
+        'value' => 'tpl.Tickets.comment.form.files',
+    ),
+    'tplFile' => array(
+        'type' => 'textfield',
+        'value' => 'tpl.Tickets.form.file',
+    ),
+    'tplImage' => array(
+        'type' => 'textfield',
+        'value' => 'tpl.Tickets.form.image',
+    ),
 );
 
 foreach ($tmp as $k => $v) {
