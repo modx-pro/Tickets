@@ -89,3 +89,5 @@ $_lang['tickets.source_maxUploadHeight_desc'] = 'Maximum height of image for upl
 $_lang['tickets.source_maxUploadSize_desc'] = 'Maximum size of file for upload (in bytes).';
 $_lang['tickets.source_imageNameType_desc'] = 'This setting specifies how to rename a file after upload. Hash is the generation of a unique name depending on the contents of the file. Friendly - generation behalf of the algorithm friendly URLs of pages of the site (they are managed by system settings).';
 
+$_lang['setting_tickets.auto_introtext'] = 'Auto-fill ticket introtext';
+$_lang['setting_tickets.auto_introtext_desc'] = 'If enabled, an empty introtext is generated from ticket content (text before &lt;cut/&gt; or the full content).';

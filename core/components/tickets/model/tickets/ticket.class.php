@@ -618,6 +618,13 @@ class Ticket extends modResource
      */
     public function save($cacheFlag = null)
     {
+        if ($this->xpdo->getOption('tickets.auto_introtext', null, true)
+            && $this->get('content') !== ''
+            && $this->get('content') !== null
+            && ($this->get('introtext') === '' || $this->get('introtext') === null)
+        ) {
+            $this->set('introtext', $this->getIntroText($this->get('content'), false));
+        }
         $isNew = $this->isNew();
         $action = $isNew || $this->isDirty('deleted') || $this->isDirty('published');
         $enabled = $this->get('published') && !$this->get('deleted');

@@ -89,3 +89,5 @@ $_lang['tickets.source_imageNameType_desc'] = 'Dieser Parameter gibt an, wie ein
 
 $_lang['setting_tickets.max_files_upload'] = 'Maximale Datei-Uploads';
 $_lang['setting_tickets.max_files_upload_desc'] = 'Maximale Anzahl von Dateien, die der aktuelle Benutzer hochladen darf. 0 - unbegrenzt.';
+$_lang['setting_tickets.auto_introtext'] = 'Introtext des Tickets automatisch füllen';
+$_lang['setting_tickets.auto_introtext_desc'] = 'Falls aktiv, wird ein leerer Introtext aus dem Ticket-Inhalt erzeugt (Text vor &lt;cut/&gt; oder der gesamte Inhalt).';

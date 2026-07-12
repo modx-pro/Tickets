@@ -72,7 +72,7 @@ class TicketCreateProcessor extends modResourceCreateProcessor
 
         // Define introtext
         $introtext = $this->getProperty('introtext');
-        if (empty($introtext)) {
+        if (empty($introtext) && $this->modx->getOption('tickets.auto_introtext', null, true)) {
             $introtext = $this->object->getIntroText($this->getProperty('content'), false);
         }
         if (empty($properties['disable_jevix'])) {
