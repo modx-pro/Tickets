@@ -12,11 +12,11 @@ class TicketFile extends xPDOSimpleObject
 
 
     /**
-     * @param modMediaSource $mediaSource
+     * @param modMediaSource|null $mediaSource
      *
      * @return bool|string
      */
-    public function prepareSource(modMediaSource $mediaSource = null)
+    public function prepareSource(?modMediaSource $mediaSource = null)
     {
         if ($mediaSource) {
             $this->mediaSource = $mediaSource;
@@ -37,11 +37,11 @@ class TicketFile extends xPDOSimpleObject
 
 
     /**
-     * @param modMediaSource $mediaSource
+     * @param modMediaSource|null $mediaSource
      *
      * @return bool|string
      */
-    public function generateThumbnails(modMediaSource $mediaSource = null)
+    public function generateThumbnails(?modMediaSource $mediaSource = null)
     {
         if ($this->get('type') != 'image') {
             return true;
@@ -93,7 +93,7 @@ class TicketFile extends xPDOSimpleObject
             $options['name'] = !is_numeric($k)
                 ? $k
                 : 'thumb';
-            if ($image = $this->makeThumbnail($options, $info)) {
+            if ($image = $this->makeThumbnail($info, $options)) {
                 $this->saveThumbnail($image, $options);
             }
         }
@@ -109,19 +109,19 @@ class TicketFile extends xPDOSimpleObject
      *
      * @return bool|string
      */
-    public function generateThumbnail(modMediaSource $mediaSource = null)
+    public function generateThumbnail(?modMediaSource $mediaSource = null)
     {
         return $this->generateThumbnails($mediaSource);
     }
 
 
     /**
-     * @param array $options
      * @param array $info
+     * @param array $options
      *
      * @return bool|null
      */
-    public function makeThumbnail($options = array(), array $info)
+    public function makeThumbnail(array $info, $options = array())
     {
         if (!class_exists('modPhpThumb')) {
             /** @noinspection PhpIncludeInspection */

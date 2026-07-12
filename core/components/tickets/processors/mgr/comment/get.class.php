@@ -25,9 +25,12 @@ class TicketCommentGetProcessor extends modObjectGetProcessor
 
 
     /**
+     * Format a datetime for the manager UI.
+     * tickets.date_format uses strftime tokens (e.g. %d.%m.%y <small>%H:%M</small>).
+     *
      * @param string $date
      *
-     * @return null|string
+     * @return string
      */
     public function formatDate($date = '')
     {
@@ -35,7 +38,30 @@ class TicketCommentGetProcessor extends modObjectGetProcessor
             return $this->modx->lexicon('no');
         }
 
-        return strftime($this->modx->getOption('tickets.date_format'), strtotime($date));
+        $ts = strtotime($date);
+        if ($ts === false) {
+            return $this->modx->lexicon('no');
+        }
+
+        $format = (string)$this->modx->getOption('tickets.date_format');
+
+        return strtr($format, array(
+            '%d' => date('d', $ts),
+            '%e' => date('j', $ts),
+            '%m' => date('m', $ts),
+            '%Y' => date('Y', $ts),
+            '%y' => date('y', $ts),
+            '%H' => date('H', $ts),
+            '%I' => date('h', $ts),
+            '%M' => date('i', $ts),
+            '%S' => date('s', $ts),
+            '%p' => date('A', $ts),
+            '%P' => date('a', $ts),
+            '%B' => date('F', $ts),
+            '%b' => date('M', $ts),
+            '%A' => date('l', $ts),
+            '%a' => date('D', $ts),
+        ));
     }
 
 }
