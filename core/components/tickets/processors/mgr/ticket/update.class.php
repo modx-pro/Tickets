@@ -35,6 +35,10 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor
             $res->save();
         }
 
+        $this->setDefaultProperties(array(
+            'syncsite' => $this->modx->getOption('syncsite_default', null, 1),
+        ));
+
         return parent::initialize();
     }
 
@@ -268,7 +272,7 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor
      */
     public function clearCache()
     {
-        $this->object->clearCache();
+        parent::clearCache();
         /** @var TicketsSection $section */
         if ($section = $this->object->getOne('Section')) {
             $section->clearCache();
