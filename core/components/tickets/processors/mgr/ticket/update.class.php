@@ -273,6 +273,9 @@ class TicketUpdateProcessor extends modResourceUpdateProcessor
     public function clearCache()
     {
         parent::clearCache();
+        if (empty($this->getProperty('syncsite'))) {
+            return;
+        }
         /** @var TicketsSection $section */
         if ($section = $this->object->getOne('Section')) {
             $section->clearCache();

@@ -72,6 +72,28 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor
             return $this->modx->lexicon('ticket_comment_err_no_email');
         }
 
+        // Comment values
+        $date = date('Y-m-d H:i:s');
+        $customDate = trim((string)$this->getProperty('date', ''));
+        $this->unsetProperty('date');
+        if ($customDate !== '') {
+            // Import-only: prevent public spoofing of createdon
+            $canSetDate = $this->modx->user->isMember('Administrator');
+            if (!$canSetDate) {
+                return $this->modx->lexicon('ticket_err_access_denied');
+            }
+            $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $customDate);
+            $errors = \DateTime::getLastErrors();
+            $valid = $dt instanceof \DateTime
+                && $dt->format('Y-m-d H:i:s') === $customDate
+                && empty($errors['warning_count'])
+                && empty($errors['error_count']);
+            if (!$valid) {
+                return $this->modx->lexicon('ticket_err_form');
+            }
+            $date = $customDate;
+        }
+
         // Additional properties
         $properties = $this->getProperties();
         $add = array();
@@ -84,28 +106,7 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor
         if (!$this->getProperty('published')) {
             $add['was_published'] = false;
         }
-        unset($properties['requiredFields']);
-
-        // Comment values
-        $date = date('Y-m-d H:i:s');
-        $customDate = trim((string)$this->getProperty('date', ''));
-        $this->unsetProperty('date');
-        if ($customDate !== '') {
-            // Import-only: prevent public spoofing of createdon
-            $canSetDate = $this->modx->user->isMember('Administrator');
-            if ($canSetDate) {
-                $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $customDate);
-                $errors = \DateTime::getLastErrors();
-                $valid = $dt instanceof \DateTime
-                    && $dt->format('Y-m-d H:i:s') === $customDate
-                    && empty($errors['warning_count'])
-                    && empty($errors['error_count']);
-                if (!$valid) {
-                    return $this->modx->lexicon('ticket_err_form');
-                }
-                $date = $customDate;
-            }
-        }
+        unset($properties['requiredFields'], $add['date']);
         $ip = $this->modx->request->getClientIp();
         $this->setProperties(array(
             'text' => $text,

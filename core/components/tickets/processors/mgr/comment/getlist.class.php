@@ -59,11 +59,15 @@ class TicketCommentsGetListProcessor extends modObjectGetListProcessor
                     'OR:TicketComment.raw:LIKE' => '%' . $query . '%',
                 ));
             } elseif ($digits !== '' && strlen($digits) >= 7 && preg_match('/^[\d\s\+\-\(\)]+$/', $query)) {
-                // formatted phone: +7 (999) ... → digits only in text/raw
-                $c->where(array(
-                    'TicketComment.text:LIKE' => '%' . $digits . '%',
-                    'OR:TicketComment.raw:LIKE' => '%' . $digits . '%',
-                ));
+                // Match formatted query and digits-only body variants
+                $escQuery = '%' . str_replace(array('%', '_'), array('\\%', '\\_'), $query) . '%';
+                $escDigits = '%' . str_replace(array('%', '_'), array('\\%', '\\_'), $digits) . '%';
+                $c->where(
+                    '(TicketComment.text LIKE ' . $this->modx->quote($escQuery)
+                    . ' OR TicketComment.raw LIKE ' . $this->modx->quote($escQuery)
+                    . ' OR TicketComment.text LIKE ' . $this->modx->quote($escDigits)
+                    . ' OR TicketComment.raw LIKE ' . $this->modx->quote($escDigits) . ')'
+                );
             } else {
                 $c->where(array(
                     'TicketComment.text:LIKE' => '%' . $query . '%',
