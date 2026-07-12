@@ -321,11 +321,20 @@ class Ticket extends modResource
                 'id' => $this->id,
                 'class' => 'Ticket',
             ), '', true, true);
-            if ($total->save()) {
-                $total->fetchValues();
-                if ($total->isDirty()) {
-                    $total->save();
-                }
+            // Save stub first to break recursion, then fill aggregates
+            if (!$total->save()) {
+                return array(
+                    'comments' => 0,
+                    'views' => 0,
+                    'stars' => 0,
+                    'rating' => 0,
+                    'rating_plus' => 0,
+                    'rating_minus' => 0,
+                );
+            }
+            $total->fetchValues();
+            if ($total->isDirty()) {
+                $total->save();
             }
         }
 

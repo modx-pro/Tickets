@@ -231,11 +231,20 @@ class TicketsSection extends modResource
                 'id' => $this->id,
                 'class' => 'TicketsSection',
             ), '', true, true);
-            if ($total->save()) {
-                $total->fetchValues();
-                if ($total->isDirty()) {
-                    $total->save();
-                }
+            if (!$total->save()) {
+                return array(
+                    'comments' => 0,
+                    'views' => 0,
+                    'tickets' => 0,
+                    'stars' => 0,
+                    'rating' => 0,
+                    'rating_plus' => 0,
+                    'rating_minus' => 0,
+                );
+            }
+            $total->fetchValues();
+            if ($total->isDirty()) {
+                $total->save();
             }
         }
 
