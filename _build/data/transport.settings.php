@@ -125,12 +125,12 @@ $tmp = array(
     ),
     'mail_bcc' => array(
         'xtype' => 'textfield',
-        'value' => '',
+        'value' => '1',
         'area' => 'tickets.mail',
     ),
     'mail_bcc_level' => array(
         'xtype' => 'numberfield',
-        'value' => 1,
+        'value' => 2,
         'area' => 'tickets.mail',
     ),
     'section_content_default' => array(

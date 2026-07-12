@@ -62,7 +62,7 @@ $_lang['setting_tickets.mail_queue_desc'] = 'Whether to use a message queue or s
 $_lang['setting_tickets.mail_bcc'] = 'Admin notifications';
 $_lang['setting_tickets.mail_bcc_desc'] = 'Specify a comma-separated list of <b>id</b> of administrators you want to send messages about new ticket and comments.';
 $_lang['setting_tickets.mail_bcc_level'] = 'Level of admin notifications';
-$_lang['setting_tickets.mail_bcc_level_desc'] = 'There are 3 possible levels of admin notifications: 0 - disabled, 1 - send only messages about new tickets, 2 - tickets + comments. Recommended level is 1.';
+$_lang['setting_tickets.mail_bcc_level_desc'] = 'There are 3 possible levels of admin notifications: 0 - disabled, 1 - send only messages about new tickets, 2 - tickets + comments. Recommended level is 2. Default BCC user id is 1 (admin).';
 
 $_lang['setting_tickets.count_guests'] = 'Count views of pages by guests';
 $_lang['setting_tickets.count_guests_desc'] = 'When enabled, component will count views of pages by all users, not just authorized. Keep in mind that with this approach the number of viewings is quite easy to cheat.';

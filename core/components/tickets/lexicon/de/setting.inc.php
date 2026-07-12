@@ -62,7 +62,7 @@ $_lang['setting_tickets.mail_queue_desc'] = 'Warteschlange für Benachrichtigung
 $_lang['setting_tickets.mail_bcc'] = 'Benachrichtigungen für Administratoren';
 $_lang['setting_tickets.mail_bcc_desc'] = 'Geben Sie eine kommaseparierte Liste von Administratoren an (<b>ID</b>), die Benachrichtigungen über neue Tickets und Kommentare erhalten sollen.';
 $_lang['setting_tickets.mail_bcc_level'] = 'Level der Benachrichtigung für Administratoren';
-$_lang['setting_tickets.mail_bcc_level_desc'] = 'Es gibt 3 Levels der Administratorenbenachrichtigung: 0 - deaktiviert, 1 - sendet nur Benachrichtigungen über neue Tickets, 2 - Tickets + Kommentare. Empfohlenes Level ist 1.';
+$_lang['setting_tickets.mail_bcc_level_desc'] = 'Es gibt 3 Levels der Administratorenbenachrichtigung: 0 - deaktiviert, 1 - sendet nur Benachrichtigungen über neue Tickets, 2 - Tickets + Kommentare. Empfohlenes Level ist 2. Standard-BCC ist Benutzer-ID 1 (Admin).';
 
 $_lang['setting_tickets.count_guests'] = 'Seitenansichten von Gästen zählen';
 $_lang['setting_tickets.count_guests_desc'] = 'Wenn diese Option aktiviert ist, werden Seitenaufrufe von allen Website-Besuchern berücksichtigt, nicht nur von autorisierten Benutzern. Beachten Sie, dass die Anzahl der Aufrufe bei dieser Einstellung relativ einfach zu fälschen ist.';
