@@ -107,10 +107,6 @@ Ext.extend(Tickets.panel.Home, MODx.Panel, {
                         if (tab) {
                             tab.setTitle(_('comments') + ' (' + count + ')');
                         }
-                        var header = this.getEl().child('.modx-page-header h2');
-                        if (header) {
-                            header.update(_('tickets') + ' (' + count + ')');
-                        }
                     }, scope: this
                 }
             }

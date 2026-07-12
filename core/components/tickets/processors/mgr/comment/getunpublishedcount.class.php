@@ -15,8 +15,11 @@ class TicketCommentsGetUnpublishedCountProcessor extends modProcessor
             if (!is_array($parents)) {
                 $parents = explode(',', $parents);
             }
-            $c->leftJoin('TicketThread', 'Thread');
-            $c->where(array('Thread.resource:IN' => $parents));
+            $parents = array_filter(array_map('intval', $parents));
+            if (!empty($parents)) {
+                $c->leftJoin('TicketThread', 'Thread');
+                $c->where(array('Thread.resource:IN' => $parents));
+            }
         }
         $count = $this->modx->getCount('TicketComment', $c);
 
