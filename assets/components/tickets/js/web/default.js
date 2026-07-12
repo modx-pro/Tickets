@@ -194,6 +194,7 @@ var Tickets = {
 
     ticket: {
         preview: function (form, button) {
+            $(document).trigger('tickets_before_comment_preview', form, button);
             $(form).ajaxSubmit({
                 data: {action: 'ticket/preview'},
                 url: TicketsConfig.actionUrl,
@@ -250,6 +251,7 @@ var Tickets = {
         },
 
         save: function (form, button) {
+            $(document).trigger('tickets_before_comment_save', form, button);
             var action = 'ticket/';
             switch ($(button).prop('name')) {
                 case 'draft':
