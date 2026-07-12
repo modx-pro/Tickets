@@ -233,7 +233,9 @@ class TicketsSection extends modResource
             ), '', true, true);
             if ($total->save()) {
                 $total->fetchValues();
-                $total->save();
+                if ($total->isDirty()) {
+                    $total->save();
+                }
             }
         }
 
