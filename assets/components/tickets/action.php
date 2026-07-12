@@ -115,6 +115,9 @@ switch ($action) {
     case 'ticket/file/delete':
         $response = $Tickets->fileDelete((int)$_POST['id']);
         break;
+    case 'ticket/file/desc':
+        $response = $Tickets->fileDesc((int)$_POST['id'], isset($_POST['desc']) ? $_POST['desc'] : '');
+        break;
     case 'ticket/file/sort':
         $response = $Tickets->fileSort($_POST['rank']);
         break;
