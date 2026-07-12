@@ -37,6 +37,7 @@ $_lang['tickets_prop_tplFormUpdate'] = 'Chunk for update existing ticket';
 $_lang['tickets_prop_tplSectionRow'] = 'Chunk for template one section of form select';
 $_lang['tickets_prop_tplPreview'] = 'Chunk for preview ticket before publish';
 $_lang['tickets_prop_tplCommentForm'] = 'The add comment form. Can either be a chunk name or value. If set to a value, will override the chunk.';
+$_lang['tickets_prop_tplCommentFormGuest'] = 'The add comment form for anonymous users.';
 $_lang['tickets_prop_tplCommentAuth'] = 'Chunk for displaying comment for authorized user.';
 $_lang['tickets_prop_tplCommentGuest'] = 'Chunk for displaying comment for guests.';
 $_lang['tickets_prop_tplCommentDeleted'] = 'Chunk for displaying deleted comment.';
