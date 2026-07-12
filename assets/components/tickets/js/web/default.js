@@ -29,7 +29,8 @@ var Tickets = {
             return false;
         });
         $(document).on('change', '#comments-subscribe', function () {
-            Tickets.comment.subscribe($('[name="thread"]', $('#comment-form')));
+            var thread_id = Tickets.threadId(this);
+            Tickets.comment.subscribe($(thread_id + ' [name="thread"]'));
         });
         $(document).on('change', '#tickets-subscribe', function () {
             Tickets.ticket.subscribe($(this).data('id'));
@@ -43,7 +44,7 @@ var Tickets = {
             return false;
         });
         $(document).on('submit', '#comment-form', function (e) {
-            Tickets.comment.save(this, $(this).find('[type="submit"]')[0]);
+            Tickets.comment.save(this, $(this).find('[type="submit"]')[0], Tickets.threadId(this));
             e.preventDefault();
             return false;
         });
@@ -69,11 +70,12 @@ var Tickets = {
             return false;
         });
         $(document).on('click touchend', '#comment-form .preview, #comment-form .submit', function (e) {
+            var thread_id = Tickets.threadId(this);
             if ($(this).hasClass('preview')) {
-                Tickets.comment.preview(this.form, this);
+                Tickets.comment.preview(this.form, this, thread_id);
             }
             else {
-                Tickets.comment.save(this.form, this);
+                Tickets.comment.save(this.form, this, thread_id);
             }
             e.preventDefault();
             return false;
@@ -91,7 +93,7 @@ var Tickets = {
         });
         // Show and hide forms
         $(document).on('click touchend', '#comment-new-link a', function (e) {
-            Tickets.forms.comment();
+            Tickets.forms.comment(Tickets.threadId(this));
             e.preventDefault();
             return false;
         });
@@ -152,22 +154,31 @@ var Tickets = {
                 $('#ticket-editor').markItUp(TicketsConfig.editor.ticket);
             }
             if (TicketsConfig.enable_editor == true) {
-                $('#comment-editor').markItUp(TicketsConfig.editor.comment);
+                $('.comments-thread').each(function () {
+                    $(this).find('#comment-editor').markItUp(TicketsConfig.editor.comment);
+                });
             }
 
             $.jGrowl.defaults.closerTemplate = '<div>[ ' + TicketsConfig.close_all_message + ' ]</div>';
 
-            var count = $('.ticket-comment').length;
-            $('#comment-total, .ticket-comments-count').text(count);
+            $('.comments-thread').each(function () {
+                var count = $(this).find('.ticket-comment').length;
+                $(this).find('#comment-total, .ticket-comments-count').text(count);
+            });
 
             $("#ticketForm.create").sisyphus({
                 excludeFields: $('#ticketForm .disable-sisyphus')
             });
 
             // Auto hide new comment button
-            if ($('#comment-form').is(':visible')) {
-                $('#comment-new-link').hide();
-            }
+            $('.comments-thread').each(function () {
+                if ($(this).find('#comment-form').is(':visible')) {
+                    $(this).find('#comment-new-link').hide();
+                } else {
+                    $(this).find('#comment-form').hide();
+                    $(this).find('#comment-new-link').show();
+                }
+            });
         });
 
         // Link to parent comment
@@ -332,7 +343,8 @@ var Tickets = {
     },
 
     comment: {
-        preview: function (form, button) {
+        preview: function (form, button, thread_id) {
+            thread_id = thread_id || Tickets.threadId(form) || '';
             $(form).ajaxSubmit({
                 data: {action: 'comment/preview'},
                 url: TicketsConfig.actionUrl,
@@ -347,7 +359,7 @@ var Tickets = {
                     $(document).trigger('tickets_comment_preview', response);
                     $(button).removeAttr('disabled');
                     if (response.success) {
-                        $('#comment-preview-placeholder').html(response.data.preview).show();
+                        $(thread_id + ' #comment-preview-placeholder').html(response.data.preview).show();
                         prettyPrint();
                     }
                     else {
@@ -358,7 +370,8 @@ var Tickets = {
             return false;
         },
 
-        save: function (form, button) {
+        save: function (form, button, thread_id) {
+            thread_id = thread_id || Tickets.threadId(form) || '';
             $(form).ajaxSubmit({
                 data: {action: 'comment/save'},
                 url: TicketsConfig.actionUrl,
@@ -375,21 +388,21 @@ var Tickets = {
                     $(button).removeAttr('disabled');
                     $(document).trigger('tickets_comment_save', response);
                     if (response.success) {
-                        Tickets.forms.comment(false);
-                        $('#comment-preview-placeholder').html('').hide();
-                        $('#comment-editor', form).val('');
-                        $('.ticket-comment .comment-reply a').show();
+                        Tickets.forms.comment(thread_id, false);
+                        $(thread_id + ' #comment-preview-placeholder').html('').hide();
+                        $(thread_id + ' #comment-editor', form).val('');
+                        $(thread_id + ' .ticket-comment .comment-reply a').show();
 
                         // autoPublish = 0
                         if (!response.data.length && response.message) {
                             Tickets.Message.info(response.message);
                         }
                         else {
-                            Tickets.comment.insert(response.data.comment);
+                            Tickets.comment.insert(thread_id, response.data.comment);
                             Tickets.utils.goto($(response.data.comment).attr('id'));
                         }
 
-                        Tickets.comment.getlist();
+                        Tickets.comment.getlist(thread_id);
                         prettyPrint();
                     }
                     else {
@@ -415,37 +428,44 @@ var Tickets = {
                             }
                         }
                     }
-                    if (response.data.captcha) {
-                        $('input[name="captcha"]', form).val('').focus();
-                        $('#comment-captcha', form).text(response.data.captcha);
+                    if (response.data && response.data.captcha) {
+                        $(thread_id + ' input[name="captcha"]', form).val('').focus();
+                        $(thread_id + ' #comment-captcha', form).text(response.data.captcha);
                     }
                 }
             });
             return false;
         },
 
-        getlist: function () {
-            var form = $('#comment-form');
+        getlist: function (thread_id) {
+            thread_id = thread_id || '';
+            var form = $(thread_id + ' #comment-form');
             var thread = $('[name="thread"]', form);
-            if (!thread) {
+            if (!thread.length) {
                 return false;
             }
-            Tickets.tpanel.start();
+            Tickets.tpanel.start(thread_id);
             $.post(TicketsConfig.actionUrl, {action: 'comment/getlist', thread: thread.val()}, function (response) {
                 for (var k in response.data.comments) {
                     if (response.data.comments.hasOwnProperty(k)) {
-                        Tickets.comment.insert(response.data.comments[k], true);
+                        Tickets.comment.insert(thread_id, response.data.comments[k], true);
                     }
                 }
-                var count = $('.ticket-comment').length;
-                $('#comment-total, .ticket-comments-count').text(count);
+                var count = $(thread_id + ' .ticket-comment').length;
+                $(thread_id + ' #comment-total, ' + thread_id + ' .ticket-comments-count').text(count);
 
-                Tickets.tpanel.stop();
+                Tickets.tpanel.stop(thread_id);
             }, 'json');
             return true;
         },
 
-        insert: function (data, remove) {
+        insert: function (thread_id, data, remove) {
+            if (typeof thread_id === 'object' || (typeof thread_id === 'string' && thread_id.indexOf('<') === 0)) {
+                remove = data;
+                data = thread_id;
+                thread_id = '';
+            }
+            thread_id = thread_id || '';
             var comment = $(data);
             var parent = $(comment).attr('data-parent');
             var id = $(comment).attr('id');
@@ -467,13 +487,13 @@ var Tickets = {
             }
 
             if (parent == 0 && TicketsConfig.formBefore) {
-                $('#comments').prepend(data)
+                $(thread_id + ' #comments').prepend(data)
             }
             else if (parent == 0) {
-                $('#comments').append(data)
+                $(thread_id + ' #comments').append(data)
             }
             else {
-                var pcomm = $('#comment-' + parent);
+                var pcomm = $(thread_id + ' #comment-' + parent);
                 if (pcomm.data('parent') != pcomm.data('newparent')) {
                     parent = pcomm.data('newparent');
                     comment.attr('data-newparent', parent);
@@ -487,7 +507,7 @@ var Tickets = {
                         data = comment[0].outerHTML;
                     }
                 }
-                $('#comment-' + parent + ' > .comments-list').append(data);
+                $(thread_id + ' #comment-' + parent + ' > .comments-list').append(data);
             }
 
             if (children.length > 0) {
@@ -529,23 +549,24 @@ var Tickets = {
 
     forms: {
         reply: function (comment_id) {
-            $('#comment-new-link').show();
+            var thread_id = Tickets.threadId('#comment-' + comment_id);
+            $(thread_id + ' #comment-new-link').show();
 
             clearInterval(window.timer);
-            var form = $('#comment-form');
+            var form = $(thread_id + ' #comment-form');
             $('.time', form).text('');
-            $('.ticket-comment .comment-reply a').show();
+            $(thread_id + ' .ticket-comment .comment-reply a').show();
 
-            $('#comment-preview-placeholder').hide();
+            $(thread_id + ' #comment-preview-placeholder').hide();
             $('input[name="parent"]', form).val(comment_id);
             $('input[name="id"]', form).val(0);
             if (typeof Tickets.StartPlupload != 'undefined') {
-                $('#ticket-files-list .ticket-file').remove();
+                $(thread_id + ' #ticket-files-list .ticket-file').remove();
                 Tickets.Uploader.destroy();
                 Tickets.StartPlupload();
             }
 
-            var reply = $('#comment-' + comment_id + ' > .comment-reply');
+            var reply = $(thread_id + ' #comment-' + comment_id + ' > .comment-reply');
             form.insertAfter(reply).show();
             $('a', reply).hide();
             reply.parents('.ticket-comment').removeClass('ticket-comment-new');
@@ -554,27 +575,32 @@ var Tickets = {
             return false;
         },
 
-        comment: function (focus) {
+        comment: function (thread_id, focus) {
+            if (typeof thread_id === 'boolean' || thread_id === undefined) {
+                focus = thread_id;
+                thread_id = '';
+            }
+            thread_id = thread_id || '';
             if (focus !== false) {
                 focus = true;
             }
             clearInterval(window.timer);
 
-            $('#comment-new-link').hide();
+            $(thread_id + ' #comment-new-link').hide();
 
-            var form = $('#comment-form');
+            var form = $(thread_id + ' #comment-form');
             $('.time', form).text('');
-            $('.ticket-comment .comment-reply a:hidden').show();
+            $(thread_id + ' .ticket-comment .comment-reply a:hidden').show();
 
-            $('#comment-preview-placeholder').hide();
+            $(thread_id + ' #comment-preview-placeholder').hide();
             $('input[name="parent"]', form).val(0);
             $('input[name="id"]', form).val(0);
             if (typeof Tickets.StartPlupload != 'undefined') {
-                $('#ticket-files-list .ticket-file').remove();
+                $(thread_id + ' #ticket-files-list .ticket-file').remove();
                 Tickets.Uploader.destroy();
                 Tickets.StartPlupload();
             }
-            $(form).insertAfter('#comment-form-placeholder').show();
+            $(form).insertAfter(thread_id + ' #comment-form-placeholder').show();
 
             $('#comment-editor', form).val('');
             if (focus) {
@@ -584,10 +610,11 @@ var Tickets = {
         },
 
         edit: function (comment_id) {
-            $('#comment-new-link').show();
+            var thread_id = Tickets.threadId('#comment-' + comment_id);
+            $(thread_id + ' #comment-new-link').show();
 
-            var thread = $('#comment-form [name="thread"]').val();
-            var form_key = $('#comment-form [name="form_key"]').val();
+            var thread = $(thread_id + ' #comment-form [name="thread"]').val();
+            var form_key = $(thread_id + ' #comment-form [name="form_key"]').val();
             $.post(TicketsConfig.actionUrl, {
                 action: "comment/get",
                 id: comment_id,
@@ -599,20 +626,20 @@ var Tickets = {
                 }
                 else {
                     clearInterval(window.timer);
-                    $('.ticket-comment .comment-reply a:hidden').show();
-                    var form = $('#comment-form');
-                    $('#comment-preview-placeholder').hide();
+                    $(thread_id + ' .ticket-comment .comment-reply a:hidden').show();
+                    var form = $(thread_id + ' #comment-form');
+                    $(thread_id + ' #comment-preview-placeholder').hide();
                     $('input[name="parent"]', form).val(0);
                     $('input[name="id"]', form).val(comment_id);
                     if (typeof Tickets.StartPlupload != 'undefined') {
-                        if ($('.comment-form-files').length && response.data.files) {
-                            $('.comment-form-files').html(response.data.files);
+                        if ($(thread_id + ' .comment-form-files').length && response.data.files) {
+                            $(thread_id + ' .comment-form-files').html(response.data.files);
                         }
                         Tickets.Uploader.destroy();
                         Tickets.StartPlupload(comment_id);
                     }
 
-                    var reply = $('#comment-' + comment_id + ' > .comment-reply');
+                    var reply = $(thread_id + ' #comment-' + comment_id + ' > .comment-reply');
                     var time_left = $('.time', form);
 
                     time_left.text('');
@@ -842,54 +869,67 @@ Tickets.Star = {
 };
 
 
+
+Tickets.threadId = function (el) {
+    var id = $(el).closest('.comments-thread').attr('id');
+    if (!id) {
+        return '';
+    }
+    return '#' + String(id).replace(/^#/, '');
+};
+
 Tickets.tpanel = {
-    wrapper: $('#comments-tpanel'),
-    refresh: $('#tpanel-refresh'),
-    new_comments: $('#tpanel-new'),
+    wrapper: '.comments-thread #comments-tpanel',
+    refresh: '.comments-thread #tpanel-refresh',
+    new_comments: '.comments-thread #tpanel-new',
     class_new: 'ticket-comment-new',
 
     initialize: function () {
         if (TicketsConfig.tpanel) {
-            this.wrapper.show();
-            this.stop();
+            $(this.wrapper).show();
+            this.stop('');
         }
 
-        this.refresh.on('click', function () {
+        $(document).on('click', this.refresh, function () {
+            var thread_id = Tickets.threadId(this);
             $('.' + Tickets.tpanel.class_new).removeClass(Tickets.tpanel.class_new);
-            Tickets.comment.getlist();
+            Tickets.comment.getlist(thread_id);
         });
 
-        this.new_comments.on('click', function () {
-            var elem = $('.' + Tickets.tpanel.class_new + ':first');
+        $(document).on('click', this.new_comments, function () {
+            var thread_id = Tickets.threadId(this);
+            var elem = $(thread_id + ' .' + Tickets.tpanel.class_new + ':first');
             $('html, body').animate({
                 scrollTop: elem.offset().top
             }, 1000, 'linear', function () {
                 elem.removeClass(Tickets.tpanel.class_new);
             });
 
-            var count = parseInt(Tickets.tpanel.new_comments.text());
+            var count = parseInt($(this).text());
             if (count > 1) {
-                Tickets.tpanel.new_comments.text(count - 1);
+                $(this).text(count - 1);
             }
             else {
-                Tickets.tpanel.new_comments.text('').hide();
+                $(this).text('').hide();
             }
         });
     },
 
-    start: function () {
-        this.refresh.addClass('loading');
+    start: function (thread_id) {
+        thread_id = thread_id || '';
+        $(thread_id + ' ' + this.refresh).addClass('loading');
     },
 
-    stop: function () {
-        var count = $('.' + this.class_new).length;
+    stop: function (thread_id) {
+        thread_id = thread_id || '';
+        var count = $(thread_id + ' .' + this.class_new).length;
         if (count > 0) {
-            this.new_comments.text(count).show();
+            $(thread_id + ' ' + this.new_comments).text(count).show();
         }
         else {
-            this.new_comments.hide();
+            $(thread_id + ' ' + this.new_comments).hide();
         }
-        this.refresh.removeClass('loading');
+        $(thread_id + ' ' + this.refresh).removeClass('loading');
     }
 
 };
