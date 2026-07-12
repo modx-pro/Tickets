@@ -136,6 +136,46 @@ if ($transport->xpdo) {
         case xPDOTransport::ACTION_UNINSTALL:
             if ($modx instanceof modX) {
                 $modx->removeExtensionPackage('tickets');
+
+                // Keep mgr usable: custom CRC classes are gone with the package
+                $resourceTable = $modx->getTableName('modResource');
+                $modx->exec(
+                    "UPDATE {$resourceTable} SET class_key = 'modDocument' WHERE class_key IN ('Ticket', 'TicketsSection')"
+                );
+
+                $modx->addPackage('tickets', $modelPath);
+                $manager = $modx->getManager();
+                foreach (array(
+                    'TicketComment',
+                    'TicketThread',
+                    'TicketView',
+                    'TicketStar',
+                    'TicketQueue',
+                    'TicketFile',
+                    'TicketVote',
+                    'TicketAuthor',
+                    'TicketAuthorAction',
+                    'TicketTotal',
+                ) as $table) {
+                    $manager->removeObjectContainer($table);
+                }
+
+                // Menu/chunks may survive when UPDATE_OBJECT was false at install time
+                if ($menu = $modx->getObject('modMenu', array('text' => 'tickets', 'namespace' => 'tickets'))) {
+                    $menu->remove();
+                } elseif ($menu = $modx->getObject('modMenu', array('text' => 'tickets'))) {
+                    $menu->remove();
+                }
+
+                if ($category = $modx->getObject('modCategory', array('category' => 'Tickets'))) {
+                    $categoryId = $category->get('id');
+                    foreach (array('modChunk', 'modSnippet', 'modPlugin') as $class) {
+                        foreach ($modx->getCollection($class, array('category' => $categoryId)) as $object) {
+                            $object->remove();
+                        }
+                    }
+                    $category->remove();
+                }
             }
             break;
     }
