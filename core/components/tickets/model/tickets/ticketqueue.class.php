@@ -24,14 +24,15 @@ class TicketQueue extends xPDOSimpleObject
             $this->xpdo->getOption('tickets.mail_from_name', null, $this->xpdo->getOption('site_name'), true)
         );
 
+        $email = $this->get('email');
         if ($user = $this->getOne('User')) {
             $profile = $user->getOne('Profile');
-            if (!$user->get('active') || $profile->get('blocked')) {
+            if (!$user->get('active') || !$profile || $profile->get('blocked')) {
                 return 'This user is not active.';
             }
-            $email = $profile->get('email');
-        } else {
-            $email = $this->get('email');
+            if (empty($email)) {
+                $email = $profile->get('email');
+            }
         }
 
         if (empty($email)) {
