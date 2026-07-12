@@ -481,8 +481,10 @@ class Ticket extends modResource
         $alias .= '-' . $this->get('id');
         $this->set('alias', $alias);
         $this->set('uri', '');
-        $this->set('uri_override', true);
-        $this->setUri($alias);
+        if ($this->setUri($alias) === false) {
+            $this->set('uri_override', false);
+            $this->set('uri', $alias);
+        }
 
         return $this->save();
     }
