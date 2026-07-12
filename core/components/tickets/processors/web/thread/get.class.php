@@ -44,7 +44,9 @@ class GetThreadProcessor extends modProcessor
     {
         $this->getComments();
         $this->checkCommentLast();
-        $this->buildTree();
+        if (filter_var($this->getProperty('tree', true), FILTER_VALIDATE_BOOLEAN)) {
+            $this->buildTree();
+        }
 
         return $this->cleanup();
     }

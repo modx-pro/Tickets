@@ -501,7 +501,14 @@ var Tickets = {
                 }
             }
 
-            if (parent == 0 && TicketsConfig.formBefore) {
+            if (!TicketsConfig.thread_tree) {
+                if (TicketsConfig.formBefore) {
+                    $(thread_id + ' #comments').prepend(data);
+                } else {
+                    $(thread_id + ' #comments').append(data);
+                }
+            }
+            else if (parent == 0 && TicketsConfig.formBefore) {
                 $(thread_id + ' #comments').prepend(data)
             }
             else if (parent == 0) {
@@ -575,6 +582,14 @@ var Tickets = {
             $(thread_id + ' #comment-preview-placeholder').hide();
             $('input[name="parent"]', form).val(comment_id);
             $('input[name="id"]', form).val(0);
+            if (!TicketsConfig.thread_tree && !TicketsConfig.enable_editor) {
+                var parentText = $.trim($(thread_id + ' #comment-' + comment_id + ' .ticket-comment-body:first').text());
+                if (parentText) {
+                    var editor = $('textarea[name="text"]', form);
+                    var quote = '<blockquote>' + $('<div>').text(parentText).html() + '</blockquote>\n\n';
+                    editor.val(quote + editor.val());
+                }
+            }
             if (typeof Tickets.StartPlupload != 'undefined') {
                 $(thread_id + ' #ticket-files-list .ticket-file').remove();
                 Tickets.Uploader.destroy();
