@@ -47,6 +47,7 @@ $_lang['tickets_prop_tplCommentEmailReply'] = 'Chunk für die Benachrichtigung e
 $_lang['tickets_prop_tplCommentEmailSubscription'] = 'Chunk für die Benachrichtigung eines Abonnenten über einen neuen Kommentar';
 $_lang['tickets_prop_tplCommentEmailBcc'] = 'Chunk für die BCC-Benachrichtigung über ein neues Ticket';
 $_lang['tickets_prop_tplTicketEmailBcc'] = 'Chunk für die BCC-Benachrichtigung über einen neuen Kommentar';
+$_lang['tickets_prop_tplTicketEmailSubscription'] = 'Chunk für die Benachrichtigung eines Sektions-Abonnenten über ein neues Ticket.';
 $_lang['tickets_prop_tplCommentEmailUnpublished'] = 'Chunk für die BCC-Benachrichtigung über einen unveröffentlichten neuen Kommentar';
 $_lang['tickets_prop_tplWrapper'] = 'Name eines Chunks, der als Wrapper für den Output fungiert. Funktioniert nicht zusammen mit "toSeparatePlaceholders".';
 $_lang['tickets_prop_threadUrl'] = 'Absolute URL, um vom Manager zu einem Kommentar zu gelangen. Wird verwendet, wenn etwas anderes als Ressourcen kommentiert wird.';
