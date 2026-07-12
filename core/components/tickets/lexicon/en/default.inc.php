@@ -76,7 +76,7 @@ $_lang['tickets_section_email_subscription'] = 'New ticket in the section "[[+se
 $_lang['tickets_author_notify'] = 'Notify about author\'s tickets';
 $_lang['tickets_author_subscribed'] = 'You have subscribe to notifications about new tickets this author.';
 $_lang['tickets_author_unsubscribed'] = 'You will no longer receive notifications about new tickets this author.';
-$_lang['tickets_author_email_subscription'] = 'New ticket author [[+user.fullname]]"';
+$_lang['tickets_author_email_subscription'] = 'New ticket by author "[[+user.fullname]]"';
 
 $_lang['ticket_create_here'] = 'Create ticket';
 
@@ -101,7 +101,7 @@ $_lang['ticket_err_vote_own'] = 'You cannot vote for your ticket.';
 $_lang['ticket_err_vote_already'] = 'You have already voted for this ticket.';
 $_lang['ticket_err_empty'] = 'You forgot to write the text of the ticket.';
 $_lang['ticket_err_publish'] = 'You are not allowed to publish tickets.';
-$_lang['ticket_err_cut'] = 'The length of text is [[+length]] symbols. You must specify tag &lt;cut/&gt if text longer than [[+max_cut]] symbols.';
+$_lang['ticket_err_cut'] = 'Text length is [[+length]] characters. Add a &lt;cut/&gt; tag if the text is longer than [[+max_cut]] characters.';
 $_lang['ticket_err_rating_ticket'] = 'To publish a topic in this section you need a rating more than [[+rating]].';
 $_lang['ticket_err_rating_comment'] = 'To post a comment in this section you need a rating more than [[+rating]].';
 $_lang['ticket_err_vote_ticket_days'] = 'The time for voting for this topic has expired.';
@@ -286,9 +286,9 @@ $_lang['ticket_comment_email_owner_intro'] = 'The user <b>[[+name]]</b> left a c
 $_lang['ticket_comment_email_bcc_intro'] = 'The user <b>[[+name]]</b> left a comment in the topic "<a href="[[~[[+resource]]?scheme=`full`]]">[[+pagetitle]]</a>":';
 
 $_lang['ticket_email_bcc'] = 'New ticket to your site - "[[+pagetitle]]"';
-$_lang['ticket_email_bcc_intro'] = 'The user <b>[[+fullname]]</b> ([[+email]]) was created the new topic to your site: <a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>';
-$_lang['ticket_email_subscribed_intro'] = 'The user <b>[[+fullname]]</b> published the new topic: "<a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>" to the section "<a href="[[~[[+section]]?scheme=`full`]]">[[+section_title]]</a>", on which you have been subscribed.';
-$_lang['ticket_email_subscribed_author'] = 'The user <b>[[+fullname]]</b> on which you have been subscribed published the new topic: "<a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>" to the section "<a href="[[~[[+section]]?scheme=`full`]]">[[+section_title]]</a>".';
+$_lang['ticket_email_bcc_intro'] = 'User <b>[[+fullname]]</b> ([[+email]]) created a new ticket on your site: <a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>';
+$_lang['ticket_email_subscribed_intro'] = 'User <b>[[+fullname]]</b> published a new ticket "<a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>" in the section "<a href="[[~[[+section]]?scheme=`full`]]">[[+section_title]]</a>", which you subscribe to.';
+$_lang['ticket_email_subscribed_author'] = 'User <b>[[+fullname]]</b>, whom you subscribe to, published a new ticket "<a href="[[~[[+id]]?scheme=`full`]]">[[+pagetitle]]</a>" in the section "<a href="[[~[[+section]]?scheme=`full`]]">[[+section_title]]</a>".';
 $_lang['ticket_email_all_comments'] = 'All comments';
 $_lang['ticket_email_view'] = 'View';
 $_lang['ticket_email_reply'] = 'Reply';

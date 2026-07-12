@@ -96,3 +96,5 @@ $_lang['tickets_prop_meta_tplFile'] = 'Chunk für Datei in der Liste';
 $_lang['tickets_prop_class'] = 'Klasse für die Auswahl der Ergebnisse angeben';
 $_lang['tickets_prop_tree'] = 'Kommentare als Baum anzeigen. Nein = flache Liste (Pagination über limit/offset).';
 $_lang['tickets_prop_separatePlaceholder'] = 'Falls true, wird jeder Kommentar in einen eigenen Platzhalter geschrieben.';
+$_lang['tickets_prop_TicketsInit'] = 'Auf 1 setzen, um das Abo-Formular einzubinden und Tickets-Frontend-Skripte auf beliebigen Seiten zu initialisieren.';
+$_lang['tickets_prop_createdby'] = 'User-ID des Autors, auf den über das Formular abonniert wird.';

@@ -10,9 +10,9 @@ $_lang['area_tickets.comment'] = 'Comment';
 $_lang['area_tickets.mail'] = 'Email notices';
 
 $_lang['setting_tickets.frontend_css'] = 'Frontend styles';
-$_lang['setting_tickets.frontend_css_desc'] = 'Path to file with styles of the shop. If you want to use your own styles - specify them here, or clean this parameter and load them in site template.';
+$_lang['setting_tickets.frontend_css_desc'] = 'Path to the frontend CSS file. Set your own path, or clear this and load styles from the site template.';
 $_lang['setting_tickets.frontend_js'] = 'Frontend scripts';
-$_lang['setting_tickets.frontend_js_desc'] = 'Path to file with scripts of the shop. If you want to use your own sscripts - specify them here, or clean this parameter and load them in site template.';
+$_lang['setting_tickets.frontend_js_desc'] = 'Path to the frontend JS file. Set your own path, or clear this and load scripts from the site template.';
 
 $_lang['setting_tickets.date_format'] = 'Date format';
 $_lang['setting_tickets.date_format_desc'] = 'The date output format in the design of the tickets.';
@@ -22,8 +22,8 @@ $_lang['setting_tickets.ticket_isfolder_force'] = 'Force "isfolder"';
 $_lang['setting_tickets.ticket_isfolder_force_desc'] = 'Force parameter "isfolder" for tickets.';
 $_lang['setting_tickets.ticket_hidemenu_force'] = 'Force "hidemenu"';
 $_lang['setting_tickets.ticket_hidemenu_force_desc'] = 'Force parameter "hidemenu" for tickets.';
-$_lang['setting_tickets.ticket_show_in_tree_default'] = 'Show in the tree default';
-$_lang['setting_tickets.ticket_show_in_tree_default_desc'] = 'Enable this option and all the tickets were visible in the resource tree.';
+$_lang['setting_tickets.ticket_show_in_tree_default'] = 'Show in tree by default';
+$_lang['setting_tickets.ticket_show_in_tree_default_desc'] = 'When enabled, new tickets appear in the resource tree by default.';
 $_lang['setting_tickets.section_content_default'] = 'Default content for new tickets section';
 $_lang['setting_tickets.section_content_default_desc'] = ' Here you can specify the default content of new tickets section. By default it lists children tickets.';
 
@@ -43,7 +43,7 @@ $_lang['setting_tickets.private_ticket_page_desc'] = 'Id of existing MODX resour
 $_lang['setting_tickets.unpublished_ticket_page'] = 'Forward from unpublished ticket';
 $_lang['setting_tickets.unpublished_ticket_page_desc'] = 'Id of existing MODX resource for forward user if requested ticket is not published.';
 $_lang['setting_tickets.ticket_max_cut'] = 'The maximum size of the text without cut';
-$_lang['setting_tickets.ticket_max_cut_desc'] = 'Максимальное количество символов без тегов, которые можно сохранить без тега cut.';
+$_lang['setting_tickets.ticket_max_cut_desc'] = 'Maximum number of characters (without tags) allowed before a &lt;cut/&gt; tag is required.';
 
 
 $_lang['setting_tickets.snippet_prepare_comment'] = 'Snippet for comment prepare';
@@ -54,9 +54,9 @@ $_lang['setting_tickets.clear_cache_on_comment_save'] = 'Clear cache on commenti
 $_lang['setting_tickets.clear_cache_on_comment_save_desc'] = 'If true, cache of ticket will be cleared on any action with comment: create\update\remove. It needed only if you call snippet "TicketComments" uncached.';
 
 $_lang['setting_tickets.mail_from'] = 'Mailbox outgoing mail';
-$_lang['setting_tickets.mail_from_desc'] = 'Address to send the notifications. If not full - will be used system setting "emailsender".';
+$_lang['setting_tickets.mail_from_desc'] = 'From address for notifications. Falls back to the "emailsender" system setting when empty.';
 $_lang['setting_tickets.mail_from_name'] = 'The name of the sender';
-$_lang['setting_tickets.mail_from_name_desc'] = 'Name of sender of all notifications. If empty - will be used systen setting "site_name".';
+$_lang['setting_tickets.mail_from_name_desc'] = 'Sender name for notifications. Falls back to the "site_name" system setting when empty.';
 $_lang['setting_tickets.mail_queue'] = 'Messages queue';
 $_lang['setting_tickets.mail_queue_desc'] = 'Whether to use a message queue or send letters immediately. If you activate this option, you need to add to the cron file "/core/components/tickets/cron/mail_queue.php"';
 $_lang['setting_tickets.mail_bcc'] = 'Admin notifications';
@@ -68,7 +68,7 @@ $_lang['setting_tickets.count_guests'] = 'Count views of pages by guests';
 $_lang['setting_tickets.count_guests_desc'] = 'When enabled, component will count views of pages by all users, not just authorized. Keep in mind that with this approach the number of viewings is quite easy to cheat.';
 
 $_lang['setting_tickets.max_files_upload'] = 'Limit max file uploads';
-$_lang['setting_tickets.max_files_upload_desc'] = 'Max files count which allow to upload for current user. 0 - unlimited.';
+$_lang['setting_tickets.max_files_upload_desc'] = 'Maximum files a user may attach to a ticket. 0 means unlimited.';
 
 //$_lang['setting_tickets.section_id_as_alias'] = 'Use id of section as alias';
 //$_lang['setting_tickets.section_id_as_alias_desc'] = 'If true, aliases for friendly urls of sections will don`t be generated. Id will be set as alias.';
@@ -84,10 +84,10 @@ $_lang['setting_tickets.source_default'] = 'Media source for tickets';
 $_lang['setting_tickets.source_default_desc'] = 'Specify media source that will be used for uploading tickets files.';
 
 $_lang['tickets.source_thumbnails_desc'] = 'JSON encoded array of options for generating thumbnail.';
-$_lang['tickets.source_maxUploadWidth_desc'] = 'Maximum width of image for upload. All images, that exceeds this parameter, will be resized to fit..';
-$_lang['tickets.source_maxUploadHeight_desc'] = 'Maximum height of image for upload. All images, that exceeds this parameter, will be resized to fit.';
+$_lang['tickets.source_maxUploadWidth_desc'] = 'Maximum width of image for upload. Larger images are resized to this width.';
+$_lang['tickets.source_maxUploadHeight_desc'] = 'Maximum height of image for upload. Larger images are resized to this height.';
 $_lang['tickets.source_maxUploadSize_desc'] = 'Maximum size of file for upload (in bytes).';
-$_lang['tickets.source_imageNameType_desc'] = 'This setting specifies how to rename a file after upload. Hash is the generation of a unique name depending on the contents of the file. Friendly - generation behalf of the algorithm friendly URLs of pages of the site (they are managed by system settings).';
+$_lang['tickets.source_imageNameType_desc'] = 'This setting specifies how to rename a file after upload. Hash is the generation of a unique name depending on the contents of the file. Friendly builds a name with the same rules as friendly URLs (system settings).';
 
 $_lang['setting_tickets.auto_introtext'] = 'Auto-fill ticket introtext';
 $_lang['setting_tickets.auto_introtext_desc'] = 'If enabled, an empty introtext is generated from ticket content (text before &lt;cut/&gt; or the full content).';

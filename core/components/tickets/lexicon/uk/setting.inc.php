@@ -1,82 +1,92 @@
 <?php
 /**
- * Settings Russian Lexicon Entries
+ * Settings Ukrainian Lexicon Entries
  */
 
-$_lang['area_tickets.main'] = 'Основные';
-$_lang['area_tickets.section'] = 'Раздел тикетов';
-$_lang['area_tickets.ticket'] = 'Тикет';
-$_lang['area_tickets.comment'] = 'Комментарий';
-$_lang['area_tickets.mail'] = 'Почтовые уведомления';
+$_lang['area_tickets.main'] = 'Основні';
+$_lang['area_tickets.section'] = 'Розділ тікетів';
+$_lang['area_tickets.ticket'] = 'Тікет';
+$_lang['area_tickets.comment'] = 'Коментар';
+$_lang['area_tickets.mail'] = 'Поштові сповіщення';
 
-$_lang['setting_tickets.frontend_css'] = 'Стили фронтенда';
-$_lang['setting_tickets.frontend_css_desc'] = 'Путь к файлу со стилями магазина. Если вы хотите использовать собственные стили - укажите путь к ним здесь, или очистите параметр и загрузите их вручную через шаблон сайта.';
-$_lang['setting_tickets.frontend_js'] = 'Скрипты фронтенда';
-$_lang['setting_tickets.frontend_js_desc'] = 'Путь к файлу со скриптами магазина. Если вы хотите использовать собственные скрипты - укажите путь к ним здесь, или очистите параметр и загрузите их вручную через шаблон сайта.';
+$_lang['setting_tickets.frontend_css'] = 'Стилі фронтенду';
+$_lang['setting_tickets.frontend_css_desc'] = 'Шлях до CSS-файлу фронтенду. Вкажіть свій шлях або очистіть параметр і підключіть стилі в шаблоні сайту.';
+$_lang['setting_tickets.frontend_js'] = 'Скрипти фронтенду';
+$_lang['setting_tickets.frontend_js_desc'] = 'Шлях до JS-файлу фронтенду. Вкажіть свій шлях або очистіть параметр і підключіть скрипти в шаблоні сайту.';
 
-$_lang['setting_tickets.default_template'] = 'Шаблон для новых тикетов';
-$_lang['setting_tickets.default_template_desc'] = 'Шаблон "по умолчанию" для новых тикетов. Используется и в административной части, и при создании тикета на фронтенде.';
-$_lang['setting_tickets.ticket_isfolder_force'] = 'Все тикеты - контейнеры';
-$_lang['setting_tickets.ticket_isfolder_force_desc'] = 'Обязательное указание параметра "isfolder" у тикетов';
-$_lang['setting_tickets.ticket_hidemenu_force'] = 'Не показывать тикеты в меню';
-$_lang['setting_tickets.ticket_hidemenu_force_desc'] = 'Обязательное указание параметра "hidemenu" у тикетов';
-$_lang['setting_tickets.ticket_show_in_tree_default'] = 'Показывать в дереве по умолчанию';
-$_lang['setting_tickets.ticket_show_in_tree_default_desc'] = 'Включите эту опцию, чтобы все создаваемые тикеты были видны в дереве ресурсов.';
-$_lang['setting_tickets.section_content_default']  = 'Содержимое секций тикетов по умолчанию';
-$_lang['setting_tickets.section_content_default_desc'] = 'Здесь вы можете указать контент вновь создаваемой секции тикетов. По умолчанию установен вывод дочерних тикетов.';
+$_lang['setting_tickets.date_format'] = 'Формат дати';
+$_lang['setting_tickets.date_format_desc'] = 'Формат дати в оформленні тікетів.';
+$_lang['setting_tickets.default_template'] = 'Шаблон для нових тікетів';
+$_lang['setting_tickets.default_template_desc'] = 'Шаблон за замовчуванням для нових тікетів. Використовується в адмінці й під час створення тікета на сайті.';
+$_lang['setting_tickets.ticket_isfolder_force'] = 'Усі тікети як контейнери';
+$_lang['setting_tickets.ticket_isfolder_force_desc'] = 'Примусово вмикає параметр isfolder для тікетів.';
+$_lang['setting_tickets.ticket_hidemenu_force'] = 'Не показувати тікети в меню';
+$_lang['setting_tickets.ticket_hidemenu_force_desc'] = 'Примусово вмикає параметр hidemenu для тікетів.';
+$_lang['setting_tickets.ticket_show_in_tree_default'] = 'Показувати в дереві за замовчуванням';
+$_lang['setting_tickets.ticket_show_in_tree_default_desc'] = 'Якщо увімкнено, нові тікети з’являються в дереві ресурсів.';
+$_lang['setting_tickets.section_content_default'] = 'Вміст розділу тікетів за замовчуванням';
+$_lang['setting_tickets.section_content_default_desc'] = 'Вміст нового розділу тікетів. За замовчуванням виводить дочірні тікети.';
 
-$_lang['setting_tickets.enable_editor'] = 'Редактор "markItUp"';
-$_lang['setting_tickets.enable_editor_desc'] = 'Эта настройка активирует редактор "markItUp" на фронтенде, для удобной работы с тикетами и комментариями.';
-$_lang['setting_tickets.editor_config.ticket'] = 'Настройки редактора тикетов';
-$_lang['setting_tickets.editor_config.ticket_desc'] = 'Массив, закодированный в JSON для передачи в "markItUp". Подробности тут - http://markitup.jaysalvat.com/documentation/';
-$_lang['setting_tickets.editor_config.comment'] = 'Настройки редактора комментариев';
-$_lang['setting_tickets.editor_config.comment_desc'] = 'Массив, закодированный в JSON для передачи в "markItUp". Подробности тут - http://markitup.jaysalvat.com/documentation/';
+$_lang['setting_tickets.enable_editor'] = 'Редактор markItUp';
+$_lang['setting_tickets.enable_editor_desc'] = 'Умикає markItUp на фронтенді для тікетів і коментарів.';
+$_lang['setting_tickets.editor_config.ticket'] = 'Налаштування редактора тікетів';
+$_lang['setting_tickets.editor_config.ticket_desc'] = 'JSON-масив налаштувань для markItUp. Документація: http://markitup.jaysalvat.com/documentation/';
+$_lang['setting_tickets.editor_config.comment'] = 'Налаштування редактора коментарів';
+$_lang['setting_tickets.editor_config.comment_desc'] = 'JSON-масив налаштувань для markItUp. Документація: http://markitup.jaysalvat.com/documentation/';
 
-$_lang['setting_tickets.disable_jevix_default'] = 'Отключать Jevix по умолчанию';
-$_lang['setting_tickets.disable_jevix_default_desc'] = 'Эта настройка включает или отключает параметр "Отключить Jevix" по умолчанию у новых тикетов.';
-$_lang['setting_tickets.process_tags_default'] = 'Выполнять теги по умолчанию';
-$_lang['setting_tickets.process_tags_default_desc'] = 'Эта настройка включает или отключает параметр "Выполнять теги MODX" по умолчанию у новых тикетов.';
-$_lang['setting_tickets.private_ticket_page'] = 'Редирект с приватных тикетов';
-$_lang['setting_tickets.private_ticket_page_desc'] = 'Id существующего ресурса MODX, на который отправлять пользователя, если у него недостаточно прав для просмотра приватного тикета.';
-$_lang['setting_tickets.unpublished_ticket_page'] = 'Страница неопубликованных тикетов';
-$_lang['setting_tickets.unpublished_ticket_page_desc'] = 'Id существующего ресурса MODX, которая будет показана при запросе неопубликованного тикета.';
-$_lang['setting_tickets.ticket_max_cut'] = 'Максимальный размер текста без сut';
-$_lang['setting_tickets.ticket_max_cut_desc'] = 'Максимальное количество символов без тегов, которые можно сохранить без тега cut.';
+$_lang['setting_tickets.disable_jevix_default'] = 'Вимикати Jevix за замовчуванням';
+$_lang['setting_tickets.disable_jevix_default_desc'] = 'Значення параметра «Вимкнути Jevix» для нових тікетів.';
+$_lang['setting_tickets.process_tags_default'] = 'Виконувати теги за замовчуванням';
+$_lang['setting_tickets.process_tags_default_desc'] = 'Значення параметра «Виконувати теги MODX» для нових тікетів.';
+$_lang['setting_tickets.private_ticket_page'] = 'Редирект із приватних тікетів';
+$_lang['setting_tickets.private_ticket_page_desc'] = 'Id ресурсу MODX, куди направити користувача без прав на перегляд приватного тікета.';
+$_lang['setting_tickets.unpublished_ticket_page'] = 'Сторінка неопублікованих тікетів';
+$_lang['setting_tickets.unpublished_ticket_page_desc'] = 'Id ресурсу MODX, який показується для неопублікованого тікета.';
+$_lang['setting_tickets.ticket_max_cut'] = 'Максимальний розмір тексту без cut';
+$_lang['setting_tickets.ticket_max_cut_desc'] = 'Максимальна кількість символів без тегів, яку можна зберегти без тега &lt;cut/&gt;.';
 
+$_lang['setting_tickets.snippet_prepare_comment'] = 'Сніпет обробки коментаря';
+$_lang['setting_tickets.snippet_prepare_comment_desc'] = 'Сніпет, який обробляє коментар перед виводом. Викликається з класу Tickets і має доступ до його методів і змінних.';
+$_lang['setting_tickets.comment_edit_time'] = 'Час редагування';
+$_lang['setting_tickets.comment_edit_time_desc'] = 'Скільки секунд можна редагувати власний коментар.';
+$_lang['setting_tickets.clear_cache_on_comment_save'] = 'Очищати кеш під час коментування';
+$_lang['setting_tickets.clear_cache_on_comment_save_desc'] = 'Очищає кеш тікета під час створення, зміни чи видалення коментаря. Потрібно, якщо викликаєте TicketComments з кешем.';
 
-$_lang['setting_tickets.snippet_prepare_comment'] = 'Сниппет обработки комментария';
-$_lang['setting_tickets.snippet_prepare_comment_desc'] = 'Специальный сниппет, который будет обрабатывать комментарий. Перекрывает обработку по умолчанию и вызывается прямо в классе "Tickets", соответственно, ему доступны все методы и переменные этого класса.';
-$_lang['setting_tickets.comment_edit_time'] = 'Время редактирования';
-$_lang['setting_tickets.comment_edit_time_desc'] = 'Время в секундах, в течении которого можно редактировать свой комментарий.';
-$_lang['setting_tickets.clear_cache_on_comment_save'] = 'Очищать кэш при комментировании';
-$_lang['setting_tickets.clear_cache_on_comment_save_desc'] = 'Эта настройка включает очистку кэша тикета при действии с комментариями (создание\редактирование\удалении). Нужна только если вы вызываете сниппет "TicketComments" кэширвоанным.';
+$_lang['setting_tickets.mail_from'] = 'Адреса відправника';
+$_lang['setting_tickets.mail_from_desc'] = 'Email для сповіщень. Якщо порожньо, береться системна настройка emailsender.';
+$_lang['setting_tickets.mail_from_name'] = 'Ім’я відправника';
+$_lang['setting_tickets.mail_from_name_desc'] = 'Ім’я в листах. Якщо порожньо, береться системна настройка site_name.';
+$_lang['setting_tickets.mail_queue'] = 'Черга листів';
+$_lang['setting_tickets.mail_queue_desc'] = 'Надсилати через чергу чи одразу. Для черги додайте в cron файл /core/components/tickets/cron/mail_queue.php';
+$_lang['setting_tickets.mail_bcc'] = 'Сповіщати адміністраторів';
+$_lang['setting_tickets.mail_bcc_desc'] = 'Список id адміністраторів через кому, яким надсилати листи про нові тікети й коментарі.';
+$_lang['setting_tickets.mail_bcc_level'] = 'Рівень сповіщень адміністраторів';
+$_lang['setting_tickets.mail_bcc_level_desc'] = '0 — вимкнено, 1 — лише нові тікети, 2 — тікети й коментарі. Рекомендовано 2. За замовчуванням BCC — id 1 (адмін).';
 
-$_lang['setting_tickets.mail_from'] = 'Ящик исходящей почты';
-$_lang['setting_tickets.mail_from_desc'] = 'Адрес для отправки почтовых уведомлений. Если не заполнен - будет использована настройка "emailsender".';
-$_lang['setting_tickets.mail_from_name'] = 'Имя отправителя';
-$_lang['setting_tickets.mail_from_name_desc'] = 'Имя, от которого будут отправлены все уведомления. Если не заполнен - будет использована настройка "site_name".';
-$_lang['setting_tickets.mail_queue'] = 'Очередь сообщений';
-$_lang['setting_tickets.mail_queue_desc'] = 'Нужно ли использовать очередь сообщений, или отправлять все письма сразу? Если вы активируете эту опцию, то вам нужно добавить в cron файл "/core/components/tickets/cron/mail_queue.php"';
-$_lang['setting_tickets.mail_bcc'] = 'Уведомлять администраторов';
-$_lang['setting_tickets.mail_bcc_desc'] = 'Укажите через запятую список <b>id</b> администраторов, которым нужно отправлять сообщения о новых тикетах и комментариях.';
-$_lang['setting_tickets.mail_bcc_level'] = 'Уровень уведомления администраторов';
-$_lang['setting_tickets.mail_bcc_level_desc'] = 'Возможны 3 уровня уведомлений администраторов: 0 - отключено, 1 - отправлять только сообщения о новых тикетах, 2 - тикеты + комментарии. Рекомендований рівень - 2. За замовчуванням BCC — id 1 (адмін).';
+$_lang['setting_tickets.count_guests'] = 'Рахувати перегляди гостями';
+$_lang['setting_tickets.count_guests_desc'] = 'Рахує перегляди всіх відвідувачів, не лише авторизованих. Лічильник тоді легше накрутити.';
 
-$_lang['setting_tickets.count_guests'] = 'Считать просмотры страниц гостями';
-$_lang['setting_tickets.count_guests_desc'] = 'При включении этого параметра учитываются просмотры страниц всеми посетителями сайта, а не только авторизованными. Имейте в виду, что при таком подходе счетчик просмотров довольно легко накрутить.';
+$_lang['setting_tickets.max_files_upload'] = 'Ліміт завантажуваних файлів';
+$_lang['setting_tickets.max_files_upload_desc'] = 'Скільки файлів користувач може прикріпити до тікета. 0 — без обмежень.';
 
-//$_lang['setting_tickets.section_id_as_alias'] = 'Id раздела как псевдоним';
-//$_lang['setting_tickets.section_id_as_alias_desc'] = 'Если включено, псевдонимы для дружественных имён разделов не будут генерироваться. Вместо этого будут подставляться их id.';
-//$_lang['setting_tickets.ticket_id_as_alias'] = 'Id тикета как псевдоним';
-//$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'Если включено, псевдонимы для дружественных имён тикетов не будут генерироваться. Вместо этого будут подставляться их id.';
+//$_lang['setting_tickets.section_id_as_alias'] = 'Id розділу як псевдонім';
+//$_lang['setting_tickets.section_id_as_alias_desc'] = 'Якщо увімкнено, псевдоніми розділів не генеруються; підставляється id.';
+//$_lang['setting_tickets.ticket_id_as_alias'] = 'Id тікета як псевдонім';
+//$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'Якщо увімкнено, псевдоніми тікетів не генеруються; підставляється id.';
 
-$_lang['setting_tickets.source_default'] = 'Источник медиа для тикетов';
-$_lang['setting_tickets.source_default_desc'] = 'Выберите источник медиа, который будет использован по умолчанию для загрузки файлов тикетов.';
+$_lang['setting_mgr_tree_icon_ticket'] = 'Іконка тікета';
+$_lang['setting_mgr_tree_icon_ticket_desc'] = 'Іконка тікета в дереві ресурсів.';
+$_lang['setting_mgr_tree_icon_ticketssection'] = 'Іконка розділу тікетів';
+$_lang['setting_mgr_tree_icon_ticketssection_desc'] = 'Іконка розділу тікетів у дереві ресурсів.';
 
-$_lang['tickets.source_thumbnails_desc'] = 'Закодированный в JSON массив с параметрами генерации уменьшенной копии изображения.';
-$_lang['tickets.source_maxUploadWidth_desc'] = 'Максимальная ширина изображения для загрузки. Всё, что больше, будет ужато до этого значения.';
-$_lang['tickets.source_maxUploadHeight_desc'] = 'Максимальная высота изображения для загрузки. Всё, что больше, будет ужато до этого значения.';
-$_lang['tickets.source_maxUploadSize_desc'] = 'Максимальный размер загружаемых изображений (в байтах).';
-$_lang['tickets.source_imageNameType_desc'] = 'Этот параметр указывает, как нужно переименовать файл при загрузке. Hash - это генерация уникального имени, в зависимости от содержимого файла. Friendly - генерация имени по алгоритму дружественных url страниц сайта (они управляются системными настройками).';
+$_lang['setting_tickets.source_default'] = 'Медіаджерело для тікетів';
+$_lang['setting_tickets.source_default_desc'] = 'Медіаджерело за замовчуванням для файлів тікетів.';
+
+$_lang['tickets.source_thumbnails_desc'] = 'JSON-масив параметрів генерації мініатюри.';
+$_lang['tickets.source_maxUploadWidth_desc'] = 'Максимальна ширина зображення. Більші файли зменшуються до цього значення.';
+$_lang['tickets.source_maxUploadHeight_desc'] = 'Максимальна висота зображення. Більші файли зменшуються до цього значення.';
+$_lang['tickets.source_maxUploadSize_desc'] = 'Максимальний розмір файлу (у байтах).';
+$_lang['tickets.source_imageNameType_desc'] = 'Як перейменовувати файл після завантаження. Hash — унікальне ім’я за вмістом. Friendly — за правилами дружніх URL (системні настройки).';
+
 $_lang['setting_tickets.auto_introtext'] = 'Автозаповнення анотації тікета';
 $_lang['setting_tickets.auto_introtext_desc'] = 'Якщо увімкнено, порожня анотація заповнюється з контенту тікета (текст до &lt;cut/&gt; або весь контент).';
