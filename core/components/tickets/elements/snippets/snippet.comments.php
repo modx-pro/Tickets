@@ -147,6 +147,7 @@ $rows = $pdoFetch->run();
 
 // Processing rows
 $output = $commentsThread = null;
+$commentTotal = 0;
 if (!empty($rows) && is_array($rows)) {
     $tmp = array();
     $i = 1;
@@ -154,6 +155,15 @@ if (!empty($rows) && is_array($rows)) {
         $row['ratings'] = $ratings;
         $row['idx'] = $i++;
         $tmp[$row['id']] = $row;
+    }
+    // pdoFetch totalVar breaks with GROUP BY + Vote/Star joins
+    $commentTotal = (int)$thread->get('comments');
+    if ($commentTotal <= 0) {
+        $countWhere = array('thread' => $thread->get('id'), 'deleted' => 0);
+        if (empty($showUnpublished)) {
+            $countWhere['published'] = 1;
+        }
+        $commentTotal = $modx->getCount('TicketComment', $countWhere);
     }
     $rows = $thread->buildTree($tmp, $depth);
     unset($tmp, $i);
@@ -174,7 +184,7 @@ if (!empty($rows) && is_array($rows)) {
 }
 
 $commentsThread = $pdoFetch->getChunk($tplComments, array(
-    'total' => $modx->getPlaceholder($pdoFetch->config['totalVar']),
+    'total' => $commentTotal,
     'comments' => $output,
     'subscribed' => $thread->isSubscribed(),
 ));
