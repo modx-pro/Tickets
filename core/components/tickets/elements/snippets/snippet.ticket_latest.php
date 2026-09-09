@@ -125,13 +125,19 @@ if ($action == 'comments') {
         ),
     );
 
+    // includeContent only controls TicketComment.text, not Ticket.content.
+    // Ticket fields stay minimal for the default comment.latest chunk; expand via &select.
     $select = array(
         'TicketComment' => !empty($includeContent)
             ? $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true)
             : $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text', 'raw'), true),
-        'Ticket' => !empty($includeContent)
-            ? $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.')
-            : $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.', array('content'), true),
+        'Ticket' => $modx->getSelectColumns(
+            'Ticket',
+            'Ticket',
+            'ticket.',
+            array('id', 'pagetitle', 'uri', 'alias', 'parent', 'context_key'),
+            false
+        ),
         'Thread' => '`Thread`.`comments`',
     );
     $groupby = empty($user)
