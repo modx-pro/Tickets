@@ -1,4 +1,5 @@
 <?php
+
 /** @var array $scriptProperties */
 if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.' . $cacheKey)) {
     return $output;
@@ -89,8 +90,8 @@ if (!empty($resources)) {
     if (!empty($out)) {
         $where['id:NOT IN'] = $out;
     }
-} // Filter by parents
-else {
+} else {
+    // Filter by parents
     if (!empty($parents) && $parents > 0) {
         $pids = array_map('trim', explode(',', $parents));
         $parents = $pids;
