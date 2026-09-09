@@ -180,6 +180,22 @@ $xpdo_meta_map['TicketThread']= array (
         ),
       ),
     ),
+    'comment_time' => 
+    array (
+      'alias' => 'comment_time',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'comment_time' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => true,
+        ),
+      ),
+    ),
     'comments' => 
     array (
       'alias' => 'comments',

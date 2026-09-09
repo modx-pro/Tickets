@@ -85,10 +85,10 @@ if (!empty($resources)) {
         }
     }
     if (!empty($in)) {
-        $where['id:IN'] = $in;
+        $where[$action == 'comments' ? 'Ticket.id:IN' : 'id:IN'] = $in;
     }
     if (!empty($out)) {
-        $where['id:NOT IN'] = $out;
+        $where[$action == 'comments' ? 'Ticket.id:NOT IN' : 'id:NOT IN'] = $out;
     }
 } else {
     // Filter by parents
@@ -109,22 +109,12 @@ if (!empty($resources)) {
     }
 }
 
+$sortby = 'createdon';
+$groupby = '';
+
 // Joining tables
 if ($action == 'comments') {
-    $class = 'TicketComment';
-
     $innerJoin = array();
-    $innerJoin['Thread'] = empty($user)
-        ? array(
-            'class' => 'TicketThread',
-            'on' => '`TicketComment`.`id` = `Thread`.`comment_last` AND `Thread`.`deleted` = 0',
-        )
-        : array(
-            'class' => 'TicketThread',
-            'on' => '`TicketComment`.`thread` = `Thread`.`id` AND `Thread`.`deleted` = 0',
-        );
-    $innerJoin['Ticket'] = array('class' => 'Ticket', 'on' => '`Ticket`.`id` = `Thread`.`resource`');
-
     $leftJoin = array(
         'Section' => array('class' => 'TicketsSection', 'on' => '`Section`.`id` = `Ticket`.`parent`'),
         'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `TicketComment`.`createdby`'),
@@ -134,25 +124,51 @@ if ($action == 'comments') {
         ),
     );
 
-    // includeContent only controls TicketComment.text, not Ticket.content.
-    // Ticket fields stay minimal for the default comment.latest chunk; expand via &select.
-    $select = array(
-        'TicketComment' => !empty($includeContent)
-            ? $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true)
-            : $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text', 'raw'), true),
-        'Ticket' => $modx->getSelectColumns(
-            'Ticket',
-            'Ticket',
-            'ticket.',
-            array('id', 'pagetitle', 'uri', 'alias', 'parent', 'context_key'),
-            false
-        ),
-        'Thread' => '`Thread`.`comments`',
+    $ticketSelect = $modx->getSelectColumns(
+        'Ticket',
+        'Ticket',
+        'ticket.',
+        array('id', 'pagetitle', 'uri', 'alias', 'parent', 'context_key'),
+        false
     );
-    $groupby = empty($user)
-        ? '`Ticket`.`id`'
-        : '`TicketComment`.`id`';
-    $where['TicketComment.deleted'] = 0;
+    $commentSelect = !empty($includeContent)
+        ? $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true)
+        : $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text', 'raw'), true);
+
+    if (empty($user)) {
+        // Lead with threads ordered by denormalized comment_time, then join the last comment.
+        $class = 'TicketThread';
+        $where['TicketThread.deleted'] = 0;
+        $where['TicketThread.comment_last:>'] = 0;
+        $innerJoin['Ticket'] = array(
+            'class' => 'Ticket',
+            'on' => '`Ticket`.`id` = `TicketThread`.`resource`',
+        );
+        $innerJoin['TicketComment'] = array(
+            'class' => 'TicketComment',
+            'on' => '`TicketComment`.`id` = `TicketThread`.`comment_last` AND `TicketComment`.`deleted` = 0',
+        );
+        $select = array(
+            'TicketThread' => '`TicketThread`.`comments`',
+            'TicketComment' => $commentSelect,
+            'Ticket' => $ticketSelect,
+        );
+        $sortby = 'comment_time';
+    } else {
+        $class = 'TicketComment';
+        $innerJoin['Thread'] = array(
+            'class' => 'TicketThread',
+            'on' => '`TicketComment`.`thread` = `Thread`.`id` AND `Thread`.`deleted` = 0',
+        );
+        $innerJoin['Ticket'] = array('class' => 'Ticket', 'on' => '`Ticket`.`id` = `Thread`.`resource`');
+        $select = array(
+            'TicketComment' => $commentSelect,
+            'Ticket' => $ticketSelect,
+            'Thread' => '`Thread`.`comments`',
+        );
+        $groupby = '`TicketComment`.`id`';
+        $where['TicketComment.deleted'] = 0;
+    }
 } elseif ($action == 'tickets') {
     $class = 'Ticket';
 
@@ -179,11 +195,31 @@ if ($action == 'comments') {
 }
 
 // Fields to select
-$select = array_merge($select, array(
-    'Section' => $modx->getSelectColumns('TicketsSection', 'Section', 'section.', array('content'), true),
-    'User' => $modx->getSelectColumns('modUser', 'User', '', array('username')),
-    'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id'), true),
-));
+if ($action == 'comments') {
+    $select = array_merge($select, array(
+        'Section' => $modx->getSelectColumns(
+            'TicketsSection',
+            'Section',
+            'section.',
+            array('id', 'pagetitle'),
+            false
+        ),
+        'User' => $modx->getSelectColumns('modUser', 'User', '', array('username')),
+        'Profile' => $modx->getSelectColumns(
+            'modUserProfile',
+            'Profile',
+            '',
+            array('email', 'fullname', 'photo'),
+            false
+        ),
+    ));
+} else {
+    $select = array_merge($select, array(
+        'Section' => $modx->getSelectColumns('TicketsSection', 'Section', 'section.', array('content'), true),
+        'User' => $modx->getSelectColumns('modUser', 'User', '', array('username')),
+        'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id'), true),
+    ));
+}
 
 // Add custom parameters
 foreach (array('where', 'select', 'leftJoin', 'innerJoin') as $v) {
@@ -205,12 +241,19 @@ $default = array(
     'innerJoin' => json_encode($innerJoin),
     'leftJoin' => json_encode($leftJoin),
     'select' => json_encode($select),
-    'sortby' => 'createdon',
+    'sortby' => $sortby,
     'sortdir' => 'DESC',
     'groupby' => $groupby,
     'return' => 'data',
     'nestedChunkPrefix' => 'tickets_',
 );
+
+// Snippet property default sortby=createdon would override thread-first comment_time.
+if ($action == 'comments' && empty($user)
+    && (empty($scriptProperties['sortby']) || $scriptProperties['sortby'] === 'createdon')
+) {
+    $scriptProperties['sortby'] = 'comment_time';
+}
 
 // Merge all properties and run!
 $pdoFetch->setConfig(array_merge($default, $scriptProperties));
