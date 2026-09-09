@@ -37,7 +37,8 @@ $tmp = array(
     ),
     'sortby' => array(
         'type' => 'textfield',
-        'value' => 'createdon',
+        // Empty: snippet picks comment_time (comments/thread-first) or createdon (tickets/&user).
+        'value' => '',
     ),
     'sortdir' => array(
         'type' => 'list',

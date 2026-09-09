@@ -1,6 +1,13 @@
 <?php
 
 /** @var array $scriptProperties */
+$ticketsCorePath = $modx->getOption(
+    'tickets.core_path',
+    null,
+    $modx->getOption('core_path') . 'components/tickets/'
+);
+require_once $ticketsCorePath . 'model/tickets/ticketlatestqueries.inc.php';
+
 if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.' . $cacheKey)) {
     return $output;
 }
@@ -9,11 +16,7 @@ if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.' . 
 $Tickets = $modx->getService(
     'tickets',
     'Tickets',
-    $modx->getOption(
-        'tickets.core_path',
-        null,
-        $modx->getOption('core_path') . 'components/tickets/'
-    ) . 'model/tickets/',
+    $ticketsCorePath . 'model/tickets/',
     $scriptProperties
 );
 $Tickets->initialize($modx->context->key, $scriptProperties);
@@ -109,21 +112,14 @@ if (!empty($resources)) {
     }
 }
 
-$sortby = 'createdon';
+$innerJoin = array();
+$leftJoin = array();
+$select = array();
 $groupby = '';
+$defaultSortby = 'createdon';
+$threadFirst = ($action == 'comments' && empty($user));
 
-// Joining tables
 if ($action == 'comments') {
-    $innerJoin = array();
-    $leftJoin = array(
-        'Section' => array('class' => 'TicketsSection', 'on' => '`Section`.`id` = `Ticket`.`parent`'),
-        'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `TicketComment`.`createdby`'),
-        'Profile' => array(
-            'class' => 'modUserProfile',
-            'on' => '`Profile`.`internalKey` = `TicketComment`.`createdby`',
-        ),
-    );
-
     $ticketSelect = $modx->getSelectColumns(
         'Ticket',
         'Ticket',
@@ -134,69 +130,7 @@ if ($action == 'comments') {
     $commentSelect = !empty($includeContent)
         ? $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true)
         : $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text', 'raw'), true);
-
-    if (empty($user)) {
-        // Lead with threads ordered by denormalized comment_time, then join the last comment.
-        $class = 'TicketThread';
-        $where['TicketThread.deleted'] = 0;
-        $where['TicketThread.comment_last:>'] = 0;
-        $innerJoin['Ticket'] = array(
-            'class' => 'Ticket',
-            'on' => '`Ticket`.`id` = `TicketThread`.`resource`',
-        );
-        $innerJoin['TicketComment'] = array(
-            'class' => 'TicketComment',
-            'on' => '`TicketComment`.`id` = `TicketThread`.`comment_last` AND `TicketComment`.`deleted` = 0',
-        );
-        $select = array(
-            'TicketThread' => '`TicketThread`.`comments`',
-            'TicketComment' => $commentSelect,
-            'Ticket' => $ticketSelect,
-        );
-        $sortby = 'comment_time';
-    } else {
-        $class = 'TicketComment';
-        $innerJoin['Thread'] = array(
-            'class' => 'TicketThread',
-            'on' => '`TicketComment`.`thread` = `Thread`.`id` AND `Thread`.`deleted` = 0',
-        );
-        $innerJoin['Ticket'] = array('class' => 'Ticket', 'on' => '`Ticket`.`id` = `Thread`.`resource`');
-        $select = array(
-            'TicketComment' => $commentSelect,
-            'Ticket' => $ticketSelect,
-            'Thread' => '`Thread`.`comments`',
-        );
-        $groupby = '`TicketComment`.`id`';
-        $where['TicketComment.deleted'] = 0;
-    }
-} elseif ($action == 'tickets') {
-    $class = 'Ticket';
-
-    $innerJoin = array();
-    $leftJoin = array(
-        'Thread' => array(
-            'class' => 'TicketThread',
-            'on' => '`Thread`.`resource` = `Ticket`.`id` AND `Thread`.`deleted` = 0',
-        ),
-        'Section' => array('class' => 'TicketsSection', 'on' => '`Section`.`id` = `Ticket`.`parent`'),
-        'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `Ticket`.`createdby`'),
-        'Profile' => array('class' => 'modUserProfile', 'on' => '`Profile`.`internalKey` = `Ticket`.`createdby`'),
-    );
-
-    $select = array(
-        'Ticket' => !empty($includeContent)
-            ? $modx->getSelectColumns('Ticket', 'Ticket')
-            : $modx->getSelectColumns('Ticket', 'Ticket', '', array('content'), true),
-        'Thread' => '`Thread`.`id` as `thread`, `Thread`.`comments`',
-    );
-    $groupby = '`Ticket`.`id`';
-} else {
-    return 'Wrong action. You must use "ticket" or "comment".';
-}
-
-// Fields to select
-if ($action == 'comments') {
-    $select = array_merge($select, array(
+    $actorSelect = array(
         'Section' => $modx->getSelectColumns(
             'TicketsSection',
             'Section',
@@ -212,13 +146,62 @@ if ($action == 'comments') {
             array('email', 'fullname', 'photo'),
             false
         ),
-    ));
-} else {
-    $select = array_merge($select, array(
+    );
+    $leftJoin = array(
+        'Section' => array('class' => 'TicketsSection', 'on' => '`Section`.`id` = `Ticket`.`parent`'),
+        'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `TicketComment`.`createdby`'),
+        'Profile' => array(
+            'class' => 'modUserProfile',
+            'on' => '`Profile`.`internalKey` = `TicketComment`.`createdby`',
+        ),
+    );
+
+    $query = $threadFirst
+        ? tickets_ticket_latest_thread_first($ticketSelect, $commentSelect)
+        : tickets_ticket_latest_user_comments($ticketSelect, $commentSelect);
+    if ($threadFirst) {
+        $defaultSortby = 'comment_time';
+    }
+
+    $class = $query['class'];
+    $where = array_merge($where, $query['where']);
+    $innerJoin = $query['innerJoin'];
+    $select = array_merge($query['select'], $actorSelect);
+    $groupby = $query['groupby'];
+} elseif ($action == 'tickets') {
+    $class = 'Ticket';
+    $leftJoin = array(
+        'Thread' => array(
+            'class' => 'TicketThread',
+            'on' => '`Thread`.`resource` = `Ticket`.`id` AND `Thread`.`deleted` = 0',
+        ),
+        'Section' => array('class' => 'TicketsSection', 'on' => '`Section`.`id` = `Ticket`.`parent`'),
+        'User' => array('class' => 'modUser', 'on' => '`User`.`id` = `Ticket`.`createdby`'),
+        'Profile' => array('class' => 'modUserProfile', 'on' => '`Profile`.`internalKey` = `Ticket`.`createdby`'),
+    );
+    $select = array(
+        'Ticket' => !empty($includeContent)
+            ? $modx->getSelectColumns('Ticket', 'Ticket')
+            : $modx->getSelectColumns('Ticket', 'Ticket', '', array('content'), true),
+        'Thread' => '`Thread`.`id` as `thread`, `Thread`.`comments`',
         'Section' => $modx->getSelectColumns('TicketsSection', 'Section', 'section.', array('content'), true),
         'User' => $modx->getSelectColumns('modUser', 'User', '', array('username')),
         'Profile' => $modx->getSelectColumns('modUserProfile', 'Profile', '', array('id'), true),
-    ));
+    );
+    $groupby = '`Ticket`.`id`';
+} else {
+    return 'Wrong action. You must use "ticket" or "comment".';
+}
+
+// Empty or legacy createdon → defaultSortby; thread-first maps createdon to comment_time.
+$requestedSortby = $scriptProperties['sortby'] ?? null;
+unset($scriptProperties['sortby']);
+if ($requestedSortby === null || $requestedSortby === '') {
+    $sortby = $defaultSortby;
+} elseif ($threadFirst && $requestedSortby === 'createdon') {
+    $sortby = 'comment_time';
+} else {
+    $sortby = $requestedSortby;
 }
 
 // Add custom parameters
@@ -248,14 +231,6 @@ $default = array(
     'nestedChunkPrefix' => 'tickets_',
 );
 
-// Snippet property default sortby=createdon would override thread-first comment_time.
-if (
-    $action == 'comments' && empty($user)
-    && (empty($scriptProperties['sortby']) || $scriptProperties['sortby'] === 'createdon')
-) {
-    $scriptProperties['sortby'] = 'comment_time';
-}
-
 // Merge all properties and run!
 $pdoFetch->setConfig(array_merge($default, $scriptProperties));
 $pdoFetch->addTime('Query parameters are prepared.');
@@ -266,7 +241,7 @@ $output = array();
 if (!empty($rows) && is_array($rows)) {
     foreach ($rows as $k => $row) {
         // Prepare row
-        if ($class == 'Ticket') {
+        if ($action == 'tickets') {
             $row['date_ago'] = $Tickets->dateFormat($row['createdon']);
             $properties = is_string($row['properties'])
                 ? json_decode($row['properties'], true)

@@ -7,7 +7,7 @@
 $_lang['tickets_prop_limit'] = 'The number of results to limit.';
 $_lang['tickets_prop_offset'] = 'An offset of resources returned by the criteria to skip';
 $_lang['tickets_prop_depth'] = 'Integer value indicating depth to search for resources from each parent.';
-$_lang['tickets_prop_sortby'] = 'The field to sort by.';
+$_lang['tickets_prop_sortby'] = 'The field to sort by. Leave empty for defaults: comment_time for latest comments, createdon for tickets or &user comments.';
 $_lang['tickets_prop_sortdir'] = 'The direction to sort by';
 $_lang['tickets_prop_parents'] = 'Container list, separated by commas, to search results. By default, the query is limited to the current parent. If set to 0, query not limited.';
 $_lang['tickets_prop_resources'] = 'Comma-separated list of resource ids to include. Prefix an id with a dash to exclude it.';

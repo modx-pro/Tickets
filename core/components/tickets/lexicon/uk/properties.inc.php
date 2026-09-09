@@ -7,7 +7,7 @@
 $_lang['tickets_prop_limit'] = 'Ліміт вибірки результатів.';
 $_lang['tickets_prop_offset'] = 'Скільки результатів пропустити від початку вибірки.';
 $_lang['tickets_prop_depth'] = 'Глибина пошуку ресурсів від кожного батька.';
-$_lang['tickets_prop_sortby'] = 'Поле сортування.';
+$_lang['tickets_prop_sortby'] = 'Поле сортування. Порожнє: comment_time для останніх коментарів, createdon для тікетів або &user.';
 $_lang['tickets_prop_sortdir'] = 'Напрям сортування.';
 $_lang['tickets_prop_parents'] = 'Список батьківських категорій через кому. За замовчуванням обмежено поточним батьком. 0 — без обмеження.';
 $_lang['tickets_prop_resources'] = 'Список id ресурсів через кому. Мінус перед id виключає ресурс із вибірки.';
