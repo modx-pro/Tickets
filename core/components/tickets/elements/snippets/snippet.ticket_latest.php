@@ -1,12 +1,21 @@
 <?php
+
 /** @var array $scriptProperties */
 if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.' . $cacheKey)) {
     return $output;
 }
 
 /** @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null,
-        $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
+$Tickets = $modx->getService(
+    'tickets',
+    'Tickets',
+    $modx->getOption(
+        'tickets.core_path',
+        null,
+        $modx->getOption('core_path') . 'components/tickets/'
+    ) . 'model/tickets/',
+    $scriptProperties
+);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 /** @var pdoFetch $pdoFetch */
@@ -48,8 +57,8 @@ if (!empty($user)) {
         }
     }
     if (!empty($user_id) && !empty($user_username)) {
-        $where[] = '(`User`.`id` IN (' . implode(',', $user_id) . ') OR `User`.`username` IN (\'' . implode('\',\'',
-                $user_username) . '\'))';
+        $where[] = '(`User`.`id` IN (' . implode(',', $user_id)
+            . ') OR `User`.`username` IN (\'' . implode('\',\'', $user_username) . '\'))';
     } else {
         if (!empty($user_id)) {
             $where['User.id:IN'] = $user_id;
@@ -81,8 +90,8 @@ if (!empty($resources)) {
     if (!empty($out)) {
         $where['id:NOT IN'] = $out;
     }
-} // Filter by parents
-else {
+} else {
+    // Filter by parents
     if (!empty($parents) && $parents > 0) {
         $pids = array_map('trim', explode(',', $parents));
         $parents = $pids;
@@ -125,13 +134,19 @@ if ($action == 'comments') {
         ),
     );
 
+    // includeContent only controls TicketComment.text, not Ticket.content.
+    // Ticket fields stay minimal for the default comment.latest chunk; expand via &select.
     $select = array(
         'TicketComment' => !empty($includeContent)
             ? $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('raw'), true)
             : $modx->getSelectColumns('TicketComment', 'TicketComment', '', array('text', 'raw'), true),
-        'Ticket' => !empty($includeContent)
-            ? $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.')
-            : $modx->getSelectColumns('Ticket', 'Ticket', 'ticket.', array('content'), true),
+        'Ticket' => $modx->getSelectColumns(
+            'Ticket',
+            'Ticket',
+            'ticket.',
+            array('id', 'pagetitle', 'uri', 'alias', 'parent', 'context_key'),
+            false
+        ),
         'Thread' => '`Thread`.`comments`',
     );
     $groupby = empty($user)
