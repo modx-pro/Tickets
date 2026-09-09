@@ -5,8 +5,16 @@ if (!empty($cacheKey) && $output = $modx->cacheManager->get('tickets/latest.' . 
 }
 
 /** @var Tickets $Tickets */
-$Tickets = $modx->getService('tickets', 'Tickets', $modx->getOption('tickets.core_path', null,
-        $modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/', $scriptProperties);
+$Tickets = $modx->getService(
+    'tickets',
+    'Tickets',
+    $modx->getOption(
+        'tickets.core_path',
+        null,
+        $modx->getOption('core_path') . 'components/tickets/'
+    ) . 'model/tickets/',
+    $scriptProperties
+);
 $Tickets->initialize($modx->context->key, $scriptProperties);
 
 /** @var pdoFetch $pdoFetch */
@@ -48,8 +56,8 @@ if (!empty($user)) {
         }
     }
     if (!empty($user_id) && !empty($user_username)) {
-        $where[] = '(`User`.`id` IN (' . implode(',', $user_id) . ') OR `User`.`username` IN (\'' . implode('\',\'',
-                $user_username) . '\'))';
+        $where[] = '(`User`.`id` IN (' . implode(',', $user_id)
+            . ') OR `User`.`username` IN (\'' . implode('\',\'', $user_username) . '\'))';
     } else {
         if (!empty($user_id)) {
             $where['User.id:IN'] = $user_id;
