@@ -249,7 +249,8 @@ $default = array(
 );
 
 // Snippet property default sortby=createdon would override thread-first comment_time.
-if ($action == 'comments' && empty($user)
+if (
+    $action == 'comments' && empty($user)
     && (empty($scriptProperties['sortby']) || $scriptProperties['sortby'] === 'createdon')
 ) {
     $scriptProperties['sortby'] = 'comment_time';
