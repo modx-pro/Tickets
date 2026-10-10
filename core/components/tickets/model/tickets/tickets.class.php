@@ -370,7 +370,12 @@ class Tickets
                 $results['redirect'] = $url;
                 break;
             default:
-                $url = $this->modx->makeUrl($id, '', '', 'full');
+                $redirectTo = !empty($this->config['redirectTo']) ? (int)$this->config['redirectTo'] : 0;
+                $target = ($redirectTo > 0 && empty($data['tid'])) ? $redirectTo : $id;
+                $url = $this->modx->makeUrl($target, '', '', 'full');
+                if (empty($url) && $target !== $id) {
+                    $url = $this->modx->makeUrl($id, '', '', 'full');
+                }
                 if (empty($url)) {
                     $url = $this->modx->getOption('site_url');
                 }

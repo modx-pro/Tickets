@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Parent class lives in the MODX core, which is not part of this package.
+ *
+ * @method mixed getProperty(string $k, mixed $default = null)
+ */
 class TicketsSectionGetListProcessor extends modObjectGetListProcessor
 {
     public $classKey = 'TicketsSection';
@@ -54,11 +59,11 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor
                 }
             }
 
-            $parents = array_diff($parents_in,$parents_out);
+            $parents = array_diff($parents_in, $parents_out);
 
             if (!empty($parents) && !empty($this->current_category)) {
                 $c->where(array('parent:IN' => $parents, 'OR:id:=' => $this->current_category));
-            } else if (!empty($parents)) {
+            } elseif (!empty($parents)) {
                 $c->where(array('parent:IN' => $parents));
             }
 
@@ -82,11 +87,22 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor
 
             $resources = array_diff($resources_in, $resources_out);
 
-            if (!empty($resources))
+            if (!empty($resources)) {
                 $c->where(array('id:IN' => $resources));
+            }
 
-            if (!empty($resources_out))
+            if (!empty($resources_out)) {
                 $c->where(array('id:NOT IN' => $resources_out));
+            }
+        }
+        if ($exclude = $this->getProperty('exclude')) {
+            $exclude = array_unique(array_filter(array_map('abs', array_map('intval', array_map('trim', explode(',', $exclude))))));
+            if (!empty($this->current_category)) {
+                $exclude = array_diff($exclude, array((int)$this->current_category));
+            }
+            if (!empty($exclude)) {
+                $c->where(array('id:NOT IN' => array_values($exclude)));
+            }
         }
         $c->prepare();
 
