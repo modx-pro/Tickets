@@ -135,6 +135,15 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor
      */
     public function beforeSave()
     {
+        $text = $this->getProperty('text');
+        /** @var Tickets $Tickets */
+        if ($Tickets = $this->modx->getService('Tickets')) {
+            $this->object->fromArray(array(
+                'text' => $Tickets->Jevix($text, 'Comment'),
+                'raw' => $this->getProperty('raw', $text),
+            ));
+        }
+
         /** @var TicketThread $thread */
         if ($thread = $this->object->getOne('Thread')) {
             /** @var Ticket $ticket */
