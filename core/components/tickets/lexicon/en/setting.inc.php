@@ -91,3 +91,5 @@ $_lang['tickets.source_imageNameType_desc'] = 'This setting specifies how to ren
 
 $_lang['setting_tickets.auto_introtext'] = 'Auto-fill ticket introtext';
 $_lang['setting_tickets.auto_introtext_desc'] = 'If enabled, an empty introtext is generated from ticket content (text before &lt;cut/&gt; or the full content).';
+$_lang['setting_tickets.autocut_text_length'] = 'Auto-cut length for introtext';
+$_lang['setting_tickets.autocut_text_length_desc'] = 'Works with tickets.auto_introtext. If the content has no &lt;cut/&gt; tag, an empty introtext is filled with the first N characters, and a front-end ticket longer than tickets.ticket_max_cut is saved without asking for a cut. 0 keeps the cut tag required.';

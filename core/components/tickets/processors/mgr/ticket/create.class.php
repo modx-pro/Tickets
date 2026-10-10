@@ -38,13 +38,11 @@ class TicketCreateProcessor extends modResourceCreateProcessor
                 $this->setProperty($field, $value);
             }
         }
-        $content = $this->getProperty('content');
-        $length = mb_strlen(strip_tags($content), $this->modx->getOption('modx_charset', null, 'UTF-8', true));
-        $max = $this->modx->getOption('tickets.ticket_max_cut', null, 1000, true);
-        if (empty($content) && $this->modx->context->key != 'mgr') {
-            return $this->modx->lexicon('ticket_err_empty');
-        } elseif ($this->modx->context->key != 'mgr' && !preg_match('#<cut\b.*?>#', $content) && $length > $max) {
-            return $this->modx->lexicon('ticket_err_cut', array('length' => $length, 'max_cut' => $max));
+        if ($this->modx->context->key != 'mgr') {
+            $error = $this->object->checkWebContent($this->getProperty('content'));
+            if ($error !== null) {
+                return $error;
+            }
         }
 
         $set = parent::beforeSet();

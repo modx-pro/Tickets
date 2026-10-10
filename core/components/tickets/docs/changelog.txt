@@ -5,11 +5,12 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [1.14.1] - 2026-10-10
 
-Patch 1.14.x: ускорение `TicketLatest` в режиме `action=comments`.
+Patch 1.14.x: ускорение `TicketLatest` в режиме `action=comments`, автоматическая аннотация для длинных тикетов.
 
 ### Added
 
 - Индекс `comment_time` в таблице `tickets_threads` (schema + map). Резолвер `resolve.tables` создаёт его при обновлении пакета (#216).
+- Системная настройка `tickets.autocut_text_length` (по умолчанию `0`). Работает при включённом `tickets.auto_introtext`: если в тексте нет `<cut/>`, пустая аннотация заполняется первыми N символами текста, а тикет с фронта длиннее `tickets.ticket_max_cut` сохраняется без требования `<cut/>`. Сам текст тикета не меняется. При `0` тег `<cut/>` обязателен, как раньше (#218).
 
 ### Changed
 
@@ -17,7 +18,6 @@ Patch 1.14.x: ускорение `TicketLatest` в режиме `action=comments
 - `TicketLatest` с `&action=`comments`` без `&user`: выборка начинается с `TicketThread` (`deleted = 0`, `comment_last > 0`), сортируется по `comment_time`, затем присоединяет последний комментарий и тикет. `sortby=createdon` в этом режиме сортирует по `comment_time` (#216).
 - `TicketLatest`: свойство `sortby` по умолчанию пустое, сниппет сам выбирает поле сортировки для режима. Описание `tickets_prop_sortby` обновлено в en/ru/uk/de (#216).
 - `TicketLatest` в режиме комментариев выбирает из `Section` и `Profile` только поля для чанка. Фильтр `resources` применяется к `Ticket.id` (#216).
-
 ### Fixed
 
 - `TicketLatest` с `&action=`comments`` больше не выбирает `Ticket.content` (#214).

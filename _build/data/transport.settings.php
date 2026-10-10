@@ -156,6 +156,11 @@ $tmp = array(
         'value' => true,
         'area' => 'tickets.ticket',
     ),
+    'autocut_text_length' => array(
+        'xtype' => 'numberfield',
+        'value' => 0,
+        'area' => 'tickets.ticket',
+    ),
 
     'max_files_upload' => array(
         'xtype' => 'numberfield',

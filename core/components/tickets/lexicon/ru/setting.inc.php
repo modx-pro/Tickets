@@ -91,3 +91,5 @@ $_lang['tickets.source_imageNameType_desc'] = 'Этот параметр ука�
 
 $_lang['setting_tickets.auto_introtext'] = 'Автозаполнение аннотации тикета';
 $_lang['setting_tickets.auto_introtext_desc'] = 'Если включено, пустая аннотация заполняется из контента тикета (текст до &lt;cut/&gt; или весь контент).';
+$_lang['setting_tickets.autocut_text_length'] = 'Длина автообрезки аннотации';
+$_lang['setting_tickets.autocut_text_length_desc'] = 'Работает вместе с tickets.auto_introtext. Если в тексте нет тега &lt;cut/&gt;, пустая аннотация заполняется первыми N символами текста, а тикет с фронта длиннее tickets.ticket_max_cut сохраняется без требования cut. 0 оставляет тег cut обязательным.';

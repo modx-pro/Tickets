@@ -91,3 +91,5 @@ $_lang['setting_tickets.max_files_upload'] = 'Maximale Datei-Uploads';
 $_lang['setting_tickets.max_files_upload_desc'] = 'Maximale Anzahl von Dateien, die der aktuelle Benutzer hochladen darf. 0 - unbegrenzt.';
 $_lang['setting_tickets.auto_introtext'] = 'Introtext des Tickets automatisch füllen';
 $_lang['setting_tickets.auto_introtext_desc'] = 'Falls aktiv, wird ein leerer Introtext aus dem Ticket-Inhalt erzeugt (Text vor &lt;cut/&gt; oder der gesamte Inhalt).';
+$_lang['setting_tickets.autocut_text_length'] = 'Automatische Kürzungslänge für Introtext';
+$_lang['setting_tickets.autocut_text_length_desc'] = 'Wirkt zusammen mit tickets.auto_introtext. Enthält der Inhalt kein &lt;cut/&gt;-Tag, wird ein leerer Introtext mit den ersten N Zeichen gefüllt, und ein Frontend-Ticket länger als tickets.ticket_max_cut wird ohne cut gespeichert. 0 lässt das cut-Tag verpflichtend.';
