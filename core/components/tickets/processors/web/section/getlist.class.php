@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Parent class lives in the MODX core, which is not part of this package.
+ *
+ * @method mixed getProperty(string $k, mixed $default = null)
+ */
 class TicketsSectionGetListProcessor extends modObjectGetListProcessor
 {
     public $classKey = 'TicketsSection';
