@@ -8,6 +8,7 @@ $_lang['area_tickets.section'] = 'Раздел тикетов';
 $_lang['area_tickets.ticket'] = 'Тикет';
 $_lang['area_tickets.comment'] = 'Комментарий';
 $_lang['area_tickets.mail'] = 'Почтовые уведомления';
+$_lang['area_tickets.rating'] = 'Рейтинг автора';
 
 $_lang['setting_tickets.frontend_css'] = 'Стили фронтенда';
 $_lang['setting_tickets.frontend_css_desc'] = 'Путь к файлу со стилями магазина. Если вы хотите использовать собственные стили - укажите путь к ним здесь, или очистите параметр и загрузите их вручную через шаблон сайта.';
@@ -25,7 +26,7 @@ $_lang['setting_tickets.ticket_hidemenu_force_desc'] = 'Обязательное
 $_lang['setting_tickets.ticket_show_in_tree_default'] = 'Показывать в дереве по умолчанию';
 $_lang['setting_tickets.ticket_show_in_tree_default_desc'] = 'Включите эту опцию, чтобы все создаваемые тикеты были видны в дереве ресурсов.';
 $_lang['setting_tickets.section_content_default']  = 'Содержимое секций тикетов по умолчанию';
-$_lang['setting_tickets.section_content_default_desc'] = 'Здесь вы можете указать контент вновь создаваемой секции тикетов. По умолчанию установен вывод дочерних тикетов.';
+$_lang['setting_tickets.section_content_default_desc'] = 'Контент новой секции тикетов. По умолчанию поле пустое.';
 
 $_lang['setting_tickets.enable_editor'] = 'Редактор "markItUp"';
 $_lang['setting_tickets.enable_editor_desc'] = 'Эта настройка активирует редактор "markItUp" на фронтенде, для удобной работы с тикетами и комментариями.';
@@ -70,10 +71,10 @@ $_lang['setting_tickets.count_guests_desc'] = 'При включении это�
 $_lang['setting_tickets.max_files_upload'] = 'Ограничение по количеству загружаемых файлов';
 $_lang['setting_tickets.max_files_upload_desc'] = 'Указать максимальное количество файлов, которые пользователь может прикрепить к тикету. 0 - без ограничений.';
 
-//$_lang['setting_tickets.section_id_as_alias'] = 'Id раздела как псевдоним';
-//$_lang['setting_tickets.section_id_as_alias_desc'] = 'Если включено, псевдонимы для дружественных имён разделов не будут генерироваться. Вместо этого будут подставляться их id.';
-//$_lang['setting_tickets.ticket_id_as_alias'] = 'Id тикета как псевдоним';
-//$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'Если включено, псевдонимы для дружественных имён тикетов не будут генерироваться. Вместо этого будут подставляться их id.';
+$_lang['setting_tickets.section_id_as_alias'] = 'Id раздела как псевдоним';
+$_lang['setting_tickets.section_id_as_alias_desc'] = 'Если включено, у нового раздела псевдонимом становится его id, а не сгенерированное имя.';
+$_lang['setting_tickets.ticket_id_as_alias'] = 'Id тикета как псевдоним';
+$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'Эту настройку нужно создать вручную. Если ключ существует, новые разделы переходят на старый шаблон адреса: %id или %alias, затем / при включённом tickets.ticket_isfolder_force, иначе %ext.';
 
 $_lang['setting_mgr_tree_icon_ticket'] = 'Иконка тикета';
 $_lang['setting_mgr_tree_icon_ticket_desc'] = 'Иконка оформления тикета в дереве ресурсов.';
@@ -93,3 +94,18 @@ $_lang['setting_tickets.auto_introtext'] = 'Автозаполнение анн�
 $_lang['setting_tickets.auto_introtext_desc'] = 'Если включено, пустая аннотация заполняется из контента тикета (текст до &lt;cut/&gt; или весь контент).';
 $_lang['setting_tickets.autocut_text_length'] = 'Длина автообрезки аннотации';
 $_lang['setting_tickets.autocut_text_length_desc'] = 'Работает вместе с tickets.auto_introtext. Если в тексте нет тега &lt;cut/&gt;, пустая аннотация заполняется первыми N символами текста, а тикет с фронта длиннее tickets.ticket_max_cut сохраняется без требования cut. 0 оставляет тег cut обязательным.';
+
+$_lang['setting_tickets.rating_ticket_default'] = 'Баллы за тикет';
+$_lang['setting_tickets.rating_ticket_default_desc'] = 'Сколько баллов автор получает за новый тикет. По умолчанию 10.';
+$_lang['setting_tickets.rating_comment_default'] = 'Баллы за комментарий';
+$_lang['setting_tickets.rating_comment_default_desc'] = 'Баллы за новый комментарий. По умолчанию 1.';
+$_lang['setting_tickets.rating_view_default'] = 'Баллы за просмотр';
+$_lang['setting_tickets.rating_view_default_desc'] = 'Баллы за просмотр тикета. По умолчанию 0.1.';
+$_lang['setting_tickets.rating_vote_ticket_default'] = 'Баллы за голос за тикет';
+$_lang['setting_tickets.rating_vote_ticket_default_desc'] = 'Баллы автору, когда тикету ставят голос. По умолчанию 1.';
+$_lang['setting_tickets.rating_vote_comment_default'] = 'Баллы за голос за комментарий';
+$_lang['setting_tickets.rating_vote_comment_default_desc'] = 'Баллы автору, когда комментарию ставят голос. По умолчанию 0.2.';
+$_lang['setting_tickets.rating_star_ticket_default'] = 'Баллы за избранный тикет';
+$_lang['setting_tickets.rating_star_ticket_default_desc'] = 'Баллы автору, когда тикет добавляют в избранное. По умолчанию 3.';
+$_lang['setting_tickets.rating_star_comment_default'] = 'Баллы за избранный комментарий';
+$_lang['setting_tickets.rating_star_comment_default_desc'] = 'Баллы автору, когда комментарий добавляют в избранное. По умолчанию 0.6.';

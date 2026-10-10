@@ -3,6 +3,8 @@
 $settings = array();
 
 $tmp = array(
+    // No tickets. prefix: the resource tree reads mgr_tree_icon_{lowercase class_key}.
+    // Lexicon keys are setting_mgr_tree_icon_*, matching the stored key.
     'mgr_tree_icon_ticketssection' => array(
         'xtype' => 'textfield',
         'value' => 'icon icon-comments-o',
@@ -166,6 +168,63 @@ $tmp = array(
         'xtype' => 'numberfield',
         'value' => 0,
         'area' => 'tickets.ticket',
+    ),
+
+    'disable_jevix_default' => array(
+        'xtype' => 'combo-boolean',
+        'value' => false,
+        'area' => 'tickets.ticket',
+    ),
+    'process_tags_default' => array(
+        'xtype' => 'combo-boolean',
+        'value' => false,
+        'area' => 'tickets.ticket',
+    ),
+    'ticket_show_in_tree_default' => array(
+        'xtype' => 'combo-boolean',
+        'value' => false,
+        'area' => 'tickets.ticket',
+    ),
+    'section_id_as_alias' => array(
+        'xtype' => 'combo-boolean',
+        'value' => false,
+        'area' => 'tickets.section',
+    ),
+
+    'rating_ticket_default' => array(
+        'xtype' => 'numberfield',
+        'value' => 10,
+        'area' => 'tickets.rating',
+    ),
+    'rating_comment_default' => array(
+        'xtype' => 'numberfield',
+        'value' => 1,
+        'area' => 'tickets.rating',
+    ),
+    'rating_view_default' => array(
+        'xtype' => 'numberfield',
+        'value' => '0.1',
+        'area' => 'tickets.rating',
+    ),
+    'rating_vote_ticket_default' => array(
+        'xtype' => 'numberfield',
+        'value' => 1,
+        'area' => 'tickets.rating',
+    ),
+    'rating_vote_comment_default' => array(
+        'xtype' => 'numberfield',
+        'value' => '0.2',
+        'area' => 'tickets.rating',
+    ),
+    'rating_star_ticket_default' => array(
+        'xtype' => 'numberfield',
+        'value' => 3,
+        'area' => 'tickets.rating',
+    ),
+    'rating_star_comment_default' => array(
+        'xtype' => 'numberfield',
+        'value' => '0.6',
+        'area' => 'tickets.rating',
     ),
 );
 
