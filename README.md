@@ -20,7 +20,7 @@ Current release: **1.14.1-pl** (2026-10-10). That build targets MODX 2.x, cleans
 ## Requirements
 
 - MODX Revolution 2.x
-- PHP 8.0+ recommended; 1.14.0 is tested against PHP 8.2+ deprecations
+- PHP 7.4+ (8.0+ recommended); tested against PHP 8.2+ deprecations
 - [pdoTools](https://github.com/modx-pro/pdoTools) (used by the snippets)
 
 Exact MODX minor versions depend on your site; install from the package and run a smoke test on comments and ticket save.
