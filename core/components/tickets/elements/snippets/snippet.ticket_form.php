@@ -77,6 +77,7 @@ $data['sections'] = '';
 $response = $Tickets->runProcessor('web/section/getlist', array(
     'parents' => $scriptProperties['parents'],
     'resources' => $scriptProperties['resources'],
+    'exclude' => $modx->getOption('exclude', $scriptProperties, ''),
     'sortby' => !empty($scriptProperties['sortby'])
         ? $scriptProperties['sortby']
         : 'pagetitle',

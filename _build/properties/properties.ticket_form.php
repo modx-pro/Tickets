@@ -43,6 +43,14 @@ $tmp = array(
         'type' => 'numberfield',
         'value' => 0,
     ),
+    'redirectTo' => array(
+        'type' => 'numberfield',
+        'value' => 0,
+    ),
+    'exclude' => array(
+        'type' => 'textfield',
+        'value' => '',
+    ),
 
     'parents' => array(
         'type' => 'textfield',
