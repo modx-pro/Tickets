@@ -18,10 +18,12 @@ Patch 1.14.x: ускорение `TicketLatest` в режиме `action=comments
 - `TicketLatest` с `&action=`comments`` без `&user`: выборка начинается с `TicketThread` (`deleted = 0`, `comment_last > 0`), сортируется по `comment_time`, затем присоединяет последний комментарий и тикет. `sortby=createdon` в этом режиме сортирует по `comment_time` (#216).
 - `TicketLatest`: свойство `sortby` по умолчанию пустое, сниппет сам выбирает поле сортировки для режима. Описание `tickets_prop_sortby` обновлено в en/ru/uk/de (#216).
 - `TicketLatest` в режиме комментариев выбирает из `Section` и `Profile` только поля для чанка. Фильтр `resources` применяется к `Ticket.id` (#216).
+
 ### Fixed
 
 - `TicketLatest` с `&action=`comments`` больше не выбирает `Ticket.content` (#214).
 - `TicketLatest` с `&action=`comments`` без `&user` не падает с ошибкой 1055 при `ONLY_FULL_GROUP_BY` (#216).
+- Снятие тикета с публикации больше не роняет фронтенд. `TicketTotal` вызывал `isDirty()` без имени поля, а в xPDO MODX 2.x аргумент обязателен (`ArgumentCountError`, #222).
 
 ## [1.14.0] - 2026-07-12
 
