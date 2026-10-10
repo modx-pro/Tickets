@@ -87,11 +87,13 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor
 
             $resources = array_diff($resources_in, $resources_out);
 
-            if (!empty($resources))
+            if (!empty($resources)) {
                 $c->where(array('id:IN' => $resources));
+            }
 
-            if (!empty($resources_out))
+            if (!empty($resources_out)) {
                 $c->where(array('id:NOT IN' => $resources_out));
+            }
         }
         if ($exclude = $this->getProperty('exclude')) {
             $exclude = array_unique(array_filter(array_map('abs', array_map('intval', array_map('trim', explode(',', $exclude))))));
