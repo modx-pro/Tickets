@@ -8,6 +8,7 @@ $_lang['area_tickets.section'] = 'Tickets section';
 $_lang['area_tickets.ticket'] = 'Ticket';
 $_lang['area_tickets.comment'] = 'Comment';
 $_lang['area_tickets.mail'] = 'Email notices';
+$_lang['area_tickets.rating'] = 'Author rating';
 
 $_lang['setting_tickets.frontend_css'] = 'Frontend styles';
 $_lang['setting_tickets.frontend_css_desc'] = 'Path to the frontend CSS file. Set your own path, or clear this and load styles from the site template.';
@@ -25,7 +26,7 @@ $_lang['setting_tickets.ticket_hidemenu_force_desc'] = 'Force parameter "hidemen
 $_lang['setting_tickets.ticket_show_in_tree_default'] = 'Show in tree by default';
 $_lang['setting_tickets.ticket_show_in_tree_default_desc'] = 'When enabled, new tickets appear in the resource tree by default.';
 $_lang['setting_tickets.section_content_default'] = 'Default content for new tickets section';
-$_lang['setting_tickets.section_content_default_desc'] = ' Here you can specify the default content of new tickets section. By default it lists children tickets.';
+$_lang['setting_tickets.section_content_default_desc'] = 'Content of a new tickets section. Empty by default.';
 
 $_lang['setting_tickets.enable_editor'] = 'Editor "markItUp"';
 $_lang['setting_tickets.enable_editor_desc'] = 'If true, enables "markItUp" on frontend, for handy work with tickets and comments.';
@@ -70,10 +71,10 @@ $_lang['setting_tickets.count_guests_desc'] = 'When enabled, component will coun
 $_lang['setting_tickets.max_files_upload'] = 'Limit max file uploads';
 $_lang['setting_tickets.max_files_upload_desc'] = 'Maximum files a user may attach to a ticket. 0 means unlimited.';
 
-//$_lang['setting_tickets.section_id_as_alias'] = 'Use id of section as alias';
-//$_lang['setting_tickets.section_id_as_alias_desc'] = 'If true, aliases for friendly urls of sections will don`t be generated. Id will be set as alias.';
-//$_lang['setting_tickets.ticket_id_as_alias'] = 'Use id of ticket as alias';
-//$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'If true, aliases for friendly urls of tickets will don`t be generated. Id will be set as alias.';
+$_lang['setting_tickets.section_id_as_alias'] = 'Use id of section as alias';
+$_lang['setting_tickets.section_id_as_alias_desc'] = 'If enabled, a new section gets its id as the alias instead of a generated one.';
+$_lang['setting_tickets.ticket_id_as_alias'] = 'Use id of ticket as alias';
+$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'Create this setting manually. If the key exists, new sections use the old uri template: %id or %alias, plus / when tickets.ticket_isfolder_force is on, otherwise %ext.';
 
 $_lang['setting_mgr_tree_icon_ticket'] = 'Icon of ticket';
 $_lang['setting_mgr_tree_icon_ticket_desc'] = 'Icon of ticket in the resource tree.';
@@ -93,3 +94,18 @@ $_lang['setting_tickets.auto_introtext'] = 'Auto-fill ticket introtext';
 $_lang['setting_tickets.auto_introtext_desc'] = 'If enabled, an empty introtext is generated from ticket content (text before &lt;cut/&gt; or the full content).';
 $_lang['setting_tickets.autocut_text_length'] = 'Auto-cut length for introtext';
 $_lang['setting_tickets.autocut_text_length_desc'] = 'Works with tickets.auto_introtext. If the content has no &lt;cut/&gt; tag, an empty introtext is filled with the first N characters, and a front-end ticket longer than tickets.ticket_max_cut is saved without asking for a cut. 0 keeps the cut tag required.';
+
+$_lang['setting_tickets.rating_ticket_default'] = 'Points for a new ticket';
+$_lang['setting_tickets.rating_ticket_default_desc'] = 'Author points for creating a ticket. Default is 10.';
+$_lang['setting_tickets.rating_comment_default'] = 'Points for a comment';
+$_lang['setting_tickets.rating_comment_default_desc'] = 'Author points for a new comment. Default is 1.';
+$_lang['setting_tickets.rating_view_default'] = 'Points for a view';
+$_lang['setting_tickets.rating_view_default_desc'] = 'Author points for a ticket view. Default is 0.1.';
+$_lang['setting_tickets.rating_vote_ticket_default'] = 'Points for a ticket vote';
+$_lang['setting_tickets.rating_vote_ticket_default_desc'] = 'Author points when someone votes for the ticket. Default is 1.';
+$_lang['setting_tickets.rating_vote_comment_default'] = 'Points for a comment vote';
+$_lang['setting_tickets.rating_vote_comment_default_desc'] = 'Author points when someone votes for the comment. Default is 0.2.';
+$_lang['setting_tickets.rating_star_ticket_default'] = 'Points for starring a ticket';
+$_lang['setting_tickets.rating_star_ticket_default_desc'] = 'Author points when the ticket is added to favorites. Default is 3.';
+$_lang['setting_tickets.rating_star_comment_default'] = 'Points for starring a comment';
+$_lang['setting_tickets.rating_star_comment_default_desc'] = 'Author points when the comment is added to favorites. Default is 0.6.';

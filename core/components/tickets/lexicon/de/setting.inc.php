@@ -8,6 +8,7 @@ $_lang['area_tickets.section'] = 'Ticket-Bereiche';
 $_lang['area_tickets.ticket'] = 'Tickets';
 $_lang['area_tickets.comment'] = 'Kommentare';
 $_lang['area_tickets.mail'] = 'E-Mail-Benachrichtigungen';
+$_lang['area_tickets.rating'] = 'Autorenbewertung';
 
 $_lang['setting_tickets.frontend_css'] = 'Frontend-Stile';
 $_lang['setting_tickets.frontend_css_desc'] = 'Der Pfad zur CSS-Datei. Wenn Sie eigene Stile verwenden möchten, geben Sie hier den Pfad dazu an oder löschen Sie den Parameter und laden Sie eigene Stile über das Seiten-Template.';
@@ -25,7 +26,7 @@ $_lang['setting_tickets.ticket_hidemenu_force_desc'] = 'Voreinstellung des Param
 $_lang['setting_tickets.ticket_show_in_tree_default'] = 'Im Ressourcenbaum anzeigen';
 $_lang['setting_tickets.ticket_show_in_tree_default_desc'] = 'Aktivieren Sie diese Option, damit alle erstellten Tickets im Ressourcenbaum sichtbar sind.';
 $_lang['setting_tickets.section_content_default'] = 'Standard-Inhalt für neue Ticket-Bereiche';
-$_lang['setting_tickets.section_content_default_desc'] = 'Hier können Sie voreingestellten Inhalt für angelegte Ticket-Bereiche festlegen. Standardmäßig ist die Ausgabe von untergeordneten Tickets voreingestellt.';
+$_lang['setting_tickets.section_content_default_desc'] = 'Inhalt eines neuen Ticket-Bereichs. Standardmäßig leer.';
 
 $_lang['setting_tickets.enable_editor'] = 'Editor "markItUp" verwenden';
 $_lang['setting_tickets.enable_editor_desc'] = 'Diese Einstellung aktiviert den Editor "markItUp" im Frontend zur komfortablen Bearbeitung von Tickets und Kommentaren.';
@@ -67,10 +68,10 @@ $_lang['setting_tickets.mail_bcc_level_desc'] = 'Es gibt 3 Levels der Administra
 $_lang['setting_tickets.count_guests'] = 'Seitenansichten von Gästen zählen';
 $_lang['setting_tickets.count_guests_desc'] = 'Wenn diese Option aktiviert ist, werden Seitenaufrufe von allen Website-Besuchern berücksichtigt, nicht nur von autorisierten Benutzern. Beachten Sie, dass die Anzahl der Aufrufe bei dieser Einstellung relativ einfach zu fälschen ist.';
 
-//$_lang['setting_tickets.section_id_as_alias'] = 'ID des Bereichs als Alias verwenden';
-//$_lang['setting_tickets.section_id_as_alias_desc'] = 'Wenn diese Option aktiviert ist, werden für Ticket-Bereiche keine Aliase für benutzerfreundliche URLs generiert. Stattdessen wird ihre ID als Alias verwendet.';
-//$_lang['setting_tickets.ticket_id_as_alias'] = 'ID des Tickets als Alias verwenden';
-//$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'Wenn diese Option aktiviert ist, werden für Tickets keine Aliase für benutzerfreundliche URLs generiert. Stattdessen wird ihre ID als Alias verwendet.';
+$_lang['setting_tickets.section_id_as_alias'] = 'ID des Bereichs als Alias verwenden';
+$_lang['setting_tickets.section_id_as_alias_desc'] = 'Wenn aktiv, erhält ein neuer Bereich seine ID als Alias statt eines generierten Namens.';
+$_lang['setting_tickets.ticket_id_as_alias'] = 'ID des Tickets als Alias verwenden';
+$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'Diese Einstellung muss manuell angelegt werden. Existiert der Schlüssel, nutzen neue Bereiche die alte URI-Vorlage: %id oder %alias, danach / wenn tickets.ticket_isfolder_force aktiv ist, sonst %ext.';
 
 $_lang['setting_mgr_tree_icon_ticket'] = 'Icon für Tickets';
 $_lang['setting_mgr_tree_icon_ticket_desc'] = 'Icon für Tickets im Ressourcenbaum';
@@ -93,3 +94,18 @@ $_lang['setting_tickets.auto_introtext'] = 'Introtext des Tickets automatisch f�
 $_lang['setting_tickets.auto_introtext_desc'] = 'Falls aktiv, wird ein leerer Introtext aus dem Ticket-Inhalt erzeugt (Text vor &lt;cut/&gt; oder der gesamte Inhalt).';
 $_lang['setting_tickets.autocut_text_length'] = 'Automatische Kürzungslänge für Introtext';
 $_lang['setting_tickets.autocut_text_length_desc'] = 'Wirkt zusammen mit tickets.auto_introtext. Enthält der Inhalt kein &lt;cut/&gt;-Tag, wird ein leerer Introtext mit den ersten N Zeichen gefüllt, und ein Frontend-Ticket länger als tickets.ticket_max_cut wird ohne cut gespeichert. 0 lässt das cut-Tag verpflichtend.';
+
+$_lang['setting_tickets.rating_ticket_default'] = 'Punkte für ein Ticket';
+$_lang['setting_tickets.rating_ticket_default_desc'] = 'Autorenpunkte für ein neues Ticket. Standard ist 10.';
+$_lang['setting_tickets.rating_comment_default'] = 'Punkte für einen Kommentar';
+$_lang['setting_tickets.rating_comment_default_desc'] = 'Autorenpunkte für einen neuen Kommentar. Standard ist 1.';
+$_lang['setting_tickets.rating_view_default'] = 'Punkte für einen Aufruf';
+$_lang['setting_tickets.rating_view_default_desc'] = 'Autorenpunkte für einen Ticket-Aufruf. Standard ist 0.1.';
+$_lang['setting_tickets.rating_vote_ticket_default'] = 'Punkte für eine Ticket-Stimme';
+$_lang['setting_tickets.rating_vote_ticket_default_desc'] = 'Autorenpunkte, wenn für das Ticket gestimmt wird. Standard ist 1.';
+$_lang['setting_tickets.rating_vote_comment_default'] = 'Punkte für eine Kommentar-Stimme';
+$_lang['setting_tickets.rating_vote_comment_default_desc'] = 'Autorenpunkte, wenn für den Kommentar gestimmt wird. Standard ist 0.2.';
+$_lang['setting_tickets.rating_star_ticket_default'] = 'Punkte für ein Favoriten-Ticket';
+$_lang['setting_tickets.rating_star_ticket_default_desc'] = 'Autorenpunkte, wenn das Ticket zu den Favoriten hinzugefügt wird. Standard ist 3.';
+$_lang['setting_tickets.rating_star_comment_default'] = 'Punkte für einen Favoriten-Kommentar';
+$_lang['setting_tickets.rating_star_comment_default_desc'] = 'Autorenpunkte, wenn der Kommentar zu den Favoriten hinzugefügt wird. Standard ist 0.6.';

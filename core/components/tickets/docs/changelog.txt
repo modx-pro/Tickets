@@ -11,6 +11,7 @@ Patch 1.14.x: ускорение `TicketLatest` в режиме `action=comments
 
 - Индекс `comment_time` в таблице `tickets_threads` (schema + map). Резолвер `resolve.tables` создаёт его при обновлении пакета (#216).
 - Системная настройка `tickets.autocut_text_length` (по умолчанию `0`). Работает при включённом `tickets.auto_introtext`: если в тексте нет `<cut/>`, пустая аннотация заполняется первыми N символами текста, а тикет с фронта длиннее `tickets.ticket_max_cut` сохраняется без требования `<cut/>`. Сам текст тикета не меняется. При `0` тег `<cut/>` обязателен, как раньше (#218).
+- В списке настроек появились `tickets.disable_jevix_default`, `tickets.process_tags_default`, `tickets.ticket_show_in_tree_default`, `tickets.section_id_as_alias` и семь весов рейтинга автора (`tickets.rating_*_default`). Значения совпадают с теми, что код уже подставлял сам (#221).
 
 ### Changed
 
@@ -24,6 +25,9 @@ Patch 1.14.x: ускорение `TicketLatest` в режиме `action=comments
 - `TicketLatest` с `&action=`comments`` больше не выбирает `Ticket.content` (#214).
 - `TicketLatest` с `&action=`comments`` без `&user` не падает с ошибкой 1055 при `ONLY_FULL_GROUP_BY` (#216).
 - Снятие тикета с публикации больше не роняет фронтенд. `TicketTotal` вызывал `isDirty()` без имени поля, а в xPDO MODX 2.x аргумент обязателен (`ArgumentCountError`, #222).
+- `TicketLatest` с `&action=`Tickets`` берёт чанк тикета, а не чанк комментария. Раньше подмена `&tpl` шла до приведения регистра (#221).
+- Очистка корзины удаляет ветки комментариев ресурсов, которые не являются тикетами. У тикета `Ticket::remove()` по-прежнему снимает ветку `resource-{id}` (#221).
+- Описание `tickets.section_content_default` больше не обещает вывод дочерних тикетов. Значение по умолчанию пустое (#221).
 
 ## [1.14.0] - 2026-07-12
 

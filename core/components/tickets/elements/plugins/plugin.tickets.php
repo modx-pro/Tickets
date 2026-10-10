@@ -115,6 +115,24 @@ switch ($modx->event->name) {
         }
         break;
 
+    case 'OnEmptyTrash':
+        // Threads on plain resources are not removed with the resource. Ticket::remove()
+        // already deletes resource-{id} threads; this catches every thread on the ids.
+        if (empty($ids)) {
+            break;
+        }
+        if (!is_array($ids)) {
+            $ids = explode(',', $ids);
+        }
+        $ids = array_filter(array_map('intval', $ids));
+        if (empty($ids)) {
+            break;
+        }
+        foreach ($modx->getIterator('TicketThread', array('resource:IN' => $ids)) as $thread) {
+            $thread->remove();
+        }
+        break;
+
     case 'OnResourceDuplicate':
         /** @var modResource $newResource */
         if (empty($newResource) || !is_object($newResource)) {

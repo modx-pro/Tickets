@@ -8,6 +8,7 @@ $_lang['area_tickets.section'] = 'Розділ тікетів';
 $_lang['area_tickets.ticket'] = 'Тікет';
 $_lang['area_tickets.comment'] = 'Коментар';
 $_lang['area_tickets.mail'] = 'Поштові сповіщення';
+$_lang['area_tickets.rating'] = 'Рейтинг автора';
 
 $_lang['setting_tickets.frontend_css'] = 'Стилі фронтенду';
 $_lang['setting_tickets.frontend_css_desc'] = 'Шлях до CSS-файлу фронтенду. Вкажіть свій шлях або очистіть параметр і підключіть стилі в шаблоні сайту.';
@@ -25,7 +26,7 @@ $_lang['setting_tickets.ticket_hidemenu_force_desc'] = 'Примусово вм�
 $_lang['setting_tickets.ticket_show_in_tree_default'] = 'Показувати в дереві за замовчуванням';
 $_lang['setting_tickets.ticket_show_in_tree_default_desc'] = 'Якщо увімкнено, нові тікети з’являються в дереві ресурсів.';
 $_lang['setting_tickets.section_content_default'] = 'Вміст розділу тікетів за замовчуванням';
-$_lang['setting_tickets.section_content_default_desc'] = 'Вміст нового розділу тікетів. За замовчуванням виводить дочірні тікети.';
+$_lang['setting_tickets.section_content_default_desc'] = 'Вміст нового розділу тікетів. За замовчуванням поле порожнє.';
 
 $_lang['setting_tickets.enable_editor'] = 'Редактор markItUp';
 $_lang['setting_tickets.enable_editor_desc'] = 'Умикає markItUp на фронтенді для тікетів і коментарів.';
@@ -69,10 +70,10 @@ $_lang['setting_tickets.count_guests_desc'] = 'Рахує перегляди в�
 $_lang['setting_tickets.max_files_upload'] = 'Ліміт завантажуваних файлів';
 $_lang['setting_tickets.max_files_upload_desc'] = 'Скільки файлів користувач може прикріпити до тікета. 0 — без обмежень.';
 
-//$_lang['setting_tickets.section_id_as_alias'] = 'Id розділу як псевдонім';
-//$_lang['setting_tickets.section_id_as_alias_desc'] = 'Якщо увімкнено, псевдоніми розділів не генеруються; підставляється id.';
-//$_lang['setting_tickets.ticket_id_as_alias'] = 'Id тікета як псевдонім';
-//$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'Якщо увімкнено, псевдоніми тікетів не генеруються; підставляється id.';
+$_lang['setting_tickets.section_id_as_alias'] = 'Id розділу як псевдонім';
+$_lang['setting_tickets.section_id_as_alias_desc'] = 'Якщо увімкнено, псевдонімом нового розділу стає його id, а не згенероване ім’я.';
+$_lang['setting_tickets.ticket_id_as_alias'] = 'Id тікета як псевдонім';
+$_lang['setting_tickets.ticket_id_as_alias_desc'] = 'Це налаштування треба створити вручну. Якщо ключ існує, нові розділи переходять на старий шаблон адреси: %id або %alias, далі / при увімкненому tickets.ticket_isfolder_force, інакше %ext.';
 
 $_lang['setting_mgr_tree_icon_ticket'] = 'Іконка тікета';
 $_lang['setting_mgr_tree_icon_ticket_desc'] = 'Іконка тікета в дереві ресурсів.';
@@ -92,3 +93,18 @@ $_lang['setting_tickets.auto_introtext'] = 'Автозаповнення ано�
 $_lang['setting_tickets.auto_introtext_desc'] = 'Якщо увімкнено, порожня анотація заповнюється з контенту тікета (текст до &lt;cut/&gt; або весь контент).';
 $_lang['setting_tickets.autocut_text_length'] = 'Довжина автообрізання анотації';
 $_lang['setting_tickets.autocut_text_length_desc'] = 'Працює разом із tickets.auto_introtext. Якщо в тексті немає тега &lt;cut/&gt;, порожня анотація заповнюється першими N символами тексту, а тікет із фронту, довший за tickets.ticket_max_cut, зберігається без вимоги cut. 0 залишає тег cut обовʼязковим.';
+
+$_lang['setting_tickets.rating_ticket_default'] = 'Бали за тікет';
+$_lang['setting_tickets.rating_ticket_default_desc'] = 'Скільки балів автор отримує за новий тікет. За замовчуванням 10.';
+$_lang['setting_tickets.rating_comment_default'] = 'Бали за коментар';
+$_lang['setting_tickets.rating_comment_default_desc'] = 'Бали за новий коментар. За замовчуванням 1.';
+$_lang['setting_tickets.rating_view_default'] = 'Бали за перегляд';
+$_lang['setting_tickets.rating_view_default_desc'] = 'Бали за перегляд тікета. За замовчуванням 0.1.';
+$_lang['setting_tickets.rating_vote_ticket_default'] = 'Бали за голос за тікет';
+$_lang['setting_tickets.rating_vote_ticket_default_desc'] = 'Бали автору, коли тікету ставлять голос. За замовчуванням 1.';
+$_lang['setting_tickets.rating_vote_comment_default'] = 'Бали за голос за коментар';
+$_lang['setting_tickets.rating_vote_comment_default_desc'] = 'Бали автору, коли коментарю ставлять голос. За замовчуванням 0.2.';
+$_lang['setting_tickets.rating_star_ticket_default'] = 'Бали за обраний тікет';
+$_lang['setting_tickets.rating_star_ticket_default_desc'] = 'Бали автору, коли тікет додають до обраного. За замовчуванням 3.';
+$_lang['setting_tickets.rating_star_comment_default'] = 'Бали за обраний коментар';
+$_lang['setting_tickets.rating_star_comment_default_desc'] = 'Бали автору, коли коментар додають до обраного. За замовчуванням 0.6.';

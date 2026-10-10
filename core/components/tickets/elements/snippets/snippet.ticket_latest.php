@@ -29,10 +29,10 @@ $pdoFetch->addTime('pdoTools loaded');
 if (empty($action)) {
     $action = 'comments';
 }
+$action = strtolower($action);
 if ($action == 'tickets' && $scriptProperties['tpl'] == 'tpl.Tickets.comment.latest') {
     $scriptProperties['tpl'] = 'tpl.Tickets.ticket.latest';
 }
-$action = strtolower($action);
 $where = $action == 'tickets'
     ? array('class_key' => 'Ticket')
     : array();
