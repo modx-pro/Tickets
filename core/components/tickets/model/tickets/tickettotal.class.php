@@ -86,7 +86,7 @@ class TicketTotal extends xPDOObject
         }
 
         $total->fetchValues();
-        if ($total->isDirty() && !$total->save()) {
+        if ($total->hasDirtyAggregates() && !$total->save()) {
             $xpdo->log(xPDO::LOG_LEVEL_ERROR,
                 '[Tickets] Could not save TicketTotal aggregates for ' . $class . '#' . $id);
         }
@@ -146,6 +146,23 @@ class TicketTotal extends xPDOObject
         $this->fromArray($values);
 
         return $values;
+    }
+
+
+    /**
+     * xPDOObject::isDirty() in MODX 2.x requires a field name.
+     *
+     * @return bool
+     */
+    public function hasDirtyAggregates()
+    {
+        foreach (self::fieldsFor($this->get('class')) as $field) {
+            if ($this->isDirty($field)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
