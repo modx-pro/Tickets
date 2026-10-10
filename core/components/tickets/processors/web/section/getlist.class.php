@@ -59,11 +59,11 @@ class TicketsSectionGetListProcessor extends modObjectGetListProcessor
                 }
             }
 
-            $parents = array_diff($parents_in,$parents_out);
+            $parents = array_diff($parents_in, $parents_out);
 
             if (!empty($parents) && !empty($this->current_category)) {
                 $c->where(array('parent:IN' => $parents, 'OR:id:=' => $this->current_category));
-            } else if (!empty($parents)) {
+            } elseif (!empty($parents)) {
                 $c->where(array('parent:IN' => $parents));
             }
 
