@@ -126,6 +126,9 @@
         <index alias="comment_last" name="comment_last" primary="false" unique="false" type="BTREE">
             <column key="comment_last" length="" collation="A" null="false"/>
         </index>
+        <index alias="comment_time" name="comment_time" primary="false" unique="false" type="BTREE">
+            <column key="comment_time" length="" collation="A" null="true"/>
+        </index>
         <index alias="comments" name="comments" primary="false" unique="false" type="BTREE">
             <column key="comments" length="" collation="A" null="false"/>
         </index>

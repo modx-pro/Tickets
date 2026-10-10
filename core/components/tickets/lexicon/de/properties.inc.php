@@ -7,7 +7,7 @@
 $_lang['tickets_prop_limit'] = 'Maximale Anzahl der Ergebnisse';
 $_lang['tickets_prop_offset'] = 'Versatz vom Anfang der Ergebnisse';
 $_lang['tickets_prop_depth'] = 'Tiefe der Suche nach Ressourcen (ausgehend von der übergeordneten Ressource)';
-$_lang['tickets_prop_sortby'] = 'Das Feld, nach welchem sortiert wird';
+$_lang['tickets_prop_sortby'] = 'Das Feld, nach welchem sortiert wird. Leer: comment_time für neueste Kommentare, createdon für Tickets oder &user.';
 $_lang['tickets_prop_sortdir'] = 'Reihenfolge der Sortierung';
 $_lang['tickets_prop_parents'] = 'Liste von Ordnern, die verarbeitet werden sollen. Standardmäßig ist die aktuelle übergeordnete Ressource ausgewählt. Keine Begrenzung, wenn 0 gewählt ist.';
 $_lang['tickets_prop_resources'] = 'Kommaseparierte Liste von IDs, die in den Ergebnissen enthalten sein sollen. Um Ressourcen auszuschließen, werden den IDs Bindestriche vorangestellt.';
