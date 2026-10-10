@@ -237,7 +237,76 @@ class Ticket extends modResource
 
 
     /**
+     * Teaser length for content without <cut/> (tickets.autocut_text_length), 0 if disabled
+     *
+     * @return int
+     */
+    public function getAutocutLength()
+    {
+        if (!$this->xpdo->getOption('tickets.auto_introtext', null, true)) {
+            return 0;
+        }
+
+        return max(0, (int)$this->xpdo->getOption('tickets.autocut_text_length', null, 0, true));
+    }
+
+
+    /**
+     * Front-end content check: not empty, and <cut/> above tickets.ticket_max_cut
+     * unless the teaser is auto-cut
+     *
+     * @param string $content
+     *
+     * @return string|null Error message
+     */
+    public function checkWebContent($content)
+    {
+        if (empty($content)) {
+            return $this->xpdo->lexicon('ticket_err_empty');
+        }
+        $length = mb_strlen(strip_tags($content), $this->xpdo->getOption('modx_charset', null, 'UTF-8', true));
+        $max = $this->xpdo->getOption('tickets.ticket_max_cut', null, 1000, true);
+        if (!preg_match('#<cut\b.*?>#', $content) && $length > $max && !$this->getAutocutLength()) {
+            return $this->xpdo->lexicon('ticket_err_cut', array('length' => $length, 'max_cut' => $max));
+        }
+
+        return null;
+    }
+
+
+    /**
+     * First $max characters of text outside tags. Tags are kept as is, unclosed ones are left to Jevix.
+     *
+     * @param string $content
+     * @param int $max
+     *
+     * @return string
+     */
+    public function cutVisibleText($content, $max)
+    {
+        $charset = $this->xpdo->getOption('modx_charset', null, 'UTF-8', true);
+        $left = (int)$max;
+        $out = '';
+        foreach (preg_split('/(<[^>]*>)/', $content, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $part) {
+            if ($part[0] === '<') {
+                $out .= $part;
+                continue;
+            }
+            $length = mb_strlen($part, $charset);
+            if ($length >= $left) {
+                return $out . mb_substr($part, 0, $left, $charset);
+            }
+            $out .= $part;
+            $left -= $length;
+        }
+
+        return $out;
+    }
+
+
+    /**
      * Generate intro text from content buy cutting text before tag <cut/>
+     * Without <cut/> the text is cut to tickets.autocut_text_length, if set
      *
      * @param string $content Any text for processing, with tag <cut/>
      * @param boolean $jevix
@@ -253,6 +322,14 @@ class Ticket extends modResource
 
         if (!preg_match('/<cut\/>/', $content)) {
             $introtext = $content;
+            $autocut = $this->getAutocutLength();
+            $charset = $this->xpdo->getOption('modx_charset', null, 'UTF-8', true);
+            if ($autocut && mb_strlen(strip_tags($content), $charset) > $autocut) {
+                $introtext = $this->cutVisibleText($content, $autocut);
+                if ($jevix) {
+                    $introtext = $this->Jevix($introtext);
+                }
+            }
         } else {
             $tmp = explode('<cut/>', $content);
             $introtext = reset($tmp);
