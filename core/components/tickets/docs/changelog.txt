@@ -3,6 +3,25 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+## [1.14.1] - 2026-10-10
+
+Patch 1.14.x: ускорение `TicketLatest` в режиме `action=comments`.
+
+### Added
+
+- Индекс `comment_time` в таблице `tickets_threads` (schema + map). Резолвер `resolve.tables` создаёт его при обновлении пакета (#216).
+
+### Changed
+
+- `TicketLatest` с `&action=`comments`` без `&user`: выборка начинается с `TicketThread` (`deleted = 0`, `comment_last > 0`), сортируется по `comment_time`, затем присоединяет последний комментарий и тикет. `sortby=createdon` в этом режиме сортирует по `comment_time` (#216).
+- `TicketLatest`: свойство `sortby` по умолчанию пустое, сниппет сам выбирает поле сортировки для режима. Описание `tickets_prop_sortby` обновлено в en/ru/uk/de (#216).
+- `TicketLatest` в режиме комментариев выбирает из `Section` и `Profile` только поля для чанка. Фильтр `resources` применяется к `Ticket.id` (#216).
+
+### Fixed
+
+- `TicketLatest` с `&action=`comments`` больше не выбирает `Ticket.content` (#214).
+- `TicketLatest` с `&action=`comments`` без `&user` не падает с ошибкой 1055 при `ONLY_FULL_GROUP_BY` (#216).
+
 ## [1.14.0] - 2026-07-12
 
 Релиз 1.14.x: несколько веток и плоский список комментариев, уведомления, лексиконы, PHP 8, uninstall.

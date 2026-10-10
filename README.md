@@ -2,7 +2,7 @@
 
 Tickets is a blogging and comments package for MODX Revolution. It adds ticket sections, front-end ticket forms, threaded or flat comments, voting, favorites, subscriptions, file uploads, and author ratings.
 
-Current release: **1.14.0-pl** (2026-07-12). That build targets MODX 2.x, cleans up PHP 8 / 8.2 issues, and is the baseline for a later MODX 3 port.
+Current release: **1.14.1-pl** (2026-10-10). That build targets MODX 2.x, cleans up PHP 8 / 8.2 issues, and is the baseline for a later MODX 3 port.
 
 ## Features
 
