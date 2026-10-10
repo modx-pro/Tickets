@@ -111,6 +111,15 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor
      */
     public function beforeSave()
     {
+        $text = $this->getProperty('text');
+        /** @var Tickets $Tickets */
+        if ($Tickets = $this->modx->getService('Tickets')) {
+            $this->object->fromArray(array(
+                'text' => $Tickets->Jevix($text, 'Comment'),
+                'raw' => $this->getProperty('raw', $text),
+            ));
+        }
+
         $this->object->fromArray(array(
             'editedon' => time(),
             'editedby' => $this->modx->user->isAuthenticated($this->modx->context->key)
