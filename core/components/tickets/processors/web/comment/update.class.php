@@ -93,7 +93,6 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor
 
         $this->properties = array(
             'text' => $text,
-            'raw' => $this->getProperty('raw'),
             'name' => $this->getProperty('name'),
             'email' => $this->getProperty('email'),
             'properties' => !empty($add)
@@ -101,16 +100,37 @@ class TicketCommentUpdateProcessor extends modObjectUpdateProcessor
                 : $this->object->get('properties'),
         );
         $this->unsetProperty('action');
+        $this->unsetProperty('raw');
 
         return parent::beforeSet();
     }
 
 
     /**
-     * @return bool
+     * @return bool|string
      */
     public function beforeSave()
     {
+        /** @var Tickets $Tickets */
+        $Tickets = $this->modx->getService('tickets', 'Tickets', $this->modx->getOption('tickets.core_path', null,
+            $this->modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/'
+        );
+        if (!($Tickets instanceof Tickets)) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, '[Tickets] Could not load Tickets service in TicketCommentUpdateProcessor.');
+            return $this->modx->lexicon('tickets_err_unknown');
+        }
+
+        $text = (string)$this->getProperty('text');
+        $cleanText = trim($Tickets->Jevix($text, 'Comment'));
+        if (empty($cleanText)) {
+            return $this->modx->lexicon('ticket_comment_err_empty');
+        }
+
+        $this->object->fromArray(array(
+            'text' => $cleanText,
+            'raw' => $text,
+        ));
+
         $this->object->fromArray(array(
             'editedon' => time(),
             'editedby' => $this->modx->user->isAuthenticated($this->modx->context->key)

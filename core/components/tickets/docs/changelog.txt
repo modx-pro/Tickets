@@ -3,6 +3,11 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+## [Unreleased]
+
+### Security
+- Обязательная санитизация текста комментариев через Jevix в публичных процессорах `web/comment/create` и `web/comment/update` во избежание Stored XSS при прямом вызове процессоров
+
 ## [1.14.1] - 2026-10-10
 
 Patch 1.14.x: ускорение `TicketLatest` в режиме `action=comments`, автоматическая аннотация для длинных тикетов.
