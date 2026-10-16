@@ -125,6 +125,7 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor
             'properties' => $add,
         ));
         $this->unsetProperty('action');
+        $this->unsetProperty('raw');
 
         return parent::beforeSet();
     }
@@ -135,14 +136,25 @@ class TicketCommentCreateProcessor extends modObjectCreateProcessor
      */
     public function beforeSave()
     {
-        $text = $this->getProperty('text');
         /** @var Tickets $Tickets */
-        if ($Tickets = $this->modx->getService('Tickets')) {
-            $this->object->fromArray(array(
-                'text' => $Tickets->Jevix($text, 'Comment'),
-                'raw' => $this->getProperty('raw', $text),
-            ));
+        $Tickets = $this->modx->getService('tickets', 'Tickets', $this->modx->getOption('tickets.core_path', null,
+            $this->modx->getOption('core_path') . 'components/tickets/') . 'model/tickets/'
+        );
+        if (!($Tickets instanceof Tickets)) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, '[Tickets] Could not load Tickets service in TicketCommentCreateProcessor.');
+            return $this->modx->lexicon('tickets_err_unknown');
         }
+
+        $text = (string)$this->getProperty('text');
+        $cleanText = trim($Tickets->Jevix($text, 'Comment'));
+        if (empty($cleanText)) {
+            return $this->modx->lexicon('ticket_comment_err_empty');
+        }
+
+        $this->object->fromArray(array(
+            'text' => $cleanText,
+            'raw' => $text,
+        ));
 
         /** @var TicketThread $thread */
         if ($thread = $this->object->getOne('Thread')) {
