@@ -3,7 +3,7 @@
 class TicketFileDeleteProcessor extends modObjectProcessor
 {
     public $classKey = 'TicketFile';
-    public $permission = 'ticket_file_upload';
+    public $permission = 'ticket_file_delete';
 
 
     /**

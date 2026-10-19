@@ -21,6 +21,7 @@ $tmp = array(
             'comment_star' => true,
             'ticket_file_upload' => true,
             'ticket_file_delete' => true,
+            'ticket_file_sort' => true,
             'thread_close' => true,
             'thread_delete' => true,
             'thread_remove' => true,
@@ -51,6 +52,7 @@ $tmp = array(
             'ticket_view_private' => true,
             'ticket_file_upload' => true,
             'ticket_file_delete' => true,
+            'ticket_file_sort' => true,
             'thread_close' => true,
             'thread_delete' => true,
             'thread_remove' => true,
@@ -64,7 +66,7 @@ foreach ($tmp as $k => $v) {
         $v['data'] = json_encode($v['data']);
     }
 
-    /** @var $policy modAccessPolicy */
+    /** @var modAccessPolicy $policy */
     $policy = $modx->newObject('modAccessPolicy');
     $policy->fromArray(array_merge(array(
             'name' => $k,
