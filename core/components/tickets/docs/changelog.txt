@@ -3,6 +3,12 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+## [Unreleased]
+
+### Fixed
+
+- Удаление файла на фронте проверяет `ticket_file_delete`. Сортировка проверяет `ticket_file_sort`. Если в `TicketUserPolicy` или `TicketVipPolicy` ключа ещё нет, резолвер включает его при установке и обновлении (#228).
+
 ## [1.14.1] - 2026-10-10
 
 Patch 1.14.x: ускорение `TicketLatest` в режиме `action=comments`, автоматическая аннотация для длинных тикетов.

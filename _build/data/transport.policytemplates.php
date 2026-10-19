@@ -23,6 +23,7 @@ $tmp = array(
             'comment_star' => array(),
             'ticket_file_upload' => array(),
             'ticket_file_delete' => array(),
+            'ticket_file_sort' => array(),
             'thread_close' => array(),
             'thread_delete' => array(),
             'thread_remove' => array(),
@@ -55,7 +56,7 @@ foreach ($tmp as $k => $v) {
         }
     }
 
-    /** @var $template modAccessPolicyTemplate */
+    /** @var modAccessPolicyTemplate $template */
     $template = $modx->newObject('modAccessPolicyTemplate');
     $template->fromArray(array_merge(array(
             'name' => $k,

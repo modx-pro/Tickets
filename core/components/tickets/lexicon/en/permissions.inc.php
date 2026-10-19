@@ -22,6 +22,7 @@ $_lang['comment_star'] = 'Add comments to favorites.';
 $_lang['section_add_children'] = 'Create tickets in a section.';
 $_lang['ticket_file_upload'] = 'Upload ticket files.';
 $_lang['ticket_file_delete'] = 'Delete ticket files.';
+$_lang['ticket_file_sort'] = 'Reorder ticket files.';
 $_lang['thread_close'] = 'Close and open comment threads.';
 $_lang['thread_delete'] = 'Delete and restore comment threads.';
 $_lang['thread_remove'] = 'Permanently remove a thread and all its comments.';

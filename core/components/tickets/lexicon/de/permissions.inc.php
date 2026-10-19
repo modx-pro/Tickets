@@ -20,6 +20,7 @@ $_lang['comment_star'] = 'Berechtigung, Kommentare zu den Favoriten hinzuzufüge
 $_lang['section_add_children'] = 'Berechtigung zum Erstellen neuer Tickets in einem Ticket-Bereich.';
 $_lang['ticket_file_upload'] = 'Berechtigung zum Hochladen von Dateien.';
 $_lang['ticket_file_delete'] = 'Berechtigung, Dateien zu löschen.';
+$_lang['ticket_file_sort'] = 'Berechtigung, die Reihenfolge der Dateien zu ändern.';
 $_lang['thread_close'] = 'Erlaubt das Schließen bzw. Öffnen eines Kommentar-Threads.';
 $_lang['thread_delete'] = 'Erlaubt das Löschen bzw. Wiederherstellen eines Kommentar-Threads.';
 $_lang['thread_remove'] = 'Erlaubt das dauerhafte Löschen eines Kommentar-Threads mit allen enthaltenen Kommentaren.';

@@ -49,6 +49,46 @@ if ($transport->xpdo) {
             } else {
                 $modx->log(xPDO::LOG_LEVEL_ERROR, '[Tickets] Could not find TicketSectionPolicy Access Policy!');
             }
+
+            foreach (array('TicketUserPolicy', 'TicketVipPolicy') as $policyName) {
+                /** @var modAccessPolicy $existingPolicy */
+                if (!$existingPolicy = $modx->getObject('modAccessPolicy', array('name' => $policyName))) {
+                    continue;
+                }
+                $raw = $existingPolicy->get('data');
+                if (is_array($raw)) {
+                    $data = $raw;
+                } elseif (is_string($raw) && $raw !== '') {
+                    $decoded = $modx->fromJSON($raw);
+                    if (!is_array($decoded)) {
+                        $modx->log(
+                            xPDO::LOG_LEVEL_ERROR,
+                            '[Tickets] Could not read ' . $policyName . ' data; ticket_file_sort was not added.'
+                        );
+                        continue;
+                    }
+                    $data = $decoded;
+                } elseif ($raw === null || $raw === '') {
+                    $data = array();
+                } else {
+                    $modx->log(
+                        xPDO::LOG_LEVEL_ERROR,
+                        '[Tickets] Could not read ' . $policyName . ' data; ticket_file_sort was not added.'
+                    );
+                    continue;
+                }
+                if (array_key_exists('ticket_file_sort', $data)) {
+                    continue;
+                }
+                $data['ticket_file_sort'] = true;
+                $existingPolicy->set('data', $modx->toJSON($data));
+                if (!$existingPolicy->save()) {
+                    $modx->log(
+                        xPDO::LOG_LEVEL_ERROR,
+                        '[Tickets] Could not add ticket_file_sort to ' . $policyName . '!'
+                    );
+                }
+            }
             break;
     }
 }

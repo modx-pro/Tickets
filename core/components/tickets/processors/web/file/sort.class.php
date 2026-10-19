@@ -2,6 +2,19 @@
 class TicketFileSortProcessor extends modObjectProcessor
 {
     public $classKey = 'TicketFile';
+    public $permission = 'ticket_file_sort';
+
+    /**
+     * @return bool|null|string
+     */
+    public function initialize()
+    {
+        if (!$this->modx->hasPermission($this->permission)) {
+            return $this->modx->lexicon('access_denied');
+        }
+
+        return true;
+    }
 
     public function process() {
         $rank = $this->getProperty('rank');
